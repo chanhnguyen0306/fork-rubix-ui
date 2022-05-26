@@ -4,7 +4,9 @@
 *.dll
 *.so
 *.dylib
-
+*.idea
+*.code
+rubix-ui/frontend/node_modules
 # Test binary, built with `go test -c`
 *.test
 
