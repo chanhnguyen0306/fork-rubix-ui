@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "antd": "^4.20.6",
+    "loglevel": "^1.8.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
+    "sass": "^1.52.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
