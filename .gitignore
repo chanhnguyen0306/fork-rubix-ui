@@ -6,7 +6,7 @@
 *.dylib
 *.idea
 *.code
-rubix-ui/bin/*
+rubix-ui/bin/rubix-ui-dev-linux-amd64
 rubix-ui/frontend/node_modules
 # Test binary, built with `go test -c`
 *.test
