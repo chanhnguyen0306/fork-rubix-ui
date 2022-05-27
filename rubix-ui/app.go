@@ -23,5 +23,5 @@ func (app *App) startup(ctx context.Context) {
 
 //initRest get rest client
 func (app *App) initRest() *assist.Client {
-	return assist.New()
+	return assist.New("164.92.222.81", 8080)
 }

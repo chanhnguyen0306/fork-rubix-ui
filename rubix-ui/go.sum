@@ -1,3 +1,5 @@
+github.com/NubeIO/rubix-assist-client v0.0.5 h1:sDnKTQyfP23pgvatBMWXIHOgU2dmJUdRoqaZ2RyZrio=
+github.com/NubeIO/rubix-assist-client v0.0.5/go.mod h1:CUvg/aWJDbaQcPzhKBvZL6+Oza08hXCasX6TfaR0VIY=
 github.com/NubeIO/rubix-assist-model v0.0.0-20220526023212-20c9f0e2172a h1:zHi35+uHxFQBXiezaWKBQtNkLicspNZTiQuIYIwFXeU=
 github.com/NubeIO/rubix-assist-model v0.0.0-20220526023212-20c9f0e2172a/go.mod h1:C/g3clw6/MmfuJXbxEpSaG+qYLtlUkz0LTqWcbtJO5w=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
