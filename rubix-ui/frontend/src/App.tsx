@@ -1,16 +1,14 @@
-import {useState} from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import {host} from "./components/hosts/host";
+import { network} from "./components/hosts/network";
 
 
 
 
 function App() {
-
     return (
         <div id="App">
             <div>
-                <host.addHost />
+                <network.AddNetworkForm />
             </div>
         </div>
     )

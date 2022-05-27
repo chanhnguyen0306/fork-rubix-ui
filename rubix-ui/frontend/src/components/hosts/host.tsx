@@ -2,10 +2,10 @@ import {Button, Form} from "antd";
 import {model} from "../../../wailsjs/go/models";
 import Input from "antd/es/input/Input";
 
-import {AddHost, EditHost, GetHost, GetHostNetworks} from "../../../wailsjs/go/main/App";
+import {AddHost, GetHostNetworks} from "../../../wailsjs/go/main/App";
 
 export namespace host {
-    async function add(host: model.Host):Promise<model.Host> {
+    async function addHost(host: model.Host):Promise<model.Host> {
         //we need the network_uuid to pass
         let networks: Array<model.Network> = {} as Array<model.Network>
         await GetHostNetworks().then(r => {
@@ -23,7 +23,7 @@ export namespace host {
     }
 
 
-    export function addHost() {
+    export function AddHostForm() {
         return (
             <div style={{
                 display: 'block', width: 700, padding: 30
@@ -33,7 +33,7 @@ export namespace host {
                     name="name"
                     onFinishFailed={() => alert('Failed to submit')}
                     onFinish={(e:model.Host) => {
-                        add(e).then(r => {
+                        addHost(e).then(r => {
                             console.log("added a host", r)
                         })
                     }}
