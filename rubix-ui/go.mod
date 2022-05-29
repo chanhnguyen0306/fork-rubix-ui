@@ -7,7 +7,7 @@ go 1.17
 require (
 	github.com/NubeIO/rubix-assist-client v0.0.5
 	github.com/NubeIO/rubix-assist-model v0.0.0-20220526023212-20c9f0e2172a
-	github.com/wailsapp/wails/v2 v2.0.0-beta.36
+	github.com/wailsapp/wails/v2 v2.0.0-beta.37
 )
 
 require (
