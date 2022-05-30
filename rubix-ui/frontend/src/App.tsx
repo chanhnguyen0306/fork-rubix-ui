@@ -11,10 +11,11 @@ function App() {
     return (
         <div id="App">
             <div>
-                <network.AddNetworkForm />
+                <network.NetwokrsComponent />
             </div>
         </div>
     )
+
 }
 
-export default App
+export default App;
