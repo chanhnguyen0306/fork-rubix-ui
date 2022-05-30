@@ -6,8 +6,12 @@ export function AddHost(arg1) {
   return window['go']['main']['App']['AddHost'](arg1);
 }
 
-export function GetHostNetworks() {
-  return window['go']['main']['App']['GetHostNetworks']();
+export function GetHosts() {
+  return window['go']['main']['App']['GetHosts']();
+}
+
+export function EditHost(arg1, arg2) {
+  return window['go']['main']['App']['EditHost'](arg1, arg2);
 }
 
 export function EditHostNetwork(arg1, arg2) {
@@ -22,8 +26,8 @@ export function GetHostNetwork(arg1) {
   return window['go']['main']['App']['GetHostNetwork'](arg1);
 }
 
-export function GetHosts() {
-  return window['go']['main']['App']['GetHosts']();
+export function GetHostNetworks() {
+  return window['go']['main']['App']['GetHostNetworks']();
 }
 
 export function AddHostNetwork(arg1) {
@@ -36,8 +40,4 @@ export function DeleteHost(arg1) {
 
 export function DeleteHostNetwork(arg1) {
   return window['go']['main']['App']['DeleteHostNetwork'](arg1);
-}
-
-export function EditHost(arg1, arg2) {
-  return window['go']['main']['App']['EditHost'](arg1, arg2);
 }
