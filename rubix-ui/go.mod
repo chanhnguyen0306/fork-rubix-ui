@@ -5,9 +5,10 @@ go 1.17
 //replace github.com/NubeIO/rubix-assist-client => /home/aidan/code/go/nube/lib/rubix-assist-client
 
 require (
+	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/rubix-assist-client v0.0.5
 	github.com/NubeIO/rubix-assist-model v0.0.0-20220526023212-20c9f0e2172a
-	github.com/wailsapp/wails/v2 v2.0.0-beta.36
+	github.com/wailsapp/wails/v2 v2.0.0-beta.37
 )
 
 require (
@@ -34,5 +35,4 @@ require (
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
