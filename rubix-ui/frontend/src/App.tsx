@@ -4,9 +4,7 @@ import { network } from "./components/hosts/network";
 function App() {
   return (
     <div id="App">
-      <div>
-        <network.NetwokrsComponent />
-      </div>
+      <network.NetwokrsComponent />
     </div>
   );
 }

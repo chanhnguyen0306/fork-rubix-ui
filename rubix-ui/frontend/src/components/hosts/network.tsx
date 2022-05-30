@@ -8,40 +8,18 @@ import {
   DeleteHostNetwork,
 } from "../../../wailsjs/go/main/App";
 import { useContext, useEffect, useState } from "react";
+import ColumnGroup from "antd/lib/table/ColumnGroup";
 
 export namespace network {
-  async function addNetwork(host: model.Network): Promise<model.Network> {
-    let addedHost: model.Network = {} as model.Network;
-    await AddHostNetwork(host).then((res) => {
-      addedHost = res;
-    });
-    return addedHost;
-  }
+  const AddNetworkForm = (props: any) => {
+    const { networks, updateNetworks } = props;
+    const addNetwork = async (network: model.Network) => {
+      await AddHostNetwork(network).then((r) => {
+        const newNetworks = networks.push(r);
+        updateNetworks(newNetworks);
+      });
+    };
 
-  async function fetchNetworks(): Promise<model.Network[]> {
-    let networks: model.Network[] = [];
-    await GetHostNetworks().then((res) => {
-      networks = res;
-    });
-    return networks;
-  }
-
-  async function editNetwork(network: model.Network): Promise<model.Network> {
-    let updatedNetwork: model.Network = {} as model.Network;
-    await EditHostNetwork(network.uuid, network).then((res) => {
-      updatedNetwork = res;
-      console.log("updatedNetwork", updatedNetwork);
-    });
-    return updatedNetwork;
-  }
-
-  async function deleteNetwork(networkUUID: string) {
-    await DeleteHostNetwork(networkUUID).then((res) => {
-      console.log("deleteNetwork", res);
-    });
-  }
-
-  function AddNetworkForm() {
     return (
       <div
         style={{
@@ -55,18 +33,12 @@ export namespace network {
           name="name"
           onFinishFailed={() => alert("Failed to submit")}
           onFinish={(e: model.Network) => {
-            addNetwork(e).then((r) => {
-              console.log("added a host", r);
-            });
+            addNetwork(e);
           }}
           initialValues={{ remember: true }}
         >
-          <Form.Item
-            label="Enter username"
-            name="name"
-            rules={[{ required: true, message: "Please enter username" }]}
-          >
-            <Input onChange={(e) => {}} />
+          <Form.Item label="Enter username" name="name">
+            <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -76,10 +48,10 @@ export namespace network {
         </Form>
       </div>
     );
-  }
+  };
 
-  function NetworksTable() {
-    const [networks, setNetworks] = useState([] as model.Network[]);
+  const NetworksTable = (props: any) => {
+    const { networks, updateNetworks } = props;
     const columns = [
       {
         title: "Name",
@@ -96,7 +68,7 @@ export namespace network {
         title: "Actions",
         dataIndex: "actions",
         key: "actions",
-        render: (_, network: model.Network) => (
+        render: (_: any, network: model.Network) => (
           <Space size="middle">
             <a
               onClick={() => {
@@ -116,22 +88,56 @@ export namespace network {
         ),
       },
     ];
-    fetchNetworks().then((res) => {
-      setNetworks(res);
-    });
+
+    const deleteNetwork = async (networkUUID: string) => {
+      await DeleteHostNetwork(networkUUID).then((res) => {
+        const newNetworks = networks.filter(
+          (n: model.Network) => n.uuid !== networkUUID
+        );
+        updateNetworks(newNetworks);
+      });
+    };
+
+    const editNetwork = async (network: model.Network) => {
+      await EditHostNetwork(network.uuid, network).then((res) => {
+        const index = networks.findIndex(
+          (n: model.Network) => n.uuid === network.uuid
+        );
+        networks[index] = res;
+        updateNetworks(networks);
+      });
+    };
+
     return (
       <>
-        <Table dataSource={networks} columns={columns} />
         networks : {networks.length}
+        <Table rowKey="uuid" dataSource={networks} columns={columns} />
       </>
     );
-  }
+  };
 
   export function NetwokrsComponent() {
+    const [networks, setNetworks] = useState([] as model.Network[]);
+    useEffect(() => {
+      if (networks.length === 0) {
+        fetchNetworks();
+      }
+    }, [networks]);
+
+    const updateNetworks = (networks: model.Network[]) => {
+      setNetworks(networks);
+    };
+
+    const fetchNetworks = async () => {
+      await GetHostNetworks().then((res) => {
+        setNetworks(res);
+      });
+    };
+
     return (
       <>
-        <AddNetworkForm />
-        <NetworksTable />
+        <AddNetworkForm networks={networks} updateNetworks={updateNetworks} />
+        <NetworksTable networks={networks} updateNetworks={updateNetworks} />
       </>
     );
   }
