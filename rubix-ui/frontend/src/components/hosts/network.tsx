@@ -52,7 +52,7 @@ export namespace network {
 
   const NetworksTable = (props: any) => {
     const { networks, updateNetworks } = props;
-    if (!networks) return;
+    if (!networks) return <></>;
     const columns = [
       {
         title: "Name",
