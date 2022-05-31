@@ -9,7 +9,11 @@ import (
 func (app *App) AddHostNetwork(host *model.Network) *model.Network {
 	client := app.initRest()
 	data, res := client.AddHostNetwork(host)
-	fmt.Println(res.GetStatus())
+	if data == nil {
+		app.crudMessage(false, fmt.Sprintf("issue in adding new host network %s", res.Message))
+	} else {
+		app.crudMessage(true, fmt.Sprintf("added new host network %s", data.Name))
+	}
 	return data
 }
 
@@ -17,21 +21,30 @@ func (app *App) GetHostNetworks() (resp []model.Network) {
 	resp = []model.Network{}
 	client := app.initRest()
 	data, res := client.GetHostNetworks()
-	fmt.Println("GetHostNetworks", res.AsString())
+	if data == nil {
+		app.crudMessage(false, fmt.Sprintf("issue in getting host networks %s", res.Message))
+	}
 	return data
 }
 
 func (app *App) DeleteHostNetwork(uuid string) *assist.Response {
 	client := app.initRest()
 	res := client.DeleteHostNetwork(uuid)
-	fmt.Println("DeleteHost", res.GetStatus(), uuid)
+	if res.GetStatus() > 299 {
+		app.crudMessage(false, fmt.Sprintf("issue in deleting host network %s", res.Message))
+	} else {
+		app.crudMessage(true, fmt.Sprintf("delete ok"))
+	}
 	return res
 }
 
 func (app *App) GetHostNetwork(uuid string) *model.Network {
 	client := app.initRest()
 	data, res := client.GetHostNetwork(uuid)
-	fmt.Println("GetHost", res.GetStatus(), data.UUID)
+	if res.GetStatus() > 299 {
+		app.crudMessage(false, fmt.Sprintf("issue in getting host network %s", res.Message))
+	} else {
+	}
 	return data
 }
 
@@ -41,6 +54,10 @@ func (app *App) EditHostNetwork(uuid string, host *model.Network) *model.Network
 		return nil
 	}
 	data, res := client.UpdateHostNetwork(uuid, host)
-	fmt.Println("EditHost", res.GetStatus(), host.UUID)
+	if res.GetStatus() > 299 {
+		app.crudMessage(false, fmt.Sprintf("issue in editing host network %s", res.Message))
+	} else {
+		app.crudMessage(true, fmt.Sprintf("edit ok"))
+	}
 	return data
 }
