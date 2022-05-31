@@ -8,15 +8,15 @@ import {
   DeleteHostNetwork,
 } from "../../../wailsjs/go/main/App";
 import { useContext, useEffect, useState } from "react";
-import ColumnGroup from "antd/lib/table/ColumnGroup";
 
 export namespace network {
   const AddNetworkForm = (props: any) => {
     const { networks, updateNetworks } = props;
+
     const addNetwork = async (network: model.Network) => {
-      await AddHostNetwork(network).then((r) => {
-        const newNetworks = networks.push(r);
-        updateNetworks(newNetworks);
+      await AddHostNetwork(network).then((res) => {
+        networks[networks.length] = res;
+        updateNetworks(networks);
       });
     };
 
@@ -52,6 +52,7 @@ export namespace network {
 
   const NetworksTable = (props: any) => {
     const { networks, updateNetworks } = props;
+    if (!networks) return;
     const columns = [
       {
         title: "Name",
@@ -62,7 +63,7 @@ export namespace network {
         title: "Hosts number",
         dataIndex: "hosts",
         key: "hosts",
-        render: (hosts: []) => <a>{hosts.length}</a>,
+        render: (hosts: []) => <a>{hosts ? hosts.length : 0}</a>,
       },
       {
         title: "Actions",
@@ -119,9 +120,7 @@ export namespace network {
   export function NetwokrsComponent() {
     const [networks, setNetworks] = useState([] as model.Network[]);
     useEffect(() => {
-      if (networks.length === 0) {
-        fetchNetworks();
-      }
+      fetchNetworks();
     }, [networks]);
 
     const updateNetworks = (networks: model.Network[]) => {
