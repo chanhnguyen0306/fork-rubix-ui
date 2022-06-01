@@ -79,13 +79,16 @@ export namespace network {
     return (
       <>
         <Modal
-          title="Basic Modal"
+          title={
+            currentNetwork.uuid ? "Edit " + currentNetwork.name : "New Network"
+          }
           visible={isModalVisible}
           onOk={() => handleSubmit(formData)}
           onCancel={handleClose}
           confirmLoading={confirmLoading}
           okText="Save"
         >
+          {currentNetwork.name}
           <Form
             name="name"
             form={form}
@@ -94,10 +97,10 @@ export namespace network {
               handleSubmit(e);
             }}
             onValuesChange={handleFormChange}
-            initialValues={{ remember: true }}
+            initialValues={{ name: currentNetwork.name }}
           >
             <Form.Item label="Name" name="name">
-              <Input value={formData.name} />
+              <Input />
             </Form.Item>
           </Form>
         </Modal>
