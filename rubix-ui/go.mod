@@ -6,12 +6,13 @@ go 1.17
 
 require (
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
-	github.com/NubeIO/rubix-assist-client v0.0.5
-	github.com/NubeIO/rubix-assist-model v0.0.0-20220526023212-20c9f0e2172a
+	github.com/NubeIO/rubix-assist-client v0.0.6
+	github.com/NubeIO/rubix-assist-model v0.0.3
 	github.com/wailsapp/wails/v2 v2.0.0-beta.37
 )
 
 require (
+	github.com/NubeIO/lib-schema v0.0.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/google/uuid v1.1.2 // indirect
