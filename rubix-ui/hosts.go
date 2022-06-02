@@ -7,6 +7,16 @@ import (
 	"time"
 )
 
+func (app *App) GetHostSchema() *model.HostSchema {
+	client := app.initRest()
+	data, res := client.GetHostSchema()
+	if data == nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
+	} else {
+	}
+	return data
+}
+
 func (app *App) AddHost(host *model.Host) *model.Host {
 	client := app.initRest()
 	if host == nil {

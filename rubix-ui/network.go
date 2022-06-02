@@ -6,6 +6,16 @@ import (
 	"github.com/NubeIO/rubix-assist-model/model"
 )
 
+func (app *App) GetNetworkSchema() *model.NetworkSchema {
+	client := app.initRest()
+	data, res := client.GetNetworkSchema()
+	if data == nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
+	} else {
+	}
+	return data
+}
+
 func (app *App) AddHostNetwork(host *model.Network) *model.Network {
 	client := app.initRest()
 	data, res := client.AddHostNetwork(host)
