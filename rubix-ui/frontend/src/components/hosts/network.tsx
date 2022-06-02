@@ -75,6 +75,9 @@ export namespace network {
       setConfirmLoading(false);
       handleClose();
     };
+    if (!form) {
+      return <></>;
+    }
 
     return (
       <>
