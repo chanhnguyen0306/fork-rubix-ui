@@ -37,6 +37,10 @@ export namespace network {
     const [formData, setFormData] = useState(currentNetwork);
     const [form] = Form.useForm();
 
+    useEffect(() => {
+      form.setFieldsValue(currentNetwork);
+    }, [form, currentNetwork]);
+
     const addNetwork = async (network: model.Network) => {
       await AddHostNetwork(network).then((res) => {
         networks[networks.length] = res;

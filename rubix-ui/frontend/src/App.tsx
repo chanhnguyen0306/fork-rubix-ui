@@ -1,5 +1,5 @@
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
-import { network } from "./components/hosts/network";
+import { location } from "./components/hosts/location";
 import { EventsOn } from "../wailsjs/runtime";
 import { notification } from "antd";
 
@@ -26,7 +26,7 @@ function App() {
   return (
     <div id="App">
       <div>
-        <network.NetwokrsComponent />
+        <location.LocationsComponent />
       </div>
     </div>
   );
