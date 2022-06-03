@@ -5,7 +5,6 @@ import { model } from "../../wailsjs/go/models";
 import Input from "antd/es/input/Input";
 import {
   GetLocations,
-  GetLocationSchema,
   AddLocation,
   UpdateLocation,
   DeleteLocation,
@@ -101,7 +100,13 @@ export const CreateEditLocationModal = (props: any) => {
         onOk={() => handleSubmit(formData)}
         onCancel={handleClose}
         confirmLoading={confirmLoading}
-        okButtonProps={{ disabled: !form.getFieldValue("name") }}
+        okButtonProps={{
+          disabled:
+            !form.getFieldValue("name") ||
+            (form.getFieldValue("name") &&
+              (form.getFieldValue("name").length < 2 ||
+                form.getFieldValue("name").length > 50)),
+        }}
         okText="Save"
       >
         <Form
@@ -204,9 +209,7 @@ export const LocationsTable = (props: any) => {
 
 export function Locations() {
   const [locations, setLocations] = useState([] as model.Location[]);
-  const [currentLocation, setCurrentLocation] = useState(
-    {} as model.Location
-  );
+  const [currentLocation, setCurrentLocation] = useState({} as model.Location);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
