@@ -64,7 +64,7 @@ export const CreateEditLocationModal = (props: any) => {
 
   const handleClose = () => {
     form.resetFields();
-    setFormData({});
+    setFormData({} as model.Network);
     onCloseModal();
   };
 
@@ -165,13 +165,6 @@ export const LocationsTable = (props: any) => {
       key: "actions",
       render: (_: any, location: model.Location) => (
         <Space size="middle">
-          <a
-            onClick={() => {
-              console.log("onClickView");
-            }}
-          >
-            View
-          </a>
           <a
             onClick={() => {
               showModal(location);
