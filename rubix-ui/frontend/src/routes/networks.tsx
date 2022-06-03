@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Space, Table } from "antd";
+import { Button, Form, Modal, Select, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
@@ -8,7 +8,15 @@ import {
   GetHostNetworks,
   EditHostNetwork,
   DeleteHostNetwork,
+  GetLocations,
 } from "../../wailsjs/go/main/App";
+
+const { Option } = Select;
+
+const formItemLayout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 19 },
+};
 
 const AddNetworkButton = (props: any) => {
   const { showModal } = props;
@@ -27,6 +35,7 @@ const AddNetworkButton = (props: any) => {
 const CreateEditNetworkModal = (props: any) => {
   const {
     networks,
+    locations,
     currentNetwork,
     isModalVisible,
     updateNetworks,
@@ -38,7 +47,7 @@ const CreateEditNetworkModal = (props: any) => {
 
   useEffect(() => {
     form.setFieldsValue(currentNetwork);
-  }, [form, currentNetwork]);
+  }, [currentNetwork]);
 
   const addNetwork = async (network: model.Network) => {
     await AddHostNetwork(network).then((res) => {
@@ -60,10 +69,11 @@ const CreateEditNetworkModal = (props: any) => {
   const handleClose = () => {
     onCloseModal();
     form.resetFields();
+    setFormData(null);
   };
 
-  const handleFormChange = (value: model.Network) => {
-    setFormData(value);
+  const handleFormChange = (value: any, values: model.Network) => {
+    setFormData(values);
   };
 
   const handleSubmit = (network: model.Network) => {
@@ -93,20 +103,49 @@ const CreateEditNetworkModal = (props: any) => {
         onCancel={handleClose}
         confirmLoading={confirmLoading}
         okText="Save"
+        okButtonProps={{
+          disabled:
+            !form.getFieldValue("name") ||
+            (form.getFieldValue("name") &&
+              (form.getFieldValue("name").length < 2 ||
+                form.getFieldValue("name").length > 50)) ||
+            !form.getFieldValue("location_uuid"),
+        }}
       >
-        {currentNetwork.name}
         <Form
-          name="name"
+          {...formItemLayout}
           form={form}
+          initialValues={formData}
           onFinishFailed={() => alert("Failed to submit")}
           onFinish={(e: model.Network) => {
             handleSubmit(e);
           }}
           onValuesChange={handleFormChange}
-          initialValues={{ name: currentNetwork.name }}
         >
-          <Form.Item label="Name" name="name">
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[
+              { required: true, message: "Name is required!" },
+              { min: 2, message: "Name must be minimum 2 characters." },
+              { max: 50, message: "Name must be maximum 50 characters." },
+            ]}
+          >
             <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Location"
+            name="location_uuid"
+            rules={[{ required: true, message: "Location is required!" }]}
+          >
+            <Select style={{ textAlign: "start" }}>
+              {locations.map((location: model.Location) => (
+                <Option key={location.uuid}>{location.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
@@ -115,7 +154,7 @@ const CreateEditNetworkModal = (props: any) => {
 };
 
 const NetworksTable = (props: any) => {
-  const { networks, updateNetworks, showModal } = props;
+  const { networks, locations, updateNetworks, showModal } = props;
   if (!networks) return <></>;
   const columns = [
     {
@@ -124,10 +163,23 @@ const NetworksTable = (props: any) => {
       key: "name",
     },
     {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
       title: "Hosts number",
       dataIndex: "hosts",
       key: "hosts",
       render: (hosts: []) => <a>{hosts ? hosts.length : 0}</a>,
+    },
+    {
+      title: "Location",
+      dataIndex: "location_uuid",
+      key: "location_uuid",
+      render: (location_uuid: string) => (
+        <span>{getLocationNameByUUID(location_uuid)}</span>
+      ),
     },
     {
       title: "Actions",
@@ -163,6 +215,13 @@ const NetworksTable = (props: any) => {
     });
   };
 
+  const getLocationNameByUUID = (location_uuid: string) => {
+    const location = locations.find(
+      (l: model.Location) => l.uuid === location_uuid
+    );
+    return location ? location.name : "";
+  };
+
   return (
     <>
       <Table rowKey="uuid" dataSource={networks} columns={columns} />
@@ -172,11 +231,16 @@ const NetworksTable = (props: any) => {
 
 export const Networks = () => {
   const [networks, setNetworks] = useState([] as model.Network[]);
+  const [locations, setLocations] = useState([] as model.Location[]);
   const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [fetchingNetworks, setfetchingNetworks] = useState(false);
 
   useEffect(() => {
     fetchNetworks();
+    if (locations.length === 0) {
+      fetchLocations();
+    }
   }, [networks]);
 
   const updateNetworks = (networks: model.Network[]) => {
@@ -184,8 +248,16 @@ export const Networks = () => {
   };
 
   const fetchNetworks = async () => {
+    setfetchingNetworks(true);
     await GetHostNetworks().then((res) => {
       setNetworks(res);
+      setfetchingNetworks(false);
+    });
+  };
+
+  const fetchLocations = async () => {
+    await GetLocations().then((res) => {
+      setLocations(res);
     });
   };
 
@@ -205,6 +277,7 @@ export const Networks = () => {
       <AddNetworkButton showModal={showModal} />
       <CreateEditNetworkModal
         networks={networks}
+        locations={locations}
         currentNetwork={currentNetwork}
         isModalVisible={isModalVisible}
         updateNetworks={updateNetworks}
@@ -212,6 +285,7 @@ export const Networks = () => {
       />
       <NetworksTable
         networks={networks}
+        locations={locations}
         updateNetworks={updateNetworks}
         showModal={showModal}
       />
