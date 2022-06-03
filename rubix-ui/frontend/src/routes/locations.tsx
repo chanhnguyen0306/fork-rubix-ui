@@ -24,7 +24,7 @@ const AddLocationButton = (props: any) => {
   );
 };
 
-export const CreateEditLocationModal = (props: any) => {
+const CreateEditLocationModal = (props: any) => {
   const {
     locations,
     currentLocation,
@@ -139,7 +139,7 @@ export const CreateEditLocationModal = (props: any) => {
   );
 };
 
-export const LocationsTable = (props: any) => {
+const LocationsTable = (props: any) => {
   const { locations, updateLocations, showModal } = props;
   if (!locations) return <></>;
   const columns = [
@@ -200,7 +200,7 @@ export const LocationsTable = (props: any) => {
   );
 };
 
-export function Locations() {
+export const Locations = () => {
   const [locations, setLocations] = useState([] as model.Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as model.Location);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -247,4 +247,4 @@ export function Locations() {
       />
     </>
   );
-}
+};

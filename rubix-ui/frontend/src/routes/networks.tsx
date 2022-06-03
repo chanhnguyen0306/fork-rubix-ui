@@ -170,7 +170,7 @@ const NetworksTable = (props: any) => {
   );
 };
 
-export function Networks() {
+export const Networks = () => {
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -217,4 +217,4 @@ export function Networks() {
       />
     </>
   );
-}
+};
