@@ -9,6 +9,7 @@ import {
   UpdateLocation,
   DeleteLocation,
 } from "../../wailsjs/go/main/App";
+import { RubixForm } from "./rubix-form";
 
 const AddLocationButton = (props: any) => {
   const { showModal } = props;
@@ -73,17 +74,19 @@ const CreateEditLocationModal = (props: any) => {
   };
 
   const handleSubmit = (location: model.Location) => {
-    setConfirmLoading(true);
-    if (currentLocation.uuid) {
-      location.uuid = currentLocation.uuid;
-      location.networks = currentLocation.networks;
-      editLocation(location);
-    } else {
-      addLocation(location);
-    }
-    setConfirmLoading(false);
-    handleClose();
+    // setConfirmLoading(true);
+    // if (currentLocation.uuid) {
+    //   location.uuid = currentLocation.uuid;
+    //   location.networks = currentLocation.networks;
+    //   editLocation(location);
+    // } else {
+    //   addLocation(location);
+    // }
+    // setConfirmLoading(false);
+    // handleClose();
+    console.log(location);
   };
+
   if (!form) {
     return <></>;
   }
@@ -109,7 +112,7 @@ const CreateEditLocationModal = (props: any) => {
         }}
         okText="Save"
       >
-        <Form
+        {/* <Form
           {...formItemLayout}
           form={form}
           initialValues={formData}
@@ -133,7 +136,14 @@ const CreateEditLocationModal = (props: any) => {
           <Form.Item label="Description" name="description">
             <Input />
           </Form.Item>
-        </Form>
+        </Form> */}
+
+        <RubixForm
+          form={form}
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+        />
       </Modal>
     </>
   );

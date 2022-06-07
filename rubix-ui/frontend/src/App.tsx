@@ -54,10 +54,10 @@ const App: React.FC = () => {
           // defaultOpenKeys={["sub1"]}
           // items={menuItems}
         >
-          <Menu.Item>
+          <Menu.Item key={"/"}>
             <Link to="/">Locations</Link>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item key={"networks"}>
             <Link to="networks">Networks</Link>
           </Menu.Item>
         </Menu>
