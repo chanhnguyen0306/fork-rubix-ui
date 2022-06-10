@@ -1,8 +1,8 @@
-import { Button, Form, Modal, Space, Table } from "antd";
+import { Button, Modal, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
-import Input from "antd/es/input/Input";
+
 import {
   GetLocations,
   GetLocationSchema,
@@ -38,12 +38,10 @@ const CreateEditLocationModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
 
-  const [form] = Form.useForm();
-
-  useEffect(() => {
-    //set default data for Form
-    form.setFieldsValue(currentLocation);
-  }, [currentLocation]);
+  // useEffect(() => {
+  //   //set default data for Form
+  //   form.setFieldsValue(currentLocation);
+  // }, [currentLocation]);
 
   const addLocation = async (location: model.Location) => {
     await AddLocation(location).then((res) => {
@@ -63,7 +61,6 @@ const CreateEditLocationModal = (props: any) => {
   };
 
   const handleClose = () => {
-    form.resetFields();
     setFormData({} as model.Network);
     onCloseModal();
   };
@@ -86,66 +83,38 @@ const CreateEditLocationModal = (props: any) => {
     console.log(location);
   };
 
-  if (!form) {
-    return <></>;
-  }
+  const isDisabled = (): boolean => {
+    let result = false;
+    result =
+      !formData.name ||
+      (formData.name &&
+        (formData.name.length < 2 || formData.name.length > 50));
+    return result;
+  };
 
   return (
-    <>
-      <Modal
-        title={
-          currentLocation.uuid
-            ? "Edit " + currentLocation.name
-            : "Add New Location"
-        }
-        visible={isModalVisible}
-        onOk={() => handleSubmit(formData)}
-        onCancel={handleClose}
-        confirmLoading={confirmLoading}
-        // okButtonProps={{
-        //   disabled:
-        //     !form.getFieldValue("name") ||
-        //     (form.getFieldValue("name") &&
-        //       (form.getFieldValue("name").length < 2 ||
-        //         form.getFieldValue("name").length > 50)),
-        // }}
-        okText="Save"
-      >
-        {/* <Form
-          {...formItemLayout}
-          form={form}
-          initialValues={formData}
-          onValuesChange={handleFormChange}
-          onFinishFailed={() => alert("Failed to submit")}
-          onFinish={(e: model.Location) => {
-            handleSubmit(e);
-          }}
-        >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              { required: true, message: "Name is required!" },
-              { min: 2, message: "Name must be minimum 2 characters." },
-              { max: 50, message: "Name must be maximum 50 characters." },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Description" name="description">
-            <Input />
-          </Form.Item>
-        </Form> */}
-
-        <JsonForm
-          form={form}
-          formData={formData}
-          setFormData={setFormData}
-          handleSubmit={handleSubmit}
-          locationSchema={locationSchema}
-        />
-      </Modal>
-    </>
+    <Modal
+      title={
+        currentLocation.uuid
+          ? "Edit " + currentLocation.name
+          : "Add New Location"
+      }
+      visible={isModalVisible}
+      onOk={() => handleSubmit(formData)}
+      onCancel={handleClose}
+      confirmLoading={confirmLoading}
+      okButtonProps={{
+        disabled: isDisabled(),
+      }}
+      okText="Save"
+    >
+      <JsonForm
+        formData={formData}
+        setFormData={setFormData}
+        handleSubmit={handleSubmit}
+        locationSchema={locationSchema}
+      />
+    </Modal>
   );
 };
 
@@ -203,11 +172,7 @@ const LocationsTable = (props: any) => {
     });
   };
 
-  return (
-    <>
-      <Table rowKey="uuid" dataSource={locations} columns={columns} />
-    </>
-  );
+  return <Table rowKey="uuid" dataSource={locations} columns={columns} />;
 };
 
 export const Locations = () => {

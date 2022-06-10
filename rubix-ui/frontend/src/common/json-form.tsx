@@ -4,7 +4,7 @@ import { useState } from "react";
 import { model } from "../../wailsjs/go/models";
 
 export const JsonForm = (props: any) => {
-  const { form, formData, locationSchema, setFormData } = props;
+  const { formData, locationSchema, setFormData } = props;
   const handleFormChange = (values: any) => {
     setFormData(values.formData);
   };
