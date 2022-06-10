@@ -9,7 +9,7 @@ import {
   UpdateLocation,
   DeleteLocation,
 } from "../../wailsjs/go/main/App";
-import { RubixForm } from "./rubix-form";
+import { JsonForm } from "../common/json-form";
 
 const AddLocationButton = (props: any) => {
   const { showModal } = props;
@@ -138,7 +138,7 @@ const CreateEditLocationModal = (props: any) => {
           </Form.Item>
         </Form> */}
 
-        <RubixForm
+        <JsonForm
           form={form}
           formData={formData}
           setFormData={setFormData}

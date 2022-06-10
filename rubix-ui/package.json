@@ -1,1 +1,8 @@
-{}
+{
+  "dependencies": {
+    "@rjsf/core": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/react-jsonschema-form": "^1.7.8"
+  }
+}
