@@ -5,6 +5,7 @@ import { model } from "../../wailsjs/go/models";
 import Input from "antd/es/input/Input";
 import {
   GetLocations,
+  GetLocationSchema,
   AddLocation,
   UpdateLocation,
   DeleteLocation,
@@ -29,17 +30,15 @@ const CreateEditLocationModal = (props: any) => {
   const {
     locations,
     currentLocation,
+    locationSchema,
     isModalVisible,
     updateLocations,
     onCloseModal,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
+
   const [form] = Form.useForm();
-  const formItemLayout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 19 },
-  };
 
   useEffect(() => {
     //set default data for Form
@@ -103,13 +102,13 @@ const CreateEditLocationModal = (props: any) => {
         onOk={() => handleSubmit(formData)}
         onCancel={handleClose}
         confirmLoading={confirmLoading}
-        okButtonProps={{
-          disabled:
-            !form.getFieldValue("name") ||
-            (form.getFieldValue("name") &&
-              (form.getFieldValue("name").length < 2 ||
-                form.getFieldValue("name").length > 50)),
-        }}
+        // okButtonProps={{
+        //   disabled:
+        //     !form.getFieldValue("name") ||
+        //     (form.getFieldValue("name") &&
+        //       (form.getFieldValue("name").length < 2 ||
+        //         form.getFieldValue("name").length > 50)),
+        // }}
         okText="Save"
       >
         {/* <Form
@@ -143,6 +142,7 @@ const CreateEditLocationModal = (props: any) => {
           formData={formData}
           setFormData={setFormData}
           handleSubmit={handleSubmit}
+          locationSchema={locationSchema}
         />
       </Modal>
     </>
@@ -213,6 +213,9 @@ const LocationsTable = (props: any) => {
 export const Locations = () => {
   const [locations, setLocations] = useState([] as model.Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as model.Location);
+  const [locationSchema, setLocationSchema] = useState(
+    {} as model.LocationSchema
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -229,9 +232,16 @@ export const Locations = () => {
     });
   };
 
+  const getSchema = async () => {
+    await GetLocationSchema().then((res) => {
+      setLocationSchema(res);
+    });
+  };
+
   const showModal = (location: model.Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
+    getSchema();
   };
 
   const onCloseModal = () => {
@@ -246,6 +256,7 @@ export const Locations = () => {
       <CreateEditLocationModal
         locations={locations}
         currentLocation={currentLocation}
+        locationSchema={locationSchema}
         isModalVisible={isModalVisible}
         updateLocations={updateLocations}
         onCloseModal={onCloseModal}
