@@ -1,8 +1,4 @@
 import Form from "@rjsf/core";
-import { Input } from "antd";
-import { useState } from "react";
-import { model } from "../../wailsjs/go/models";
-
 export const JsonForm = (props: any) => {
   const { formData, locationSchema, setFormData } = props;
   const handleFormChange = (values: any) => {

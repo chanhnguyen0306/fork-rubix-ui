@@ -38,10 +38,9 @@ const CreateEditLocationModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
 
-  // useEffect(() => {
-  //   //set default data for Form
-  //   form.setFieldsValue(currentLocation);
-  // }, [currentLocation]);
+  useEffect(() => {
+    setFormData(currentLocation);
+  }, [currentLocation]);
 
   const addLocation = async (location: model.Location) => {
     await AddLocation(location).then((res) => {
@@ -79,8 +78,8 @@ const CreateEditLocationModal = (props: any) => {
     //   addLocation(location);
     // }
     // setConfirmLoading(false);
-    // handleClose();
     console.log(location);
+    handleClose();
   };
 
   const isDisabled = (): boolean => {
@@ -102,11 +101,12 @@ const CreateEditLocationModal = (props: any) => {
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}
       onCancel={handleClose}
+      okText="Save"
       confirmLoading={confirmLoading}
       okButtonProps={{
         disabled: isDisabled(),
       }}
-      okText="Save"
+      style={{ textAlign: "start" }}
     >
       <JsonForm
         formData={formData}
