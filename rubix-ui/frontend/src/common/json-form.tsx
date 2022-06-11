@@ -15,19 +15,19 @@ export const JsonForm = (props: any) => {
         type: "string",
         title: "UUID",
         readOnly: true,
-        default: "loc_1BE22B9BF1F5",
+        default: "",
       },
       name: {
         type: "string",
         title: "Name",
         minLength: 2,
         maxLength: 50,
-        default: "Rubix Location",
+        default: "",
       },
       description: {
         type: "string",
         title: "Description",
-        default: "haluhaluhaliu update",
+        default: "",
       },
     },
     required: ["name"],
@@ -44,6 +44,7 @@ export const JsonForm = (props: any) => {
         onChange={handleFormChange}
         onError={log("errors")}
         children={true} //hide submit button
+        showErrorList={false}
       />
     </div>
   );
