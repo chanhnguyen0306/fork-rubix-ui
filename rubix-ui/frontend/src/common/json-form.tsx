@@ -5,7 +5,6 @@ export const JsonForm = (props: any) => {
 
   const handleFormChange = (values: any) => {
     setFormData(values.formData);
-    console.log(formData);
   };
 
   // const schema = {
