@@ -64,10 +64,6 @@ const CreateEditLocationModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleFormChange = (inputValue: any, values: model.Location) => {
-    setFormData(values);
-  };
-
   const handleSubmit = (location: model.Location) => {
     // setConfirmLoading(true);
     // if (currentLocation.uuid) {
@@ -187,10 +183,6 @@ export const Locations = () => {
     fetchLocations();
   }, [locations]);
 
-  const updateLocations = (locations: model.Location[]) => {
-    setLocations(locations);
-  };
-
   const fetchLocations = async () => {
     await GetLocations().then((res) => {
       setLocations(res);
@@ -201,6 +193,10 @@ export const Locations = () => {
     await GetLocationSchema().then((res) => {
       setLocationSchema(res);
     });
+  };
+
+  const updateLocations = (locations: model.Location[]) => {
+    setLocations(locations);
   };
 
   const showModal = (location: model.Location) => {
