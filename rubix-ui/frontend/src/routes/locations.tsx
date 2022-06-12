@@ -60,7 +60,7 @@ const CreateEditLocationModal = (props: any) => {
   };
 
   const handleClose = () => {
-    setFormData({} as model.Network);
+    setFormData({} as model.Location);
     onCloseModal();
   };
 
@@ -108,7 +108,7 @@ const CreateEditLocationModal = (props: any) => {
         formData={formData}
         setFormData={setFormData}
         handleSubmit={handleSubmit}
-        locationSchema={locationSchema}
+        jsonSchema={locationSchema}
       />
     </Modal>
   );

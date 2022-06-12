@@ -1,22 +1,16 @@
-import { Button, Form, Modal, Select, Space, Table } from "antd";
+import { Button, Modal, Select, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
-import Input from "antd/es/input/Input";
 import {
   AddHostNetwork,
   GetHostNetworks,
   EditHostNetwork,
   DeleteHostNetwork,
   GetLocations,
+  GetNetworkSchema,
 } from "../../wailsjs/go/main/App";
-
-const { Option } = Select;
-
-const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 19 },
-};
+import { JsonForm } from "../common/json-form";
 
 const AddNetworkButton = (props: any) => {
   const { showModal } = props;
@@ -35,7 +29,7 @@ const AddNetworkButton = (props: any) => {
 const CreateEditNetworkModal = (props: any) => {
   const {
     networks,
-    locations,
+    networkSchema,
     currentNetwork,
     isModalVisible,
     updateNetworks,
@@ -43,10 +37,9 @@ const CreateEditNetworkModal = (props: any) => {
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentNetwork);
-  const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue(currentNetwork);
+    setFormData(currentNetwork);
   }, [currentNetwork]);
 
   const addNetwork = async (network: model.Network) => {
@@ -67,30 +60,34 @@ const CreateEditNetworkModal = (props: any) => {
   };
 
   const handleClose = () => {
+    setFormData({} as model.Network);
     onCloseModal();
-    form.resetFields();
-    setFormData(null);
-  };
-
-  const handleFormChange = (value: any, values: model.Network) => {
-    setFormData(values);
   };
 
   const handleSubmit = (network: model.Network) => {
-    setConfirmLoading(true);
-    if (currentNetwork.uuid) {
-      network.uuid = currentNetwork.uuid;
-      network.hosts = currentNetwork.hosts;
-      editNetwork(network);
-    } else {
-      addNetwork(network);
-    }
-    setConfirmLoading(false);
+    // setConfirmLoading(true);
+    // if (currentNetwork.uuid) {
+    //   network.uuid = currentNetwork.uuid;
+    //   network.hosts = currentNetwork.hosts;
+    //   editNetwork(network);
+    // } else {
+    //   addNetwork(network);
+    // }
+    // setConfirmLoading(false);
+    console.log(network);
+
     handleClose();
   };
-  if (!form) {
-    return <></>;
-  }
+
+  const isDisabled = (): boolean => {
+    let result = false;
+    result =
+      !formData.name ||
+      (formData.name &&
+        (formData.name.length < 2 || formData.name.length > 50)) ||
+      !formData.location_uuid;
+    return result;
+  };
 
   return (
     <>
@@ -104,50 +101,16 @@ const CreateEditNetworkModal = (props: any) => {
         confirmLoading={confirmLoading}
         okText="Save"
         okButtonProps={{
-          disabled:
-            !form.getFieldValue("name") ||
-            (form.getFieldValue("name") &&
-              (form.getFieldValue("name").length < 2 ||
-                form.getFieldValue("name").length > 50)) ||
-            !form.getFieldValue("location_uuid"),
+          disabled: isDisabled(),
         }}
+        style={{ textAlign: "start" }}
       >
-        <Form
-          {...formItemLayout}
-          form={form}
-          initialValues={formData}
-          onFinishFailed={() => alert("Failed to submit")}
-          onFinish={(e: model.Network) => {
-            handleSubmit(e);
-          }}
-          onValuesChange={handleFormChange}
-        >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              { required: true, message: "Name is required!" },
-              { min: 2, message: "Name must be minimum 2 characters." },
-              { max: 50, message: "Name must be maximum 50 characters." },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Description" name="description">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Location"
-            name="location_uuid"
-            rules={[{ required: true, message: "Location is required!" }]}
-          >
-            <Select style={{ textAlign: "start" }}>
-              {locations.map((location: model.Location) => (
-                <Option key={location.uuid}>{location.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
+        <JsonForm
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          jsonSchema={networkSchema}
+        />
       </Modal>
     </>
   );
@@ -233,6 +196,7 @@ export const Networks = () => {
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [locations, setLocations] = useState([] as model.Location[]);
   const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
+  const [networkSchema, setNetworkSchema] = useState({} as model.NetworkSchema);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fetchingNetworks, setfetchingNetworks] = useState(false);
 
@@ -242,10 +206,6 @@ export const Networks = () => {
       fetchLocations();
     }
   }, [networks]);
-
-  const updateNetworks = (networks: model.Network[]) => {
-    setNetworks(networks);
-  };
 
   const fetchNetworks = async () => {
     setfetchingNetworks(true);
@@ -261,9 +221,20 @@ export const Networks = () => {
     });
   };
 
+  const getSchema = async () => {
+    await GetNetworkSchema().then((res) => {
+      setNetworkSchema(res);
+    });
+  };
+
+  const updateNetworks = (networks: model.Network[]) => {
+    setNetworks(networks);
+  };
+
   const showModal = (network: model.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
+    getSchema();
   };
 
   const onCloseModal = () => {
@@ -277,8 +248,8 @@ export const Networks = () => {
       <AddNetworkButton showModal={showModal} />
       <CreateEditNetworkModal
         networks={networks}
-        locations={locations}
         currentNetwork={currentNetwork}
+        networkSchema={networkSchema}
         isModalVisible={isModalVisible}
         updateNetworks={updateNetworks}
         onCloseModal={onCloseModal}
