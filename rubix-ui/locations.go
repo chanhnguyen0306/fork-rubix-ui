@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist-client/nube/assist"
-	"github.com/NubeIO/rubix-assist-model/model"
+	"github.com/NubeIO/rubix-assist/pkg/model"
+	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
 
-func (app *App) GetLocationSchema() *model.LocationSchema {
+func (app *App) GetLocationSchema() interface{} {
 	client := app.initRest()
 	data, res := client.GetLocationSchema()
 	if data == nil {
@@ -37,10 +37,10 @@ func (app *App) GetLocations() (resp []model.Location) {
 	return data
 }
 
-func (app *App) DeleteLocation(uuid string) *assist.Response {
+func (app *App) DeleteLocation(uuid string) *assitcli.Response {
 	client := app.initRest()
 	res := client.DeleteLocation(uuid)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in deleting host location %s", res.Message))
 	} else {
 		app.crudMessage(true, fmt.Sprintf("delete ok"))
@@ -51,7 +51,7 @@ func (app *App) DeleteLocation(uuid string) *assist.Response {
 func (app *App) GetLocation(uuid string) *model.Location {
 	client := app.initRest()
 	data, res := client.GetLocation(uuid)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host location %s", res.Message))
 	} else {
 	}
@@ -64,7 +64,7 @@ func (app *App) UpdateLocation(uuid string, host *model.Location) *model.Locatio
 		return nil
 	}
 	data, res := client.UpdateLocation(uuid, host)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in editing host location %s", res.Message))
 	} else {
 		app.crudMessage(true, fmt.Sprintf("edit ok"))

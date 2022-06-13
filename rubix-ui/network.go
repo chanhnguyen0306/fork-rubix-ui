@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist-client/nube/assist"
-	"github.com/NubeIO/rubix-assist-model/model"
+	"github.com/NubeIO/rubix-assist/pkg/model"
+	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
 
-func (app *App) GetNetworkSchema() *model.NetworkSchema {
+func (app *App) GetNetworkSchema() interface{} {
 	client := app.initRest()
 	data, res := client.GetNetworkSchema()
 	if data == nil {
@@ -37,10 +37,10 @@ func (app *App) GetHostNetworks() (resp []model.Network) {
 	return data
 }
 
-func (app *App) DeleteHostNetwork(uuid string) *assist.Response {
+func (app *App) DeleteHostNetwork(uuid string) *assitcli.Response {
 	client := app.initRest()
 	res := client.DeleteHostNetwork(uuid)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in deleting host network %s", res.Message))
 	} else {
 		app.crudMessage(true, fmt.Sprintf("delete ok"))
@@ -51,7 +51,7 @@ func (app *App) DeleteHostNetwork(uuid string) *assist.Response {
 func (app *App) GetHostNetwork(uuid string) *model.Network {
 	client := app.initRest()
 	data, res := client.GetHostNetwork(uuid)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host network %s", res.Message))
 	} else {
 	}
@@ -64,7 +64,7 @@ func (app *App) EditHostNetwork(uuid string, host *model.Network) *model.Network
 		return nil
 	}
 	data, res := client.UpdateHostNetwork(uuid, host)
-	if res.GetStatus() > 299 {
+	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in editing host network %s", res.Message))
 	} else {
 		app.crudMessage(true, fmt.Sprintf("edit ok"))
