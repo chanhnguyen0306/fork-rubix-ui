@@ -75,16 +75,7 @@ const CreateEditLocationModal = (props: any) => {
     // }
     // setConfirmLoading(false);
     console.log(location);
-    handleClose();
-  };
-
-  const isDisabled = (): boolean => {
-    let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50));
-    return result;
+    // handleClose();
   };
 
   return (
@@ -99,9 +90,6 @@ const CreateEditLocationModal = (props: any) => {
       onCancel={handleClose}
       okText="Save"
       confirmLoading={confirmLoading}
-      okButtonProps={{
-        disabled: isDisabled(),
-      }}
       style={{ textAlign: "start" }}
     >
       <JsonForm
@@ -115,7 +103,7 @@ const CreateEditLocationModal = (props: any) => {
 };
 
 const LocationsTable = (props: any) => {
-  const { locations, updateLocations, showModal } = props;
+  const { locations, updateLocations, showModal, isFetching } = props;
   if (!locations) return <></>;
   const columns = [
     {
@@ -168,7 +156,14 @@ const LocationsTable = (props: any) => {
     });
   };
 
-  return <Table rowKey="uuid" dataSource={locations} columns={columns} />;
+  return (
+    <Table
+      rowKey="uuid"
+      dataSource={locations}
+      columns={columns}
+      loading={isFetching}
+    />
+  );
 };
 
 export const Locations = () => {
@@ -178,14 +173,17 @@ export const Locations = () => {
     {} as model.LocationSchema
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     fetchLocations();
   }, [locations]);
 
   const fetchLocations = async () => {
+    setIsFetching(true);
     await GetLocations().then((res) => {
       setLocations(res);
+      setIsFetching(false);
     });
   };
 
