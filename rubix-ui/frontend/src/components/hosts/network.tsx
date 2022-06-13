@@ -5,7 +5,7 @@ import {
   AddHostNetwork,
   GetHostNetworks,
   EditHostNetwork,
-  DeleteHostNetwork,
+  DeleteHostNetwork, GetNetworkSchema,
 } from "../../../wailsjs/go/main/App";
 import { useContext, useEffect, useState } from "react";
 import ColumnGroup from "antd/lib/table/ColumnGroup";
