@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist-client/nube/assist"
-	"github.com/NubeIO/rubix-assist-model/model"
+	"github.com/NubeIO/rubix-assist/pkg/model"
+	"github.com/NubeIO/rubix-assist/service/assitcli"
 	"time"
 )
 
-func (app *App) GetHostSchema() *model.HostSchema {
+func (app *App) GetHostSchema() interface{} {
 	client := app.initRest()
 	data, res := client.GetHostSchema()
 	if data == nil {
@@ -32,22 +32,19 @@ func (app *App) AddHost(host *model.Host) *model.Host {
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("name_%d", time.Now().Unix())
 	}
-	data, res := client.AddHost(host)
-	fmt.Println("AddHost", res.GetStatus(), host.NetworkUUID)
+	data, _ := client.AddHost(host)
 	return data
 }
 
-func (app *App) DeleteHost(uuid string) *assist.Response {
+func (app *App) DeleteHost(uuid string) *assitcli.Response {
 	client := app.initRest()
 	res := client.DeleteHost(uuid)
-	fmt.Println("DeleteHost", res.GetStatus(), uuid)
 	return res
 }
 
 func (app *App) GetHost(uuid string) *model.Host {
 	client := app.initRest()
-	data, res := client.GetHost(uuid)
-	fmt.Println("GetHost", res.GetStatus(), data.UUID)
+	data, _ := client.GetHost(uuid)
 	return data
 }
 
@@ -56,15 +53,14 @@ func (app *App) EditHost(uuid string, host *model.Host) *model.Host {
 	if host == nil {
 		return nil
 	}
-	data, res := client.UpdateHost(uuid, host)
-	fmt.Println("EditHost", res.GetStatus(), host.UUID)
+	data, _ := client.UpdateHost(uuid, host)
+
 	return data
 }
 
 func (app *App) GetHosts() (resp []model.Host) {
 	resp = []model.Host{}
 	client := app.initRest()
-	data, res := client.GetHosts()
-	fmt.Println("GetHosts", res.GetStatus())
+	data, _ := client.GetHosts()
 	return data
 }
