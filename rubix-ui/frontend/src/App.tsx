@@ -9,12 +9,7 @@ import { Networks } from "./routes/networks";
 import { AddHostForm } from "./routes/host";
 import "./App.css";
 
-<<<<<<< HEAD
 type NotificationType = "success" | "info" | "warning" | "error";
-=======
-
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
->>>>>>> 4bc21fccf934eb0853731b343b4ade6cbe7d9b8f
 
 const { Content, Sider } = Layout;
 // const sidebarItems = [
