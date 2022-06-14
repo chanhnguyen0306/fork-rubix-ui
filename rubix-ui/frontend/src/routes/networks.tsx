@@ -221,8 +221,16 @@ export const Networks = () => {
 
   const getSchema = async () => {
     await GetNetworkSchema().then((res) => {
-      console.log(res);
-
+      res.properties = {
+        ...res.properties,
+        location_uuid: {
+          title: "location",
+          type: "string",
+          anyOf: locations.map((l: model.Location) => {
+            return { type: "string", enum: [l.uuid], title: l.name };
+          }),
+        },
+      };
       setNetworkSchema(res);
     });
   };

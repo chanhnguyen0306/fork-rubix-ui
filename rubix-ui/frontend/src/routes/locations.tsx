@@ -77,6 +77,15 @@ const CreateEditLocationModal = (props: any) => {
     handleClose();
   };
 
+  const isDisabled = (): boolean => {
+    let result = false;
+    result =
+      !formData.name ||
+      (formData.name &&
+        (formData.name.length < 2 || formData.name.length > 50));
+    return result;
+  };
+
   return (
     <Modal
       title={
@@ -88,6 +97,9 @@ const CreateEditLocationModal = (props: any) => {
       onOk={() => handleSubmit(formData)}
       onCancel={handleClose}
       okText="Save"
+      okButtonProps={{
+        disabled: isDisabled(),
+      }}
       confirmLoading={confirmLoading}
       style={{ textAlign: "start" }}
     >

@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import React from "react";
 import { Layout, Menu, notification } from "antd";
 import type { MenuProps } from "antd";
@@ -9,59 +9,34 @@ import { Networks } from "./routes/networks";
 import { AddHostForm } from "./routes/host";
 import "./App.css";
 
-type NotificationType = "success" | "info" | "warning" | "error";
-
 const { Content, Sider } = Layout;
-// const sidebarItems = [
-//   { name: "Locations", icon: ForkOutlined, link: "/locations" },
-//   { name: "Networks", icon: WifiOutlined, link: "/networks" },
-// ];
+const sidebarItems = [
+  { name: "Locations", icon: ForkOutlined, link: "/" },
+  { name: "Networks", icon: WifiOutlined, link: "/networks" },
+];
 
-// const menuItems: MenuProps["items"] = sidebarItems.map(
-//   ({ name, icon }, index) => {
-//     const key = String(index + 1);
-//     return {
-//       key: `sub${key}`,
-//       icon: React.createElement(icon),
-//       label: name,
-//     };
-//   }
-// );
-
-// const openNotificationWithIcon = (type: NotificationType, data: any) => {
-//   notification[type]({
-//     message: "message",
-//     description: data,
-//   });
-// };
+const menuItems: MenuProps["items"] = sidebarItems.map(
+  ({ name, icon, link }, index) => {
+    const key = String(index + 1);
+    return {
+      key: link,
+      icon: React.createElement(icon),
+      label: name,
+    };
+  }
+);
 
 const App: React.FC = () => {
-  /////////using EventsOn will get error when reloading the Networks page
-  // EventsOn("ok", (val) => {
-  //   openNotificationWithIcon("success", val);
-  // });
+  let navigate = useNavigate();
 
-  // EventsOn("err", (val) => {
-  //   openNotificationWithIcon("error", val);
-  // });
+  const onClick = (e: any) => {
+    navigate(e.key, { replace: true });
+  };
 
   return (
     <Layout>
       <Sider width={200} style={{ height: "100vh" }}>
-        <Menu
-          mode="inline"
-          theme="dark"
-          // defaultSelectedKeys={["1"]}
-          // defaultOpenKeys={["sub1"]}
-          // items={menuItems}
-        >
-          <Menu.Item key={"/"}>
-            <Link to="/">Locations</Link>
-          </Menu.Item>
-          <Menu.Item key={"networks"}>
-            <Link to="networks">Networks</Link>
-          </Menu.Item>
-        </Menu>
+        <Menu mode="inline" theme="dark" items={menuItems} onClick={onClick} />
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
         <Content
