@@ -1,4 +1,4 @@
-import { Button, Modal, Select, Space, Table } from "antd";
+import { Button, Modal, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
@@ -32,8 +32,10 @@ const CreateEditNetworkModal = (props: any) => {
     networkSchema,
     currentNetwork,
     isModalVisible,
+    isLoadingForm,
     updateNetworks,
     onCloseModal,
+    setIsFetching,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentNetwork);
@@ -72,6 +74,7 @@ const CreateEditNetworkModal = (props: any) => {
       addNetwork(network);
     }
     setConfirmLoading(false);
+    setIsFetching(true);
     handleClose();
   };
 
@@ -101,19 +104,28 @@ const CreateEditNetworkModal = (props: any) => {
         }}
         style={{ textAlign: "start" }}
       >
-        <JsonForm
-          formData={formData}
-          setFormData={setFormData}
-          handleSubmit={handleSubmit}
-          jsonSchema={networkSchema}
-        />
+        <Spin spinning={isLoadingForm}>
+          <JsonForm
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            jsonSchema={networkSchema}
+          />
+        </Spin>
       </Modal>
     </>
   );
 };
 
 const NetworksTable = (props: any) => {
-  const { networks, locations, updateNetworks, showModal } = props;
+  const {
+    networks,
+    locations,
+    updateNetworks,
+    showModal,
+    isFetching,
+    setIsFetching,
+  } = props;
   if (!networks) return <></>;
   const columns = [
     {
@@ -171,6 +183,7 @@ const NetworksTable = (props: any) => {
       (n: model.Network) => n.uuid !== networkUUID
     );
     updateNetworks(newNetworks);
+    setIsFetching(true);
   };
 
   const getLocationNameByUUID = (location_uuid: string) => {
@@ -181,9 +194,12 @@ const NetworksTable = (props: any) => {
   };
 
   return (
-    <>
-      <Table rowKey="uuid" dataSource={networks} columns={columns} />
-    </>
+    <Table
+      rowKey="uuid"
+      dataSource={networks}
+      columns={columns}
+      loading={{ indicator: <Spin />, spinning: isFetching }}
+    />
   );
 };
 
@@ -193,7 +209,8 @@ export const Networks = () => {
   const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [fetchingNetworks, setfetchingNetworks] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   useEffect(() => {
     fetchNetworks();
@@ -203,12 +220,14 @@ export const Networks = () => {
   }, [networks]);
 
   const fetchNetworks = async () => {
-    setfetchingNetworks(true);
-    GetHostNetworks().then((res) => {
+    try {
+      const res = await GetHostNetworks();
       setNetworks(res);
-      setfetchingNetworks(false);
-    });
-    console.log(GetHostNetworks);
+    } catch (error) {
+      alert(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   const fetchLocations = async () => {
@@ -255,14 +274,18 @@ export const Networks = () => {
         currentNetwork={currentNetwork}
         networkSchema={networkSchema}
         isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
         updateNetworks={updateNetworks}
         onCloseModal={onCloseModal}
+        setIsFetching={setIsFetching}
       />
       <NetworksTable
         networks={networks}
         locations={locations}
+        isFetching={isFetching}
         updateNetworks={updateNetworks}
         showModal={showModal}
+        setIsFetching={setIsFetching}
       />
     </>
   );

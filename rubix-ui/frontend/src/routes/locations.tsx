@@ -32,6 +32,7 @@ const CreateEditLocationModal = (props: any) => {
     currentLocation,
     locationSchema,
     isModalVisible,
+    isLoadingForm,
     updateLocations,
     onCloseModal,
     setIsFetching,
@@ -103,12 +104,14 @@ const CreateEditLocationModal = (props: any) => {
       confirmLoading={confirmLoading}
       style={{ textAlign: "start" }}
     >
-      <JsonForm
-        formData={formData}
-        setFormData={setFormData}
-        handleSubmit={handleSubmit}
-        jsonSchema={locationSchema}
-      />
+      <Spin spinning={isLoadingForm}>
+        <JsonForm
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          jsonSchema={locationSchema}
+        />
+      </Spin>
     </Modal>
   );
 };
@@ -177,7 +180,6 @@ const LocationsTable = (props: any) => {
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
-      {JSON.stringify(isFetching)}
     </div>
   );
 };
@@ -188,6 +190,7 @@ export const Locations = () => {
   const [locationSchema, setLocationSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   useEffect(() => {
     fetchLocations();
@@ -213,10 +216,12 @@ export const Locations = () => {
     setLocations(locations);
   };
 
-  const showModal = (location: model.Location) => {
+  const showModal = async (location: model.Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
-    getSchema();
+    setIsLoadingForm(true);
+    await getSchema();
+    setIsLoadingForm(false);
   };
 
   const onCloseModal = () => {
@@ -233,6 +238,7 @@ export const Locations = () => {
         currentLocation={currentLocation}
         locationSchema={locationSchema}
         isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
         updateLocations={updateLocations}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
