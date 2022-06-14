@@ -224,7 +224,7 @@ export const Networks = () => {
       const res = await GetHostNetworks();
       setNetworks(res);
     } catch (error) {
-      alert(error);
+      console.log(error);
     } finally {
       setIsFetching(false);
     }
@@ -254,10 +254,12 @@ export const Networks = () => {
     setNetworks(networks);
   };
 
-  const showModal = (network: model.Network) => {
+  const showModal = async (network: model.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
-    getSchema();
+    setIsLoadingForm(true);
+    await getSchema();
+    setIsLoadingForm(false);
   };
 
   const onCloseModal = () => {

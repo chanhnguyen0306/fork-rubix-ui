@@ -201,7 +201,7 @@ export const Locations = () => {
       const res = await GetLocations();
       setLocations(res);
     } catch (error) {
-      alert(error);
+      console.log(error);
     } finally {
       setIsFetching(false);
     }
