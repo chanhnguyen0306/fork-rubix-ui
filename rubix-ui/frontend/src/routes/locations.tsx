@@ -1,4 +1,4 @@
-import { Button, Modal, Space, Table } from "antd";
+import { Button, Modal, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
@@ -34,6 +34,7 @@ const CreateEditLocationModal = (props: any) => {
     isModalVisible,
     updateLocations,
     onCloseModal,
+    setIsFetching,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
@@ -43,20 +44,18 @@ const CreateEditLocationModal = (props: any) => {
   }, [currentLocation]);
 
   const addLocation = async (location: model.Location) => {
-    await AddLocation(location).then((res) => {
-      locations.push(res);
-      updateLocations(locations);
-    });
+    const res = await AddLocation(location);
+    locations.push(res);
+    updateLocations(locations);
   };
 
   const editLocation = async (location: model.Location) => {
-    await UpdateLocation(location.uuid, location).then((res) => {
-      const index = locations.findIndex(
-        (n: model.Location) => n.uuid === location.uuid
-      );
-      locations[index] = res;
-      updateLocations(locations);
-    });
+    const res = UpdateLocation(location.uuid, location);
+    const index = locations.findIndex(
+      (n: model.Location) => n.uuid === location.uuid
+    );
+    locations[index] = res;
+    updateLocations(locations);
   };
 
   const handleClose = () => {
@@ -74,6 +73,7 @@ const CreateEditLocationModal = (props: any) => {
       addLocation(location);
     }
     setConfirmLoading(false);
+    setIsFetching(true);
     handleClose();
   };
 
@@ -114,8 +114,10 @@ const CreateEditLocationModal = (props: any) => {
 };
 
 const LocationsTable = (props: any) => {
-  const { locations, updateLocations, showModal, isFetching } = props;
+  const { locations, updateLocations, showModal, isFetching, setIsFetching } =
+    props;
   if (!locations) return <></>;
+
   const columns = [
     {
       title: "Name",
@@ -159,21 +161,24 @@ const LocationsTable = (props: any) => {
   ];
 
   const deleteLocation = async (uuid: string) => {
-    await DeleteLocation(uuid).then((res) => {
-      const newLocations = locations.filter(
-        (n: model.Location) => n.uuid !== uuid
-      );
-      updateLocations(newLocations);
-    });
+    await DeleteLocation(uuid);
+    const newLocations = locations.filter(
+      (n: model.Location) => n.uuid !== uuid
+    );
+    updateLocations(newLocations);
+    setIsFetching(true);
   };
 
   return (
-    <Table
-      rowKey="uuid"
-      dataSource={locations}
-      columns={columns}
-      loading={isFetching}
-    />
+    <div>
+      <Table
+        rowKey="uuid"
+        dataSource={locations}
+        columns={columns}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+      {JSON.stringify(isFetching)}
+    </div>
   );
 };
 
@@ -182,24 +187,26 @@ export const Locations = () => {
   const [currentLocation, setCurrentLocation] = useState({} as model.Location);
   const [locationSchema, setLocationSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     fetchLocations();
   }, [locations]);
 
   const fetchLocations = async () => {
-    setIsFetching(true);
-    await GetLocations().then((res) => {
+    try {
+      const res = await GetLocations();
       setLocations(res);
+    } catch (error) {
+      alert(error);
+    } finally {
       setIsFetching(false);
-    });
+    }
   };
 
   const getSchema = async () => {
-    await GetLocationSchema().then((res) => {
-      setLocationSchema(res);
-    });
+    const res = await GetLocationSchema();
+    setLocationSchema(res);
   };
 
   const updateLocations = (locations: model.Location[]) => {
@@ -228,11 +235,14 @@ export const Locations = () => {
         isModalVisible={isModalVisible}
         updateLocations={updateLocations}
         onCloseModal={onCloseModal}
+        setIsFetching={setIsFetching}
       />
       <LocationsTable
         locations={locations}
-        updateLocations={updateLocations}
+        isFetching={isFetching}
         showModal={showModal}
+        updateLocations={updateLocations}
+        setIsFetching={setIsFetching}
       />
     </>
   );

@@ -5,7 +5,8 @@ import {
   AddHostNetwork,
   GetHostNetworks,
   EditHostNetwork,
-  DeleteHostNetwork, GetNetworkSchema,
+  DeleteHostNetwork,
+  GetNetworkSchema,
 } from "../../../wailsjs/go/main/App";
 import { useContext, useEffect, useState } from "react";
 import ColumnGroup from "antd/lib/table/ColumnGroup";
@@ -129,9 +130,9 @@ export namespace network {
     };
 
     const fetchNetworks = async () => {
-      await GetHostNetworks().then((res) => {
-        setNetworks(res);
-      });
+      // await GetHostNetworks().then((res) => {
+      //   // setNetworks(res);
+      // });
     };
 
     return (

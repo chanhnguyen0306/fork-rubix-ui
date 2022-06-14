@@ -43,20 +43,18 @@ const CreateEditNetworkModal = (props: any) => {
   }, [currentNetwork]);
 
   const addNetwork = async (network: model.Network) => {
-    await AddHostNetwork(network).then((res) => {
-      networks.push(res);
-      updateNetworks(networks);
-    });
+    const res = await AddHostNetwork(network);
+    networks.push(res);
+    updateNetworks(networks);
   };
 
   const editNetwork = async (network: model.Network) => {
-    await EditHostNetwork(network.uuid, network).then((res) => {
-      const index = networks.findIndex(
-        (n: model.Network) => n.uuid === network.uuid
-      );
-      networks[index] = res;
-      updateNetworks(networks);
-    });
+    const res = await EditHostNetwork(network.uuid, network);
+    const index = networks.findIndex(
+      (n: model.Network) => n.uuid === network.uuid
+    );
+    networks[index] = res;
+    updateNetworks(networks);
   };
 
   const handleClose = () => {
@@ -168,12 +166,11 @@ const NetworksTable = (props: any) => {
   ];
 
   const deleteNetwork = async (networkUUID: string) => {
-    await DeleteHostNetwork(networkUUID).then((res) => {
-      const newNetworks = networks.filter(
-        (n: model.Network) => n.uuid !== networkUUID
-      );
-      updateNetworks(newNetworks);
-    });
+    await DeleteHostNetwork(networkUUID);
+    const newNetworks = networks.filter(
+      (n: model.Network) => n.uuid !== networkUUID
+    );
+    updateNetworks(newNetworks);
   };
 
   const getLocationNameByUUID = (location_uuid: string) => {
@@ -207,32 +204,31 @@ export const Networks = () => {
 
   const fetchNetworks = async () => {
     setfetchingNetworks(true);
-    await GetHostNetworks().then((res) => {
+    GetHostNetworks().then((res) => {
       setNetworks(res);
       setfetchingNetworks(false);
     });
+    console.log(GetHostNetworks);
   };
 
   const fetchLocations = async () => {
-    await GetLocations().then((res) => {
-      setLocations(res);
-    });
+    const res = await GetLocations();
+    setLocations(res);
   };
 
   const getSchema = async () => {
-    await GetNetworkSchema().then((res) => {
-      res.properties = {
-        ...res.properties,
-        location_uuid: {
-          title: "location",
-          type: "string",
-          anyOf: locations.map((l: model.Location) => {
-            return { type: "string", enum: [l.uuid], title: l.name };
-          }),
-        },
-      };
-      setNetworkSchema(res);
-    });
+    const res = await GetNetworkSchema();
+    res.properties = {
+      ...res.properties,
+      location_uuid: {
+        title: "location",
+        type: "string",
+        anyOf: locations.map((l: model.Location) => {
+          return { type: "string", enum: [l.uuid], title: l.name };
+        }),
+      },
+    };
+    setNetworkSchema(res);
   };
 
   const updateNetworks = (networks: model.Network[]) => {

@@ -16,8 +16,7 @@ const sidebarItems = [
 ];
 
 const menuItems: MenuProps["items"] = sidebarItems.map(
-  ({ name, icon, link }, index) => {
-    const key = String(index + 1);
+  ({ name, icon, link }) => {
     return {
       key: link,
       icon: React.createElement(icon),
