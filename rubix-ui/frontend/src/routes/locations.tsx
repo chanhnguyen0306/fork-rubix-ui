@@ -169,9 +169,7 @@ const LocationsTable = (props: any) => {
 export const Locations = () => {
   const [locations, setLocations] = useState([] as model.Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as model.Location);
-  const [locationSchema, setLocationSchema] = useState(
-    {} as model.LocationSchema
-  );
+  const [locationSchema, setLocationSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 

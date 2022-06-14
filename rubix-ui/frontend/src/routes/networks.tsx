@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
 import {
-  AddHostNetwork,
   GetHostNetworks,
   EditHostNetwork,
   DeleteHostNetwork,
   GetLocations,
   GetNetworkSchema,
+  AddHostNetwork,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
 
@@ -196,7 +196,7 @@ export const Networks = () => {
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [locations, setLocations] = useState([] as model.Location[]);
   const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
-  const [networkSchema, setNetworkSchema] = useState({} as model.NetworkSchema);
+  const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fetchingNetworks, setfetchingNetworks] = useState(false);
 

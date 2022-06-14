@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+
 	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
 
@@ -23,8 +24,6 @@ func (app *App) startup(ctx context.Context) {
 }
 
 //initRest get rest client
-<<<<<<< HEAD
-func (app *App) initRest() *assist.Client {
-	return assist.New("164.92.222.81", 1662)
-=======
 func (app *App) initRest() *assitcli.Client {
+	return assitcli.New("164.92.222.81", 1662)
+}
