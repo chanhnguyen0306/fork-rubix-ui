@@ -44,7 +44,7 @@ const CreateEditNetworkModal = (props: any) => {
 
   const addNetwork = async (network: model.Network) => {
     await AddHostNetwork(network).then((res) => {
-      networks[networks.length] = res;
+      networks.push(res);
       updateNetworks(networks);
     });
   };
@@ -65,17 +65,15 @@ const CreateEditNetworkModal = (props: any) => {
   };
 
   const handleSubmit = (network: model.Network) => {
-    // setConfirmLoading(true);
-    // if (currentNetwork.uuid) {
-    //   network.uuid = currentNetwork.uuid;
-    //   network.hosts = currentNetwork.hosts;
-    //   editNetwork(network);
-    // } else {
-    //   addNetwork(network);
-    // }
-    // setConfirmLoading(false);
-    console.log(network);
-
+    setConfirmLoading(true);
+    if (currentNetwork.uuid) {
+      network.uuid = currentNetwork.uuid;
+      network.hosts = currentNetwork.hosts;
+      editNetwork(network);
+    } else {
+      addNetwork(network);
+    }
+    setConfirmLoading(false);
     handleClose();
   };
 
@@ -223,6 +221,8 @@ export const Networks = () => {
 
   const getSchema = async () => {
     await GetNetworkSchema().then((res) => {
+      console.log(res);
+
       setNetworkSchema(res);
     });
   };

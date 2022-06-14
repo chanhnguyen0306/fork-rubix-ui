@@ -44,7 +44,7 @@ const CreateEditLocationModal = (props: any) => {
 
   const addLocation = async (location: model.Location) => {
     await AddLocation(location).then((res) => {
-      locations[locations.length] = res;
+      locations.push(res);
       updateLocations(locations);
     });
   };
@@ -65,17 +65,16 @@ const CreateEditLocationModal = (props: any) => {
   };
 
   const handleSubmit = (location: model.Location) => {
-    // setConfirmLoading(true);
-    // if (currentLocation.uuid) {
-    //   location.uuid = currentLocation.uuid;
-    //   location.networks = currentLocation.networks;
-    //   editLocation(location);
-    // } else {
-    //   addLocation(location);
-    // }
-    // setConfirmLoading(false);
-    console.log(location);
-    // handleClose();
+    setConfirmLoading(true);
+    if (currentLocation.uuid) {
+      location.uuid = currentLocation.uuid;
+      location.networks = currentLocation.networks;
+      editLocation(location);
+    } else {
+      addLocation(location);
+    }
+    setConfirmLoading(false);
+    handleClose();
   };
 
   return (
