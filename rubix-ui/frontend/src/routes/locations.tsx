@@ -208,20 +208,20 @@ export const Locations = () => {
   };
 
   const getSchema = async () => {
+    setIsLoadingForm(true);
     const res = await GetLocationSchema();
     setLocationSchema(res);
+    setIsLoadingForm(false);
   };
 
   const updateLocations = (locations: model.Location[]) => {
     setLocations(locations);
   };
 
-  const showModal = async (location: model.Location) => {
+  const showModal = (location: model.Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
-    setIsLoadingForm(true);
-    await getSchema();
-    setIsLoadingForm(false);
+    getSchema();
   };
 
   const onCloseModal = () => {

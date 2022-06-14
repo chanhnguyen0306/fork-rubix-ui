@@ -236,6 +236,7 @@ export const Networks = () => {
   };
 
   const getSchema = async () => {
+    setIsLoadingForm(true);
     const res = await GetNetworkSchema();
     res.properties = {
       ...res.properties,
@@ -248,18 +249,17 @@ export const Networks = () => {
       },
     };
     setNetworkSchema(res);
+    setIsLoadingForm(false);
   };
 
   const updateNetworks = (networks: model.Network[]) => {
     setNetworks(networks);
   };
 
-  const showModal = async (network: model.Network) => {
+  const showModal = (network: model.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
-    setIsLoadingForm(true);
-    await getSchema();
-    setIsLoadingForm(false);
+    getSchema();
   };
 
   const onCloseModal = () => {
