@@ -1,67 +1,281 @@
-import { Button, Form } from "antd";
+import { Button, Modal, Space, Spin, Table } from "antd";
+import { useEffect, useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
-import Input from "antd/es/input/Input";
+import {
+  GetHosts,
+  EditHost,
+  DeleteHost,
+  GetHostNetworks,
+  GetHostSchema,
+  AddHost,
+} from "../../wailsjs/go/main/App";
+import { JsonForm } from "../common/json-form";
+import { isObjectEmpty } from "../utils/utils";
 
-import { AddHost, GetHostNetworks } from "../../wailsjs/go/main/App";
+const AddButton = (props: any) => {
+  const { showModal } = props;
 
-async function addHost(host: model.Host): Promise<model.Host> {
-  //we need the network_uuid to pass
-  let networks: Array<model.Network> = {} as Array<model.Network>;
-  await GetHostNetworks().then((r) => {
-    networks = r;
-  });
-  //now the user would select the network, and we need its uuid
-  //host.NetworkUUID = what user selected
-  console.log("try and add host", networks);
-  let addedHost: model.Host = {} as model.Host;
-  await AddHost(host).then((res) => {
-    console.log("added host", res.uuid);
-    addedHost = res;
-  });
-  return addedHost;
-}
-
-export function AddHostForm() {
   return (
-    <div
-      style={{
-        display: "block",
-        width: 700,
-        padding: 30,
-      }}
+    <Button
+      type="primary"
+      onClick={() => showModal({} as model.Host)}
+      style={{ margin: "5px", float: "right" }}
     >
-      <h4>ReactJS Ant-Design Form Component</h4>
-      <Form
-        name="name"
-        onFinishFailed={() => alert("Failed to submit")}
-        onFinish={(e: model.Host) => {
-          addHost(e).then((r) => {
-            console.log("added a host", r);
-          });
-        }}
-        initialValues={{ remember: true }}
-      >
-        <Form.Item
-          label="Enter username"
-          name="name"
-          // rules={[{required: true, message: 'Please enter username'}]}
-        >
-          <Input onChange={(e) => {}} />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit Username
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+      <PlusOutlined /> Host
+    </Button>
   );
-}
+};
+
+const CreateEditModal = (props: any) => {
+  const {
+    hosts,
+    hostSchema,
+    currentHost,
+    isModalVisible,
+    isLoadingForm,
+    updateHosts,
+    onCloseModal,
+    setIsFetching,
+  } = props;
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [formData, setFormData] = useState(currentHost);
+
+  useEffect(() => {
+    setFormData(currentHost);
+  }, [currentHost]);
+
+  const addHost = async (host: model.Host) => {
+    const res = await AddHost(host);
+    hosts.push(res);
+    updateHosts(hosts);
+  };
+
+  const editHost = async (host: model.Host) => {
+    const res = await EditHost(host.uuid, host);
+    const index = hosts.findIndex((n: model.Host) => n.uuid === host.uuid);
+    hosts[index] = res;
+    updateHosts(hosts);
+  };
+
+  const handleClose = () => {
+    setFormData({} as model.Host);
+    onCloseModal();
+  };
+
+  const handleSubmit = (host: model.Host) => {
+    setConfirmLoading(true);
+    if (currentHost.uuid) {
+      host.uuid = currentHost.uuid;
+      editHost(host);
+    } else {
+      addHost(host);
+    }
+    setConfirmLoading(false);
+    setIsFetching(true);
+    handleClose();
+  };
+
+  const isDisabled = (): boolean => {
+    let result = false;
+    result =
+      !formData.name ||
+      (formData.name &&
+        (formData.name.length < 2 || formData.name.length > 50)) ||
+      !formData.port ||
+      (formData.port && (formData.port < 2 || formData.port > 65535)) ||
+      !formData.ip ||
+      !formData.network_uuid;
+    return result;
+  };
+
+  return (
+    <>
+      <Modal
+        title={currentHost.uuid ? "Edit " + currentHost.name : "New Host"}
+        visible={isModalVisible}
+        onOk={() => handleSubmit(formData)}
+        onCancel={handleClose}
+        confirmLoading={confirmLoading}
+        okText="Save"
+        okButtonProps={{
+          disabled: isDisabled(),
+        }}
+        style={{ textAlign: "start" }}
+      >
+        <Spin spinning={isLoadingForm}>
+          <JsonForm
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            jsonSchema={hostSchema}
+          />
+        </Spin>
+      </Modal>
+    </>
+  );
+};
+
+const HostsTable = (props: any) => {
+  const { hosts, networks, updateHosts, showModal, isFetching, setIsFetching } =
+    props;
+  if (!hosts) return <></>;
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Network",
+      dataIndex: "network_uuid",
+      key: "network_uuid",
+      render: (network_uuid: string) => (
+        <span>{getNetworkNameByUUID(network_uuid)}</span>
+      ),
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      key: "actions",
+      render: (_: any, host: model.Host) => (
+        <Space size="middle">
+          <a
+            onClick={() => {
+              showModal(host);
+            }}
+          >
+            Edit
+          </a>
+          <a
+            onClick={() => {
+              deleteHost(host.uuid);
+            }}
+          >
+            Delete
+          </a>
+        </Space>
+      ),
+    },
+  ];
+
+  const deleteHost = async (uuid: string) => {
+    await DeleteHost(uuid);
+    const newHosts = hosts.filter((n: model.Host) => n.uuid !== uuid);
+    updateHosts(newHosts);
+    setIsFetching(true);
+  };
+
+  const getNetworkNameByUUID = (uuid: string) => {
+    const network = networks.find((l: model.Location) => l.uuid === uuid);
+    return network ? network.name : "";
+  };
+
+  return (
+    <Table
+      rowKey="uuid"
+      dataSource={hosts}
+      columns={columns}
+      loading={{ indicator: <Spin />, spinning: isFetching }}
+    />
+  );
+};
 
 export const Hosts = () => {
+  const [hosts, setHosts] = useState([] as model.Host[]);
+  const [networks, setNetworks] = useState([] as model.Network[]);
+  const [currentHost, setCurrentHost] = useState({} as model.Host);
+  const [hostSchema, setHostSchema] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+
+  useEffect(() => {
+    fetchHosts();
+    if (networks.length === 0) {
+      fetchNetworks();
+    }
+  }, [hosts]);
+
+  const fetchHosts = async () => {
+    try {
+      const res = await GetHosts();
+      setHosts(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const fetchNetworks = async () => {
+    const res = await GetHostNetworks();
+    setNetworks(res);
+  };
+
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    const res = await GetHostSchema();
+    console.log(res);
+
+    res.properties = {
+      ...res.properties,
+      network_uuid: {
+        title: "network",
+        type: "string",
+        anyOf: networks.map((n: model.Network) => {
+          return { type: "string", enum: [n.uuid], title: n.name };
+        }),
+      },
+    };
+    setHostSchema(res);
+    setIsLoadingForm(false);
+  };
+
+  const updateHosts = (hosts: model.Host[]) => {
+    setHosts(hosts);
+  };
+
+  const showModal = (host: model.Host) => {
+    setCurrentHost(host);
+    setIsModalVisible(true);
+    if (isObjectEmpty(hostSchema)) {
+      getSchema();
+    }
+  };
+
+  const onCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <>
       <h1>Hosts</h1>
+
+      <AddButton showModal={showModal} />
+      <CreateEditModal
+        hosts={hosts}
+        currentHost={currentHost}
+        hostSchema={hostSchema}
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
+        updateHosts={updateHosts}
+        onCloseModal={onCloseModal}
+        setIsFetching={setIsFetching}
+      />
+      <HostsTable
+        hosts={hosts}
+        networks={networks}
+        isFetching={isFetching}
+        updateHosts={updateHosts}
+        showModal={showModal}
+        setIsFetching={setIsFetching}
+      />
     </>
   );
 };
