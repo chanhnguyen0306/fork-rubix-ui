@@ -3,38 +3,38 @@
 import {model} from '../models';
 import {assitcli} from '../models';
 
-export function GetHostNetworks():Promise<Array<model.Network>>;
-
-export function GetLocationSchema():Promise<any>;
-
-export function AddHost(arg1:model.Host):Promise<model.Host>;
+export function AddHostNetwork(arg1:model.Network):Promise<model.Network>;
 
 export function AddLocation(arg1:model.Location):Promise<model.Location>;
 
 export function EditHostNetwork(arg1:string,arg2:model.Network):Promise<model.Network>;
 
-export function GetHost(arg1:string):Promise<model.Host>;
-
-export function UpdateLocation(arg1:string,arg2:model.Location):Promise<model.Location>;
-
-export function AddHostNetwork(arg1:model.Network):Promise<model.Network>;
-
-export function EditHost(arg1:string,arg2:model.Host):Promise<model.Host>;
-
-export function GetHostSchema():Promise<any>;
-
-export function GetLocations():Promise<Array<model.Location>>;
+export function GetHostNetwork(arg1:string):Promise<model.Network>;
 
 export function GetHosts():Promise<Array<model.Host>>;
 
+export function GetNetworkSchema():Promise<any>;
+
+export function UpdateLocation(arg1:string,arg2:model.Location):Promise<model.Location>;
+
+export function DeleteLocation(arg1:string):Promise<assitcli.Response>;
+
+export function GetLocationSchema():Promise<any>;
+
+export function EditHost(arg1:string,arg2:model.Host):Promise<model.Host>;
+
+export function GetHostNetworks():Promise<Array<model.Network>>;
+
+export function GetHostSchema():Promise<any>;
+
 export function GetLocation(arg1:string):Promise<model.Location>;
+
+export function GetLocations():Promise<Array<model.Location>>;
+
+export function AddHost(arg1:model.Host):Promise<model.Host>;
 
 export function DeleteHost(arg1:string):Promise<assitcli.Response>;
 
 export function DeleteHostNetwork(arg1:string):Promise<assitcli.Response>;
 
-export function DeleteLocation(arg1:string):Promise<assitcli.Response>;
-
-export function GetHostNetwork(arg1:string):Promise<model.Network>;
-
-export function GetNetworkSchema():Promise<any>;
+export function GetHost(arg1:string):Promise<model.Host>;

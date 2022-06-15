@@ -2,10 +2,14 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import React from "react";
 import { Layout, Menu } from "antd";
 import type { MenuProps } from "antd";
-import { ForkOutlined, WifiOutlined } from "@ant-design/icons";
+import {
+  ForkOutlined,
+  WifiOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
 import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
-import { AddHostForm } from "./routes/host";
+import { Hosts } from "./routes/host";
 import "./App.css";
 
 const { Content, Sider } = Layout;
@@ -13,6 +17,7 @@ const { Content, Sider } = Layout;
 const sidebarItems = [
   { name: "Locations", icon: ForkOutlined, link: "/" },
   { name: "Networks", icon: WifiOutlined, link: "/networks" },
+  { name: "Hosts", icon: ApartmentOutlined, link: "/host" },
 ];
 
 const menuItems: MenuProps["items"] = sidebarItems.map(
@@ -49,7 +54,7 @@ const App: React.FC = () => {
             <Route path="" element={<Locations />} />
             <Route path="locations" element={<Locations />} />
             <Route path="networks" element={<Networks />} />
-            <Route path="host" element={<AddHostForm />} />
+            <Route path="host" element={<Hosts />} />
           </Routes>
         </Content>
       </Layout>

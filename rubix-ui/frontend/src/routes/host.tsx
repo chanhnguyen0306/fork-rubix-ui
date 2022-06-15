@@ -57,3 +57,11 @@ export function AddHostForm() {
     </div>
   );
 }
+
+export const Hosts = () => {
+  return (
+    <>
+      <h1>Hosts</h1>
+    </>
+  );
+};
