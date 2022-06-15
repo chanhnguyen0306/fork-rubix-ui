@@ -1,15 +1,15 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import React from "react";
-import { Layout, Menu, notification } from "antd";
+import { Layout, Menu } from "antd";
 import type { MenuProps } from "antd";
 import { ForkOutlined, WifiOutlined } from "@ant-design/icons";
-// import { EventsOn } from "../wailsjs/runtime";
 import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
 import { AddHostForm } from "./routes/host";
 import "./App.css";
 
 const { Content, Sider } = Layout;
+
 const sidebarItems = [
   { name: "Locations", icon: ForkOutlined, link: "/" },
   { name: "Networks", icon: WifiOutlined, link: "/networks" },

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/NubeIO/rubix-assist/pkg/model"
 	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
@@ -22,7 +23,7 @@ func (app *App) AddLocation(body *model.Location) *model.Location {
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", res.Message))
 	} else {
-		app.crudMessage(true, fmt.Sprintf("added new host location %s", data.Name))
+		// app.crudMessage(true, fmt.Sprintf("added new host location %s", data.Name))
 	}
 	return data
 }
