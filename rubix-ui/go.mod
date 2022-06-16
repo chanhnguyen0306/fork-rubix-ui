@@ -5,6 +5,7 @@ go 1.17
 //replace github.com/NubeIO/rubix-assist-client => /home/aidan/code/go/nube/lib/rubix-assist-client
 
 require (
+	github.com/NubeIO/lib-schema v0.0.3
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/rubix-assist v0.0.4
@@ -27,7 +28,6 @@ require (
 	github.com/NubeIO/lib-dirs v0.0.1 // indirect
 	github.com/NubeIO/lib-networking v0.0.4 // indirect
 	github.com/NubeIO/lib-redis v0.0.3 // indirect
-	github.com/NubeIO/lib-schema v0.0.3 // indirect
 	github.com/NubeIO/lib-store v0.0.1 // indirect
 	github.com/NubeIO/lib-systemctl-go v0.0.4 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.4 // indirect

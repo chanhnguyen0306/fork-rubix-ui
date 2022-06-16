@@ -1,8 +1,25 @@
 package main
 
 import (
+	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-ui/storage"
 )
+
+type ConnectionSchema struct {
+	UUID        schema.UUID        `json:"uuid"`
+	Name        schema.Name        `json:"name"`
+	Description schema.Description `json:"description"`
+}
+
+func connectionSchema() *ConnectionSchema {
+	m := &ConnectionSchema{}
+	schema.Set(m)
+	return m
+}
+
+func (app *App) GetConnectionSchema() *ConnectionSchema {
+	return connectionSchema()
+}
 
 func (app *App) GetConnection(uuid string) *storage.RubixConnection {
 	conn, err := app.DB.Select(uuid)
