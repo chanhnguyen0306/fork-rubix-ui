@@ -231,7 +231,7 @@ export const Networks = () => {
   };
 
   const fetchLocations = async () => {
-    const res = await GetLocations();
+    const res = await GetLocations("ADDME");
     setLocations(res);
   };
 

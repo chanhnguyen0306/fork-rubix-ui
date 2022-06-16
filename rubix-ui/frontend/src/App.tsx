@@ -47,6 +47,7 @@ const App: React.FC = () => {
         >
           <Routes>
             <Route path="" element={<Locations />} />
+              <Route path="locations" element={<Locations />} />
             <Route path="locations" element={<Locations />} />
             <Route path="networks" element={<Networks />} />
             <Route path="host" element={<AddHostForm />} />
