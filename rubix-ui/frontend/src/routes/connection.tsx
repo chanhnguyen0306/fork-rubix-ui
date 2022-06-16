@@ -226,16 +226,16 @@ export const Connections = () => {
             <h1>Connections</h1>
 
             <AddConnectionButton showModal={showModal}/>
-            {/*<CreateEditConnectionModal*/}
-            {/*    connections={connections}*/}
-            {/*    currentConection={connections}*/}
-            {/*    connectionSchema={connectionSchema}*/}
-            {/*    isModalVisible={isModalVisible}*/}
-            {/*    isLoadingForm={isLoadingForm}*/}
-            {/*    updateConnections={updateConnections}*/}
-            {/*    onCloseModal={onCloseModal}*/}
-            {/*    setIsFetching={setIsFetching}*/}
-            {/*/>*/}
+            <CreateEditConnectionModal
+                connections={connections}
+                currentConnection={currentConnection}
+                connectionSchema={connectionSchema}
+                isModalVisible={isModalVisible}
+                isLoadingForm={isLoadingForm}
+                updateConnections={updateConnections}
+                onCloseModal={onCloseModal}
+                setIsFetching={setIsFetching}
+            />
             <ConnectionsTable
                 connections={connections}
                 isFetching={isFetching}

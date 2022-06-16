@@ -18,7 +18,8 @@ func connectionSchema() *ConnectionSchema {
 }
 
 func (app *App) GetConnectionSchema() *ConnectionSchema {
-	return connectionSchema()
+	c := connectionSchema()
+	return c
 }
 
 func (app *App) GetConnection(uuid string) *storage.RubixConnection {
