@@ -16,8 +16,11 @@ func (app *App) GetLocationSchema() interface{} {
 	return data
 }
 
-func (app *App) AddLocation(body *model.Location) *model.Location {
-	client := app.initRest()
+func (app *App) AddLocation(connUUID string, body *model.Location) *model.Location {
+	client, err := app.initConnection(app.getConnection(connUUID))
+	if err == nil {
+		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+	}
 	data, res := client.AddLocation(body)
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", res.Message))
@@ -27,7 +30,7 @@ func (app *App) AddLocation(body *model.Location) *model.Location {
 	return data
 }
 
-func (app *App) GetLocations() (resp []model.Location) {
+func (app *App) GetLocations(connUUID string) (resp []model.Location) {
 	resp = []model.Location{}
 	client := app.initRest()
 	data, res := client.GetLocations()
@@ -37,7 +40,7 @@ func (app *App) GetLocations() (resp []model.Location) {
 	return data
 }
 
-func (app *App) DeleteLocation(uuid string) *assitcli.Response {
+func (app *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response {
 	client := app.initRest()
 	res := client.DeleteLocation(uuid)
 	if res.StatusCode > 299 {
@@ -48,7 +51,7 @@ func (app *App) DeleteLocation(uuid string) *assitcli.Response {
 	return res
 }
 
-func (app *App) GetLocation(uuid string) *model.Location {
+func (app *App) GetLocation(connUUID string, uuid string) *model.Location {
 	client := app.initRest()
 	data, res := client.GetLocation(uuid)
 	if res.StatusCode > 299 {
@@ -58,7 +61,7 @@ func (app *App) GetLocation(uuid string) *model.Location {
 	return data
 }
 
-func (app *App) UpdateLocation(uuid string, host *model.Location) *model.Location {
+func (app *App) UpdateLocation(connUUID string, uuid string, host *model.Location) *model.Location {
 	client := app.initRest()
 	if host == nil {
 		return nil
