@@ -1,19 +1,22 @@
-import { JsonForm } from "../common/json-form";
 import { Button, Modal, Space, Spin, Table } from "antd";
-import { storage } from "../../wailsjs/go/models";
+import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+import { model, storage } from "../../wailsjs/go/models";
 import {
-  AddConnection,
-  DeleteConnection,
   GetConnections,
   GetConnectionSchema,
+  AddConnection,
   UpdateConnection,
+  DeleteConnection,
 } from "../../wailsjs/go/main/App";
-import { useEffect, useState } from "react";
+import { JsonForm } from "../common/json-form";
+import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
+
 import RubixConnection = storage.RubixConnection;
 
-const AddConnectionButton = (props: any) => {
+const AddButton = (props: any) => {
   const { showModal } = props;
+
   return (
     <Button
       type="primary"
@@ -25,7 +28,7 @@ const AddConnectionButton = (props: any) => {
   );
 };
 
-const CreateEditConnectionModal = (props: any) => {
+const CreateEditModal = (props: any) => {
   const {
     connections,
     currentConnection,
@@ -43,16 +46,27 @@ const CreateEditConnectionModal = (props: any) => {
     setFormData(currentConnection);
   }, [currentConnection]);
 
-  const addConnection = async (body: RubixConnection) => {
-    const res = await AddConnection(body);
-    connections.push(res);
-    updateConnections(connections);
+  const addConnection = async (connection: RubixConnection) => {
+    try {
+      const res = await AddConnection(connection);
+      if (res.uuid) {
+        if (!connections) updateConnections([]);
+        connections.push(res);
+        updateConnections(connections);
+        openNotificationWithIcon("success", `added ${connection.name} success`);
+      } else {
+        openNotificationWithIcon("error", `added ${connection.name} fail`);
+      }
+    } catch (err) {
+      openNotificationWithIcon("error", err);
+      console.log(err);
+    }
   };
 
-  const editConnection = async (body: RubixConnection) => {
-    const res = UpdateConnection(body.uuid, body);
+  const editConnection = async (connection: RubixConnection) => {
+    const res = UpdateConnection(connection.uuid, connection);
     const index = connections.findIndex(
-      (n: RubixConnection) => n.uuid === body.uuid
+      (n: RubixConnection) => n.uuid === connection.uuid
     );
     connections[index] = res;
     updateConnections(connections);
@@ -63,13 +77,14 @@ const CreateEditConnectionModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = (body: RubixConnection) => {
+  const handleSubmit = (connection: RubixConnection) => {
     setConfirmLoading(true);
     if (currentConnection.uuid) {
-      body.uuid = currentConnection.uuid;
-      editConnection(body);
+      connection.uuid = currentConnection.uuid;
+      // connection.locations = connection.locations;
+      editConnection(connection);
     } else {
-      addConnection(body);
+      addConnection(connection);
     }
     setConfirmLoading(false);
     setIsFetching(true);
@@ -163,7 +178,7 @@ const ConnectionsTable = (props: any) => {
   const deleteConnection = async (uuid: string) => {
     await DeleteConnection(uuid);
     const newConnections = connections.filter(
-      (n: RubixConnection) => n.uuid !== uuid
+      (c: RubixConnection) => c.uuid !== uuid
     );
     updateConnections(newConnections);
     setIsFetching(true);
@@ -197,7 +212,8 @@ export const Connections = () => {
 
   const fetchConnections = async () => {
     try {
-      const res = await GetConnections();
+      let res = await GetConnections();
+      res = !res ? [] : res;
       setConnections(res);
     } catch (error) {
       console.log(error);
@@ -209,18 +225,24 @@ export const Connections = () => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await GetConnectionSchema();
-    setConnectionSchema(res);
+    const jsonSchema = {
+      properties: res,
+    };
+    console.log("getSchema", jsonSchema);
+    setConnectionSchema(jsonSchema);
     setIsLoadingForm(false);
   };
 
-  const updateConnections = (body: RubixConnection[]) => {
-    setConnections(body);
+  const updateConnections = (connections: RubixConnection[]) => {
+    setConnections(connections);
   };
 
-  const showModal = (body: RubixConnection) => {
-    setCurrentConnection(body);
+  const showModal = (connection: RubixConnection) => {
+    setCurrentConnection(connection);
     setIsModalVisible(true);
-    getSchema();
+    if (isObjectEmpty(connectionSchema)) {
+      getSchema();
+    }
   };
 
   const onCloseModal = () => {
@@ -231,8 +253,8 @@ export const Connections = () => {
     <>
       <h1>Connections</h1>
 
-      <AddConnectionButton showModal={showModal} />
-      <CreateEditConnectionModal
+      <AddButton showModal={showModal} />
+      <CreateEditModal
         connections={connections}
         currentConnection={currentConnection}
         connectionSchema={connectionSchema}
