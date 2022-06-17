@@ -6,6 +6,9 @@ export function GetHostSchema() {
   return window['go']['main']['App']['GetHostSchema']();
 }
 
+export function GetNetworkSchema() {
+  return window['go']['main']['App']['GetNetworkSchema']();
+}
 export function AddConnection(arg1) {
   return window['go']['main']['App']['AddConnection'](arg1);
 }
@@ -80,10 +83,6 @@ export function DeleteHost(arg1) {
 
 export function EditHost(arg1, arg2) {
   return window['go']['main']['App']['EditHost'](arg1, arg2);
-}
-
-export function GetNetworkSchema() {
-  return window['go']['main']['App']['GetNetworkSchema']();
 }
 
 export function EditHostNetwork(arg1, arg2) {

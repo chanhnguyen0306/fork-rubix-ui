@@ -60,3 +60,11 @@
     border: none;
     background-color: rgba(255, 255, 255, 1);
 }
+
+.ant-notification-notice-icon {
+    position: absolute;
+    margin-left: 4px;
+    font-size: 24px;
+    line-height: 24px;
+    display: block;
+}

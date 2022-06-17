@@ -11,6 +11,7 @@ import {
   AddHostNetwork,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
+import { isObjectEmpty } from "../utils/utils";
 
 const AddNetworkButton = (props: any) => {
   const { showModal } = props;
@@ -259,7 +260,9 @@ export const Networks = () => {
   const showModal = (network: model.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
-    getSchema();
+    if (isObjectEmpty(networkSchema)) {
+      getSchema();
+    }
   };
 
   const onCloseModal = () => {

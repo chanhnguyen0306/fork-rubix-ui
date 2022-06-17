@@ -2,7 +2,6 @@ import { Button, Modal, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { model } from "../../wailsjs/go/models";
-
 import {
   GetLocations,
   GetLocationSchema,
@@ -11,6 +10,7 @@ import {
   DeleteLocation,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
+import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
 
 const AddLocationButton = (props: any) => {
   const { showModal } = props;
@@ -45,9 +45,20 @@ const CreateEditLocationModal = (props: any) => {
   }, [currentLocation]);
 
   const addLocation = async (location: model.Location) => {
-    const res = await AddLocation("ADDME", location);
-    locations.push(res);
-    updateLocations(locations);
+    try {
+      // const res = await AddLocation(location);
+      const res = await AddLocation("ADDME", location);
+      if (res.uuid) {
+        locations.push(res);
+        updateLocations(locations);
+        openNotificationWithIcon("success", `added ${location.name} success`);
+      } else {
+        openNotificationWithIcon("error", `added ${location.name} fail`);
+      }
+    } catch (err) {
+      openNotificationWithIcon("error", err);
+      console.log(err);
+    }
   };
 
   const editLocation = async (location: model.Location) => {
@@ -221,7 +232,9 @@ export const Locations = () => {
   const showModal = (location: model.Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
-    getSchema();
+    if (isObjectEmpty(locationSchema)) {
+      getSchema();
+    }
   };
 
   const onCloseModal = () => {
