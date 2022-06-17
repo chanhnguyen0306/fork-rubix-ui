@@ -34,15 +34,13 @@ func (b *inst) Add(rc *RubixConnection) (*RubixConnection, error) {
 	if rc.Customer == "" {
 		rc.Customer = "nube"
 	}
-	if rc.Connection != nil {
-		if rc.Connection.Ip == "" {
-			rc.Connection.Ip = "0.0.0.0"
-		}
-		if rc.Connection.Port == 0 {
-			rc.Connection.Port = 1662
-		}
+	if rc.IP == "" {
+		rc.IP = "0.0.0.0"
 	}
+	if rc.Port == 0 {
+		rc.Port = 1662
 
+	}
 	rc.UUID = uuid.ShortUUID("con")
 	data, err := json.Marshal(rc)
 	if err != nil {

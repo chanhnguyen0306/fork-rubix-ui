@@ -9,6 +9,11 @@ type ConnectionSchema struct {
 	UUID        schema.UUID        `json:"uuid"`
 	Name        schema.Name        `json:"name"`
 	Description schema.Description `json:"description"`
+	IP          schema.IP          `json:"ip"`
+	Port        schema.Port        `json:"port"`
+	HTTPS       schema.HTTPS       `json:"https"`
+	Username    schema.Username    `json:"username"`
+	Password    schema.Password    `json:"password"`
 }
 
 func connectionSchema() *ConnectionSchema {
