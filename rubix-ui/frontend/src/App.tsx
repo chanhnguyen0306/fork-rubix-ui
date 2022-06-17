@@ -18,9 +18,9 @@ const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: LinkOutlined, link: "/" },
-  { name: "Locations", icon: ForkOutlined, link: "/locations" },
-  { name: "Networks", icon: WifiOutlined, link: "/networks" },
-  { name: "Hosts", icon: ApartmentOutlined, link: "/host" },
+  // { name: "Locations", icon: ForkOutlined, link: "/locations" },
+  // { name: "Networks", icon: WifiOutlined, link: "/networks" },
+  // { name: "Hosts", icon: ApartmentOutlined, link: "/host" },
 ];
 
 const menuItems: MenuProps["items"] = sidebarItems.map(
@@ -55,8 +55,8 @@ const App: React.FC = () => {
         >
           <Routes>
             <Route path="" element={<Connections />} />
-            <Route path="locations" element={<Locations />} />
-            <Route path="networks" element={<Networks />} />
+            <Route path="locations/:connUUID" element={<Locations />} />
+            <Route path="networks/:locUUID" element={<Networks />} />
             <Route path="host" element={<Hosts />} />
           </Routes>
         </Content>

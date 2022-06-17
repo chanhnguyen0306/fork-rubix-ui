@@ -1,7 +1,7 @@
 import { Button, Modal, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { model, storage } from "../../wailsjs/go/models";
+import { storage } from "../../wailsjs/go/models";
 import {
   GetConnections,
   GetConnectionSchema,
@@ -13,6 +13,7 @@ import { JsonForm } from "../common/json-form";
 import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
 
 import RubixConnection = storage.RubixConnection;
+import { useNavigate } from "react-router-dom";
 
 const AddButton = (props: any) => {
   const { showModal } = props;
@@ -150,22 +151,36 @@ const ConnectionsTable = (props: any) => {
       dataIndex: "description",
       key: "description",
     },
+
+    {
+      title: "Locations",
+      dataIndex: "locations",
+      key: "locations",
+      render: (locations: []) => <a>{locations ? locations.length : 0}</a>,
+    },
     {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, body: RubixConnection) => (
+      render: (_: any, conn: RubixConnection) => (
         <Space size="middle">
           <a
+            onClick={() =>
+              navigate(`locations/${conn.uuid}`, { replace: true })
+            }
+          >
+            View
+          </a>
+          <a
             onClick={() => {
-              showModal(body);
+              showModal(conn);
             }}
           >
             Edit
           </a>
           <a
             onClick={() => {
-              deleteConnection(body.uuid);
+              deleteConnection(conn.uuid);
             }}
           >
             Delete
@@ -174,6 +189,7 @@ const ConnectionsTable = (props: any) => {
       ),
     },
   ];
+  const navigate = useNavigate();
 
   const deleteConnection = async (uuid: string) => {
     await DeleteConnection(uuid);

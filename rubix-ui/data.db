@@ -122,3 +122,22 @@ $16
 con_2BA8C3C6ADF8
 $212
 {"uuid":"con_2BA8C3C6ADF8","name":"connection1","description":"a rubix connection to devices update","customer":"nube","username":"admin","password":"should be hide","ip":"192.168.15.10","port":1662,"https":true}
+*3
+$3
+set
+$16
+con_0C7361BA64F7
+$191
+{"uuid":"con_0C7361BA64F7","name":"connection2","description":"a rubix connection to devices","customer":"nube","username":"admin","password":"","ip":"192.168.15.10","port":1662,"https":true}
+*3
+$3
+set
+$16
+con_0C7361BA64F7
+$180
+{"uuid":"con_0C7361BA64F7","name":"connection2","description":"a rubix connection","customer":"nube","username":"admin","password":"","ip":"192.168.15.10","port":1662,"https":true}
+*2
+$3
+del
+$16
+con_0C7361BA64F7

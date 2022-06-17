@@ -8,16 +8,14 @@ export const JsonForm = (props: any) => {
   };
 
   return (
-    <div>
-      <Form
-        liveValidate
-        formData={formData}
-        schema={jsonSchema}
-        onChange={handleFormChange}
-        onError={(err) => console.log("error", err)}
-        children={true} //hide submit button
-        showErrorList={false}
-      />
-    </div>
+    <Form
+      liveValidate
+      formData={formData}
+      schema={jsonSchema}
+      onChange={handleFormChange}
+      onError={(err) => console.log("error", err)}
+      children={true} //hide submit button
+      showErrorList={false}
+    />
   );
 };
