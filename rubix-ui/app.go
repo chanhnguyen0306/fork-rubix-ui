@@ -47,7 +47,7 @@ func (app *App) initConnection(conn *Conn) (*assitcli.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return assitcli.New(connection.Connection.Ip, connection.Connection.Port), nil
+	return assitcli.New(connection.IP, connection.Port), nil
 }
 
 //initRest get rest client

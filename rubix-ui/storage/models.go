@@ -1,17 +1,16 @@
 package storage
 
 type Connection struct {
-	Username string
-	Password string
-	Ip       string
-	Port     int
-	HTTPS    bool
 }
 
 type RubixConnection struct {
-	UUID        string      `json:"uuid"`
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Customer    string      `json:"customer"`
-	Connection  *Connection `json:"connection"`
+	UUID        string `json:"uuid"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Customer    string `json:"customer"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	IP          string `json:"ip"`
+	Port        int    `json:"port"`
+	HTTPS       bool   `json:"https"`
 }
