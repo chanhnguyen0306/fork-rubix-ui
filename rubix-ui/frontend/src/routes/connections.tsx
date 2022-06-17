@@ -228,7 +228,6 @@ export const Connections = () => {
     const jsonSchema = {
       properties: res,
     };
-    console.log("getSchema", jsonSchema);
     setConnectionSchema(jsonSchema);
     setIsLoadingForm(false);
   };
