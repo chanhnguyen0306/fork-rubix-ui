@@ -11,7 +11,7 @@ import {
 import { Connections } from "./routes/connections";
 import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
-import { Hosts } from "./routes/host";
+import { Hosts } from "./routes/hosts";
 import "./App.css";
 
 const { Content, Sider } = Layout;
