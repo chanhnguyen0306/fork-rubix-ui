@@ -28,22 +28,12 @@ func (app *App) startup(ctx context.Context) {
 	app.sendTimeToUI(ctx)
 }
 
-type Conn struct {
-	UUID string
-}
-
-func (app *App) getConnection(connUUID string) *Conn {
-	return &Conn{
-		UUID: connUUID,
-	}
-}
-
 //initRest get rest client
-func (app *App) initConnection(conn *Conn) (*assitcli.Client, error) {
-	if conn != nil {
+func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
+	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
-	connection, err := app.DB.Select(conn.UUID)
+	connection, err := app.DB.Select(connUUID)
 	if err != nil {
 		return nil, err
 	}
