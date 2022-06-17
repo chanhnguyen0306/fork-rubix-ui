@@ -55,3 +55,56 @@ $16
 con_8887EBE038F6
 $130
 {"uuid":"con_8887EBE038F6","name":"connection2","description":"a rubix connection to devices","customer":"nube","connection":null}
+*2
+$3
+del
+$16
+con_2183B135E53B
+*2
+$3
+del
+$16
+con_8887EBE038F6
+*3
+$3
+set
+$16
+con_006ADB3342DE
+$129
+{"uuid":"con_006ADB3342DE","name":"connection","description":"a rubix connection to devices","customer":"nube","connection":null}
+*3
+$3
+set
+$16
+con_006ADB3342DE
+$134
+{"uuid":"con_006ADB3342DE","name":"connection test","description":"a rubix connection to devices","customer":"nube","connection":null}
+*3
+$3
+set
+$16
+con_0D978E0DA987
+$130
+{"uuid":"con_0D978E0DA987","name":"connection1","description":"a rubix connection to devices","customer":"nube","connection":null}
+*3
+$3
+set
+$16
+con_48A573D6AFC8
+$108
+{"uuid":"con_48A573D6AFC8","name":"connection2","description":"hihihhi","customer":"nube","connection":null}
+*2
+$3
+del
+$16
+con_006ADB3342DE
+*2
+$3
+del
+$16
+con_0D978E0DA987
+*2
+$3
+del
+$16
+con_48A573D6AFC8
