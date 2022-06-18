@@ -11,7 +11,7 @@ import {
   AddHostNetwork,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
-import { isObjectEmpty } from "../utils/utils";
+import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddNetworkButton = (props: any) => {
@@ -38,6 +38,7 @@ const CreateEditNetworkModal = (props: any) => {
     updateNetworks,
     onCloseModal,
     setIsFetching,
+    connUUID,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentNetwork);
@@ -47,18 +48,28 @@ const CreateEditNetworkModal = (props: any) => {
   }, [currentNetwork]);
 
   const addNetwork = async (network: model.Network) => {
-    const res = await AddHostNetwork(network);
-    networks.push(res);
-    updateNetworks(networks);
+    try {
+      const res = await AddHostNetwork(connUUID, network);
+      networks.push(res);
+      updateNetworks(networks);
+      openNotificationWithIcon("success", `added ${network.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `added ${network.name} fail`);
+    }
   };
 
   const editNetwork = async (network: model.Network) => {
-    const res = await EditHostNetwork(network.uuid, network);
-    const index = networks.findIndex(
-      (n: model.Network) => n.uuid === network.uuid
-    );
-    networks[index] = res;
-    updateNetworks(networks);
+    try {
+      const res = await EditHostNetwork(connUUID, network.uuid, network);
+      const index = networks.findIndex(
+        (n: model.Network) => n.uuid === network.uuid
+      );
+      networks[index] = res;
+      updateNetworks(networks);
+      openNotificationWithIcon("success", `updated ${network.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `updated ${network.name} fail`);
+    }
   };
 
   const handleClose = () => {
@@ -127,6 +138,7 @@ const NetworksTable = (props: any) => {
     showModal,
     isFetching,
     setIsFetching,
+    connUUID,
   } = props;
   if (!networks) return <></>;
 
@@ -165,10 +177,9 @@ const NetworksTable = (props: any) => {
         <Space size="middle">
           <a
             onClick={() =>
-              navigate(
-                `/hosts/${network.uuid}`
-                // { state: { connUUID: connUUID }, }
-              )
+              navigate(`/hosts/${network.uuid}`, {
+                state: { connUUID: connUUID },
+              })
             }
           >
             View
@@ -193,7 +204,7 @@ const NetworksTable = (props: any) => {
   ];
 
   const deleteNetwork = async (networkUUID: string) => {
-    await DeleteHostNetwork(networkUUID);
+    await DeleteHostNetwork(connUUID, networkUUID);
     const newNetworks = networks.filter(
       (n: model.Network) => n.uuid !== networkUUID
     );
@@ -228,6 +239,7 @@ export const Networks = () => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   let { locUUID } = useParams();
   const location = useLocation() as any;
+  const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
     fetchNetworks();
@@ -238,7 +250,7 @@ export const Networks = () => {
 
   const fetchNetworks = async () => {
     try {
-      const res = await GetHostNetworks();
+      const res = await GetHostNetworks(connUUID);
       setNetworks(res);
     } catch (error) {
       console.log(error);
@@ -248,14 +260,13 @@ export const Networks = () => {
   };
 
   const fetchLocations = async () => {
-    const conUUID = location.state.connUUID || "";
-    const res = await GetLocations(conUUID);
+    const res = await GetLocations(connUUID);
     setLocations(res);
   };
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    const res = await GetNetworkSchema();
+    const res = await GetNetworkSchema(connUUID);
     res.properties = {
       ...res.properties,
       location_uuid: {
@@ -301,6 +312,7 @@ export const Networks = () => {
         updateNetworks={updateNetworks}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
       <NetworksTable
         networks={networks}
@@ -309,6 +321,7 @@ export const Networks = () => {
         updateNetworks={updateNetworks}
         showModal={showModal}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
     </>
   );

@@ -11,8 +11,8 @@ import {
   AddHost,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
-import { isObjectEmpty } from "../utils/utils";
-import { useParams } from "react-router-dom";
+import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
+import { useLocation, useParams } from "react-router-dom";
 
 const AddButton = (props: any) => {
   const { showModal } = props;
@@ -38,6 +38,7 @@ const CreateEditModal = (props: any) => {
     updateHosts,
     onCloseModal,
     setIsFetching,
+    connUUID,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentHost);
@@ -47,16 +48,26 @@ const CreateEditModal = (props: any) => {
   }, [currentHost]);
 
   const addHost = async (host: model.Host) => {
-    const res = await AddHost(host);
-    hosts.push(res);
-    updateHosts(hosts);
+    try {
+      const res = await AddHost(connUUID, host);
+      hosts.push(res);
+      updateHosts(hosts);
+      openNotificationWithIcon("success", `added ${host.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `added ${host.name} fail`);
+    }
   };
 
   const editHost = async (host: model.Host) => {
-    const res = await EditHost(host.uuid, host);
-    const index = hosts.findIndex((n: model.Host) => n.uuid === host.uuid);
-    hosts[index] = res;
-    updateHosts(hosts);
+    try {
+      const res = await EditHost(connUUID, host.uuid, host);
+      const index = hosts.findIndex((n: model.Host) => n.uuid === host.uuid);
+      hosts[index] = res;
+      updateHosts(hosts);
+      openNotificationWithIcon("success", `updated ${host.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `updated ${host.name} fail`);
+    }
   };
 
   const handleClose = () => {
@@ -118,8 +129,15 @@ const CreateEditModal = (props: any) => {
 };
 
 const HostsTable = (props: any) => {
-  const { hosts, networks, updateHosts, showModal, isFetching, setIsFetching } =
-    props;
+  const {
+    hosts,
+    networks,
+    updateHosts,
+    showModal,
+    isFetching,
+    setIsFetching,
+    connUUID,
+  } = props;
   if (!hosts) return <></>;
   const columns = [
     {
@@ -166,7 +184,7 @@ const HostsTable = (props: any) => {
   ];
 
   const deleteHost = async (uuid: string) => {
-    await DeleteHost(uuid);
+    await DeleteHost(connUUID, uuid);
     const newHosts = hosts.filter((n: model.Host) => n.uuid !== uuid);
     updateHosts(newHosts);
     setIsFetching(true);
@@ -195,7 +213,10 @@ export const Hosts = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+
   let { netUUID } = useParams();
+  const location = useLocation() as any;
+  const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
     fetchHosts();
@@ -207,7 +228,7 @@ export const Hosts = () => {
   const fetchHosts = async () => {
     try {
       const res = await (
-        await GetHosts()
+        await GetHosts(connUUID)
       ).map((h) => {
         if (h.enable == null) h.enable = h.enable ? h.enable : false;
         return h;
@@ -221,13 +242,13 @@ export const Hosts = () => {
   };
 
   const fetchNetworks = async () => {
-    const res = await GetHostNetworks();
+    const res = await GetHostNetworks(connUUID);
     setNetworks(res);
   };
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    const res = await GetHostSchema();
+    const res = await GetHostSchema(connUUID);
     res.properties = {
       ...res.properties,
       network_uuid: {
@@ -273,6 +294,7 @@ export const Hosts = () => {
         updateHosts={updateHosts}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
       <HostsTable
         hosts={hosts}
@@ -281,6 +303,7 @@ export const Hosts = () => {
         updateHosts={updateHosts}
         showModal={showModal}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
     </>
   );

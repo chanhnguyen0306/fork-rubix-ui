@@ -66,12 +66,17 @@ const CreateEditLocationModal = (props: any) => {
   };
 
   const editLocation = async (location: Location) => {
-    const res = UpdateLocation(connUUID, location.uuid, location);
-    const index = locations.findIndex(
-      (n: Location) => n.uuid === location.uuid
-    );
-    locations[index] = res;
-    updateLocations(locations);
+    try {
+      const res = UpdateLocation(connUUID, location.uuid, location);
+      const index = locations.findIndex(
+        (n: Location) => n.uuid === location.uuid
+      );
+      locations[index] = res;
+      updateLocations(locations);
+      openNotificationWithIcon("success", `updated ${location.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `updated ${location.name} fail`);
+    }
   };
 
   const handleClose = () => {
@@ -256,7 +261,7 @@ export const Locations = () => {
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    let res = await GetLocationSchema();
+    let res = await GetLocationSchema(connUUID as string);
     res = {
       properties: {
         ...res.properties,
