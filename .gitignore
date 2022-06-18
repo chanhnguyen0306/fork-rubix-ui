@@ -11,7 +11,8 @@ rubix-ui/frontend/node_modules
 rubix-ui/node_modules
 # Test binary, built with `go test -c`
 *.test
-
+*data.db
+*.db
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
