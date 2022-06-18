@@ -6,8 +6,12 @@ import (
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
-func (app *App) GetNetworkSchema() interface{} {
-	client := app.initRest()
+func (app *App) GetNetworkSchema(connUUID string) interface{} {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	data, res := client.GetNetworkSchema()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
@@ -16,8 +20,12 @@ func (app *App) GetNetworkSchema() interface{} {
 	return data
 }
 
-func (app *App) AddHostNetwork(host *model.Network) *model.Network {
-	client := app.initRest()
+func (app *App) AddHostNetwork(connUUID string, host *model.Network) *model.Network {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	data, res := client.AddHostNetwork(host)
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("issue in adding new host network %s", res.Message))
@@ -27,9 +35,13 @@ func (app *App) AddHostNetwork(host *model.Network) *model.Network {
 	return data
 }
 
-func (app *App) GetHostNetworks() (resp []model.Network) {
+func (app *App) GetHostNetworks(connUUID string) (resp []model.Network) {
 	resp = []model.Network{}
-	client := app.initRest()
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	data, res := client.GetHostNetworks()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host networks %s", res.Message))
@@ -37,8 +49,12 @@ func (app *App) GetHostNetworks() (resp []model.Network) {
 	return data
 }
 
-func (app *App) DeleteHostNetwork(uuid string) *assitcli.Response {
-	client := app.initRest()
+func (app *App) DeleteHostNetwork(connUUID string, uuid string) *assitcli.Response {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	res := client.DeleteHostNetwork(uuid)
 	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in deleting host network %s", res.Message))
@@ -48,8 +64,12 @@ func (app *App) DeleteHostNetwork(uuid string) *assitcli.Response {
 	return res
 }
 
-func (app *App) GetHostNetwork(uuid string) *model.Network {
-	client := app.initRest()
+func (app *App) GetHostNetwork(connUUID string, uuid string) *model.Network {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	data, res := client.GetHostNetwork(uuid)
 	if res.StatusCode > 299 {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host network %s", res.Message))
@@ -58,8 +78,12 @@ func (app *App) GetHostNetwork(uuid string) *model.Network {
 	return data
 }
 
-func (app *App) EditHostNetwork(uuid string, host *model.Network) *model.Network {
-	client := app.initRest()
+func (app *App) EditHostNetwork(connUUID string, uuid string, host *model.Network) *model.Network {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	if host == nil {
 		return nil
 	}

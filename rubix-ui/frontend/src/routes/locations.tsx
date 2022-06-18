@@ -1,16 +1,20 @@
 import { Button, Modal, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { model } from "../../wailsjs/go/models";
-
+import { model, storage } from "../../wailsjs/go/models";
 import {
   GetLocations,
   GetLocationSchema,
   AddLocation,
   UpdateLocation,
   DeleteLocation,
+  GetConnection,
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
+import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
+import { useNavigate, useParams } from "react-router-dom";
+import RubixConnection = storage.RubixConnection;
+import Location = model.Location;
 
 const AddLocationButton = (props: any) => {
   const { showModal } = props;
@@ -18,7 +22,7 @@ const AddLocationButton = (props: any) => {
   return (
     <Button
       type="primary"
-      onClick={() => showModal({} as model.Location)}
+      onClick={() => showModal({} as Location)}
       style={{ margin: "5px", float: "right" }}
     >
       <PlusOutlined /> Location
@@ -36,6 +40,7 @@ const CreateEditLocationModal = (props: any) => {
     updateLocations,
     onCloseModal,
     setIsFetching,
+    connUUID,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
@@ -44,28 +49,44 @@ const CreateEditLocationModal = (props: any) => {
     setFormData(currentLocation);
   }, [currentLocation]);
 
-  const addLocation = async (location: model.Location) => {
-    const res = await AddLocation("ADDME", location);
-    locations.push(res);
-    updateLocations(locations);
+  const addLocation = async (location: any) => {
+    try {
+      const res = await AddLocation(connUUID, location);
+      if (res.uuid) {
+        locations.push(res);
+        updateLocations(locations);
+        openNotificationWithIcon("success", `added ${location.name} success`);
+      } else {
+        openNotificationWithIcon("error", `added ${location.name} fail`);
+      }
+    } catch (err) {
+      openNotificationWithIcon("error", err);
+      console.log(err);
+    }
   };
 
-  const editLocation = async (location: model.Location) => {
-    const res = UpdateLocation("ADDME", location.uuid, location);
-    const index = locations.findIndex(
-      (n: model.Location) => n.uuid === location.uuid
-    );
-    locations[index] = res;
-    updateLocations(locations);
+  const editLocation = async (location: Location) => {
+    try {
+      const res = UpdateLocation(connUUID, location.uuid, location);
+      const index = locations.findIndex(
+        (n: Location) => n.uuid === location.uuid
+      );
+      locations[index] = res;
+      updateLocations(locations);
+      openNotificationWithIcon("success", `updated ${location.name} success`);
+    } catch (error) {
+      openNotificationWithIcon("error", `updated ${location.name} fail`);
+    }
   };
 
   const handleClose = () => {
-    setFormData({} as model.Location);
+    setFormData({} as Location);
     onCloseModal();
   };
 
-  const handleSubmit = (location: model.Location) => {
+  const handleSubmit = (location: any) => {
     setConfirmLoading(true);
+    delete location.connection_name;
     if (currentLocation.uuid) {
       location.uuid = currentLocation.uuid;
       location.networks = currentLocation.networks;
@@ -117,9 +138,17 @@ const CreateEditLocationModal = (props: any) => {
 };
 
 const LocationsTable = (props: any) => {
-  const { locations, updateLocations, showModal, isFetching, setIsFetching } =
-    props;
+  const {
+    locations,
+    updateLocations,
+    showModal,
+    isFetching,
+    setIsFetching,
+    connUUID,
+  } = props;
   if (!locations) return <></>;
+
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -142,8 +171,17 @@ const LocationsTable = (props: any) => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, location: model.Location) => (
+      render: (_: any, location: Location) => (
         <Space size="middle">
+          <a
+            onClick={() =>
+              navigate(`/networks/${location.uuid}`, {
+                state: { connUUID: connUUID },
+              })
+            }
+          >
+            View
+          </a>
           <a
             onClick={() => {
               showModal(location);
@@ -164,10 +202,8 @@ const LocationsTable = (props: any) => {
   ];
 
   const deleteLocation = async (uuid: string) => {
-    await DeleteLocation("ADDME", uuid);
-    const newLocations = locations.filter(
-      (n: model.Location) => n.uuid !== uuid
-    );
+    await DeleteLocation(connUUID, uuid);
+    const newLocations = locations.filter((n: Location) => n.uuid !== uuid);
     updateLocations(newLocations);
     setIsFetching(true);
   };
@@ -185,20 +221,26 @@ const LocationsTable = (props: any) => {
 };
 
 export const Locations = () => {
-  const [locations, setLocations] = useState([] as model.Location[]);
-  const [currentLocation, setCurrentLocation] = useState({} as model.Location);
+  const [locations, setLocations] = useState([] as Location[]);
+  const [currentLocation, setCurrentLocation] = useState({} as Location);
   const [locationSchema, setLocationSchema] = useState({});
+  const [connection, setConnection] = useState({} as RubixConnection);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  let { connUUID } = useParams();
 
   useEffect(() => {
     fetchLocations();
   }, [locations]);
 
+  useEffect(() => {
+    getConnection();
+  }, [connUUID]);
+
   const fetchLocations = async () => {
     try {
-      const res = await GetLocations("ADDME");
+      const res = await GetLocations(connUUID as string);
       setLocations(res);
     } catch (error) {
       console.log(error);
@@ -207,21 +249,44 @@ export const Locations = () => {
     }
   };
 
+  const getConnection = async () => {
+    try {
+      const res = await GetConnection(connUUID as string);
+      setConnection(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
   const getSchema = async () => {
     setIsLoadingForm(true);
-    const res = await GetLocationSchema();
+    let res = await GetLocationSchema(connUUID as string);
+    res = {
+      properties: {
+        ...res.properties,
+        connection_name: {
+          title: "Connection",
+          type: "string",
+          default: connection.name,
+          readOnly: true,
+        },
+      },
+    };
     setLocationSchema(res);
     setIsLoadingForm(false);
   };
 
-  const updateLocations = (locations: model.Location[]) => {
+  const updateLocations = (locations: Location[]) => {
     setLocations(locations);
   };
 
-  const showModal = (location: model.Location) => {
+  const showModal = (location: Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
-    getSchema();
+    if (isObjectEmpty(locationSchema)) {
+      getSchema();
+    }
   };
 
   const onCloseModal = () => {
@@ -242,6 +307,7 @@ export const Locations = () => {
         updateLocations={updateLocations}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
       <LocationsTable
         locations={locations}
@@ -249,6 +315,7 @@ export const Locations = () => {
         showModal={showModal}
         updateLocations={updateLocations}
         setIsFetching={setIsFetching}
+        connUUID={connUUID}
       />
     </>
   );

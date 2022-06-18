@@ -1,0 +1,28 @@
+*3
+$3
+set
+$16
+con_26D66C649208
+$192
+{"uuid":"con_26D66C649208","name":"connection1","description":"a rubix connection to devices","customer":"nube","username":"admin","password":"","ip":"164.92.222.81","port":1662,"https":false}
+*3
+$3
+set
+$16
+con_85E7E714BC30
+$191
+{"uuid":"con_85E7E714BC30","name":"connection2","description":"a rubix connection to devices","customer":"nube","username":"admin","password":"","ip":"164.92.222.81","port":1662,"https":true}
+*3
+$3
+set
+$16
+con_26D66C649208
+$169
+{"uuid":"con_26D66C649208","name":"connection1","description":"update","customer":"nube","username":"admin","password":"","ip":"164.92.222.81","port":1662,"https":false}
+*3
+$3
+set
+$16
+con_C47BB699C1BE
+$192
+{"uuid":"con_C47BB699C1BE","name":"connection3","description":"a rubix connection to devices","customer":"nube","username":"admin","password":"","ip":"192.168.15.10","port":1662,"https":false}
