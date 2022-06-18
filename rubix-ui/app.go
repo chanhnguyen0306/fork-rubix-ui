@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/storage"
 )
@@ -29,18 +30,14 @@ func (app *App) startup(ctx context.Context) {
 
 //initRest get rest client
 func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
+	fmt.Println(1111, connUUID)
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
 	connection, err := app.DB.Select(connUUID)
+	fmt.Println(1111, connection.IP, connection.Port)
 	if err != nil {
 		return nil, err
 	}
 	return assitcli.New(connection.IP, connection.Port), nil
-}
-
-//initRest get rest client
-func (app *App) initRest() *assitcli.Client {
-
-	return assitcli.New("0.0.0.0", 1662)
 }
