@@ -2,18 +2,22 @@ package main
 
 import (
 	"context"
-
-	"github.com/NubeIO/rubix-assist/service/assitcli"
+	"errors"
+	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-ui/storage"
 )
 
 // App struct
 type App struct {
 	ctx context.Context
+	DB  storage.Storage
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	app := &App{}
+	app.DB = storage.New("")
+	return app
 }
 
 // startup is called when the app starts. The context is saved
@@ -24,6 +28,19 @@ func (app *App) startup(ctx context.Context) {
 }
 
 //initRest get rest client
+func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
+	if connUUID == "" {
+		return nil, errors.New("conn can not be empty")
+	}
+	connection, err := app.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return assitcli.New(connection.IP, connection.Port), nil
+}
+
+//initRest get rest client
 func (app *App) initRest() *assitcli.Client {
-	return assitcli.New("164.92.222.81", 1662)
+
+	return assitcli.New("0.0.0.0", 1662)
 }

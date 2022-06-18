@@ -45,13 +45,13 @@ const CreateEditLocationModal = (props: any) => {
   }, [currentLocation]);
 
   const addLocation = async (location: model.Location) => {
-    const res = await AddLocation(location);
+    const res = await AddLocation("ADDME", location);
     locations.push(res);
     updateLocations(locations);
   };
 
   const editLocation = async (location: model.Location) => {
-    const res = UpdateLocation(location.uuid, location);
+    const res = UpdateLocation("ADDME", location.uuid, location);
     const index = locations.findIndex(
       (n: model.Location) => n.uuid === location.uuid
     );
@@ -164,7 +164,7 @@ const LocationsTable = (props: any) => {
   ];
 
   const deleteLocation = async (uuid: string) => {
-    await DeleteLocation(uuid);
+    await DeleteLocation("ADDME", uuid);
     const newLocations = locations.filter(
       (n: model.Location) => n.uuid !== uuid
     );
@@ -198,7 +198,7 @@ export const Locations = () => {
 
   const fetchLocations = async () => {
     try {
-      const res = await GetLocations();
+      const res = await GetLocations("ADDME");
       setLocations(res);
     } catch (error) {
       console.log(error);
