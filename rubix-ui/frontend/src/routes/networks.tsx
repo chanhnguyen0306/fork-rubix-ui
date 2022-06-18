@@ -12,6 +12,7 @@ import {
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
 import { isObjectEmpty } from "../utils/utils";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddNetworkButton = (props: any) => {
   const { showModal } = props;
@@ -128,6 +129,9 @@ const NetworksTable = (props: any) => {
     setIsFetching,
   } = props;
   if (!networks) return <></>;
+
+  const navigate = useNavigate();
+
   const columns = [
     {
       title: "Name",
@@ -159,6 +163,16 @@ const NetworksTable = (props: any) => {
       key: "actions",
       render: (_: any, network: model.Network) => (
         <Space size="middle">
+          <a
+            onClick={() =>
+              navigate(
+                `/hosts/${network.uuid}`
+                // { state: { connUUID: connUUID }, }
+              )
+            }
+          >
+            View
+          </a>
           <a
             onClick={() => {
               showModal(network);
@@ -212,6 +226,8 @@ export const Networks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  let { locUUID } = useParams();
+  const location = useLocation() as any;
 
   useEffect(() => {
     fetchNetworks();
@@ -232,7 +248,8 @@ export const Networks = () => {
   };
 
   const fetchLocations = async () => {
-    const res = await GetLocations("ADDME");
+    const conUUID = location.state.connUUID || "";
+    const res = await GetLocations(conUUID);
     setLocations(res);
   };
 
@@ -247,6 +264,7 @@ export const Networks = () => {
         anyOf: locations.map((l: model.Location) => {
           return { type: "string", enum: [l.uuid], title: l.name };
         }),
+        default: locUUID,
       },
     };
     setNetworkSchema(res);

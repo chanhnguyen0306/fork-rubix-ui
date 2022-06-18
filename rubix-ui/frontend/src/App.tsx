@@ -37,7 +37,7 @@ const App: React.FC = () => {
   let navigate = useNavigate();
 
   const onClick = (e: any) => {
-    navigate(e.key, { replace: true });
+    navigate(e.key);
   };
 
   return (
@@ -57,7 +57,7 @@ const App: React.FC = () => {
             <Route path="" element={<Connections />} />
             <Route path="locations/:connUUID" element={<Locations />} />
             <Route path="networks/:locUUID" element={<Networks />} />
-            <Route path="host" element={<Hosts />} />
+            <Route path="hosts/:netUUID" element={<Hosts />} />
           </Routes>
         </Content>
       </Layout>

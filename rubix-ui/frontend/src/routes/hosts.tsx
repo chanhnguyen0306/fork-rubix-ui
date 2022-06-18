@@ -12,6 +12,7 @@ import {
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
 import { isObjectEmpty } from "../utils/utils";
+import { useParams } from "react-router-dom";
 
 const AddButton = (props: any) => {
   const { showModal } = props;
@@ -194,6 +195,7 @@ export const Hosts = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  let { netUUID } = useParams();
 
   useEffect(() => {
     fetchHosts();
@@ -204,7 +206,12 @@ export const Hosts = () => {
 
   const fetchHosts = async () => {
     try {
-      const res = await GetHosts();
+      const res = await (
+        await GetHosts()
+      ).map((h) => {
+        if (h.enable == null) h.enable = h.enable ? h.enable : false;
+        return h;
+      });
       setHosts(res);
     } catch (error) {
       console.log(error);
@@ -221,8 +228,6 @@ export const Hosts = () => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await GetHostSchema();
-    console.log(res);
-
     res.properties = {
       ...res.properties,
       network_uuid: {
@@ -231,6 +236,7 @@ export const Hosts = () => {
         anyOf: networks.map((n: model.Network) => {
           return { type: "string", enum: [n.uuid], title: n.name };
         }),
+        default: netUUID,
       },
     };
     setHostSchema(res);

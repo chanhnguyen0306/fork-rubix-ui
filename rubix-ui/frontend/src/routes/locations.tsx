@@ -12,7 +12,7 @@ import {
 } from "../../wailsjs/go/main/App";
 import { JsonForm } from "../common/json-form";
 import { isObjectEmpty, openNotificationWithIcon } from "../utils/utils";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RubixConnection = storage.RubixConnection;
 import Location = model.Location;
 
@@ -52,7 +52,6 @@ const CreateEditLocationModal = (props: any) => {
   const addLocation = async (location: any) => {
     try {
       const res = await AddLocation(connUUID, location);
-      console.log("addLocation", res);
       if (res.uuid) {
         locations.push(res);
         updateLocations(locations);
@@ -144,6 +143,8 @@ const LocationsTable = (props: any) => {
   } = props;
   if (!locations) return <></>;
 
+  const navigate = useNavigate();
+
   const columns = [
     {
       title: "Name",
@@ -167,6 +168,15 @@ const LocationsTable = (props: any) => {
       key: "actions",
       render: (_: any, location: Location) => (
         <Space size="middle">
+          <a
+            onClick={() =>
+              navigate(`/networks/${location.uuid}`, {
+                state: { connUUID: connUUID },
+              })
+            }
+          >
+            View
+          </a>
           <a
             onClick={() => {
               showModal(location);

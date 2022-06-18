@@ -82,7 +82,6 @@ const CreateEditModal = (props: any) => {
     setConfirmLoading(true);
     if (currentConnection.uuid) {
       connection.uuid = currentConnection.uuid;
-      // connection.locations = connection.locations;
       editConnection(connection);
     } else {
       addConnection(connection);
@@ -140,6 +139,8 @@ const ConnectionsTable = (props: any) => {
   } = props;
   if (!connections) return <></>;
 
+  const navigate = useNavigate();
+
   const columns = [
     {
       title: "Name",
@@ -151,26 +152,19 @@ const ConnectionsTable = (props: any) => {
       dataIndex: "description",
       key: "description",
     },
-
-    {
-      title: "Locations",
-      dataIndex: "locations",
-      key: "locations",
-      render: (locations: []) => <a>{locations ? locations.length : 0}</a>,
-    },
+    // {
+    //   title: "Locations",
+    //   dataIndex: "locations",
+    //   key: "locations",
+    //   render: (locations: []) => <a>{locations ? locations.length : 0}</a>,
+    // },
     {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
       render: (_: any, conn: RubixConnection) => (
         <Space size="middle">
-          <a
-            onClick={() =>
-              navigate(`locations/${conn.uuid}`, { replace: true })
-            }
-          >
-            View
-          </a>
+          <a onClick={() => navigate(`locations/${conn.uuid}`)}>View</a>
           <a
             onClick={() => {
               showModal(conn);
@@ -189,7 +183,6 @@ const ConnectionsTable = (props: any) => {
       ),
     },
   ];
-  const navigate = useNavigate();
 
   const deleteConnection = async (uuid: string) => {
     await DeleteConnection(uuid);
