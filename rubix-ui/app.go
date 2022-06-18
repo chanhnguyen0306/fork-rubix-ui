@@ -39,9 +39,3 @@ func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
 	}
 	return assitcli.New(connection.IP, connection.Port), nil
 }
-
-//initRest get rest client
-func (app *App) initRest() *assitcli.Client {
-
-	return assitcli.New("164.92.222.81", 1662)
-}

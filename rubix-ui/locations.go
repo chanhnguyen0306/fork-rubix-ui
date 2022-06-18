@@ -7,8 +7,12 @@ import (
 	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
 
-func (app *App) GetLocationSchema() interface{} {
-	client := app.initRest()
+func (app *App) GetLocationSchema(connUUID string) interface{} {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
 	data, res := client.GetLocationSchema()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
@@ -20,7 +24,7 @@ func (app *App) GetLocationSchema() interface{} {
 func (app *App) AddLocation(connUUID string, body *model.Location) *model.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, res := client.AddLocation(body)
@@ -37,7 +41,7 @@ func (app *App) GetLocations(connUUID string) (resp []model.Location) {
 	resp = []model.Location{}
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, res := client.GetLocations()
@@ -51,7 +55,7 @@ func (app *App) GetLocations(connUUID string) (resp []model.Location) {
 func (app *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	res := client.DeleteLocation(uuid)
@@ -67,7 +71,7 @@ func (app *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response 
 func (app *App) GetLocation(connUUID string, uuid string) *model.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, res := client.GetLocation(uuid)
@@ -81,7 +85,7 @@ func (app *App) GetLocation(connUUID string, uuid string) *model.Location {
 func (app *App) UpdateLocation(connUUID string, uuid string, host *model.Location) *model.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("issue in adding new host locations %s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, res := client.UpdateLocation(uuid, host)
