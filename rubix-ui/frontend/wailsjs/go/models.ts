@@ -1,3 +1,79 @@
+export namespace main {
+	
+	export class ConnectionSchema {
+	    // Go type: schema.UUID
+	    uuid: any;
+	    // Go type: schema.Name
+	    name: any;
+	    // Go type: schema.Description
+	    description: any;
+	    // Go type: schema.IP
+	    ip: any;
+	    // Go type: schema.Port
+	    port: any;
+	    // Go type: schema.HTTPS
+	    https: any;
+	    // Go type: schema.Username
+	    username: any;
+	    // Go type: schema.Password
+	    password: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConnectionSchema(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = this.convertValues(source["uuid"], null);
+	        this.name = this.convertValues(source["name"], null);
+	        this.description = this.convertValues(source["description"], null);
+	        this.ip = this.convertValues(source["ip"], null);
+	        this.port = this.convertValues(source["port"], null);
+	        this.https = this.convertValues(source["https"], null);
+	        this.username = this.convertValues(source["username"], null);
+	        this.password = this.convertValues(source["password"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+
+}
+
+export namespace assitcli {
+	
+	export class Response {
+	    code: number;
+	    message: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.code = source["code"];
+	        this.message = source["message"];
+	    }
+	}
+
+}
+
 export namespace storage {
 	
 	export class RubixConnection {
@@ -152,83 +228,6 @@ export namespace model {
 		    }
 		    return a;
 		}
-	}
-
-}
-
-export namespace main {
-	
-	
-	export class ConnectionSchema {
-	    // Go type: schema.UUID
-	    uuid: any;
-	    // Go type: schema.Name
-	    name: any;
-	    // Go type: schema.Description
-	    description: any;
-	    // Go type: schema.IP
-	    ip: any;
-	    // Go type: schema.Port
-	    port: any;
-	    // Go type: schema.HTTPS
-	    https: any;
-	    // Go type: schema.Username
-	    username: any;
-	    // Go type: schema.Password
-	    password: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new ConnectionSchema(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = this.convertValues(source["uuid"], null);
-	        this.name = this.convertValues(source["name"], null);
-	        this.description = this.convertValues(source["description"], null);
-	        this.ip = this.convertValues(source["ip"], null);
-	        this.port = this.convertValues(source["port"], null);
-	        this.https = this.convertValues(source["https"], null);
-	        this.username = this.convertValues(source["username"], null);
-	        this.password = this.convertValues(source["password"], null);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-
-}
-
-export namespace assitcli {
-	
-	export class Response {
-	    code: number;
-	    message: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Response(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.code = source["code"];
-	        this.message = source["message"];
-	    }
 	}
 
 }
