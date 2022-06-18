@@ -7,6 +7,7 @@ import (
 )
 
 func (app *App) GetLocationSchema(connUUID string) interface{} {
+	fmt.Println(1111)
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -36,6 +37,7 @@ func (app *App) AddLocation(connUUID string, body *model.Location) *model.Locati
 }
 
 func (app *App) GetLocations(connUUID string) (resp []model.Location) {
+	fmt.Println("GetLocations", connUUID)
 	resp = []model.Location{}
 	client, err := app.initConnection(connUUID)
 	if err != nil {

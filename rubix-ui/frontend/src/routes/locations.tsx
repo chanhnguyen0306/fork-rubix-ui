@@ -231,7 +231,10 @@ export const Locations = () => {
   let { connUUID } = useParams();
 
   useEffect(() => {
-    fetchLocations();
+    console.log("fetchLocations-useEffect");
+    fetchLocations().then(r => r).catch(err => {
+      console.log(err)
+    });
   }, [locations]);
 
   useEffect(() => {
@@ -239,6 +242,7 @@ export const Locations = () => {
   }, [connUUID]);
 
   const fetchLocations = async () => {
+    console.log("fetchLocations");
     try {
       const res = await GetLocations(connUUID as string);
       setLocations(res);

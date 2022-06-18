@@ -14,7 +14,7 @@ type inst struct {
 
 func New(dbFile string) Storage {
 	if dbFile == "" {
-		dbFile = "data.db"
+		dbFile = "../data.db"
 	}
 	db, err := buntdb.Open(dbFile)
 	if err != nil {

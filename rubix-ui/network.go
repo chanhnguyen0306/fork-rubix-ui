@@ -36,6 +36,7 @@ func (app *App) AddHostNetwork(connUUID string, host *model.Network) *model.Netw
 }
 
 func (app *App) GetHostNetworks(connUUID string) (resp []model.Network) {
+	fmt.Println("GetHostNetworks", connUUID)
 	resp = []model.Network{}
 	client, err := app.initConnection(connUUID)
 	if err != nil {

@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/storage"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 // App struct
@@ -30,14 +31,14 @@ func (app *App) startup(ctx context.Context) {
 
 //initRest get rest client
 func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
-	fmt.Println(1111, connUUID)
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
 	connection, err := app.DB.Select(connUUID)
-	fmt.Println(1111, connection.IP, connection.Port)
 	if err != nil {
 		return nil, err
 	}
+	time.Sleep(100 * time.Millisecond)
+	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
 	return assitcli.New(connection.IP, connection.Port), nil
 }

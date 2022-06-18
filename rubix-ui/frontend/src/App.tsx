@@ -13,6 +13,7 @@ import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
 import { Hosts } from "./routes/hosts";
 import "./App.css";
+import {HostTime} from "./routes/system/time";
 
 const { Content, Sider } = Layout;
 
@@ -35,6 +36,9 @@ const menuItems: MenuProps["items"] = sidebarItems.map(
 
 const App: React.FC = () => {
     let navigate = useNavigate();
+
+    // let time = new HostTime();
+
 
     const onClick = (e: any) => {
         navigate(e.key);

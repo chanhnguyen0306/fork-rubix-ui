@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-ui/storage"
 )
@@ -17,12 +18,14 @@ type ConnectionSchema struct {
 }
 
 func connectionSchema() *ConnectionSchema {
+	fmt.Println(1111)
 	m := &ConnectionSchema{}
 	schema.Set(m)
 	return m
 }
 
 func (app *App) GetConnectionSchema() *ConnectionSchema {
+	fmt.Println(1111)
 	c := connectionSchema()
 	return c
 }
