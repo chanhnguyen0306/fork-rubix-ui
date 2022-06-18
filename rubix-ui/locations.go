@@ -42,7 +42,6 @@ func (app *App) GetLocations(connUUID string) (resp []model.Location) {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	fmt.Println(444444, connUUID)
 	data, res := client.GetLocations()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host locations %s", res.Message))
