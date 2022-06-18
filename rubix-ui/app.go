@@ -3,9 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/storage"
-
-	"github.com/NubeIO/rubix-assist/service/assitcli"
 )
 
 // App struct
@@ -38,4 +37,10 @@ func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
 		return nil, err
 	}
 	return assitcli.New(connection.IP, connection.Port), nil
+}
+
+//initRest get rest client
+func (app *App) initRest() *assitcli.Client {
+
+	return assitcli.New("0.0.0.0", 1662)
 }

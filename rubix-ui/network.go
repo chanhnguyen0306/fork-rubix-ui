@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/model"
-	"github.com/NubeIO/rubix-assist/service/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
 func (app *App) GetNetworkSchema(connUUID string) interface{} {
