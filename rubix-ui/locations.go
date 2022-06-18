@@ -7,7 +7,6 @@ import (
 )
 
 func (app *App) GetLocationSchema(connUUID string) interface{} {
-	fmt.Println(1111)
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

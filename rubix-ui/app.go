@@ -26,7 +26,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (app *App) startup(ctx context.Context) {
 	app.ctx = ctx
-	app.sendTimeToUI(ctx)
+	//app.sendTimeToUI(ctx)
 }
 
 //initRest get rest client

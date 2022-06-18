@@ -13,7 +13,7 @@ import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
 import { Hosts } from "./routes/hosts";
 import "./App.css";
-import {HostTime} from "./routes/system/time";
+import {ConnectionFactory} from "./components/connections/connections";
 
 const { Content, Sider } = Layout;
 
@@ -36,6 +36,12 @@ const menuItems: MenuProps["items"] = sidebarItems.map(
 
 const App: React.FC = () => {
     let navigate = useNavigate();
+
+    let connection = new ConnectionFactory();
+    connection.uuid = "con_4A34520BC4DD"
+    connection.GetFist().then(r => console.log(r))
+    connection.GetOne().then(r => console.log(22222, r.name)).catch(e =>  console.log(222, e))
+
 
     // let time = new HostTime();
 

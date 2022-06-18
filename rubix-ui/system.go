@@ -5,13 +5,13 @@ import (
 	"github.com/NubeIO/rubix-ui/helpers/humanize"
 )
 
-func (app *App) GetTime(connUUID string) interface{} {
+func (app *App) GetTime(connUUID, hostUUID string) interface{} {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, err := client.ProxyGET(connUUID, "api/system/time")
+	data, err := client.ProxyGET(hostUUID, "api/system/time")
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -21,7 +21,5 @@ func (app *App) GetTime(connUUID string) interface{} {
 		return nil
 	}
 	d := humanize.Humanize(data.Body())
-	fmt.Println(d, 9999)
-
 	return d
 }
