@@ -11,13 +11,6 @@ func TestInitializeBuntDB(t *testing.T) {
 		Name:        "test",
 		Description: "test",
 		Customer:    "test",
-		Connection: &Connection{
-			Username: "test",
-			Password: "test",
-			Ip:       "0.0.0.0",
-			Port:     1662,
-			HTTPS:    false,
-		},
 	})
 	fmt.Println(err, add)
 	if err != nil {

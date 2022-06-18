@@ -9,6 +9,7 @@ import {Networks} from "./routes/networks";
 import {AddHostForm} from "./routes/host";
 import "./App.css";
 import {Connections} from "./routes/connection";
+import {GetTime} from "../wailsjs/go/main/App";
 
 const {Content, Sider} = Layout;
 const sidebarItems = [
@@ -29,7 +30,6 @@ const menuItems: MenuProps["items"] = sidebarItems.map(
 
 const App: React.FC = () => {
     let navigate = useNavigate();
-
     const onClick = (e: any) => {
         navigate(e.key, {replace: true});
     };

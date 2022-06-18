@@ -11,6 +11,7 @@ export namespace model {
 	    username: string;
 	    password: string;
 	    rubix_port: number;
+	    wires_port: number;
 	    rubix_username: string;
 	    rubix_password: string;
 	    rubix_https?: boolean;
@@ -36,6 +37,7 @@ export namespace model {
 	        this.username = source["username"];
 	        this.password = source["password"];
 	        this.rubix_port = source["rubix_port"];
+	        this.wires_port = source["wires_port"];
 	        this.rubix_username = source["rubix_username"];
 	        this.rubix_password = source["rubix_password"];
 	        this.rubix_https = source["rubix_https"];
@@ -122,6 +124,7 @@ export namespace model {
 }
 
 export namespace main {
+	
 	
 	export class ConnectionSchema {
 	    // Go type: schema.UUID
