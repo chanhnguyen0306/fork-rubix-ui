@@ -1,23 +1,23 @@
-import {AddLocation, GetLocation, GetLocations, UpdateLocation} from "../../../wailsjs/go/main/App";
+import {AddHostNetwork, EditHostNetwork, GetHostNetwork, GetHostNetworks} from "../../../wailsjs/go/main/App";
 import {model} from "../../../wailsjs/go/models";
 import {Helpers} from "../../helpers/checks";
 
 
 function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "Location or connection uuid") as Error
+    return Helpers.IsUndefined(uuid, "network or connection uuid") as Error
 }
 
-export class LocationFactory {
+export class NetworksFactory {
     uuid!: string;
-    private _this!: model.Location;
+    private _this!: model.Network;
     private connectionUUID!: string;
     private count!: number
 
-    get this(): model.Location {
+    get this(): model.Network {
         return this._this;
     }
 
-    set this(value: model.Location) {
+    set this(value: model.Network) {
         this._this = value;
     }
 
@@ -27,10 +27,10 @@ export class LocationFactory {
 
 
     // get the first connection uuid
-    async GetFist(): Promise<model.Location> {
-        let one: model.Location = {} as model.Location
+    async GetFist(): Promise<model.Network> {
+        let one: model.Network = {} as model.Network
         await this.GetAll().then(res => {
-            one = res.at(0) as model.Location
+            one = res.at(0) as model.Network
             this._this = one
         }).catch(err => {
             return undefined
@@ -38,21 +38,21 @@ export class LocationFactory {
         return one
     }
 
-    async GetAll(): Promise<Array<model.Location>> {
-        let all: Array<model.Location> = {} as Array<model.Location>
-        await GetLocations(this.connectionUUID).then(res => {
-            all = res as Array<model.Location>
+    async GetAll(): Promise<Array<model.Network>> {
+        let all: Array<model.Network> = {} as Array<model.Network>
+        await GetHostNetworks(this.connectionUUID).then(res => {
+            all = res as Array<model.Network>
         }).catch(err => {
             return undefined
         })
         return all
     }
 
-    async GetOne(): Promise<model.Location> {
+    async GetOne(): Promise<model.Network> {
         hasUUID(this.uuid)
-        let one: model.Location = {} as model.Location
-        await GetLocation(this.connectionUUID, this.uuid).then(res => {
-            one = res as model.Location
+        let one: model.Network = {} as model.Network
+        await GetHostNetwork(this.connectionUUID, this.uuid).then(res => {
+            one = res as model.Network
             this._this = one
         }).catch(err => {
             return undefined
@@ -60,11 +60,11 @@ export class LocationFactory {
         return one
     }
 
-    async Add(): Promise<model.Location> {
+    async Add(): Promise<model.Network> {
         hasUUID(this.uuid)
-        let one: model.Location = {} as model.Location
-        await AddLocation(this.connectionUUID, this._this).then(res => {
-            one = res as model.Location
+        let one: model.Network = {} as model.Network
+        await AddHostNetwork(this.connectionUUID, this._this).then(res => {
+            one = res as model.Network
             this._this = one
         }).catch(err => {
             return undefined
@@ -72,11 +72,11 @@ export class LocationFactory {
         return one
     }
 
-    async Update(): Promise<model.Location> {
+    async Update(): Promise<model.Network> {
         hasUUID(this.uuid)
-        let one: model.Location = {} as model.Location
-        await UpdateLocation(this.connectionUUID, this.uuid, this._this).then(res => {
-            one = res as model.Location
+        let one: model.Network = {} as model.Network
+        await EditHostNetwork(this.connectionUUID, this.uuid, this._this).then(res => {
+            one = res as model.Network
             this._this = one
         }).catch(err => {
             return undefined

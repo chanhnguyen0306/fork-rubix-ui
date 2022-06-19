@@ -230,8 +230,10 @@ export const Locations = () => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   let { connUUID } = useParams();
 
+  console.log(222, connUUID)
+
   useEffect(() => {
-    console.log("fetchLocations-useEffect");
+    console.log("fetchLocations-");
     fetchLocations().then(r => r).catch(err => {
       console.log(err)
     });

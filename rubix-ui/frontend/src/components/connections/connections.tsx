@@ -1,104 +1,84 @@
-import {
-    AddConnection,
-    GetConnection,
-    GetConnections,
-    PingRubixAssist,
-    UpdateConnection
-} from "../../../wailsjs/go/main/App";
 import {storage} from "../../../wailsjs/go/models";
-import {Helpers} from "../../helpers/checks";
-
-function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "connection uuid") as Error
-}
-
-export class ConnectionFactory {
-
-    uuid!: string;
-    private count!: number
-    private _this!: storage.RubixConnection
-
-    get this(): storage.RubixConnection {
-        return this._this;
-    }
-
-    set this(value: storage.RubixConnection) {
-        this._this = value;
-    }
-
-    public GetTotalCount(): number {
-        return this.count
-    }
-
-    // will try and ping the remote server
-    // example ping 192,1568.15.10:1662
-    async PingConnection(): Promise<boolean> {
-        let out = false
-        await PingRubixAssist(this.uuid).then(res => {
-            out = res as boolean
-        }).catch(err => {
-            return undefined
-        })
-        return out
-    }
-
-    // get the first connection uuid
-    async GetFist(): Promise<storage.RubixConnection> {
-        let one: storage.RubixConnection = {} as storage.RubixConnection
-        await this.GetAll().then(res => {
-            one = res.at(0) as storage.RubixConnection
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async GetAll(): Promise<Array<storage.RubixConnection>> {
-        let all: Array<storage.RubixConnection> = {} as Array<storage.RubixConnection>
-        await GetConnections().then(res => {
-            all = res as Array<storage.RubixConnection>
-        }).catch(err => {
-            return undefined
-        })
-        return all
-    }
-
-    async GetOne(): Promise<storage.RubixConnection> {
-        hasUUID(this.uuid)
-        let one: storage.RubixConnection = {} as storage.RubixConnection
-        await GetConnection(this.uuid).then(res => {
-            one = res as storage.RubixConnection
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async Add(): Promise<storage.RubixConnection> {
-        hasUUID(this.uuid)
-        let one: storage.RubixConnection = {} as storage.RubixConnection
-        await AddConnection(this._this).then(res => {
-            one = res as storage.RubixConnection
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async Update(): Promise<storage.RubixConnection> {
-        hasUUID(this.uuid)
-        let one: storage.RubixConnection = {} as storage.RubixConnection
-        await UpdateConnection(this.uuid, this._this).then(res => {
-            one = res as storage.RubixConnection
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+import { useEffect, useState } from "react";
+import { isObjectEmpty } from "../../utils/utils";
+import RubixConnection = storage.RubixConnection;
+import {ConnectionsTable} from "./views/table";
+import {AddButton, CreateEditModal} from "./views/create";
+import {ConnectionFactory} from "./factory";
 
 
-}
+export const Connections = () => {
+    const [connections, setConnections] = useState([] as RubixConnection[]);
+    const [currentConnection, setCurrentConnection] = useState({} as RubixConnection);
+    const [connectionSchema, setConnectionSchema] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
+    const [isLoadingForm, setIsLoadingForm] = useState(false);
+    let factory = new ConnectionFactory()
+
+    useEffect(() => {
+        fetchConnections();
+    }, [connections]);
+
+    const fetchConnections = async () => {
+        try {
+            let res = await factory.GetAll();
+            res = !res ? [] : res;
+            setConnections(res);
+        } catch (error) {
+        } finally {
+            setIsFetching(false);
+        }
+    };
+
+    const getSchema = async () => {
+        setIsLoadingForm(true);
+        const res = await factory.Schema();
+        const jsonSchema = {
+            properties: res,
+        };
+        setConnectionSchema(jsonSchema);
+        setIsLoadingForm(false);
+    };
+
+    const updateConnections = (connections: RubixConnection[]) => {
+        setConnections(connections);
+    };
+
+    const showModal = (connection: RubixConnection) => {
+        setCurrentConnection(connection);
+        setIsModalVisible(true);
+        if (isObjectEmpty(connectionSchema)) {
+            getSchema();
+        }
+    };
+
+    const onCloseModal = () => {
+        setIsModalVisible(false);
+    };
+
+    return (
+        <>
+            <h1>Connections</h1>
+            <AddButton showModal={showModal} />
+            <CreateEditModal
+                connections={connections}
+                currentConnection={currentConnection}
+                connectionSchema={connectionSchema}
+                isModalVisible={isModalVisible}
+                isLoadingForm={isLoadingForm}
+                updateConnections={updateConnections}
+                onCloseModal={onCloseModal}
+                setIsFetching={setIsFetching}
+            />
+            <ConnectionsTable
+                connections={connections}
+                isFetching={isFetching}
+                showModal={showModal}
+                updateConnections={updateConnections}
+                setIsFetching={setIsFetching}
+            />
+        </>
+    );
+};
+

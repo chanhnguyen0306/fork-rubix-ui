@@ -1,4 +1,4 @@
-import {GetTime} from "../../../wailsjs/go/main/App";
+import {GetHostTime} from "../../../wailsjs/go/main/App";
 import {Helpers} from "../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -13,7 +13,7 @@ export class HostTime {
     private callTime(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
-        return GetTime(this.connectionUUID, this.hostUUID);
+        return GetHostTime(this.connectionUUID, this.hostUUID);
     }
 
     public GetHostTime(): Promise<any> {
