@@ -7,5 +7,8 @@ type Storage interface {
 	Update(string, *RubixConnection) (*RubixConnection, error)
 	SelectAll() ([]RubixConnection, error)
 	Wipe() (int, error)
+	AddLog(*Log) (*Log, error)
+	GetLogs() ([]Log, error)
+	GetLogsByConnection(uuid string) ([]Log, error)
 	Close() error
 }

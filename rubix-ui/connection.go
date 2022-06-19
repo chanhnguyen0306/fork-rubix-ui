@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/NubeIO/lib-schema/schema"
+	pprint "github.com/NubeIO/rubix-ui/helpers/print"
 	"github.com/NubeIO/rubix-ui/storage"
+	"github.com/NubeIO/rubix-ui/storage/logstore"
 )
 
 type ConnectionSchema struct {
@@ -60,7 +62,20 @@ func (app *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *st
 }
 
 func (app *App) DeleteConnection(uuid string) string {
-	err := app.DB.Delete(uuid)
+	connection, err := app.DB.Select(uuid)
+	if err != nil {
+		return "failed to find connection to backup"
+	}
+	log, err := app.DB.AddLog(&storage.Log{
+		Function: logstore.Connection.String(),
+		Type:     logstore.Delete.String(),
+		Data:     connection,
+	})
+	pprint.PrintJOSN(log)
+	if err != nil {
+		return "failed to add a backup"
+	}
+	err = app.DB.Delete(uuid)
 	if err != nil {
 		return err.Error()
 	}

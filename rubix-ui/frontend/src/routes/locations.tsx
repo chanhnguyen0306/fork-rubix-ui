@@ -162,7 +162,7 @@ const LocationsTable = (props: any) => {
       key: "description",
     },
     {
-      title: "Networks number",
+      title: "Networks count",
       dataIndex: "networks",
       key: "networks",
       render: (networks: []) => <a>{networks ? networks.length : 0}</a>,
@@ -230,7 +230,6 @@ export const Locations = () => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   let { connUUID } = useParams();
 
-  console.log(222, connUUID)
 
   useEffect(() => {
     console.log("fetchLocations-");
@@ -244,10 +243,14 @@ export const Locations = () => {
   }, [connUUID]);
 
   const fetchLocations = async () => {
-    console.log("fetchLocations");
     try {
-      const res = await GetLocations(connUUID as string);
-      setLocations(res);
+      await new Promise<void>((resolve)=>setTimeout(async () => {
+        const res = await GetLocations(connUUID as string);
+        setLocations(res);
+        console.log("timeout, fetchLocations to be removed");
+        resolve();
+      }, 500));
+
     } catch (error) {
       console.log(error);
     } finally {

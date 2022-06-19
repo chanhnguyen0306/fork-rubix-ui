@@ -18,6 +18,11 @@ export const ConnectionsTable = (props: any) => {
 
     const columns = [
         {
+            title: "uuid",
+            dataIndex: "uuid",
+            key: "uuid",
+        },
+        {
             title: "Name",
             dataIndex: "name",
             key: "name",
@@ -26,6 +31,16 @@ export const ConnectionsTable = (props: any) => {
             title: "Description",
             dataIndex: "description",
             key: "description",
+        },
+        {
+            title: "Address",
+            dataIndex: "ip",
+            key: "ip",
+        },
+        {
+            title: "Port",
+            dataIndex: "port",
+            key: "port",
         },
         // {
         //   title: "Locations",

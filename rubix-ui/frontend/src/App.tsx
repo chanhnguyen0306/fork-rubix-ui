@@ -10,12 +10,15 @@ import { Networks } from "./routes/networks";
 import { Hosts } from "./routes/hosts";
 import {Connections} from "./components/connections/connections";
 import "./App.css";
+import Iframe from "./components/iframe/iframe";
+import {Logs} from "./components/logs/logs";
 
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
     { name: "Connections", icon: LinkOutlined, link: "/" },
-    // { name: "Locations", icon: ForkOutlined, link: "/locations" },
+    { name: "Logs", icon: LinkOutlined, link: "/logs" },
+    { name: "iframe", icon: LinkOutlined, link: "/iframe" },
     // { name: "Networks", icon: WifiOutlined, link: "/networks" },
     // { name: "Hosts", icon: ApartmentOutlined, link: "/host" },
 ];
@@ -52,6 +55,8 @@ const App: React.FC = () => {
                 >
                     <Routes>
                         <Route path="/" element={<Connections />} />
+                        <Route path="/logs" element={<Logs />} />
+                        <Route path="/iframe" element={<Iframe  source={"https://nube-io.com/"}/>} />
                         <Route path="/locations/:connUUID" element={<Locations />} />
                         <Route path="/networks/:locUUID" element={<Networks />} />
                         <Route path="/hosts/:netUUID" element={<Hosts />} />
@@ -61,5 +66,4 @@ const App: React.FC = () => {
         </Layout>
     );
 };
-console.log(9999999)
 export default App;

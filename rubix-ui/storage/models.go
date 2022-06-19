@@ -1,6 +1,13 @@
 package storage
 
-type Connection struct {
+import "time"
+
+type Log struct {
+	UUID     string      `json:"uuid"`
+	Time     time.Time   `json:"time"`
+	Function string      `json:"function"`
+	Type     string      `json:"type"`
+	Data     interface{} `json:"data"`
 }
 
 type RubixConnection struct {
