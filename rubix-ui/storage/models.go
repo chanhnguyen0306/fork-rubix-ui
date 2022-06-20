@@ -1,12 +1,15 @@
 package storage
 
-import "time"
+import (
+	"time"
+)
 
 type Log struct {
 	UUID     string      `json:"uuid"`
 	Time     time.Time   `json:"time"`
 	Function string      `json:"function"`
 	Type     string      `json:"type"`
+	HasData  bool        `json:"has_data"`
 	Data     interface{} `json:"data"`
 }
 

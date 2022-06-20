@@ -14,7 +14,27 @@ type Out struct {
 	Val  interface{} `json:"val"`
 }
 
-func Humanize(data []byte) *[]Out {
+func Map(data []byte) *[]Out {
+	value := gjson.ParseBytes(data)
+	val := reflect.ValueOf(value.Value())
+	var res []Out
+	if val.Kind() == reflect.Map {
+		for _, e := range val.MapKeys() {
+			v := val.MapIndex(e)
+			switch t := v.Interface().(type) {
+			case int:
+			case string:
+				res = append(res, Out{Key: e.String(), Name: toTitleCase(e.String()), Val: t})
+			case bool:
+			default:
+
+			}
+		}
+	}
+	return &res
+}
+
+func Array(data []byte) *[]Out {
 	value := gjson.ParseBytes(data)
 	val := reflect.ValueOf(value.Value())
 	var res []Out

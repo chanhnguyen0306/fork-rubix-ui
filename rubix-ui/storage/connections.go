@@ -8,7 +8,6 @@ import (
 )
 
 func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
-
 	if rc.Name == "" {
 		rc.Name = uuid.ShortUUID("tmp")
 	}
@@ -23,7 +22,6 @@ func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
 	}
 	if rc.Port == 0 {
 		rc.Port = 1662
-
 	}
 	rc.UUID = uuid.ShortUUID("con")
 	data, err := json.Marshal(rc)

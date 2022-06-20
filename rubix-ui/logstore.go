@@ -8,11 +8,11 @@ func (app *App) GetLogs() interface{} {
 		app.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
-	//for _, log := range logs { //delete all the data to not show the user
-	//	log.Data = nil
-	//	logs = append(logs, log)
-	//
-	//}
+	for _, log := range logs { //delete all the data to not show the user
+		log.Data = nil
+		logs = append(logs, log)
+
+	}
 	return logs
 }
 

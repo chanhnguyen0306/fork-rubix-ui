@@ -1,5 +1,5 @@
-import {GetHostTime} from "../../../wailsjs/go/main/App";
-import {Helpers} from "../../helpers/checks";
+import {GetHostTime} from "../../../../wailsjs/go/main/App";
+import {Helpers} from "../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
     return Helpers.IsUndefined(uuid, "get host time has uuid") as Error

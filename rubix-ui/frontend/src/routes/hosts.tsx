@@ -141,6 +141,11 @@ const HostsTable = (props: any) => {
   if (!hosts) return <></>;
   const columns = [
     {
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",

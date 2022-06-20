@@ -50,6 +50,16 @@ export class HostsFactory {
         return one
     }
 
+    // get the first network uuid
+    async GetFistUUID(): Promise<string> {
+        let uuid = ""
+        this.GetFist().then(res => {
+            uuid = res.uuid
+        })
+        return uuid
+    }
+
+
     async GetAll(): Promise<Array<model.Host>> {
         let all: Array<model.Host> = {} as Array<model.Host>
         await GetHosts(this.connectionUUID).then(res => {

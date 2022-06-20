@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/times/utilstime"
+	log "github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"time"
 )
@@ -19,6 +20,7 @@ func (app *App) crudMessage(ok bool, data interface{}) {
 	if ok {
 		app.msgToUI(app.ctx, string(okMsg), data)
 	} else {
+		log.Errorf("error %s", data)
 		app.msgToUI(app.ctx, string(errMsg), data)
 	}
 

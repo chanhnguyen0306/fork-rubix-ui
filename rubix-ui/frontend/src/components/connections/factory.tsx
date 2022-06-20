@@ -65,6 +65,16 @@ export class ConnectionFactory {
         return one
     }
 
+    // get the first connection uuid
+    async GetFistUUID(): Promise<string> {
+        let uuid = ""
+        this.GetFist().then(res => {
+            uuid = res.uuid
+        })
+        return uuid
+    }
+
+
     async GetAll(): Promise<Array<storage.RubixConnection>> {
         let all: Array<storage.RubixConnection> = {} as Array<storage.RubixConnection>
         await GetConnections().then(res => {
