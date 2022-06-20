@@ -1,3 +1,34 @@
+export namespace edge {
+	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
+	export class InternetIP {
+	    ip_address: string;
+	    ok: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new InternetIP(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip_address = source["ip_address"];
+	        this.ok = source["ok"];
+	    }
+	}
+
+}
+
 export namespace storage {
 	
 	export class RubixConnection {
@@ -153,7 +184,6 @@ export namespace model {
 		    return a;
 		}
 	}
-	
 
 }
 

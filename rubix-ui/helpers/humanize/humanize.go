@@ -34,22 +34,30 @@ func Map(data []byte) *[]Out {
 	return &res
 }
 
-func Array(data []byte) *[]Out {
+func ArrayOfMaps(data []byte) *[]Out {
 	value := gjson.ParseBytes(data)
 	val := reflect.ValueOf(value.Value())
 	var res []Out
-	if val.Kind() == reflect.Map {
-		for _, e := range val.MapKeys() {
-			v := val.MapIndex(e)
-			switch t := v.Interface().(type) {
-			case int:
-			case string:
-				res = append(res, Out{Key: e.String(), Name: toTitleCase(e.String()), Val: t})
-			case bool:
-			default:
+	if val.Kind() == reflect.Slice {
+		for i := 0; i < val.Len(); i++ {
+			if val.Index(i).Kind() == reflect.Interface {
+				maps := val.Index(i).Elem()
+				if maps.Kind() == reflect.Map {
+					for _, e := range maps.MapKeys() {
+						v := maps.MapIndex(e)
+						switch t := v.Interface().(type) {
+						case int:
+						case string:
+							res = append(res, Out{Key: e.String(), Name: toTitleCase(e.String()), Val: t})
+						case bool:
+						default:
 
+						}
+					}
+				}
 			}
 		}
+
 	}
 	return &res
 }
