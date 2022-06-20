@@ -29,7 +29,6 @@ export const CreateEditModal = (props: any) => {
     try {
       const res = await factory.Add();
       if (res.uuid) {
-        refreshList();
         openNotificationWithIcon("success", `added ${connection.name} success`);
       } else {
         openNotificationWithIcon("error", `added ${connection.name} fail`);
@@ -44,7 +43,6 @@ export const CreateEditModal = (props: any) => {
     factory.this = connection;
     factory.uuid = connection.uuid;
     const res = factory.Update();
-    refreshList();
   };
 
   const handleClose = () => {
@@ -62,6 +60,7 @@ export const CreateEditModal = (props: any) => {
     }
     setConfirmLoading(false);
     handleClose();
+    refreshList();
   };
 
   const isDisabled = (): boolean => {

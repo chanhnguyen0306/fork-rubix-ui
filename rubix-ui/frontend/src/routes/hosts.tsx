@@ -35,9 +35,8 @@ const CreateEditModal = (props: any) => {
     currentHost,
     isModalVisible,
     isLoadingForm,
-    updateHosts,
+    refreshList,
     onCloseModal,
-    setIsFetching,
     connUUID,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -50,8 +49,6 @@ const CreateEditModal = (props: any) => {
   const addHost = async (host: model.Host) => {
     try {
       const res = await AddHost(connUUID, host);
-      hosts.push(res);
-      updateHosts(hosts);
       openNotificationWithIcon("success", `added ${host.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `added ${host.name} fail`);
@@ -62,8 +59,6 @@ const CreateEditModal = (props: any) => {
     try {
       const res = await EditHost(connUUID, host.uuid, host);
       const index = hosts.findIndex((n: model.Host) => n.uuid === host.uuid);
-      hosts[index] = res;
-      updateHosts(hosts);
       openNotificationWithIcon("success", `updated ${host.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `updated ${host.name} fail`);
@@ -84,8 +79,8 @@ const CreateEditModal = (props: any) => {
       addHost(host);
     }
     setConfirmLoading(false);
-    setIsFetching(true);
     handleClose();
+    refreshList();
   };
 
   const isDisabled = (): boolean => {
@@ -129,22 +124,10 @@ const CreateEditModal = (props: any) => {
 };
 
 const HostsTable = (props: any) => {
-  const {
-    hosts,
-    networks,
-    updateHosts,
-    showModal,
-    isFetching,
-    setIsFetching,
-    connUUID,
-  } = props;
+  const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
+    props;
   if (!hosts) return <></>;
   const columns = [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
     {
       title: "Name",
       dataIndex: "name",
@@ -162,6 +145,11 @@ const HostsTable = (props: any) => {
       render: (network_uuid: string) => (
         <span>{getNetworkNameByUUID(network_uuid)}</span>
       ),
+    },
+    {
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
     },
     {
       title: "Actions",
@@ -190,9 +178,7 @@ const HostsTable = (props: any) => {
 
   const deleteHost = async (uuid: string) => {
     await DeleteHost(connUUID, uuid);
-    const newHosts = hosts.filter((n: model.Host) => n.uuid !== uuid);
-    updateHosts(newHosts);
-    setIsFetching(true);
+    refreshList();
   };
 
   const getNetworkNameByUUID = (uuid: string) => {
@@ -224,14 +210,15 @@ export const Hosts = () => {
   const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
-    fetchHosts();
+    fetchList();
     if (networks.length === 0) {
       fetchNetworks();
     }
-  }, [hosts]);
+  }, []);
 
-  const fetchHosts = async () => {
+  const fetchList = async () => {
     try {
+      setIsFetching(true);
       const res = await (
         await GetHosts(connUUID)
       ).map((h) => {
@@ -273,6 +260,10 @@ export const Hosts = () => {
     setHosts(hosts);
   };
 
+  const refreshList = () => {
+    fetchList();
+  };
+
   const showModal = (host: model.Host) => {
     setCurrentHost(host);
     setIsModalVisible(true);
@@ -296,18 +287,16 @@ export const Hosts = () => {
         hostSchema={hostSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
-        updateHosts={updateHosts}
+        refreshList={refreshList}
         onCloseModal={onCloseModal}
-        setIsFetching={setIsFetching}
         connUUID={connUUID}
       />
       <HostsTable
         hosts={hosts}
         networks={networks}
         isFetching={isFetching}
-        updateHosts={updateHosts}
+        refreshList={refreshList}
         showModal={showModal}
-        setIsFetching={setIsFetching}
         connUUID={connUUID}
       />
     </>
