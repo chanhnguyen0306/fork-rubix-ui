@@ -28,6 +28,7 @@ export const Connections = () => {
       res = !res ? [] : res;
       setConnections(res);
     } catch (error) {
+      setConnections([]);
     } finally {
       setIsFetching(false);
     }

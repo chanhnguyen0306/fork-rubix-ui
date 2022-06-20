@@ -32,12 +32,11 @@ const AddLocationButton = (props: any) => {
 
 const CreateEditLocationModal = (props: any) => {
   const {
-    locations,
     currentLocation,
     locationSchema,
     isModalVisible,
     isLoadingForm,
-    updateLocations,
+    refreshList,
     onCloseModal,
     setIsFetching,
     connUUID,
@@ -53,8 +52,7 @@ const CreateEditLocationModal = (props: any) => {
     try {
       const res = await AddLocation(connUUID, location);
       if (res.uuid) {
-        locations.push(res);
-        updateLocations(locations);
+        refreshList();
         openNotificationWithIcon("success", `added ${location.name} success`);
       } else {
         openNotificationWithIcon("error", `added ${location.name} fail`);
@@ -68,11 +66,7 @@ const CreateEditLocationModal = (props: any) => {
   const editLocation = async (location: Location) => {
     try {
       const res = UpdateLocation(connUUID, location.uuid, location);
-      const index = locations.findIndex(
-        (n: Location) => n.uuid === location.uuid
-      );
-      locations[index] = res;
-      updateLocations(locations);
+      refreshList();
       openNotificationWithIcon("success", `updated ${location.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `updated ${location.name} fail`);
@@ -140,11 +134,11 @@ const CreateEditLocationModal = (props: any) => {
 const LocationsTable = (props: any) => {
   const {
     locations,
-    updateLocations,
     showModal,
     isFetching,
     setIsFetching,
     connUUID,
+    refreshList,
   } = props;
   if (!locations) return <></>;
 
@@ -166,6 +160,11 @@ const LocationsTable = (props: any) => {
       dataIndex: "networks",
       key: "networks",
       render: (networks: []) => <a>{networks ? networks.length : 0}</a>,
+    },
+    {
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
     },
     {
       title: "Actions",
@@ -203,8 +202,7 @@ const LocationsTable = (props: any) => {
 
   const deleteLocation = async (uuid: string) => {
     await DeleteLocation(connUUID, uuid);
-    const newLocations = locations.filter((n: Location) => n.uuid !== uuid);
-    updateLocations(newLocations);
+    refreshList();
     setIsFetching(true);
   };
 
@@ -230,29 +228,22 @@ export const Locations = () => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   let { connUUID } = useParams();
 
-
   useEffect(() => {
-    console.log("fetchLocations-");
-    fetchLocations().then(r => r).catch(err => {
-      console.log(err)
-    });
-  }, [locations]);
+    fetchList();
+  }, []);
 
   useEffect(() => {
     getConnection();
   }, [connUUID]);
 
-  const fetchLocations = async () => {
+  const fetchList = async () => {
     try {
-      await new Promise<void>((resolve)=>setTimeout(async () => {
-        const res = await GetLocations(connUUID as string);
-        setLocations(res);
-        console.log("timeout, fetchLocations to be removed");
-        resolve();
-      }, 500));
-
+      setIsFetching(true);
+      let res = await GetLocations(connUUID as string);
+      res = !res ? [] : res;
+      setLocations(res);
     } catch (error) {
-      console.log(error);
+      setLocations([]);
     } finally {
       setIsFetching(false);
     }
@@ -290,6 +281,10 @@ export const Locations = () => {
     setLocations(locations);
   };
 
+  const refreshList = () => {
+    fetchList();
+  };
+
   const showModal = (location: Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
@@ -313,7 +308,7 @@ export const Locations = () => {
         locationSchema={locationSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
-        updateLocations={updateLocations}
+        refreshList={refreshList}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
         connUUID={connUUID}
@@ -322,7 +317,7 @@ export const Locations = () => {
         locations={locations}
         isFetching={isFetching}
         showModal={showModal}
-        updateLocations={updateLocations}
+        refreshList={refreshList}
         setIsFetching={setIsFetching}
         connUUID={connUUID}
       />
