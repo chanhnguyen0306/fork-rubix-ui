@@ -15,9 +15,12 @@ func (app *App) GetNetworkSchema(connUUID string) interface{} {
 	data, res := client.GetNetworkSchema()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
-	} else {
+		return nil
 	}
-	return data
+	out := map[string]interface{}{
+		"properties": data,
+	}
+	return out
 }
 
 func (app *App) AddHostNetwork(connUUID string, host *model.Network) *model.Network {

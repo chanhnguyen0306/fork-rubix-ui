@@ -1,7 +1,6 @@
 package humanize
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -14,6 +13,6 @@ type name struct {
 
 func TestHumanize(t *testing.T) {
 
-	fmt.Println(Humanize(name{AA: "hey", BB: "hey", CC: "hey", DD: "hey"}))
+	//fmt.Println(Map(name{AA: "hey", BB: "hey", CC: "hey", DD: "hey"}))
 
 }

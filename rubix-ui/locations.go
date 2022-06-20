@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/model"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/stretchr/objx"
 )
 
 func (app *App) GetLocationSchema(connUUID string) interface{} {
@@ -15,9 +16,47 @@ func (app *App) GetLocationSchema(connUUID string) interface{} {
 	data, res := client.GetLocationSchema()
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
-	} else {
 	}
-	return data
+	out := map[string]interface{}{
+		"properties": data,
+	}
+	return out
+}
+
+type TableSchema struct {
+	Title string `json:"title"`
+	Key   string `json:"key"`
+	Index string `json:"dataIndex"`
+}
+
+func BuildTableSchema(data interface{}) []TableSchema {
+	var schema []TableSchema
+	for i, value := range objx.New(data) {
+		v := objx.New(value)
+		title := ""
+		key := i
+		index := key
+		for k, v := range v {
+			if k == "title" {
+				title = v.(string)
+			}
+		}
+		schema = append(schema, TableSchema{Title: title, Key: key, Index: index})
+	}
+	return schema
+}
+
+func (app *App) GetLocationTableSchema(connUUID string) interface{} {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	data, res := client.GetLocationSchema()
+	if data == nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
+	}
+	return BuildTableSchema(data)
 }
 
 func (app *App) AddLocation(connUUID string, body *model.Location) *model.Location {
@@ -36,7 +75,6 @@ func (app *App) AddLocation(connUUID string, body *model.Location) *model.Locati
 }
 
 func (app *App) GetLocations(connUUID string) (resp []model.Location) {
-	fmt.Println("GetLocations", connUUID)
 	resp = []model.Location{}
 	client, err := app.initConnection(connUUID)
 	if err != nil {
