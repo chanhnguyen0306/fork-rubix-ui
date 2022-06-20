@@ -30,14 +30,12 @@ const AddNetworkButton = (props: any) => {
 
 const CreateEditNetworkModal = (props: any) => {
   const {
-    networks,
     networkSchema,
     currentNetwork,
     isModalVisible,
     isLoadingForm,
-    updateNetworks,
+    refreshList,
     onCloseModal,
-    setIsFetching,
     connUUID,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -50,8 +48,6 @@ const CreateEditNetworkModal = (props: any) => {
   const addNetwork = async (network: model.Network) => {
     try {
       const res = await AddHostNetwork(connUUID, network);
-      networks.push(res);
-      updateNetworks(networks);
       openNotificationWithIcon("success", `added ${network.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `added ${network.name} fail`);
@@ -61,11 +57,6 @@ const CreateEditNetworkModal = (props: any) => {
   const editNetwork = async (network: model.Network) => {
     try {
       const res = await EditHostNetwork(connUUID, network.uuid, network);
-      const index = networks.findIndex(
-        (n: model.Network) => n.uuid === network.uuid
-      );
-      networks[index] = res;
-      updateNetworks(networks);
       openNotificationWithIcon("success", `updated ${network.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `updated ${network.name} fail`);
@@ -87,8 +78,8 @@ const CreateEditNetworkModal = (props: any) => {
       addNetwork(network);
     }
     setConfirmLoading(false);
-    setIsFetching(true);
     handleClose();
+    refreshList();
   };
 
   const isDisabled = (): boolean => {
@@ -131,15 +122,8 @@ const CreateEditNetworkModal = (props: any) => {
 };
 
 const NetworksTable = (props: any) => {
-  const {
-    networks,
-    locations,
-    updateNetworks,
-    showModal,
-    isFetching,
-    setIsFetching,
-    connUUID,
-  } = props;
+  const { networks, locations, refreshList, showModal, isFetching, connUUID } =
+    props;
   if (!networks) return <></>;
 
   const navigate = useNavigate();
@@ -168,6 +152,11 @@ const NetworksTable = (props: any) => {
       render: (location_uuid: string) => (
         <span>{getLocationNameByUUID(location_uuid)}</span>
       ),
+    },
+    {
+      title: "UUID",
+      dataIndex: "uuid",
+      key: "uuid",
     },
     {
       title: "Actions",
@@ -205,11 +194,7 @@ const NetworksTable = (props: any) => {
 
   const deleteNetwork = async (networkUUID: string) => {
     await DeleteHostNetwork(connUUID, networkUUID);
-    const newNetworks = networks.filter(
-      (n: model.Network) => n.uuid !== networkUUID
-    );
-    updateNetworks(newNetworks);
-    setIsFetching(true);
+    refreshList();
   };
 
   const getLocationNameByUUID = (location_uuid: string) => {
@@ -242,14 +227,15 @@ export const Networks = () => {
   const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
-    fetchNetworks();
+    fetchList();
     if (locations.length === 0) {
       fetchLocations();
     }
-  }, [networks]);
+  }, []);
 
-  const fetchNetworks = async () => {
+  const fetchList = async () => {
     try {
+      setIsFetching(true);
       const res = await GetHostNetworks(connUUID);
       setNetworks(res);
     } catch (error) {
@@ -286,6 +272,10 @@ export const Networks = () => {
     setNetworks(networks);
   };
 
+  const refreshList = () => {
+    fetchList();
+  };
+
   const showModal = (network: model.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
@@ -309,18 +299,16 @@ export const Networks = () => {
         networkSchema={networkSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
-        updateNetworks={updateNetworks}
         onCloseModal={onCloseModal}
-        setIsFetching={setIsFetching}
+        refreshList={refreshList}
         connUUID={connUUID}
       />
       <NetworksTable
         networks={networks}
         locations={locations}
         isFetching={isFetching}
-        updateNetworks={updateNetworks}
         showModal={showModal}
-        setIsFetching={setIsFetching}
+        refreshList={refreshList}
         connUUID={connUUID}
       />
     </>

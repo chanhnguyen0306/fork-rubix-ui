@@ -52,7 +52,6 @@ const CreateEditLocationModal = (props: any) => {
     try {
       const res = await AddLocation(connUUID, location);
       if (res.uuid) {
-        refreshList();
         openNotificationWithIcon("success", `added ${location.name} success`);
       } else {
         openNotificationWithIcon("error", `added ${location.name} fail`);
@@ -66,7 +65,6 @@ const CreateEditLocationModal = (props: any) => {
   const editLocation = async (location: Location) => {
     try {
       const res = UpdateLocation(connUUID, location.uuid, location);
-      refreshList();
       openNotificationWithIcon("success", `updated ${location.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `updated ${location.name} fail`);
@@ -91,6 +89,7 @@ const CreateEditLocationModal = (props: any) => {
     setConfirmLoading(false);
     setIsFetching(true);
     handleClose();
+    refreshList();
   };
 
   const isDisabled = (): boolean => {
