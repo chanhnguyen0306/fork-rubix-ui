@@ -23,27 +23,45 @@ const sidebarItems = [
   { name: "iframe", icon: LinkOutlined, link: "/iframe" },
 ];
 
-const menuItems: MenuProps["items"] = sidebarItems.map(
-  ({ name, icon, link }) => {
-    return {
-      key: link,
-      icon: React.createElement(icon),
-      label: name,
-    };
-  }
-);
-
 const App: React.FC = () => {
   let navigate = useNavigate();
 
-  const onClick = (e: any) => {
-    navigate(e.key);
+  const onClickSubMenu = (e: any) => {
+    console.log("onClickSubMenu", e);
+    // navigate(e.key);
   };
+
+  const onClickMenu = (e: any, link: string) => {
+    e.stopPropagation();
+    console.log("onClickMenu", e);
+    console.log("link", link);
+
+    // navigate(e.key);
+  };
+
+  const menuItems: MenuProps["items"] = sidebarItems.map(
+    ({ name, icon, link }) => {
+      return {
+        key: link,
+        icon: React.createElement(icon),
+        label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
+        children: [
+          { label: "item 1", key: "logs1" },
+          { label: "item 2", key: "iframe1" },
+        ],
+      };
+    }
+  );
 
   return (
     <Layout>
       <Sider width={200} style={{ height: "100vh" }}>
-        <Menu mode="inline" theme="dark" items={menuItems} onClick={onClick} />
+        <Menu
+          mode="inline"
+          theme="dark"
+          items={menuItems}
+          onClick={onClickSubMenu}
+        />
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
         <Content
