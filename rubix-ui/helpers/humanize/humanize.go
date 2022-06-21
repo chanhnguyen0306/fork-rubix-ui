@@ -2,6 +2,7 @@ package humanize
 
 import (
 	"github.com/iancoleman/strcase"
+	"github.com/stretchr/objx"
 	"github.com/tidwall/gjson"
 	"reflect"
 	"strings"
@@ -15,6 +16,31 @@ type Out struct {
 	Data  interface{} `json:"data"`
 }
 
+type TableSchema struct {
+	Title string `json:"title"`
+	Key   string `json:"key"`
+	Index string `json:"dataIndex"`
+}
+
+func BuildTableSchema(data interface{}) []TableSchema {
+	var schema []TableSchema
+	elementMap := make(map[string]TableSchema)
+	for i, value := range objx.New(data) {
+		v := objx.New(value)
+		title := ""
+		key := i
+		index := key
+		for k, v := range v {
+			if k == "title" {
+				title = v.(string)
+			}
+		}
+		elementMap[i] = TableSchema{Title: title, Key: key, Index: index}
+		schema = append(schema, TableSchema{Title: title, Key: key, Index: index})
+	}
+	return schema
+}
+
 func Map(data []byte) *[]Out {
 	value := gjson.ParseBytes(data)
 	val := reflect.ValueOf(value.Value())
@@ -25,7 +51,7 @@ func Map(data []byte) *[]Out {
 			switch t := v.Interface().(type) {
 			case int:
 			case string:
-				res = append(res, Out{Key: e.String(), Title: toTitleCase(e.String()), Data: t})
+				res = append(res, Out{Key: e.String(), Index: e.String(), Title: toTitleCase(e.String()), Data: t})
 			case bool:
 			default:
 

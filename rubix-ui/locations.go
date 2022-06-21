@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/model"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
-	"github.com/stretchr/objx"
+	"github.com/NubeIO/rubix-ui/helpers/humanize"
 )
 
 func (app *App) GetLocationSchema(connUUID string) interface{} {
@@ -23,31 +23,6 @@ func (app *App) GetLocationSchema(connUUID string) interface{} {
 	return out
 }
 
-type TableSchema struct {
-	Title string `json:"title"`
-	Key   string `json:"key"`
-	Index string `json:"dataIndex"`
-}
-
-func BuildTableSchema(data interface{}) []TableSchema {
-	var schema []TableSchema
-	elementMap := make(map[string]TableSchema)
-	for i, value := range objx.New(data) {
-		v := objx.New(value)
-		title := ""
-		key := i
-		index := key
-		for k, v := range v {
-			if k == "title" {
-				title = v.(string)
-			}
-		}
-		elementMap[i] = TableSchema{Title: title, Key: key, Index: index}
-		schema = append(schema, TableSchema{Title: title, Key: key, Index: index})
-	}
-	return schema
-}
-
 func (app *App) GetLocationTableSchema(connUUID string) interface{} {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
@@ -58,7 +33,7 @@ func (app *App) GetLocationTableSchema(connUUID string) interface{} {
 	if data == nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 	}
-	return BuildTableSchema(data)
+	return humanize.BuildTableSchema(data)
 }
 
 func (app *App) AddLocation(connUUID string, body *model.Location) *model.Location {
