@@ -13,7 +13,7 @@ export const LocationsTable = (props: any) => {
         setIsFetching,
         connUUID,
     } = props;
-    if (!locations) return <></>;
+    if (!locations) return <></>
 
     const navigate = useNavigate();
 

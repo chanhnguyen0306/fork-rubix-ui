@@ -9,9 +9,10 @@ import (
 )
 
 type Out struct {
-	Key  string      `json:"key"`
-	Name string      `json:"name"`
-	Val  interface{} `json:"val"`
+	Title string      `json:"title"`
+	Key   string      `json:"key"`
+	Index string      `json:"dataIndex"`
+	Data  interface{} `json:"data"`
 }
 
 func Map(data []byte) *[]Out {
@@ -24,7 +25,7 @@ func Map(data []byte) *[]Out {
 			switch t := v.Interface().(type) {
 			case int:
 			case string:
-				res = append(res, Out{Key: e.String(), Name: toTitleCase(e.String()), Val: t})
+				res = append(res, Out{Key: e.String(), Title: toTitleCase(e.String()), Data: t})
 			case bool:
 			default:
 
@@ -48,7 +49,7 @@ func ArrayOfMaps(data []byte) *[]Out {
 						switch t := v.Interface().(type) {
 						case int:
 						case string:
-							res = append(res, Out{Key: e.String(), Name: toTitleCase(e.String()), Val: t})
+							res = append(res, Out{Key: e.String(), Title: toTitleCase(e.String()), Data: t})
 						case bool:
 						default:
 

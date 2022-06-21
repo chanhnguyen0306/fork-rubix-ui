@@ -29,14 +29,35 @@ func (app *App) startup(ctx context.Context) {
 	//app.sendTimeToUI(ctx)
 }
 
+func matchUUID(uuid string) bool {
+	if len(uuid) == 16 {
+		if uuid[0:4] == "con_" {
+			return true
+		}
+	}
+	return false
+}
+
 //initRest get rest client
 func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
-	connection, err := app.DB.Select(connUUID)
-	if err != nil {
-		return nil, err
+	var err error
+	connection := &storage.RubixConnection{}
+	if matchUUID(connUUID) {
+		connection, err = app.DB.Select(connUUID)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		connection, err = app.DB.SelectByName(connUUID)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if connection == nil {
+		return nil, errors.New("failed to find a connection")
 	}
 	time.Sleep(100 * time.Millisecond)
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)

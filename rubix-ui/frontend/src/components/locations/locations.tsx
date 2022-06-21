@@ -1,4 +1,11 @@
-import {AddLocation, GetLocation, GetLocations, UpdateLocation} from "../../../wailsjs/go/main/App";
+import {
+    AddLocation,
+    GetLocation,
+    GetLocations,
+    GetLocationSchema,
+    GetLocationTableSchema,
+    UpdateLocation
+} from "../../../wailsjs/go/main/App";
 import {model} from "../../../wailsjs/go/models";
 import {Helpers} from "../../helpers/checks";
 
@@ -33,6 +40,27 @@ export class LocationFactory {
 
     public GetTotalCount(): number {
         return this.count
+    }
+
+
+    async Schema(): Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
+        await GetLocationSchema(this.connectionUUID).then(res => {
+            all = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return all
+    }
+
+    async TableSchema(): Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
+        await GetLocationTableSchema(this.connectionUUID).then(res => {
+            all = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return all
     }
 
 
