@@ -1,5 +1,5 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import React from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import {
@@ -23,35 +23,42 @@ const sidebarItems = [
   { name: "iframe", icon: LinkOutlined, link: "/iframe" },
 ];
 
+const onClickSubMenu = (e: any) => {
+  console.log("onClickSubMenu", e);
+  // navigate(e.key);
+};
+
+const onClickMenu = (e: any, link: string) => {
+  e.stopPropagation();
+  console.log("onClickMenu", e);
+  console.log("link", link);
+  // navigate(e.key);
+};
+
+const menuItems: MenuProps["items"] = sidebarItems.map(
+  ({ name, icon, link }) => {
+    return {
+      key: link,
+      icon: React.createElement(icon),
+      label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
+      children: [
+        {
+          label: <span onClick={(e) => onClickMenu(e, "item1")}>item 1</span>,
+          key: "1",
+          children: [
+            { label: "1.1", key: "1.1" },
+            { label: "item 1.2", key: "1.2" },
+          ],
+        },
+        { label: "item 2", key: "2" },
+      ],
+    };
+  }
+);
+
 const App: React.FC = () => {
   let navigate = useNavigate();
-
-  const onClickSubMenu = (e: any) => {
-    console.log("onClickSubMenu", e);
-    // navigate(e.key);
-  };
-
-  const onClickMenu = (e: any, link: string) => {
-    e.stopPropagation();
-    console.log("onClickMenu", e);
-    console.log("link", link);
-
-    // navigate(e.key);
-  };
-
-  const menuItems: MenuProps["items"] = sidebarItems.map(
-    ({ name, icon, link }) => {
-      return {
-        key: link,
-        icon: React.createElement(icon),
-        label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
-        children: [
-          { label: "item 1", key: "logs1" },
-          { label: "item 2", key: "iframe1" },
-        ],
-      };
-    }
-  );
+  const location = useLocation();
 
   return (
     <Layout>
