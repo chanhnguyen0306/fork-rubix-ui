@@ -1,9 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/rubix-ui/helpers/humanize"
 )
+
+var nets = networking.New()
 
 func (app *App) GetHostTime(connUUID, hostUUID string) interface{} {
 	client, err := app.initConnection(connUUID)
@@ -22,4 +26,46 @@ func (app *App) GetHostTime(connUUID, hostUUID string) interface{} {
 	}
 	d := humanize.Map(data.Body())
 	return d
+}
+
+func (app *App) GetServerTime(connUUID string) interface{} {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	data, msg, err := client.GetTime()
+	if msg != nil || err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", msg.Message))
+		return nil
+	}
+	j, _ := json.Marshal(data)
+	d := humanize.Map(j)
+	return d
+}
+
+func (app *App) GetServerNetworking(connUUID string) interface{} {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	data, msg, err := client.GetNetworking()
+	fmt.Println(data, msg, err)
+	if msg != nil || err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", msg.Message))
+		return nil
+	}
+	j, _ := json.Marshal(data)
+	d := humanize.ArrayOfMaps(j)
+	return d
+}
+
+func (app *App) GetPcInterfaces() networking.InterfaceNames {
+	names, err := nets.GetInterfacesNames()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return networking.InterfaceNames{}
+	}
+	return names
 }

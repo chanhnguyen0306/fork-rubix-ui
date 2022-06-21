@@ -6,6 +6,8 @@
 *.dylib
 *.idea
 *.code
+rubix-ui/bin/rubix-ui
+rubix-ui/bin/rubix-ui.exe
 rubix-ui/bin/rubix-ui-dev-linux-amd64
 rubix-ui/frontend/node_modules
 rubix-ui/node_modules

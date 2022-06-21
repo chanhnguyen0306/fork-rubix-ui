@@ -16,7 +16,7 @@ func main() {
 		Width:       950,
 		Height:      650,
 		Assets:      assets,
-		StartHidden: true,
+		StartHidden: false,
 		OnStartup:   app.startup,
 		Bind: []interface{}{
 			app,

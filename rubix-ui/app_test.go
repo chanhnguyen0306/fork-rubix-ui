@@ -9,7 +9,7 @@ func TestNewApp(t *testing.T) {
 
 	app := NewApp()
 
-	a := app.GetHostTime("local", "rc")
+	a := app.GetServerNetworking("local")
 
 	//elementMap := make(map[string]string)
 	//for i := 0; i < len(elements); i +=2 {

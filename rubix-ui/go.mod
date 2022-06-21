@@ -6,17 +6,18 @@ go 1.17
 
 require (
 	github.com/NubeDev/bacnet v0.0.4
+	github.com/NubeIO/lib-networking v0.0.4
 	github.com/NubeIO/lib-schema v0.0.3
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
-	github.com/NubeIO/rubix-assist v0.0.6
+	github.com/NubeIO/rubix-assist v0.0.7
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/na4ma4/config v1.0.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/objx v0.2.0
+	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.12.1
 	github.com/wailsapp/wails/v2 v2.0.0-beta.37
@@ -31,7 +32,6 @@ require (
 	github.com/NubeIO/lib-command v0.0.2 // indirect
 	github.com/NubeIO/lib-date v0.0.1 // indirect
 	github.com/NubeIO/lib-dirs v0.0.2 // indirect
-	github.com/NubeIO/lib-networking v0.0.4 // indirect
 	github.com/NubeIO/lib-redis v0.0.3 // indirect
 	github.com/NubeIO/lib-store v0.0.1 // indirect
 	github.com/NubeIO/lib-systemctl-go v0.0.5 // indirect

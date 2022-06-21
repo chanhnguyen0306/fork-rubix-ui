@@ -75,7 +75,7 @@ func ArrayOfMaps(data []byte) *[]Out {
 						switch t := v.Interface().(type) {
 						case int:
 						case string:
-							res = append(res, Out{Key: e.String(), Title: toTitleCase(e.String()), Data: t})
+							res = append(res, Out{Key: e.String(), Index: e.String(), Title: toTitleCase(e.String()), Data: t})
 						case bool:
 						default:
 
