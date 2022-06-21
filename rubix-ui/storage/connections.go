@@ -2,10 +2,20 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/tidwall/buntdb"
 )
+
+func matchUUID(uuid string) bool {
+	if len(uuid) == 16 {
+		if uuid[0:4] == "con_" {
+			return true
+		}
+	}
+	return false
+}
 
 func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
 	if rc.Name == "" {
@@ -29,6 +39,20 @@ func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
 		fmt.Printf("Error: %s", err)
 		return nil, err
 	}
+
+	//check if one exists with same name
+	name, _ := inst.SelectByName(rc.Name)
+	if err != nil {
+		return nil, err
+	}
+	if name != nil {
+		return nil, errors.New("a connection with this name already exists")
+	}
+
+	if matchUUID(rc.Name) {
+		return nil, errors.New("a connection name can not be named same as the uuid con_ and length of 16")
+	}
+
 	err = inst.DB.Update(func(tx *buntdb.Tx) error {
 		_, _, err := tx.Set(rc.UUID, string(data), nil)
 		return err
@@ -87,6 +111,21 @@ func (inst *db) Select(uuid string) (*RubixConnection, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+func (inst *db) SelectByName(name string) (*RubixConnection, error) {
+
+	all, err := inst.SelectAll()
+	if err != nil {
+		return nil, err
+	}
+	for _, connection := range all {
+		if connection.Name == name {
+			return &connection, nil
+		}
+
+	}
+	return nil, nil
 }
 
 func (inst *db) SelectAll() ([]RubixConnection, error) {

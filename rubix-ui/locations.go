@@ -31,6 +31,7 @@ type TableSchema struct {
 
 func BuildTableSchema(data interface{}) []TableSchema {
 	var schema []TableSchema
+	elementMap := make(map[string]TableSchema)
 	for i, value := range objx.New(data) {
 		v := objx.New(value)
 		title := ""
@@ -41,6 +42,7 @@ func BuildTableSchema(data interface{}) []TableSchema {
 				title = v.(string)
 			}
 		}
+		elementMap[i] = TableSchema{Title: title, Key: key, Index: index}
 		schema = append(schema, TableSchema{Title: title, Key: key, Index: index})
 	}
 	return schema
