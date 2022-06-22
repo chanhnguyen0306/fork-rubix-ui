@@ -1,6 +1,5 @@
 export namespace main {
 	
-	
 	export class ConnectionSchema {
 	    // Go type: schema.UUID
 	    uuid: any;
@@ -77,6 +76,18 @@ export namespace assitcli {
 
 export namespace edge {
 	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
 	export class InternetIP {
 	    ip_address: string;
 	    ok: boolean;
@@ -89,18 +100,6 @@ export namespace edge {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.ip_address = source["ip_address"];
 	        this.ok = source["ok"];
-	    }
-	}
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
 	    }
 	}
 
@@ -278,6 +277,7 @@ export namespace model {
 		    return a;
 		}
 	}
+	
 
 }
 

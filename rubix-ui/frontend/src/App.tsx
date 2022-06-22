@@ -1,5 +1,5 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import {
@@ -10,10 +10,18 @@ import {
 import { Locations } from "./routes/locations";
 import { Networks } from "./routes/networks";
 import { Hosts } from "./routes/hosts";
+import { model, storage } from "../wailsjs/go/models";
 import { Connections } from "./components/connections/connections";
-import "./App.css";
 import Iframe from "./components/iframe/iframe";
 import { Logs } from "./components/logs/logs";
+import { LocationFactory } from "./components/locations/locations";
+import { ConnectionFactory } from "./components/connections/factory";
+import RubixConnection = storage.RubixConnection;
+import Location = model.Location;
+import Network = model.Network;
+
+import "./App.css";
+import { GetLocations } from "../wailsjs/go/main/App";
 
 const { Content, Sider } = Layout;
 
@@ -24,8 +32,29 @@ const sidebarItems = [
 ];
 
 const App: React.FC = () => {
+  const [connections, setConnections] = useState([] as RubixConnection[]);
+  const [locations, setLocations] = useState([] as Location[]);
+
   const location = useLocation();
+  const { pathname } = location;
   let navigate = useNavigate();
+  let locationFactory = new LocationFactory();
+  let connectionFactory = new ConnectionFactory();
+
+  useEffect(() => {
+    fetchConnections();
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    let res = await GetLocations("con_016470BF4CA7");
+    setLocations(res);
+  };
+
+  const fetchConnections = async () => {
+    let res = await connectionFactory.GetAll();
+    setConnections(res);
+  };
 
   const onClickSubMenu = (e: any) => {
     console.log("onClickSubMenu", e);
@@ -39,26 +68,59 @@ const App: React.FC = () => {
     navigate(link);
   };
 
-  const menuItems: MenuProps["items"] = sidebarItems.map(
-    ({ name, icon, link }) => {
+  const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
+    const { name, icon, link } = item;
+    console.log(locations);
+
+    if (name === "Connections") {
       return {
         key: link,
         icon: React.createElement(icon),
         label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
-        // children: [
-        //   {
-        //     label: <span onClick={(e) => onClickMenu(e, "item1")}>item 1</span>,
-        //     key: "1",
-        //     children: [
-        //       { label: "1.1", key: "1.1" },
-        //       { label: "item 1.2", key: "1.2" },
-        //     ],
-        //   },
-        //   { label: "item 2", key: "2" },
-        // ],
+        children: connections.map((c: RubixConnection) => {
+          return {
+            key: c.uuid,
+            label: c.name,
+
+            children: locations.map((location: Location) => {
+              return {
+                label: (
+                  <span onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
+                    {location.name}
+                  </span>
+                ),
+                key: `/locations/${c.uuid}`,
+                children: location.networks.map((network: Network) => {
+                  return {
+                    label: (
+                      <span
+                        onClick={(e) =>
+                          onClickMenu(e, `/networks/${location.uuid}`)
+                        }
+                      >
+                        {network.name}
+                      </span>
+                    ),
+                    key: `/networks/${location.uuid}`,
+                    // children: [
+                    //   network.networks.map(()=>{
+                    //   })
+                    // ],
+                  };
+                }),
+              };
+            }),
+          };
+        }),
       };
     }
-  );
+
+    return {
+      key: link,
+      icon: React.createElement(icon),
+      label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
+    };
+  });
 
   return (
     <Layout>
@@ -68,8 +130,9 @@ const App: React.FC = () => {
           theme="dark"
           items={menuItems}
           onClick={onClickSubMenu}
-          selectedKeys={[location.pathname]}
+          // selectedKeys={[location.pathname]}
         />
+        ;
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
         <Content
