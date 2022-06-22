@@ -9,7 +9,7 @@ func TestNewApp(t *testing.T) {
 
 	app := NewApp()
 
-	a := app.Scanner("", "", 0, []string{})
+	a := app.GetLogs()
 
 	//elementMap := make(map[string]string)
 	//for i := 0; i < len(elements); i +=2 {

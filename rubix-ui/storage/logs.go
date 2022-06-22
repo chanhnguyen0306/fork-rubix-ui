@@ -51,9 +51,9 @@ func (inst *db) GetLogs() ([]Log, error) {
 			}
 			if matchLogUUID(data.UUID) {
 				resp = append(resp, data)
+				fmt.Printf("key: %s, value: %s\n", key, value)
 			}
 
-			fmt.Printf("key: %s, value: %s\n", key, value)
 			return true
 		})
 		return err

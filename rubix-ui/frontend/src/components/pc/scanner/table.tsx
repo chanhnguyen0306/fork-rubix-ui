@@ -40,12 +40,10 @@ export const PcScanner = () => {
     return (
         <>
             <h1>Rubix Scanner</h1>
-            {/*<AddButton showModal={fetchNetworks} />*/}
+            {/*<AddButton showModal={fetchNetworks} />*/} HOW DO I CALL fetchNetworks()
             <HostsTable
                 hosts={hosts}
                 isFetching={isFetching}
-
-
             />
         </>
     );
@@ -70,6 +68,7 @@ const HostsTable =  (props: any) => {
             key: 'ports',
         }
     ]
+
 
     return (
         <Table
