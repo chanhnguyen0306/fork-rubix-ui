@@ -219,8 +219,8 @@ export const Hosts = () => {
   const fetchList = async () => {
     try {
       setIsFetching(true);
-      const res = await (
-        await GetHosts(connUUID)
+      const res = (
+          await GetHosts(connUUID)
       ).map((h) => {
         if (h.enable == null) h.enable = h.enable ? h.enable : false;
         return h;

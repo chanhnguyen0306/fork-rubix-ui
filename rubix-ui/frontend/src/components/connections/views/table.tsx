@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Space, Spin, Table } from "antd";
-import { DeleteConnection } from "../../../../wailsjs/go/main/App";
+import {DeleteConnection, PingRubixAssist} from "../../../../wailsjs/go/main/App";
 import { storage } from "../../../../wailsjs/go/models";
 import RubixConnection = storage.RubixConnection;
+import {openNotificationWithIcon} from "../../../utils/utils";
 
 export const ConnectionsTable = (props: any) => {
   const { connections, refreshList, showModal, isFetching } = props;
@@ -57,6 +58,13 @@ export const ConnectionsTable = (props: any) => {
           >
             Delete
           </a>
+          <a
+              onClick={() => {
+                pingConnection(conn.uuid);
+              }}
+          >
+            Ping
+          </a>
         </Space>
       ),
     },
@@ -64,6 +72,19 @@ export const ConnectionsTable = (props: any) => {
 
   const deleteConnection = async (uuid: string) => {
     await DeleteConnection(uuid);
+    refreshList();
+  };
+
+  const pingConnection = async (uuid: string) => {
+    await PingRubixAssist(uuid).then(ok => {
+      console.log("ping ok", ok, uuid)
+      if (ok) {
+        openNotificationWithIcon("success", `ping success`);
+      } else {
+        openNotificationWithIcon("error", `ping fail`);
+      }
+    })
+
     refreshList();
   };
 

@@ -94,27 +94,31 @@ func (inst *db) Delete(uuid string) error {
 }
 
 func (inst *db) Select(uuid string) (*RubixConnection, error) {
-	var data *RubixConnection
-	err := inst.DB.View(func(tx *buntdb.Tx) error {
-		val, err := tx.Get(uuid)
+	if !matchUUID(uuid) {
+		return inst.SelectByName(uuid)
+	} else {
+		var data *RubixConnection
+		err := inst.DB.View(func(tx *buntdb.Tx) error {
+			val, err := tx.Get(uuid)
+			if err != nil {
+				return err
+			}
+			err = json.Unmarshal([]byte(val), &data)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
 		if err != nil {
-			return err
+			fmt.Printf("Error: %s", err)
+			return nil, err
 		}
-		err = json.Unmarshal([]byte(val), &data)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-		return nil, err
+		return data, nil
 	}
-	return data, nil
+
 }
 
 func (inst *db) SelectByName(name string) (*RubixConnection, error) {
-
 	all, err := inst.SelectAll()
 	if err != nil {
 		return nil, err
@@ -125,7 +129,7 @@ func (inst *db) SelectByName(name string) (*RubixConnection, error) {
 		}
 
 	}
-	return nil, nil
+	return nil, errors.New(fmt.Sprintf("failed to find connection by name:%s", name))
 }
 
 func (inst *db) SelectAll() ([]RubixConnection, error) {
