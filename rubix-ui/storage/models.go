@@ -10,7 +10,7 @@ type Log struct {
 	Function string      `json:"function"`
 	Type     string      `json:"type"`
 	HasData  bool        `json:"has_data"`
-	Data     interface{} `json:"data"`
+	Data     interface{} `json:"data,omitempty"`
 }
 
 type RubixConnection struct {

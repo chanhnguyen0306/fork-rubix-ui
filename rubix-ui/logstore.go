@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/NubeIO/rubix-ui/storage"
+)
 
 func (app *App) GetLogs() interface{} {
 	logs, err := app.DB.GetLogs()
@@ -8,12 +11,13 @@ func (app *App) GetLogs() interface{} {
 		app.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
+	var resp []storage.Log
 	for _, log := range logs { //delete all the data to not show the user
 		log.Data = nil
-		logs = append(logs, log)
+		resp = append(resp, log)
 
 	}
-	return logs
+	return resp
 }
 
 func (app *App) GetLogsWithData() interface{} {
