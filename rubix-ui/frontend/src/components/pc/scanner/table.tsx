@@ -69,6 +69,7 @@ const HostsTable =  (props: any) => {
         }
     ]
 
+
     return (
         <Table
             rowKey="uuid"
