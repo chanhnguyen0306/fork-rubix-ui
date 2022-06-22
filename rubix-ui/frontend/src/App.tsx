@@ -58,15 +58,8 @@ const App: React.FC = () => {
     setConnections(res);
   };
 
-  const onClickSubMenu = (e: any) => {
-    console.log("onClickSubMenu", e);
-    navigate(e.key);
-  };
-
   const onClickMenu = (e: any, link: string) => {
     e.stopPropagation();
-    console.log("onClickMenu", e);
-    console.log("link", link);
     navigate(link);
   };
 
@@ -79,41 +72,42 @@ const App: React.FC = () => {
         key: link,
         icon: React.createElement(icon),
         label: <span onClick={(e) => onClickMenu(e, link)}>{name}</span>,
-        children: connections.map((c: RubixConnection) => {
-          return {
-            key: c.uuid,
-            label: c.name,
-
-            children: locations.map((location: Location) => {
-              return {
-                label: (
-                  <span onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
-                    {location.name}
-                  </span>
-                ),
-                key: `/locations/${c.uuid}`,
-                children: location.networks.map((network: Network) => {
-                  return {
-                    label: (
-                      <span
-                        onClick={(e) =>
-                          onClickMenu(e, `/networks/${location.uuid}`)
-                        }
-                      >
-                        {network.name}
-                      </span>
-                    ),
-                    key: `/networks/${location.uuid}`,
-                    // children: [
-                    //   network.networks.map(()=>{
-                    //   })
-                    // ],
-                  };
-                }),
-              };
-            }),
-          };
-        }),
+        children:
+          connections.length === 0
+            ? null
+            : connections.map((c: RubixConnection) => {
+                return {
+                  key: c.uuid,
+                  label: c.name,
+                  children: locations.map((location: Location) => {
+                    return {
+                      key: location.uuid,
+                      label: (
+                        <span
+                          onClick={(e) =>
+                            onClickMenu(e, `/locations/${c.uuid}`)
+                          }
+                        >
+                          {location.name}
+                        </span>
+                      ),
+                      children: location.networks.map((network: Network) => {
+                        return {
+                          key: network.uuid,
+                          label: (
+                            <span
+                              onClick={(e) =>
+                                onClickMenu(e, `/networks/${location.uuid}`)
+                              }
+                            >
+                              {network.name}
+                            </span>
+                          ),
+                      }),
+                    };
+                  }),
+                };
+              }),
       };
     }
 
@@ -131,7 +125,6 @@ const App: React.FC = () => {
           mode="inline"
           theme="dark"
           items={menuItems}
-          onClick={onClickSubMenu}
           // selectedKeys={[location.pathname]}
         />
         ;
