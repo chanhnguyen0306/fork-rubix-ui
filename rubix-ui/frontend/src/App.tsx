@@ -103,6 +103,7 @@ const App: React.FC = () => {
                               {network.name}
                             </span>
                           ),
+                        };
                       }),
                     };
                   }),
