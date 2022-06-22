@@ -1,47 +1,38 @@
-import {useNavigate} from "react-router-dom";
-import {Spin, Table} from "antd";
+import { Spin, Table } from "antd";
 
 export const LogsTable = (props: any) => {
-    const {
-        connections,
-        isFetching,
-    } = props;
-    if (!connections) return <></>;
+  const { logs, isFetching } = props;
+  if (!logs) return <></>;
 
+  const columns = [
+    {
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
+    },
+    {
+      title: "Timestamp",
+      dataIndex: "time",
+      key: "time",
+    },
+    {
+      title: "Table",
+      dataIndex: "function",
+      key: "function",
+    },
+    {
+      title: "Action Type",
+      dataIndex: "type",
+      key: "type",
+    },
+  ];
 
-    const navigate = useNavigate();
-
-    const columns = [
-        {
-            title: "uuid",
-            dataIndex: "uuid",
-            key: "uuid",
-        },
-        {
-            title: "Timestamp",
-            dataIndex: "time",
-            key: "time",
-        },
-        {
-            title: "Table",
-            dataIndex: "function",
-            key: "function",
-        },
-        {
-            title: "Action Type",
-            dataIndex: "type",
-            key: "type",
-        }
-    ];
-
-    return (
-        <div>
-            <Table
-                rowKey="uuid"
-                dataSource={connections}
-                columns={columns}
-                loading={{ indicator: <Spin />, spinning: isFetching }}
-            />
-        </div>
-    );
+  return (
+    <Table
+      rowKey="uuid"
+      dataSource={logs}
+      columns={columns}
+      loading={{ indicator: <Spin />, spinning: isFetching }}
+    />
+  );
 };

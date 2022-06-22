@@ -20,8 +20,9 @@ import RubixConnection = storage.RubixConnection;
 import Location = model.Location;
 import Network = model.Network;
 
-import "./App.css";
 import { GetLocations } from "../wailsjs/go/main/App";
+import "./App.css";
+import { PcScanner } from "./components/pc/scanner/table";
 
 const { Content, Sider } = Layout;
 
@@ -29,6 +30,7 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
   { name: "iframe", icon: LinkOutlined, link: "/iframe" },
+  { name: "table", icon: LinkOutlined, link: "/table" },
 ];
 
 const App: React.FC = () => {
@@ -145,6 +147,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Connections />} />
             <Route path="/logs" element={<Logs />} />
+            <Route path="/table" element={<PcScanner />} />
             <Route
               path="/iframe"
               element={<Iframe source={"https://nube-io.com/"} />}

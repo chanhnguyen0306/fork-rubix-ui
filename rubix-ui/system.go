@@ -60,12 +60,3 @@ func (app *App) GetServerNetworking(connUUID string) interface{} {
 	d := humanize.ArrayOfMaps(j)
 	return d
 }
-
-func (app *App) GetPcInterfaces() networking.InterfaceNames {
-	names, err := nets.GetInterfacesNames()
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return networking.InterfaceNames{}
-	}
-	return names
-}

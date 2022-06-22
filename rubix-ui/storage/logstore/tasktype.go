@@ -8,20 +8,20 @@ type TaskType int
 
 //go:generate stringer -type=TaskType
 const (
-	Add TaskType = iota
+	Create TaskType = iota
 	Delete
-	Edit
+	Update
 	BackUp
 	Restore
 )
 
 func CheckType(s string) error {
 	switch s {
-	case Add.String():
+	case Create.String():
 		return nil
 	case Delete.String():
 		return nil
-	case Edit.String():
+	case Update.String():
 		return nil
 	case BackUp.String():
 		return nil

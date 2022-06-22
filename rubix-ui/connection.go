@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-ui/storage"
 	"github.com/NubeIO/rubix-ui/storage/logstore"
@@ -53,7 +54,17 @@ func (app *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConne
 }
 
 func (app *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *storage.RubixConnection {
-	conn, err := app.DB.Update(uuid, conn)
+	connection, err := app.DB.Select(uuid)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	app.DB.AddLog(&storage.Log{
+		Function: logstore.Connection.String(),
+		Type:     logstore.Update.String(),
+		Data:     connection,
+	})
+	conn, err = app.DB.Update(uuid, conn)
 	if err != nil {
 		return nil
 	}

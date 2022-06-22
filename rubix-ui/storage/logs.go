@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/rubix-ui/helpers/ttime"
 	"github.com/NubeIO/rubix-ui/storage/logstore"
 	"github.com/tidwall/buntdb"
+	"sort"
 )
 
 func (inst *db) AddLog(body *Log) (*Log, error) {
@@ -20,7 +21,7 @@ func (inst *db) AddLog(body *Log) (*Log, error) {
 		return nil, err
 	}
 
-	body.Time = ttime.New().Now()
+	body.Time = ttime.New().Now(true)
 	body.UUID = uuid.ShortUUID("log")
 
 	data, err := json.Marshal(body)
@@ -51,7 +52,8 @@ func (inst *db) GetLogs() ([]Log, error) {
 			if matchLogUUID(data.UUID) {
 				resp = append(resp, data)
 			}
-			//fmt.Printf("key: %s, value: %s\n", key, value)
+
+			fmt.Printf("key: %s, value: %s\n", key, value)
 			return true
 		})
 		return err
@@ -60,6 +62,9 @@ func (inst *db) GetLogs() ([]Log, error) {
 		fmt.Printf("Error: %s", err)
 		return []Log{}, err
 	}
+	sort.Slice(resp, func(i, j int) bool {
+		return resp[i].Time.Before(resp[j].Time)
+	})
 	return resp, nil
 }
 

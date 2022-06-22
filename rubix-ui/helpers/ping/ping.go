@@ -17,11 +17,11 @@ func CheckHTTP(address string) string {
 
 func Do(url string, port int) (found bool) {
 	ip := fmt.Sprintf("%s:%d", url, port)
-	conn, err := net.DialTimeout("tcp", ip, 300*time.Millisecond)
+	conn, err := net.DialTimeout("tcp", ip, 1000*time.Millisecond)
 	if err == nil {
 		conn.Close()
 		return true
 	}
-	logrus.Errorln("run task ping error:", err)
+	logrus.Errorln("run task ping error:", err, "ip:", ip)
 	return false
 }
