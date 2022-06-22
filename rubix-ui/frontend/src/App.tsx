@@ -58,9 +58,9 @@ const App: React.FC = () => {
     setConnections(res);
   };
 
-  const onClickMenu = (e: any, link: string) => {
+  const onClickMenu = (e: any, link: string, state?: any) => {
     e.stopPropagation();
-    navigate(link);
+    navigate(link, state);
   };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
@@ -78,14 +78,22 @@ const App: React.FC = () => {
             : connections.map((c: RubixConnection) => {
                 return {
                   key: c.uuid,
-                  label: c.name,
+                  label: (
+                    <span
+                      onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}
+                    >
+                      {c.name}
+                    </span>
+                  ),
                   children: locations.map((location: Location) => {
                     return {
                       key: location.uuid,
                       label: (
                         <span
                           onClick={(e) =>
-                            onClickMenu(e, `/locations/${c.uuid}`)
+                            onClickMenu(e, `/networks/${location.uuid}`, {
+                              state: { connUUID: c.uuid },
+                            })
                           }
                         >
                           {location.name}
@@ -97,7 +105,9 @@ const App: React.FC = () => {
                           label: (
                             <span
                               onClick={(e) =>
-                                onClickMenu(e, `/networks/${location.uuid}`)
+                                onClickMenu(e, `/hosts/${network.uuid}`, {
+                                  state: { connUUID: c.uuid },
+                                })
                               }
                             >
                               {network.name}
