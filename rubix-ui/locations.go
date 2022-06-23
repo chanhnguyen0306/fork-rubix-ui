@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/model"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
-	"github.com/NubeIO/rubix-ui/helpers/humanize"
+	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 
 func (app *App) GetLocationSchema(connUUID string) interface{} {

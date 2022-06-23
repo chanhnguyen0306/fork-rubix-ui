@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-networking/networking"
-	"github.com/NubeIO/rubix-ui/helpers/humanize"
+	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 
 var nets = networking.New()

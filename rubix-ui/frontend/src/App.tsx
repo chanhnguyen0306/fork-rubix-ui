@@ -1,16 +1,17 @@
 import {Route, Routes, useNavigate} from "react-router-dom";
 import React from "react";
 import type {MenuProps} from "antd";
-import {Layout, Menu, Table} from "antd";
+import {Layout, Menu} from "antd";
 import {ApartmentOutlined, HistoryOutlined, LinkOutlined,} from "@ant-design/icons";
 import {Locations} from "./routes/locations";
 import {Networks} from "./routes/networks";
-import {Hosts} from "./routes/hosts";
 import {Connections} from "./components/connections/connections";
 import "./App.css";
 import Iframe from "./components/iframe/iframe";
 import {Logs} from "./components/logs/logs";
 import {PcScanner} from "./components/pc/scanner/table";
+import {PcNetworking} from "./components/pc/networking/networking";
+import {Hosts} from "./components/hosts/hosts";
 
 
 
@@ -21,7 +22,8 @@ const sidebarItems = [
     {name: "Connections", icon: ApartmentOutlined, link: "/"},
     {name: "Logs", icon: HistoryOutlined, link: "/logs"},
     {name: "iframe", icon: LinkOutlined, link: "/iframe"},
-    {name: "table", icon: LinkOutlined, link: "/table"},
+    {name: "scanner", icon: LinkOutlined, link: "/scanner"},
+    {name: "networking", icon: LinkOutlined, link: "/networking"},
 ];
 
 const menuItems: MenuProps["items"] = sidebarItems.map(
@@ -58,17 +60,17 @@ const App: React.FC = () => {
                 >
                     <Routes>
                         <Route path="/" element={<Connections/>}/>
+                        <Route path="/locations/:connUUID" element={<Locations/>}/>
+                        <Route path="/networks/:locUUID" element={<Networks/>}/>
+                        <Route path="/hosts/:netUUID" element={<Hosts/>}/>
+
                         <Route path="/logs" element={<Logs/>}/>
-                        <Route path="/table" element={<PcScanner/>}/>
-
-
+                        <Route path="/scanner" element={<PcScanner/>}/>
+                        <Route path="/networking" element={<PcNetworking/>}/>
                         <Route
                             path="/iframe"
                             element={<Iframe source={"https://nube-io.com/"}/>}
                         />
-                        <Route path="/locations/:connUUID" element={<Locations/>}/>
-                        <Route path="/networks/:locUUID" element={<Networks/>}/>
-                        <Route path="/hosts/:netUUID" element={<Hosts/>}/>
                     </Routes>
                 </Content>
             </Layout>
