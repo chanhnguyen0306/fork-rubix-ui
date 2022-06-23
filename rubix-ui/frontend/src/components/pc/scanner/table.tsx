@@ -3,6 +3,7 @@ import {Scanner} from "../../../../wailsjs/go/main/App";
 import {Button, Spin, Table} from "antd";
 import {RedoOutlined} from "@ant-design/icons";
 
+
 export const PcScanner = () => {
     const [data, setData] = useState([] as []);
     const [isFetching, setIsFetching] = useState(true)
@@ -12,7 +13,6 @@ export const PcScanner = () => {
         const res = await Scanner("", "", 0, ["1662"]);
         setData(res);
         setIsFetching(false);
-
     };
 
 
