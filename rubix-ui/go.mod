@@ -6,6 +6,7 @@ go 1.17
 
 require (
 	github.com/NubeDev/bacnet v0.0.4
+	github.com/NubeIO/lib-date v0.0.2
 	github.com/NubeIO/lib-networking v0.0.6
 	github.com/NubeIO/lib-schema v0.0.3
 	github.com/NubeIO/lib-uuid v0.0.2
@@ -30,7 +31,6 @@ require (
 	github.com/NubeIO/git v0.0.3 // indirect
 	github.com/NubeIO/lib-bus v0.0.1 // indirect
 	github.com/NubeIO/lib-command v0.0.2 // indirect
-	github.com/NubeIO/lib-date v0.0.1 // indirect
 	github.com/NubeIO/lib-dirs v0.0.2 // indirect
 	github.com/NubeIO/lib-redis v0.0.3 // indirect
 	github.com/NubeIO/lib-store v0.0.1 // indirect

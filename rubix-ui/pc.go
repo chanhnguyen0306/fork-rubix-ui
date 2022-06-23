@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/NubeIO/lib-date/datelib"
 	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 	"github.com/NubeIO/rubix-ui/backend/system/scanner"
 )
+
+var pcDate = datelib.New(&datelib.Date{})
 
 func (app *App) GetPcGetNetworksSchema() interface{} {
 	names, err := nets.GetNetworks()
@@ -20,6 +23,10 @@ func (app *App) GetPcGetNetworksSchema() interface{} {
 		return nil
 	}
 	return humanize.ArrayOfMaps(b)
+}
+
+func (app *App) GetPcTime() *datelib.Time {
+	return pcDate.SystemTime()
 }
 
 func (app *App) GetPcGetNetworks() interface{} {
