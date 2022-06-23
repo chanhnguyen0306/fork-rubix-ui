@@ -30,11 +30,11 @@ export const Locations = () => {
   locationFactory.connectionUUID = connUUID as string;
 
   useEffect(() => {
-    fetchList();
     getSchemaTable();
   }, []); //on first load hook react
 
   useEffect(() => {
+    fetchList();
     getConnection();
   }, [connUUID]); //on load when connUUID changes
 
@@ -57,7 +57,6 @@ export const Locations = () => {
       setConnection(res);
     } catch (error) {
       console.log(error);
-    } finally {
     }
   };
 

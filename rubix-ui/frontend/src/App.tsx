@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import type { MenuProps } from "antd";
+import { MenuProps, Spin } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -44,20 +44,28 @@ const App: React.FC = () => {
   let navigate = useNavigate();
 
   const [connections, setConnections] = useState([] as any[]);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     fetchConnections();
   }, []);
 
   const fetchConnections = async () => {
-    let connections = (await connectionFactory.GetAll()) as any;
-    if (!connections) return setConnections([]);
-    for (const c of connections) {
-      let locations = [];
-      locations = await getLocations(c.uuid);
-      c.locations = locations;
+    try {
+      setIsFetching(true);
+      let connections = (await connectionFactory.GetAll()) as any;
+      if (!connections) return setConnections([]);
+      for (const c of connections) {
+        let locations = [];
+        locations = await getLocations(c.uuid);
+        c.locations = locations;
+      }
+      setConnections(connections);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
     }
-    setConnections(connections);
   };
 
   const getLocations = async (connUUID: string) => {
@@ -153,13 +161,16 @@ const App: React.FC = () => {
   return (
     <Layout>
       <Sider width={200} style={{ height: "100vh" }}>
-        <Menu
-          mode="inline"
-          theme="dark"
-          items={menuItems}
-          // selectedKeys={[location.pathname]}
-        />
-        ;
+        {isFetching ? (
+          <Spin />
+        ) : (
+          <Menu
+            mode="inline"
+            theme="dark"
+            items={menuItems}
+            // selectedKeys={[location.pathname]}
+          />
+        )}
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
         <Content
