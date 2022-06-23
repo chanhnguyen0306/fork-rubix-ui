@@ -210,18 +210,19 @@ export const Hosts = () => {
   const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
-    fetchList();
     if (networks.length === 0) {
       fetchNetworks();
     }
   }, []);
 
+  useEffect(() => {
+    fetchList();
+  }, [netUUID]);
+
   const fetchList = async () => {
     try {
       setIsFetching(true);
-      const res = (
-          await GetHosts(connUUID)
-      ).map((h) => {
+      const res = (await GetHosts(connUUID)).map((h) => {
         if (h.enable == null) h.enable = h.enable ? h.enable : false;
         return h;
       });

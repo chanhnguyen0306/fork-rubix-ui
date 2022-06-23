@@ -227,11 +227,14 @@ export const Networks = () => {
   const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
-    fetchList();
     if (locations.length === 0) {
       fetchLocations();
     }
   }, []);
+
+  useEffect(() => {
+    fetchList();
+  }, [locUUID]);
 
   const fetchList = async () => {
     try {
