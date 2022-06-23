@@ -53,7 +53,6 @@ const App: React.FC = () => {
       locations = await getLocations(c.uuid);
       c.locations = locations as any;
     });
-    console.log(connections);
     setConnections(connections);
   };
 
@@ -84,50 +83,49 @@ const App: React.FC = () => {
                 {c.name}
               </div>
             ),
-            children:
-              !c.locations || (c.locations && c.locations.length === 0)
-                ? null
-                : getSubMenuLocations(c.locations, c.uuid),
+            children: getSubMenuLocations(c.locations, c.uuid),
           };
         });
   };
 
   const getSubMenuLocations = (locations: any, connUUID: string) => {
-    return locations.map((location: Location) => {
-      return {
-        key: location.uuid,
-        label: (
-          <div
-            onClick={(e) =>
-              onClickMenu(e, `/networks/${location.uuid}`, {
-                state: { connUUID: connUUID },
-              })
-            }
-          >
-            {location.name}
-          </div>
-        ),
-        children:
-          location.networks.length === 0
-            ? null
-            : location.networks.map((network: Network) => {
-                return {
-                  key: network.uuid,
-                  label: (
-                    <div
-                      onClick={(e) =>
-                        onClickMenu(e, `/hosts/${network.uuid}`, {
-                          state: { connUUID: connUUID },
-                        })
-                      }
-                    >
-                      {network.name}
-                    </div>
-                  ),
-                };
-              }),
-      };
-    });
+    return !locations
+      ? null
+      : locations.map((location: Location) => {
+          return {
+            key: location.uuid,
+            label: (
+              <div
+                onClick={(e) =>
+                  onClickMenu(e, `/networks/${location.uuid}`, {
+                    state: { connUUID: connUUID },
+                  })
+                }
+              >
+                {location.name}
+              </div>
+            ),
+            children:
+              location.networks.length === 0
+                ? null
+                : location.networks.map((network: Network) => {
+                    return {
+                      key: network.uuid,
+                      label: (
+                        <div
+                          onClick={(e) =>
+                            onClickMenu(e, `/hosts/${network.uuid}`, {
+                              state: { connUUID: connUUID },
+                            })
+                          }
+                        >
+                          {network.name}
+                        </div>
+                      ),
+                    };
+                  }),
+          };
+        });
   };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
