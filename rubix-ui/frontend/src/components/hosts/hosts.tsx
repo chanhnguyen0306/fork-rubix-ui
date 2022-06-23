@@ -5,6 +5,10 @@ import {GetHostNetworks, GetHosts, GetHostSchema} from "../../../wailsjs/go/main
 import {isObjectEmpty} from "../../utils/utils";
 import {AddButton, CreateEditModal} from "./views/create";
 import {HostsTable} from "./views/table";
+import {Tabs} from "antd";
+import {ApartmentOutlined, RedoOutlined} from "@ant-design/icons";
+import {ConnectionsTable} from "../connections/views/table";
+import {PcScanner} from "../pc/scanner/table";
 
 export const Hosts = () => {
     const [hosts, setHosts] = useState([] as model.Host[]);
@@ -85,30 +89,53 @@ export const Hosts = () => {
     const onCloseModal = () => {
         setIsModalVisible(false);
     };
-
+    const {TabPane} = Tabs;
     return (
         <>
-            <h1>Hosts</h1>
+            <h1>Connections</h1>
+            <Tabs defaultActiveKey="1">
+                <TabPane
+                    tab={
+                        <span>
+          <ApartmentOutlined/>
+          Connections
+        </span>
+                    }
+                    key="1"
+                >
+                    <AddButton showModal={showModal} />
+                    <CreateEditModal
+                        hosts={hosts}
+                        currentHost={currentHost}
+                        hostSchema={hostSchema}
+                        isModalVisible={isModalVisible}
+                        isLoadingForm={isLoadingForm}
+                        refreshList={refreshList}
+                        onCloseModal={onCloseModal}
+                        connUUID={connUUID}
+                    />
+                    <HostsTable
+                        hosts={hosts}
+                        networks={networks}
+                        isFetching={isFetching}
+                        refreshList={refreshList}
+                        showModal={showModal}
+                        connUUID={connUUID}
+                    />
+                </TabPane>
+                <TabPane
+                    tab={
+                        <span>
+          <RedoOutlined/>
+          Discover
+                        </span>
+                    }
+                    key="2"
+                >
+                    <PcScanner/>
+                </TabPane>
+            </Tabs>
 
-            <AddButton showModal={showModal} />
-            <CreateEditModal
-                hosts={hosts}
-                currentHost={currentHost}
-                hostSchema={hostSchema}
-                isModalVisible={isModalVisible}
-                isLoadingForm={isLoadingForm}
-                refreshList={refreshList}
-                onCloseModal={onCloseModal}
-                connUUID={connUUID}
-            />
-            <HostsTable
-                hosts={hosts}
-                networks={networks}
-                isFetching={isFetching}
-                refreshList={refreshList}
-                showModal={showModal}
-                connUUID={connUUID}
-            />
         </>
     );
 };
