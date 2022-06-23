@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-ui/helpers/ping"
+	"github.com/NubeIO/rubix-ui/backend/helpers/ping"
 )
 
 func (app *App) PingRubixAssist(connUUID string) bool {

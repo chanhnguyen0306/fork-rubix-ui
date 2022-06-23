@@ -1,87 +1,108 @@
-import {AddHostNetwork, EditHostNetwork, GetHostNetwork, GetHostNetworks} from "../../../wailsjs/go/main/App";
+import {useEffect, useState} from "react";
 import {model} from "../../../wailsjs/go/models";
-import {Helpers} from "../../helpers/checks";
+import {useLocation, useParams} from "react-router-dom";
+import {GetHostNetworks, GetLocations, GetNetworkSchema} from "../../../wailsjs/go/main/App";
+import {isObjectEmpty} from "../../utils/utils";
+import {AddButton, CreateEditModal} from "./views/create";
+import {NetworksTable} from "./views/table";
 
+export const Networks = () => {
+    const [networks, setNetworks] = useState([] as model.Network[]);
+    const [locations, setLocations] = useState([] as model.Location[]);
+    const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
+    const [networkSchema, setNetworkSchema] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
+    const [isLoadingForm, setIsLoadingForm] = useState(false);
+    let { locUUID } = useParams();
+    const location = useLocation() as any;
+    const connUUID = location.state.connUUID ?? "";
 
-function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "network or connection uuid") as Error
-}
+    useEffect(() => {
+        fetchList();
+        if (locations.length === 0) {
+            fetchLocations();
+        }
+    }, []);
 
-export class NetworksFactory {
-    uuid!: string;
-    private _this!: model.Network;
-    private connectionUUID!: string;
-    private count!: number
+    const fetchList = async () => {
+        try {
+            setIsFetching(true);
+            const res = await GetHostNetworks(connUUID);
+            setNetworks(res);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsFetching(false);
+        }
+    };
 
-    get this(): model.Network {
-        return this._this;
-    }
+    const fetchLocations = async () => {
+        const res = await GetLocations(connUUID);
+        setLocations(res);
+    };
 
-    set this(value: model.Network) {
-        this._this = value;
-    }
+    const getSchema = async () => {
+        setIsLoadingForm(true);
+        const res = await GetNetworkSchema(connUUID);
+        res.properties = {
+            ...res.properties,
+            location_uuid: {
+                title: "location",
+                type: "string",
+                anyOf: locations.map((l: model.Location) => {
+                    return { type: "string", enum: [l.uuid], title: l.name };
+                }),
+                default: locUUID,
+            },
+        };
+        setNetworkSchema(res);
+        setIsLoadingForm(false);
+    };
 
-    public GetTotalCount(): number {
-        return this.count
-    }
+    const updateNetworks = (networks: model.Network[]) => {
+        setNetworks(networks);
+    };
 
+    const refreshList = () => {
+        fetchList();
+    };
 
-    // get the first connection uuid
-    async GetFist(): Promise<model.Network> {
-        let one: model.Network = {} as model.Network
-        await this.GetAll().then(res => {
-            one = res.at(0) as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+    const showModal = (network: model.Network) => {
+        setCurrentNetwork(network);
+        setIsModalVisible(true);
+        if (isObjectEmpty(networkSchema)) {
+            getSchema();
+        }
+    };
 
-    async GetAll(): Promise<Array<model.Network>> {
-        let all: Array<model.Network> = {} as Array<model.Network>
-        await GetHostNetworks(this.connectionUUID).then(res => {
-            all = res as Array<model.Network>
-        }).catch(err => {
-            return undefined
-        })
-        return all
-    }
+    const onCloseModal = () => {
+        setIsModalVisible(false);
+    };
 
-    async GetOne(): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await GetHostNetwork(this.connectionUUID, this.uuid).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+    return (
+        <>
+            <h1>Networks</h1>
 
-    async Add(): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await AddHostNetwork(this.connectionUUID, this._this).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async Update(): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await EditHostNetwork(this.connectionUUID, this.uuid, this._this).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-}
+            <AddButton showModal={showModal} />
+            <CreateEditModal
+                networks={networks}
+                currentNetwork={currentNetwork}
+                networkSchema={networkSchema}
+                isModalVisible={isModalVisible}
+                isLoadingForm={isLoadingForm}
+                onCloseModal={onCloseModal}
+                refreshList={refreshList}
+                connUUID={connUUID}
+            />
+            <NetworksTable
+                networks={networks}
+                locations={locations}
+                isFetching={isFetching}
+                showModal={showModal}
+                refreshList={refreshList}
+                connUUID={connUUID}
+            />
+        </>
+    );
+};

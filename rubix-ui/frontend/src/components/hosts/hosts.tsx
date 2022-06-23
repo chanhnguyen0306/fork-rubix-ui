@@ -1,109 +1,141 @@
+import {useEffect, useState} from "react";
 import {model} from "../../../wailsjs/go/models";
-import {AddHost, EditHost, GetHost, GetHosts, PingHost} from "../../../wailsjs/go/main/App";
-import {Helpers} from "../../helpers/checks";
+import {useLocation, useParams} from "react-router-dom";
+import {GetHostNetworks, GetHosts, GetHostSchema} from "../../../wailsjs/go/main/App";
+import {isObjectEmpty} from "../../utils/utils";
+import {AddButton, CreateEditModal} from "./views/create";
+import {HostsTable} from "./views/table";
+import {Tabs} from "antd";
+import {ApartmentOutlined, RedoOutlined} from "@ant-design/icons";
+import {ConnectionsTable} from "../connections/views/table";
+import {PcScanner} from "../pc/scanner/table";
 
+export const Hosts = () => {
+    const [hosts, setHosts] = useState([] as model.Host[]);
+    const [networks, setNetworks] = useState([] as model.Network[]);
+    const [currentHost, setCurrentHost] = useState({} as model.Host);
+    const [hostSchema, setHostSchema] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
+    const [isLoadingForm, setIsLoadingForm] = useState(false);
 
-function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "host or connection uuid") as Error
-}
+    let { netUUID } = useParams();
+    const location = useLocation() as any;
+    const connUUID = location.state.connUUID ?? "";
 
+    useEffect(() => {
+        fetchList();
+        if (networks.length === 0) {
+            fetchNetworks();
+        }
+    }, []);
 
-export class HostsFactory {
-    uuid!: string;
-    private _this!: model.Host;
-    private connectionUUID!: string;
-    private count!: number
+    const fetchList = async () => {
+        try {
+            setIsFetching(true);
+            const res = (
+                await GetHosts(connUUID)
+            ).map((h) => {
+                if (h.enable == null) h.enable = h.enable ? h.enable : false;
+                return h;
+            });
+            setHosts(res);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsFetching(false);
+        }
+    };
 
-    get this(): model.Host {
-        return this._this;
-    }
+    const fetchNetworks = async () => {
+        const res = await GetHostNetworks(connUUID);
+        setNetworks(res);
+    };
 
-    set this(value: model.Host) {
-        this._this = value;
-    }
+    const getSchema = async () => {
+        setIsLoadingForm(true);
+        const res = await GetHostSchema(connUUID);
+        res.properties = {
+            ...res.properties,
+            network_uuid: {
+                title: "network",
+                type: "string",
+                anyOf: networks.map((n: model.Network) => {
+                    return { type: "string", enum: [n.uuid], title: n.name };
+                }),
+                default: netUUID,
+            },
+        };
+        setHostSchema(res);
+        setIsLoadingForm(false);
+    };
 
-    public GetTotalCount(): number {
-        return this.count
-    }
+    const updateHosts = (hosts: model.Host[]) => {
+        setHosts(hosts);
+    };
 
-    // will try and ping the remote server
-    // example ping 192,1568.15.10:1662
-    async PinHost(): Promise<boolean> {
-        let out = false
-        await PingHost(this.connectionUUID, this.uuid).then(res => {
-            out = res as boolean
-        }).catch(err => {
-            return undefined
-        })
-        return out
-    }
+    const refreshList = () => {
+        fetchList();
+    };
 
-    // get the first connection uuid
-    async GetFist(): Promise<model.Host> {
-        let one: model.Host = {} as model.Host
-        await this.GetAll().then(res => {
-            one = res.at(0) as model.Host
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+    const showModal = (host: model.Host) => {
+        setCurrentHost(host);
+        setIsModalVisible(true);
+        if (isObjectEmpty(hostSchema)) {
+            getSchema();
+        }
+    };
 
-    // get the first network uuid
-    async GetFistUUID(): Promise<string> {
-        let uuid = ""
-        this.GetFist().then(res => {
-            uuid = res.uuid
-        })
-        return uuid
-    }
+    const onCloseModal = () => {
+        setIsModalVisible(false);
+    };
+    const {TabPane} = Tabs;
+    return (
+        <>
+            <h1>Connections</h1>
+            <Tabs defaultActiveKey="1">
+                <TabPane
+                    tab={
+                        <span>
+          <ApartmentOutlined/>
+          Connections
+        </span>
+                    }
+                    key="1"
+                >
+                    <AddButton showModal={showModal} />
+                    <CreateEditModal
+                        hosts={hosts}
+                        currentHost={currentHost}
+                        hostSchema={hostSchema}
+                        isModalVisible={isModalVisible}
+                        isLoadingForm={isLoadingForm}
+                        refreshList={refreshList}
+                        onCloseModal={onCloseModal}
+                        connUUID={connUUID}
+                    />
+                    <HostsTable
+                        hosts={hosts}
+                        networks={networks}
+                        isFetching={isFetching}
+                        refreshList={refreshList}
+                        showModal={showModal}
+                        connUUID={connUUID}
+                    />
+                </TabPane>
+                <TabPane
+                    tab={
+                        <span>
+          <RedoOutlined/>
+          Discover
+                        </span>
+                    }
+                    key="2"
+                >
+                    <PcScanner/>
+                </TabPane>
+            </Tabs>
 
-
-    async GetAll(): Promise<Array<model.Host>> {
-        let all: Array<model.Host> = {} as Array<model.Host>
-        await GetHosts(this.connectionUUID).then(res => {
-            all = res as Array<model.Host>
-        }).catch(err => {
-            return undefined
-        })
-        return all
-    }
-
-    async GetOne(): Promise<model.Host> {
-        hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
-        await GetHost(this.connectionUUID, this.uuid).then(res => {
-            one = res as model.Host
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async Add(): Promise<model.Host> {
-        hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
-        await AddHost(this.connectionUUID, this._this).then(res => {
-            one = res as model.Host
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-    async Update(): Promise<model.Host> {
-        hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
-        await EditHost(this.connectionUUID, this.uuid, this._this).then(res => {
-            one = res as model.Host
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
-
-}
+        </>
+    );
+};

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-ui/storage"
+	"github.com/NubeIO/rubix-ui/backend/storage"
 )
 
 func (app *App) GetLogs() interface{} {

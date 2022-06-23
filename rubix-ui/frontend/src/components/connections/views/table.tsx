@@ -75,6 +75,19 @@ export const ConnectionsTable = (props: any) => {
     refreshList();
   };
 
+
+    const rowSelection = {
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        onSelect: (record: any, selected: any, selectedRows: any) => {
+            console.log(record, selected, selectedRows);
+        },
+        onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+            console.log(selected, selectedRows, changeRows);
+        },
+    };
+
   const pingConnection = async (uuid: string) => {
     await PingRubixAssist(uuid).then(ok => {
       console.log("ping ok", ok, uuid)
@@ -93,6 +106,7 @@ export const ConnectionsTable = (props: any) => {
       <Table
         rowKey="uuid"
         dataSource={connections}
+        rowSelection={rowSelection}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />

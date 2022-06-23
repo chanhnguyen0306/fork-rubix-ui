@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-ui/edge"
-	"github.com/NubeIO/rubix-ui/helpers/humanize"
+	"github.com/NubeIO/rubix-ui/backend/edge"
+	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 
 // Update IP and networking on host/remote devices

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
-	"github.com/NubeIO/rubix-ui/storage"
+	storage2 "github.com/NubeIO/rubix-ui/backend/storage"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -12,13 +12,13 @@ import (
 // App struct
 type App struct {
 	ctx context.Context
-	DB  storage.Storage
+	DB  storage2.Storage
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	app := &App{}
-	app.DB = storage.New("")
+	app.DB = storage2.New("")
 	return app
 }
 
@@ -44,7 +44,7 @@ func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
 		return nil, errors.New("conn can not be empty")
 	}
 	var err error
-	connection := &storage.RubixConnection{}
+	connection := &storage2.RubixConnection{}
 	if matchUUID(connUUID) {
 		connection, err = app.DB.Select(connUUID)
 		if err != nil {

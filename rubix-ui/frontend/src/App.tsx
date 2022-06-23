@@ -8,16 +8,18 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { model, storage } from "../wailsjs/go/models";
-import { Locations } from "./routes/locations";
-import { Networks } from "./routes/networks";
-import { Hosts } from "./routes/hosts";
+import { Hosts } from "./components/hosts/hosts";
+import { Locations } from "./components/locations/locations";
+import { Networks } from "./components/networks/networks";
 import { Connections } from "./components/connections/connections";
 import { Logs } from "./components/logs/logs";
 import { PcScanner } from "./components/pc/scanner/table";
+import { PcNetworking } from "./components/pc/networking/networking";
 import Iframe from "./components/iframe/iframe";
-import { LocationFactory } from "./components/locations/locations";
 import { ConnectionFactory } from "./components/connections/factory";
-import RubixConnection = storage.RubixConnection;
+import { LocationFactory } from "./components/locations/factory";
+
+// import RubixConnection = storage.RubixConnection;
 import Location = model.Location;
 import Network = model.Network;
 
@@ -29,18 +31,19 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
   { name: "iframe", icon: LinkOutlined, link: "/iframe" },
-  { name: "table", icon: LinkOutlined, link: "/table" },
+  { name: "scanner", icon: LinkOutlined, link: "/scanner" },
+  { name: "networking", icon: LinkOutlined, link: "/networking" },
 ];
 
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
 
-  const location = useLocation();
-  const { pathname } = location;
+  // const location = useLocation();
+  // const { pathname } = location;
   let navigate = useNavigate();
 
-  const [connections, setConnections] = useState([] as RubixConnection[]);
+  const [connections, setConnections] = useState([] as any[]);
 
   useEffect(() => {
     fetchConnections();
@@ -48,8 +51,10 @@ const App: React.FC = () => {
 
   const fetchConnections = async () => {
     let connections = await connectionFactory.GetAll();
-    await connections.map(async (c: RubixConnection) => {
-      let locations = [] as Location[];
+    console.log(connections);
+
+    connections.forEach(async (c: any) => {
+      let locations = [];
       locations = await getLocations(c.uuid);
       c.locations = locations as any;
     });
@@ -75,7 +80,7 @@ const App: React.FC = () => {
   const getSubMenuConnections = () => {
     return connections.length === 0
       ? null
-      : connections.map((c: RubixConnection) => {
+      : connections.map((c: any) => {
           return {
             key: c.uuid,
             label: (
@@ -167,15 +172,17 @@ const App: React.FC = () => {
         >
           <Routes>
             <Route path="/" element={<Connections />} />
+            <Route path="/locations/:connUUID" element={<Locations />} />
+            <Route path="/networks/:locUUID" element={<Networks />} />
+            <Route path="/hosts/:netUUID" element={<Hosts />} />
+
             <Route path="/logs" element={<Logs />} />
-            <Route path="/table" element={<PcScanner />} />
+            <Route path="/scanner" element={<PcScanner />} />
+            <Route path="/networking" element={<PcNetworking />} />
             <Route
               path="/iframe"
               element={<Iframe source={"https://nube-io.com/"} />}
             />
-            <Route path="/locations/:connUUID" element={<Locations />} />
-            <Route path="/networks/:locUUID" element={<Networks />} />
-            <Route path="/hosts/:netUUID" element={<Hosts />} />
           </Routes>
         </Content>
       </Layout>
