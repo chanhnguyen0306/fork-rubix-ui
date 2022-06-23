@@ -162,19 +162,18 @@ export const Locations = () => {
   locationFactory.connectionUUID = connUUID as string;
 
   useEffect(() => {
-    fetchList();
     getSchemaTable();
   }, []); //on first load hook react
 
   useEffect(() => {
     getConnection();
+    fetchList();
   }, [connUUID]); //on load when connUUID changes
 
   const fetchList = async () => {
     try {
       setIsFetching(true);
       let res = await GetLocations(locationFactory.connectionUUID);
-      res = !res ? [] : res;
       setLocations(res);
     } catch (error) {
       setLocations([]);
