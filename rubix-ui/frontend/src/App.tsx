@@ -50,14 +50,13 @@ const App: React.FC = () => {
   }, []);
 
   const fetchConnections = async () => {
-    let connections = await connectionFactory.GetAll();
-    console.log(connections);
+    let connections = (await connectionFactory.GetAll()) as any;
     if (!connections) return setConnections([]);
-    connections.forEach(async (c: any) => {
+    for (const c of connections) {
       let locations = [];
       locations = await getLocations(c.uuid);
-      c.locations = locations as any;
-    });
+      c.locations = locations;
+    }
     setConnections(connections);
   };
 
