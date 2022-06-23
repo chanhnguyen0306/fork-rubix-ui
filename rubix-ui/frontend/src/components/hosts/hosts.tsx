@@ -11,7 +11,6 @@ import { AddButton, CreateEditModal } from "./views/create";
 import { HostsTable } from "./views/table";
 import { Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
-import { ConnectionsTable } from "../connections/views/table";
 import { PcScanner } from "../pc/scanner/table";
 
 export const Hosts = () => {
@@ -77,10 +76,6 @@ export const Hosts = () => {
     setIsLoadingForm(false);
   };
 
-  const updateHosts = (hosts: model.Host[]) => {
-    setHosts(hosts);
-  };
-
   const refreshList = () => {
     fetchList();
   };
@@ -99,8 +94,8 @@ export const Hosts = () => {
   const { TabPane } = Tabs;
   return (
     <>
-      <h1>Connections</h1>
-      <Tabs defaultActiveKey="1">
+      <h1>Hosts</h1>
+      {/* <Tabs defaultActiveKey="1">
         <TabPane
           tab={
             <span>
@@ -109,27 +104,27 @@ export const Hosts = () => {
             </span>
           }
           key="1"
-        >
-          <AddButton showModal={showModal} />
-          <CreateEditModal
-            hosts={hosts}
-            currentHost={currentHost}
-            hostSchema={hostSchema}
-            isModalVisible={isModalVisible}
-            isLoadingForm={isLoadingForm}
-            refreshList={refreshList}
-            onCloseModal={onCloseModal}
-            connUUID={connUUID}
-          />
-          <HostsTable
-            hosts={hosts}
-            networks={networks}
-            isFetching={isFetching}
-            refreshList={refreshList}
-            showModal={showModal}
-            connUUID={connUUID}
-          />
-        </TabPane>
+        > */}
+      <AddButton showModal={showModal} />
+      <CreateEditModal
+        hosts={hosts}
+        currentHost={currentHost}
+        hostSchema={hostSchema}
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
+        refreshList={refreshList}
+        onCloseModal={onCloseModal}
+        connUUID={connUUID}
+      />
+      <HostsTable
+        hosts={hosts}
+        networks={networks}
+        isFetching={isFetching}
+        refreshList={refreshList}
+        showModal={showModal}
+        connUUID={connUUID}
+      />
+      {/* </TabPane>
         <TabPane
           tab={
             <span>
@@ -141,7 +136,7 @@ export const Hosts = () => {
         >
           <PcScanner />
         </TabPane>
-      </Tabs>
+      </Tabs> */}
     </>
   );
 };
