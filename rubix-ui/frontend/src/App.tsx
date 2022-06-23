@@ -3,8 +3,6 @@ import React from "react";
 import type {MenuProps} from "antd";
 import {Layout, Menu} from "antd";
 import {ApartmentOutlined, HistoryOutlined, LinkOutlined,} from "@ant-design/icons";
-import {Locations} from "./routes/locations";
-import {Networks} from "./routes/networks";
 import {Connections} from "./components/connections/connections";
 import "./App.css";
 import Iframe from "./components/iframe/iframe";
@@ -12,6 +10,8 @@ import {Logs} from "./components/logs/logs";
 import {PcScanner} from "./components/pc/scanner/table";
 import {PcNetworking} from "./components/pc/networking/networking";
 import {Hosts} from "./components/hosts/hosts";
+import {Locations} from "./components/locations/locations";
+import {Networks} from "./components/networks/networks";
 
 
 
