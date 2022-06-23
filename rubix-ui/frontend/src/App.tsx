@@ -52,7 +52,7 @@ const App: React.FC = () => {
   const fetchConnections = async () => {
     let connections = await connectionFactory.GetAll();
     console.log(connections);
-
+    if (!connections) return setConnections([]);
     connections.forEach(async (c: any) => {
       let locations = [];
       locations = await getLocations(c.uuid);
