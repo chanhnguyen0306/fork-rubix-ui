@@ -7,6 +7,8 @@ import (
 	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 	"github.com/NubeIO/rubix-ui/backend/system/scanner"
+	"os/exec"
+	"runtime"
 )
 
 var pcDate = datelib.New(&datelib.Date{})
@@ -58,4 +60,19 @@ func (app *App) Scanner(iface, ip string, count int, ports []string) interface{}
 		return nil
 	}
 	return runScanner
+}
+
+func (app *App) OpenURL(url string) {
+	var err error
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("cmd", "/c", "start", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	fmt.Println(err)
 }

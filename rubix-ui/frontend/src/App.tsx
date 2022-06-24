@@ -101,7 +101,7 @@ const App: React.FC = () => {
   };
 
   const getSubMenuLocations = (locations: any, connUUID: string) => {
-    return !locations
+    return !locations || locations.length === 0
       ? null
       : locations.map((location: Location) => {
           return {
