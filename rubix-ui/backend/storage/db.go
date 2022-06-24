@@ -34,6 +34,15 @@ func matchConnUUID(uuid string) bool {
 	return false
 }
 
+func matchBackupUUID(uuid string) bool {
+	if len(uuid) == 16 {
+		if uuid[0:4] == "bac_" {
+			return true
+		}
+	}
+	return false
+}
+
 func matchLogUUID(uuid string) bool {
 	if len(uuid) == 16 {
 		if uuid[0:4] == "log_" {

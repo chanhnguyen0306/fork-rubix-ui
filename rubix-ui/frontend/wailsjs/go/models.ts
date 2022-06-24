@@ -158,7 +158,6 @@ export namespace model {
 
 export namespace main {
 	
-	
 	export class ConnectionSchema {
 	    // Go type: schema.UUID
 	    uuid: any;

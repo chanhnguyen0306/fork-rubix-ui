@@ -10,6 +10,8 @@ type Storage interface {
 	Wipe() (int, error)
 	AddLog(*Log) (*Log, error)
 	GetLogs() ([]Log, error)
+	AddBackup(backup *Backup) (*Backup, error)
+	GetBackups() ([]Backup, error)
 	GetLogsByConnection(uuid string) ([]Log, error)
 	Close() error
 }
