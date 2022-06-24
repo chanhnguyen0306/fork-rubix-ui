@@ -1,19 +1,7 @@
 import { model } from "../../../../wailsjs/go/models";
-import { Modal, Space, Spin, Table } from "antd";
+import { Space, Spin, Table } from "antd";
 import { DeleteHost } from "../../../../wailsjs/go/main/App";
-import Iframe from "../../iframe/iframe";
-
-const info = (host: model.Host) => {
-  const { ip, port } = host;
-  const source = `https://${ip}.${port}/`;
-
-  Modal.info({
-    title: "Iframe",
-    content: <Iframe source={source} />,
-    width: 1000,
-    onOk() {},
-  });
-};
+import { openNotificationWithIcon } from "../../../utils/utils";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
@@ -66,7 +54,7 @@ export const HostsTable = (props: any) => {
           </a>
           <a
             onClick={() => {
-              info(host);
+              navigateToNewTab(host);
             }}
           >
             Rubix-Wires
@@ -84,6 +72,16 @@ export const HostsTable = (props: any) => {
   const getNetworkNameByUUID = (uuid: string) => {
     const network = networks.find((l: model.Location) => l.uuid === uuid);
     return network ? network.name : "";
+  };
+
+  const navigateToNewTab = (host: model.Host) => {
+    try {
+      const { ip } = host;
+      const source = `https://${ip}.1313/`;
+      window.open(source);
+    } catch (err: any) {
+      openNotificationWithIcon("error", err.message);
+    }
   };
 
   return (
