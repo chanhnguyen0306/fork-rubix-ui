@@ -160,7 +160,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Sider width={200} style={{ height: "100vh" }}>
+      <Sider width={250} style={{ height: "100vh" }}>
         {isFetching ? (
           <Spin />
         ) : (
@@ -168,7 +168,7 @@ const App: React.FC = () => {
             mode="inline"
             theme="dark"
             items={menuItems}
-            // selectedKeys={[location.pathname]}
+            selectedKeys={[location.pathname]}
           />
         )}
       </Sider>
