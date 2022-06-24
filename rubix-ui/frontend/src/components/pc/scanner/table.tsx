@@ -50,6 +50,26 @@ const ScannerTable = (props: any) => {
 
     if (!data) return <></>;
     data = data["hosts"]
+    data = [ //this is fake data
+        {
+            "ip": "192.168.15.194",
+            "ports": [
+                {
+                    "service": "nube-assist",
+                    "port": "1662"
+                }
+            ],
+        },
+        {
+            "ip": "192.168.15.55",
+            "ports": [
+                {
+                    "service": "nube-assist",
+                    "port": "1662"
+                }
+            ],
+        }
+    ]
 
 
     const rowSelection = {

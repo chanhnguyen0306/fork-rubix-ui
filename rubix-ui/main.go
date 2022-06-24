@@ -70,6 +70,7 @@ func (app *App) nubeHelp() {
 		err = exec.Command("open", url).Start()
 	default:
 		err = fmt.Errorf("unsupported platform")
+		fmt.Println(err)
 	}
-	fmt.Println(err)
+
 }
