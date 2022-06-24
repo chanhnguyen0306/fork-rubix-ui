@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Scanner } from "../../../../wailsjs/go/main/App";
-import { Button, Spin, Table } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Button, Modal, Spin, Table } from "antd";
+import { RedoOutlined, PlusOutlined } from "@ant-design/icons";
 
 export const PcScanner = () => {
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     fetch();
@@ -34,11 +34,6 @@ export const PcScanner = () => {
             port: "1662",
             key: 1,
           },
-          {
-            service: "nube-assist-2",
-            port: "1111",
-            key: 2,
-          },
         ],
       },
     ] as any;
@@ -49,8 +44,20 @@ export const PcScanner = () => {
   const refreshList = () => {
     fetch();
   };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
   return (
     <>
+      <Button
+        type="primary"
+        onClick={() => showModal()}
+        style={{ margin: "5px", float: "right" }}
+      >
+        <PlusOutlined /> Add
+      </Button>
       <Button
         type="primary"
         onClick={refreshList}
@@ -59,6 +66,10 @@ export const PcScanner = () => {
         <RedoOutlined /> Refresh
       </Button>
       <ScannerTable data={data} isFetching={isFetching} />
+      <CreateModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+      />
     </>
   );
 };
@@ -107,5 +118,22 @@ const ScannerTable = (props: any) => {
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
     </div>
+  );
+};
+
+const CreateModal = (props: any) => {
+  const { isModalVisible, setIsModalVisible } = props;
+
+  return (
+    <Modal
+      title="Add New"
+      visible={isModalVisible}
+      onOk={() => console.log("onOk")}
+      onCancel={() => setIsModalVisible(false)}
+      okText="Save"
+      style={{ textAlign: "start" }}
+    >
+      ......form here
+    </Modal>
   );
 };
