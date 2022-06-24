@@ -3,13 +3,14 @@ package main
 import (
 	"embed"
 	"fmt"
+	"os/exec"
+	"runtime"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
-	"os/exec"
-	"runtime"
 )
 
 //go:embed frontend/dist
@@ -34,8 +35,8 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:       "rubix",
-		Width:       950,
-		Height:      650,
+		Width:       1440,
+		Height:      850,
 		Assets:      assets,
 		StartHidden: false,
 		Menu:        AppMenu,
