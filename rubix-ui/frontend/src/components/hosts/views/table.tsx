@@ -1,6 +1,6 @@
 import { model } from "../../../../wailsjs/go/models";
 import { Space, Spin, Table } from "antd";
-import { DeleteHost } from "../../../../wailsjs/go/main/App";
+import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
 
 export const HostsTable = (props: any) => {
@@ -77,8 +77,8 @@ export const HostsTable = (props: any) => {
   const navigateToNewTab = (host: model.Host) => {
     try {
       const { ip } = host;
-      const source = `https://${ip}.1313/`;
-      window.open(source);
+      const source = `http://${ip}:1313/`;
+     OpenURL(source)
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     }
