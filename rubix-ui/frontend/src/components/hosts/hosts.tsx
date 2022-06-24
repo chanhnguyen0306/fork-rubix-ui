@@ -14,6 +14,11 @@ import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
 
 export const Hosts = () => {
+  const { TabPane } = Tabs;
+  let { netUUID } = useParams();
+  const location = useLocation() as any;
+  const connUUID = location.state.connUUID ?? "";
+
   const [hosts, setHosts] = useState([] as model.Host[]);
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [currentHost, setCurrentHost] = useState({} as model.Host);
@@ -21,10 +26,6 @@ export const Hosts = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-
-  let { netUUID } = useParams();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
 
   useEffect(() => {
     if (networks.length === 0) {
@@ -91,40 +92,40 @@ export const Hosts = () => {
   const onCloseModal = () => {
     setIsModalVisible(false);
   };
-  const { TabPane } = Tabs;
+
   return (
     <>
       <h1>Hosts</h1>
-      {/* <Tabs defaultActiveKey="1">
+      <Tabs defaultActiveKey="1">
         <TabPane
           tab={
             <span>
               <ApartmentOutlined />
-              Connections
+              Hosts
             </span>
           }
           key="1"
-        > */}
-      <AddButton showModal={showModal} />
-      <CreateEditModal
-        hosts={hosts}
-        currentHost={currentHost}
-        hostSchema={hostSchema}
-        isModalVisible={isModalVisible}
-        isLoadingForm={isLoadingForm}
-        refreshList={refreshList}
-        onCloseModal={onCloseModal}
-        connUUID={connUUID}
-      />
-      <HostsTable
-        hosts={hosts}
-        networks={networks}
-        isFetching={isFetching}
-        refreshList={refreshList}
-        showModal={showModal}
-        connUUID={connUUID}
-      />
-      {/* </TabPane>
+        >
+          <AddButton showModal={showModal} />
+          <CreateEditModal
+            hosts={hosts}
+            currentHost={currentHost}
+            hostSchema={hostSchema}
+            isModalVisible={isModalVisible}
+            isLoadingForm={isLoadingForm}
+            refreshList={refreshList}
+            onCloseModal={onCloseModal}
+            connUUID={connUUID}
+          />
+          <HostsTable
+            hosts={hosts}
+            networks={networks}
+            isFetching={isFetching}
+            refreshList={refreshList}
+            showModal={showModal}
+            connUUID={connUUID}
+          />
+        </TabPane>
         <TabPane
           tab={
             <span>
@@ -136,7 +137,7 @@ export const Hosts = () => {
         >
           <PcScanner />
         </TabPane>
-      </Tabs> */}
+      </Tabs>
     </>
   );
 };
