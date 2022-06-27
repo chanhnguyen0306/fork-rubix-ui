@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-ui/backend/helpers/ttime"
-	logstore2 "github.com/NubeIO/rubix-ui/backend/storage/logstore"
+	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 	"github.com/tidwall/buntdb"
 	"sort"
 )
 
 func (inst *db) AddLog(body *Log) (*Log, error) {
-
-	err := logstore2.CheckFunction(body.Function)
+	err := logstore.CheckFunction(body.Function)
 	if err != nil {
 		return nil, err
 	}
-	err = logstore2.CheckType(body.Type)
+	err = logstore.CheckType(body.Type)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +52,6 @@ func (inst *db) GetLogs() ([]Log, error) {
 				resp = append(resp, data)
 				//fmt.Printf("key: %s, value: %s\n", key, value)
 			}
-
 			return true
 		})
 		return err
@@ -78,9 +76,11 @@ func (inst *db) GetLogsByConnection(uuid string) ([]Log, error) {
 				return false
 			}
 			if matchLogUUID(data.UUID) {
-				resp = append(resp, data)
+				if uuid == data.UUID {
+					resp = append(resp, data)
+					//fmt.Printf("key: %s, value: %s\n", key, value)
+				}
 			}
-			//fmt.Printf("key: %s, value: %s\n", key, value)
 			return true
 		})
 		return err

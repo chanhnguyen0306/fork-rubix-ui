@@ -11,9 +11,11 @@
     "@langleyfoxall/react-dynamic-data-table": "^7.18.0",
     "@rjsf/core": "^4.2.0",
     "antd": "^4.20.6",
+    "file-uploader-react-component": "^8.2.0",
     "loglevel": "^1.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-mui-fileuploader": "^0.2.0",
     "react-router-dom": "^6.3.0",
     "sass": "^1.52.1"
   },

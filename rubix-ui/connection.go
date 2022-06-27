@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-ui/backend/storage"
-	logstore2 "github.com/NubeIO/rubix-ui/backend/storage/logstore"
+	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
 
 type ConnectionSchema struct {
@@ -60,8 +60,8 @@ func (app *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *st
 		return nil
 	}
 	app.DB.AddLog(&storage.Log{
-		Function: logstore2.Connection.String(),
-		Type:     logstore2.Update.String(),
+		Function: logstore.Connection.String(),
+		Type:     logstore.Update.String(),
 		Data:     connection,
 	})
 	conn, err = app.DB.Update(uuid, conn)
@@ -77,8 +77,8 @@ func (app *App) DeleteConnection(uuid string) string {
 		return "failed to find connection to backup"
 	}
 	app.DB.AddLog(&storage.Log{
-		Function: logstore2.Connection.String(),
-		Type:     logstore2.Delete.String(),
+		Function: logstore.Connection.String(),
+		Type:     logstore.Delete.String(),
 		Data:     connection,
 	})
 	err = app.DB.Delete(uuid)
