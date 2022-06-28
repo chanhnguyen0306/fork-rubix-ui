@@ -38,11 +38,7 @@ export const CreateModal = (props: any) => {
     factory.this = connection;
     try {
       const res = await factory.Add();
-      if (res.uuid) {
-        openNotificationWithIcon("success", `added ${connection.name} success`);
-      } else {
-        openNotificationWithIcon("error", `added ${connection.name} fail`);
-      }
+      console.log(res);
     } catch (err) {
       openNotificationWithIcon("error", err);
       console.log(err);

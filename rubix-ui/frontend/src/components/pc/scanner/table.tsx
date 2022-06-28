@@ -96,8 +96,8 @@ const ScannerTable = (props: any) => {
       title: "Port",
       dataIndex: "ports",
       render: (services: any[]) =>
-        services.map((service) => (
-          <p> {`${service.service}: ${service.port}`} </p>
+        services.map((service, index) => (
+          <p key={index}> {`${service.service}: ${service.port}`} </p>
         )),
       key: "ports",
     },
