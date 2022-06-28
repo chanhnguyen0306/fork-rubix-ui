@@ -7,9 +7,11 @@ import (
 type Backup struct {
 	UUID           string      `json:"uuid"`
 	ConnectionUUID string      `json:"connection_uuid"`
+	ConnectionName string      `json:"connection_name"`
 	UserComment    string      `json:"user_comment"`
 	HostUUID       string      `json:"host_uuid"`
 	HostName       string      `json:"host_name"`
+	BackupInfo     string      `json:"backup_info"`
 	Time           time.Time   `json:"time"`
 	Application    string      `json:"application"`
 	Data           interface{} `json:"data,omitempty"`

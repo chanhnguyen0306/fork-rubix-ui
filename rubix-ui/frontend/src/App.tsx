@@ -19,16 +19,21 @@ import Iframe from "./components/iframe/iframe";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
-// import RubixConnection = storage.RubixConnection;
+
 import Location = model.Location;
 import Network = model.Network;
 
 import "./App.css";
+import Upload from "./components/file";
+import {Backups} from "./components/backups/backups";
 
 const { Content, Sider } = Layout;
 
+
+
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
+  { name: "Backups", icon: HistoryOutlined, link: "/backups" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
   { name: "iframe", icon: LinkOutlined, link: "/iframe" },
   { name: "scanner", icon: LinkOutlined, link: "/scanner" },
@@ -187,11 +192,12 @@ const App: React.FC = () => {
             <Route path="/hosts/:netUUID" element={<Hosts />} />
 
             <Route path="/logs" element={<Logs />} />
+            <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />
             <Route path="/networking" element={<PcNetworking />} />
             <Route
               path="/iframe"
-              element={<Iframe source={"https://nube-io.com/"} />}
+              element={<Upload/>}
             />
           </Routes>
         </Content>
