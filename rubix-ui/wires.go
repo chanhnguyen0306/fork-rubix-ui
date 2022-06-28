@@ -8,45 +8,51 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
 
-func (app *App) WiresFileUpload(connUUID, hostUUID string, fileName string) interface{} {
+func (app *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return ""
+		return nil, err
 	}
-	f, err := files.New().GetBackUpFile(fileName)
-	data, resp := client.WiresUpload(hostUUID, f)
+	data, resp := client.WiresUpload(hostUUID, body)
 	if resp.StatusCode > 299 {
-		return "err"
+		return nil, errors.New("failed to uploads flow to wires")
 	} else {
-		return data
+		return data, nil
 	}
 }
 
-func (app *App) wiresBackupUpload(connUUID, hostUUID string) *storage.Backup {
-	app.getBackups()
-
+func (app *App) wiresFileUpload(connUUID, hostUUID string, fileName string) error {
+	f, err := files.New().GetBackUpFile(fileName)
+	if err != nil {
+		return err
+	}
+	_, err = app.wiresUpload(connUUID, hostUUID, f)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (app *App) WiresBackupUpload(connUUID, hostUUID string) *storage.Backup {
-	data, err := app.wiresBackup(connUUID, hostUUID)
+func (app *App) wiresBackupUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
+	client, err := app.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	backup := &storage.Backup{
-		Application:    logstore.RubixWires.String(),
-		ConnectionUUID: connUUID,
-		HostUUID:       hostUUID,
-		Data:           data,
+	data, resp := client.WiresUpload(hostUUID, body)
+	if resp.StatusCode > 299 {
+		return nil, errors.New("failed to uploads flow to wires")
+	} else {
+		return data, nil
 	}
-	addBackup, err := app.addBackup(backup)
+}
+
+func (app *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) interface{} {
+	data := app.GetBackup(backupUUID)
+	backup, err := app.wiresBackupUpload(connUUID, hostUUID, data.Data)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return err.Error()
 	}
-	return addBackup
+	return backup
 }
 
 func (app *App) WiresBackup(connUUID, hostUUID string) *storage.Backup {

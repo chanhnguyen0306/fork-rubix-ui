@@ -40,6 +40,15 @@ func (app *App) GetBackupsNoData() []storage.Backup {
 	return out
 }
 
+func (app *App) DeleteBackup(uuid string) string {
+	err := app.DB.DeleteBackup(uuid)
+	if err != nil {
+		return err.Error()
+	}
+	return "deleted ok"
+}
+
+// GetBackupsByApplication get all backups as example RubixWires
 func (app *App) GetBackupsByApplication(application string, withData bool) []storage.Backup {
 	back, err := app.getBackups()
 	if err != nil {

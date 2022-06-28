@@ -52,6 +52,21 @@ func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 	return body, nil
 }
 
+func (inst *db) DeleteBackup(uuid string) error {
+	if !matchBackupUUID(uuid) {
+		err := inst.DB.Update(func(tx *buntdb.Tx) error {
+			_, err := tx.Delete(uuid)
+			return err
+		})
+		if err != nil {
+			fmt.Printf("Error delete: %s", err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("incorrect backup uuid")
+}
+
 func (inst *db) GetBackup(uuid string) (*Backup, error) {
 	if !matchBackupUUID(uuid) {
 		var data *Backup
