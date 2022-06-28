@@ -9,11 +9,14 @@ import { ConnectionFactory } from "../../connections/factory";
 const { Panel } = Collapse;
 
 export const CreateModal = (props: any) => {
-  const { connetions, refreshList, isModalVisible, setIsModalVisible } = props;
+  const { selectedIpPorts, refreshList, isModalVisible, setIsModalVisible } =
+    props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [formData, setFormData] = useState(connetions);
+  const [formData, setFormData] = useState([] as RubixConnection[]);
   const [schema, setSchema] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [connections, setConnections] = useState([] as RubixConnection[]);
+
   let factory = new ConnectionFactory();
 
   useEffect(() => {
@@ -21,8 +24,14 @@ export const CreateModal = (props: any) => {
   }, []);
 
   useEffect(() => {
-    setFormData(connetions);
-  }, [connetions]);
+    const newArr = [] as RubixConnection[];
+    selectedIpPorts.forEach((i: any) => {
+      let connection = {} as RubixConnection;
+      connection = { ...connection, ip: i.ip, port: i.ports[0].port };
+      newArr.push(connection);
+    });
+    setConnections(newArr);
+  }, [selectedIpPorts]);
 
   const getSchema = async () => {
     setIsLoadingForm(true);
@@ -46,16 +55,25 @@ export const CreateModal = (props: any) => {
   };
 
   const handleClose = () => {
-    setFormData({} as RubixConnection);
+    setFormData([]);
     setIsModalVisible(false);
   };
 
-  const handleSubmit = (connection: RubixConnection) => {
+  const handleSubmit = async (connections: RubixConnection[]) => {
     setConfirmLoading(true);
-    addConnection(connection);
+
+    // for (const c of connections) {
+    //   await addConnection(c);
+    // }
     setConfirmLoading(false);
     handleClose();
     refreshList();
+  };
+
+  const updateFormData = (data: RubixConnection) => {
+    const index = connections.findIndex((c) => c.ip === data.ip);
+    connections[index] = data;
+    setFormData(connections);
   };
 
   return (
@@ -70,13 +88,17 @@ export const CreateModal = (props: any) => {
     >
       <Spin spinning={isLoadingForm}>
         <Collapse defaultActiveKey={["1"]}>
-          <Panel header="192.168.15.194" key="1">
-            <JsonForm
-              formData={{ ip: "192.168.15.194" }}
-              jsonSchema={schema}
-              setFormData={setFormData}
-            />
-          </Panel>
+          {selectedIpPorts.map((i: any, index: number) => {
+            return (
+              <Panel header={i.ip} key={index + 1}>
+                <JsonForm
+                  formData={{ ip: i.ip, port: Number(i.ports[0].port) }}
+                  jsonSchema={schema}
+                  setFormData={updateFormData}
+                />
+              </Panel>
+            );
+          })}
         </Collapse>
       </Spin>
     </Modal>

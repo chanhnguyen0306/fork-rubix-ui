@@ -1,13 +1,53 @@
 import { useEffect, useState } from "react";
-import { Button, Collapse, Spin, Table } from "antd";
+import { Button, Spin, Table } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { AddButton, CreateModal } from "./create";
-const { Panel } = Collapse;
+import { openNotificationWithIcon } from "../../../utils/utils";
+
+const ScannerTable = (props: any) => {
+  let { data, isFetching, setSelectedIpPorts } = props;
+
+  if (!data) return <></>;
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedIpPorts(selectedRows);
+    },
+  };
+
+  const columns = [
+    {
+      title: "Ip",
+      dataIndex: "ip",
+      key: "ip",
+    },
+    {
+      title: "Port",
+      dataIndex: "ports",
+      render: (services: any[]) =>
+        services.map((service, index) => (
+          <p key={index}> {`${service.service}: ${service.port}`} </p>
+        )),
+      key: "ports",
+    },
+  ];
+
+  return (
+    <Table
+      rowKey="ip"
+      rowSelection={rowSelection}
+      dataSource={data}
+      columns={columns}
+      loading={{ indicator: <Spin />, spinning: isFetching }}
+    />
+  );
+};
 
 export const PcScanner = () => {
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedIpPorts, setSelectedIpPorts] = useState([]);
 
   useEffect(() => {
     fetch();
@@ -47,6 +87,9 @@ export const PcScanner = () => {
   };
 
   const showModal = () => {
+    if (selectedIpPorts.length === 0) {
+      return openNotificationWithIcon("warning", `Please select Ip`);
+    }
     setIsModalVisible(true);
   };
 
@@ -60,56 +103,17 @@ export const PcScanner = () => {
       >
         <RedoOutlined /> Refresh
       </Button>
-      <ScannerTable data={data} isFetching={isFetching} />
+      <ScannerTable
+        data={data}
+        isFetching={isFetching}
+        setSelectedIpPorts={setSelectedIpPorts}
+      />
       <CreateModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
+        selectedIpPorts={selectedIpPorts}
+        refreshList={refreshList}
       />
     </>
-  );
-};
-
-const ScannerTable = (props: any) => {
-  let { data, isFetching } = props;
-  if (!data) return <></>;
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`);
-      console.log("selectedRows: ", selectedRows);
-    },
-    onSelect: (record: any, selected: any, selectedRows: any) => {
-      console.log("onSelect", record, selected, selectedRows);
-    },
-    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-      console.log("onSelectAll", selected, selectedRows, changeRows);
-    },
-  };
-
-  const columns = [
-    {
-      title: "Ip",
-      dataIndex: "ip",
-      key: "ip",
-    },
-    {
-      title: "Port",
-      dataIndex: "ports",
-      render: (services: any[]) =>
-        services.map((service, index) => (
-          <p key={index}> {`${service.service}: ${service.port}`} </p>
-        )),
-      key: "ports",
-    },
-  ];
-
-  return (
-    <Table
-      rowKey="ip"
-      rowSelection={rowSelection}
-      dataSource={data}
-      columns={columns}
-      loading={{ indicator: <Spin />, spinning: isFetching }}
-    />
   );
 };
