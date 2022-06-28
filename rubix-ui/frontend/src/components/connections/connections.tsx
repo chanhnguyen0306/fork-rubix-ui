@@ -4,7 +4,7 @@ import { isObjectEmpty } from "../../utils/utils";
 import { ConnectionsTable } from "./views/table";
 import { AddButton, CreateEditModal } from "./views/create";
 import { ConnectionFactory } from "./factory";
-import { Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
 
@@ -28,6 +28,8 @@ export const Connections = () => {
   }, []);
 
   const fetchList = async () => {
+    console.log(1111);
+
     try {
       setIsFetching(true);
       let res = await factory.GetAll();
@@ -79,7 +81,15 @@ export const Connections = () => {
           }
           key="1"
         >
+          <Button
+            type="primary"
+            onClick={refreshList}
+            style={{ margin: "5px", float: "right" }}
+          >
+            <RedoOutlined /> Refresh
+          </Button>
           <AddButton showModal={showModal} />
+
           <CreateEditModal
             connections={connections}
             currentConnection={currentConnection}
