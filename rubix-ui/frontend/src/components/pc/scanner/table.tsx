@@ -95,7 +95,6 @@ export const PcScanner = () => {
 
   return (
     <>
-      <AddButton showModal={showModal} />
       <Button
         type="primary"
         onClick={refreshList}
@@ -103,6 +102,7 @@ export const PcScanner = () => {
       >
         <RedoOutlined /> Refresh
       </Button>
+      <AddButton showModal={showModal} />
       <ScannerTable
         data={data}
         isFetching={isFetching}

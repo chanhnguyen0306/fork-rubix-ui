@@ -132,7 +132,7 @@ export const AddButton = (props: any) => {
       onClick={() => showModal()}
       style={{ margin: "5px", float: "right" }}
     >
-      <PlusOutlined /> Add
+      <PlusOutlined /> Connections
     </Button>
   );
 };

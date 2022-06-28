@@ -110,7 +110,7 @@ export const AddButton = (props: any) => {
       onClick={() => showModal({} as RubixConnection)}
       style={{ margin: "5px", float: "right" }}
     >
-      <PlusOutlined /> Connection
+      <PlusOutlined /> Add
     </Button>
   );
 };
