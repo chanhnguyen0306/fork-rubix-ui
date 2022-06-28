@@ -28,7 +28,7 @@ export const CreateEditModal = (props: any) => {
     factory.this = connection;
     try {
       const res = await factory.Add();
-      if (res.uuid) {
+      if (res && res.uuid) {
         openNotificationWithIcon("success", `added ${connection.name} success`);
       } else {
         openNotificationWithIcon("error", `added ${connection.name} fail`);

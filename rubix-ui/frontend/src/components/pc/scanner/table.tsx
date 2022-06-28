@@ -112,7 +112,6 @@ export const PcScanner = () => {
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         selectedIpPorts={selectedIpPorts}
-        refreshList={refreshList}
       />
     </>
   );

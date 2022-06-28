@@ -9,8 +9,7 @@ import { ConnectionFactory } from "../../connections/factory";
 const { Panel } = Collapse;
 
 export const CreateModal = (props: any) => {
-  const { selectedIpPorts, refreshList, isModalVisible, setIsModalVisible } =
-    props;
+  const { selectedIpPorts, isModalVisible, setIsModalVisible } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState([] as RubixConnection[]);
   const [schema, setSchema] = useState({});
@@ -47,7 +46,11 @@ export const CreateModal = (props: any) => {
     factory.this = connection;
     try {
       const res = await factory.Add();
-      console.log(res);
+      if (res && res.uuid) {
+        openNotificationWithIcon("success", `added ${connection.name} success`);
+      } else {
+        openNotificationWithIcon("error", `added ${connection.name} fail`);
+      }
     } catch (err) {
       openNotificationWithIcon("error", err);
       console.log(err);
@@ -60,14 +63,29 @@ export const CreateModal = (props: any) => {
   };
 
   const handleSubmit = async (connections: RubixConnection[]) => {
-    setConfirmLoading(true);
-
-    // for (const c of connections) {
-    //   await addConnection(c);
-    // }
-    setConfirmLoading(false);
-    handleClose();
-    refreshList();
+    let valid = true;
+    connections.forEach((c) => {
+      if (!c.name) {
+        return (valid = false);
+      }
+    });
+    if (valid) {
+      try {
+        setConfirmLoading(true);
+        const promises = [];
+        for (const c of connections) {
+          promises.push(addConnection(c));
+        }
+        await Promise.all(promises);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setConfirmLoading(false);
+        handleClose();
+      }
+    } else {
+      openNotificationWithIcon("error", "Please check again 'name' inputs!");
+    }
   };
 
   const updateFormData = (data: RubixConnection) => {
