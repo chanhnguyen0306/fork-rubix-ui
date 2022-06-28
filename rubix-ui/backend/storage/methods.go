@@ -12,6 +12,7 @@ type Storage interface {
 	GetLogs() ([]Log, error)
 	GetLogsByConnection(uuid string) ([]Log, error)
 	AddBackup(backup *Backup) (*Backup, error)
+	GetBackup(uuid string) (*Backup, error)
 	GetBackups() ([]Backup, error)
 	GetBackupsByHostUUID(uuid string) ([]Backup, error)
 	Close() error

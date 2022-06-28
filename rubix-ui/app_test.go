@@ -8,12 +8,11 @@ import (
 
 func TestNewApp(t *testing.T) {
 	app := NewApp()
-	data := app.WiresFileUpload("cloud", "rc", "wires-example.json")
+	data := app.WiresFileUpload("cloud", "hos_A2CC8CE54B9B", "wires-example.json")
 	fmt.Println(data)
 	//back := app.WiresBackup("cloud", "rc")
-
-	backup := app.WiresBackupSave("cloud", "rc")
-	//
+	//pprint.PrintJOSN(back)
+	backup := app.WiresBackup("cloud", "rc")
 	pprint.PrintJOSN(backup)
 
 	//file, err := files.New().WriteBackupFile(back, "test.json")

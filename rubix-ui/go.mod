@@ -2,7 +2,7 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
 
 require (
 	github.com/NubeDev/bacnet v0.0.4
@@ -12,6 +12,7 @@ require (
 	github.com/NubeIO/lib-schema v0.0.3
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
+	github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.5
 	github.com/NubeIO/rubix-assist v0.0.8
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
@@ -29,13 +30,13 @@ require (
 
 require (
 	github.com/NubeIO/edge v0.0.8 // indirect
+	github.com/NubeIO/flow-framework v0.5.6 // indirect
 	github.com/NubeIO/git v0.0.3 // indirect
 	github.com/NubeIO/lib-bus v0.0.1 // indirect
 	github.com/NubeIO/lib-command v0.0.2 // indirect
 	github.com/NubeIO/lib-redis v0.0.3 // indirect
 	github.com/NubeIO/lib-store v0.0.1 // indirect
 	github.com/NubeIO/lib-systemctl-go v0.0.5 // indirect
-	github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.4 // indirect
 	github.com/NubeIO/rubix-automater v0.0.6 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect

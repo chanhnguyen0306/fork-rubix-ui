@@ -23,19 +23,13 @@ func (app *App) WiresFileUpload(connUUID, hostUUID string, fileName string) inte
 	}
 }
 
-func (app *App) WiresBackup(connUUID, hostUUID string) interface{} {
-	backup, err := app.wiresBackup(connUUID, hostUUID)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return ""
-	}
-	if err != nil {
-		return nil
-	}
-	return backup
+func (app *App) wiresBackupUpload(connUUID, hostUUID string) *storage.Backup {
+	app.getBackups()
+
+	return nil
 }
 
-func (app *App) WiresBackupSave(connUUID, hostUUID string) *storage.Backup {
+func (app *App) WiresBackupUpload(connUUID, hostUUID string) *storage.Backup {
 	data, err := app.wiresBackup(connUUID, hostUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -53,7 +47,26 @@ func (app *App) WiresBackupSave(connUUID, hostUUID string) *storage.Backup {
 		return nil
 	}
 	return addBackup
+}
 
+func (app *App) WiresBackup(connUUID, hostUUID string) *storage.Backup {
+	data, err := app.wiresBackup(connUUID, hostUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	backup := &storage.Backup{
+		Application:    logstore.RubixWires.String(),
+		ConnectionUUID: connUUID,
+		HostUUID:       hostUUID,
+		Data:           data,
+	}
+	addBackup, err := app.addBackup(backup)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return addBackup
 }
 
 func (app *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {

@@ -57,6 +57,15 @@ func (app *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
 	return res
 }
 
+func (app *App) getHost(connUUID string, uuid string) (*model.Host, error) {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	data, _ := client.GetHost(uuid)
+	return data, nil
+}
+
 func (app *App) GetHost(connUUID string, uuid string) *model.Host {
 	client, err := app.initConnection(connUUID)
 	if err != nil {

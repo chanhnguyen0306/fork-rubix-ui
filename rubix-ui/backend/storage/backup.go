@@ -52,9 +52,9 @@ func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 	return body, nil
 }
 
-func (inst *db) GetBackup(uuid string) (*RubixConnection, error) {
+func (inst *db) GetBackup(uuid string) (*Backup, error) {
 	if !matchBackupUUID(uuid) {
-		var data *RubixConnection
+		var data *Backup
 		err := inst.DB.View(func(tx *buntdb.Tx) error {
 			val, err := tx.Get(uuid)
 			if err != nil {

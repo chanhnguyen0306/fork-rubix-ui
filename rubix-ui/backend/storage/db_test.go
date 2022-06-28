@@ -16,7 +16,6 @@ func TestInitializeBuntDB(t *testing.T) {
 	if err != nil {
 		return
 	}
-
 	all, err := db.SelectAll()
 	if err != nil {
 		return
