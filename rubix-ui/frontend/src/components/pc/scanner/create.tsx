@@ -9,7 +9,7 @@ import { ConnectionFactory } from "../../connections/factory";
 const { Panel } = Collapse;
 
 export const CreateModal = (props: any) => {
-  const { connetions, refreshList, onCloseModal, isModalVisible } = props;
+  const { connetions, refreshList, isModalVisible, setIsModalVisible } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(connetions);
   const [schema, setSchema] = useState({});
@@ -51,40 +51,24 @@ export const CreateModal = (props: any) => {
 
   const handleClose = () => {
     setFormData({} as RubixConnection);
-    onCloseModal();
+    setIsModalVisible(false);
   };
 
   const handleSubmit = (connection: RubixConnection) => {
     setConfirmLoading(true);
-
     addConnection(connection);
-
     setConfirmLoading(false);
     handleClose();
     refreshList();
   };
 
-  const isDisabled = (): boolean => {
-    let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50));
-    return result;
-  };
-
   return (
     <Modal
-      title="Add New Connection"
+      title="Add New Connections"
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}
       onCancel={handleClose}
       okText="Save"
-      okButtonProps={
-        {
-          // disabled: isDisabled(),
-        }
-      }
       confirmLoading={confirmLoading}
       style={{ textAlign: "start" }}
     >
