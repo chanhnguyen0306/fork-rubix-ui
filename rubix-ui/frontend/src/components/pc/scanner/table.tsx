@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Collapse, Modal, Spin, Table } from "antd";
-import { RedoOutlined, PlusOutlined } from "@ant-design/icons";
-import { JsonForm } from "../../../common/json-form";
+import { Button, Collapse, Spin, Table } from "antd";
+import { RedoOutlined } from "@ant-design/icons";
+import { AddButton, CreateModal } from "./create";
 const { Panel } = Collapse;
 
 export const PcScanner = () => {
@@ -17,7 +17,6 @@ export const PcScanner = () => {
     setIsFetching(true);
     // const res = await Scanner("", "", 0, ["1662"]);
     const res = [
-      //this is fake data
       {
         ip: "192.168.15.194",
         ports: [
@@ -53,13 +52,7 @@ export const PcScanner = () => {
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={() => showModal()}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <PlusOutlined /> Add
-      </Button>
+      <AddButton showModal={showModal} />
       <Button
         type="primary"
         onClick={refreshList}
@@ -118,79 +111,5 @@ const ScannerTable = (props: any) => {
       columns={columns}
       loading={{ indicator: <Spin />, spinning: isFetching }}
     />
-  );
-};
-
-const CreateModal = (props: any) => {
-  const { isModalVisible, setIsModalVisible } = props;
-  const [formData, setFormData] = useState({});
-
-  const schema = {
-    properties: {
-      uuid: {
-        type: "string",
-        title: "uuid",
-        readOnly: true,
-      },
-      name: {
-        type: "string",
-        title: "name",
-        minLength: 2,
-        maxLength: 50,
-      },
-      description: {
-        type: "string",
-        title: "description",
-      },
-      ip: {
-        type: "string",
-        title: "ip address",
-        default: "192.168.15.194",
-        help: "ip address, eg 192.168.15.10 or nube-io.com (https:// is not needed in front of the address)",
-      },
-      port: {
-        type: "number",
-        title: "port",
-        minLength: 2,
-        maxLength: 65535,
-        default: 1662,
-        help: "ip port, eg port 8080 192.168.15.10:8080",
-      },
-      https: {
-        type: "boolean",
-        title: "enable https",
-      },
-      username: {
-        type: "string",
-        title: "username",
-        minLength: 1,
-        maxLength: 50,
-        default: "admin",
-      },
-      password: {
-        type: "string",
-        title: "password",
-      },
-    },
-  };
-  return (
-    <Modal
-      title="Add New"
-      visible={isModalVisible}
-      onOk={() => console.log("onOk")}
-      onCancel={() => setIsModalVisible(false)}
-      okText="Save"
-      style={{ textAlign: "start" }}
-    >
-      <Collapse defaultActiveKey={["1"]}>
-        <Panel header="192.168.15.194" key="1">
-          <JsonForm
-            formData={{ ip: "192.168.15.194" }}
-            jsonSchema={schema}
-            setFormData={setFormData}
-          />
-        </Panel>
-      </Collapse>
-    </Modal>
   );
 };
