@@ -44,6 +44,8 @@ export class BackupFactory {
         return all
     }
 
+
+
     async GetOne(): Promise<storage.Backup> {
         hasUUID(this.uuid);
         let one: storage.Backup = {} as storage.Backup;
@@ -58,6 +60,16 @@ export class BackupFactory {
         return one;
     }
 
+
+    async GetBackupsRubixWires(): Promise<Array<storage.Backup>> {
+        let all: Promise<Array<storage.Backup>> = {} as Promise<Array<storage.Backup>>
+        await GetBackupsByApplication("RubixWires", false).then(res => {
+            all = res as unknown as Promise<Array<storage.Backup>>
+        }).catch(err => {
+            return undefined
+        })
+        return all
+    }
 
     async WiresBackup(): Promise<storage.Backup>{
         hasUUID(this.uuid);
