@@ -26,6 +26,7 @@ import Network = model.Network;
 import "./App.css";
 import Upload from "./components/file";
 import {Backups} from "./components/backups/backups";
+import {BackupFactory} from "./components/backups/factory";
 
 const { Content, Sider } = Layout;
 
@@ -43,6 +44,17 @@ const sidebarItems = [
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
+
+
+  // backups test
+  // let back = new BackupFactory();
+  // back.connectionUUID = "cloud";
+  // back.hostUUID = "rc";
+  // back.application = "RubixWires"
+  // back.uuid = "bac_0EF8BBF1894E"; //change this as needed
+  // back.GetBackupsRubixWires().then(r => console.log("GetBackupsRubixWires", r))
+  // back.WiresBackup().then(r => console.log("WiresBackup", r))
+  // back.WiresRestore().then(r => console.log("WiresRestore", r))
 
   // const location = useLocation();
   // const { pathname } = location;
