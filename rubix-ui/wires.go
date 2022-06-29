@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-ui/backend/files"
@@ -8,6 +9,7 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
 
+// wiresUpload upload a flow to wires
 func (app *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
@@ -21,6 +23,7 @@ func (app *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interf
 	}
 }
 
+// wiresFileUpload upload to wire's from a local json file
 func (app *App) wiresFileUpload(connUUID, hostUUID string, fileName string) error {
 	f, err := files.New().GetBackUpFile(fileName)
 	if err != nil {
@@ -33,22 +36,35 @@ func (app *App) wiresFileUpload(connUUID, hostUUID string, fileName string) erro
 	return nil
 }
 
-func (app *App) wiresBackupUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
-	client, err := app.initConnection(connUUID)
+func isJSON(s string) bool {
+	var js interface{}
+	return json.Unmarshal([]byte(s), &js) == nil
+}
+
+func (app *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (interface{}, error) {
+	data, err := app.getBackup(backupUUID)
 	if err != nil {
 		return nil, err
 	}
-	data, resp := client.WiresUpload(hostUUID, body)
-	if resp.StatusCode > 299 {
-		return nil, errors.New("failed to uploads flow to wires")
-	} else {
-		return data, nil
+	if data.Application != logstore.RubixWires.String() {
+		return nil, errors.New(fmt.Sprintf("application must be of type %s:", logstore.RubixWires.String()))
 	}
+	//if isJSON(data.Data.(string)) {
+	//	return nil, errors.New(fmt.Sprintf("no valid flow found in data %s:", logstore.RubixWires.String()))
+	//}
+	if data.Data == nil {
+		return nil, errors.New(fmt.Sprintf("no valid flow found in data %s:", logstore.RubixWires.String()))
+	}
+	ret, err := app.wiresUpload(connUUID, hostUUID, data.Data)
+	if err != nil {
+		return nil, err
+	}
+	return ret, nil
 }
 
+// WiresBackupRestore upload to wire's from a backup entry
 func (app *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) interface{} {
-	data := app.GetBackup(backupUUID)
-	backup, err := app.wiresBackupUpload(connUUID, hostUUID, data.Data)
+	backup, err := app.wiresBackupRestore(connUUID, hostUUID, backupUUID)
 	if err != nil {
 		return err.Error()
 	}

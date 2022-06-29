@@ -4,7 +4,7 @@ import {
     GetBackup,
     GetBackups,
     GetBackupsByApplication,
-    GetConnection
+    GetConnection, WiresBackup, WiresBackupRestore
 } from "../../../wailsjs/go/main/App";
 import {Helpers} from "../../helpers/checks";
 
@@ -16,8 +16,9 @@ export class BackupFactory {
     uuid!: string;
     application!: string;
     withData!: boolean
+    connectionUUID!: string;
+    hostUUID!: string;
     private _this!: storage.Backup;
-
     async GetAll(): Promise<Array<storage.Backup>> {
         let all: Promise<Array<storage.Backup>> = {} as Promise<Array<storage.Backup>>
         await GetBackups().then(res => {
@@ -57,9 +58,24 @@ export class BackupFactory {
         return one;
     }
 
-    async Delete(): Promise<string> {
+
+    async WiresBackup(): Promise<storage.Backup>{
+        hasUUID(this.uuid);
+        let one: storage.Backup = {} as storage.Backup;
+        await WiresBackup(this.connectionUUID, this.hostUUID)
+            .then((res) => {
+                one = res as storage.Backup;
+                this._this = one;
+            })
+            .catch((err) => {
+                return undefined;
+            });
+        return one;
+    }
+
+    async WiresRestore(): Promise<string> {
         let out = ""
-        await DeleteBackup(this.uuid)
+        await WiresBackupRestore(this.connectionUUID, this.hostUUID, this.uuid)
             .then((res) => {
                 out = res
             })
@@ -68,9 +84,5 @@ export class BackupFactory {
             });
         return out;
     }
-
-
-
-
 
 }
