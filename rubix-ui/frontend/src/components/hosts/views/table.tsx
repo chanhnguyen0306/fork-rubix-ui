@@ -1,11 +1,44 @@
+import { useState } from "react";
+import { Menu, MenuProps, Space, Spin, Table } from "antd";
+import { MenuFoldOutlined } from "@ant-design/icons";
 import { model } from "../../../../wailsjs/go/models";
-import { Space, Spin, Table } from "antd";
 import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+export const SidePanel = (props: any) => {
+  const { collapsed } = props;
+
+  function getItem(label: React.ReactNode, key: React.Key): MenuItem {
+    return {
+      key,
+      label,
+    } as MenuItem;
+  }
+
+  const items: MenuItem[] = [
+    getItem("Option 1", "1"),
+    getItem("Option 2", "2"),
+    getItem("Option 3", "3"),
+  ];
+
+  return (
+    <Menu
+      defaultSelectedKeys={["1"]}
+      defaultOpenKeys={["sub1"]}
+      mode="inline"
+      theme="dark"
+      inlineCollapsed={collapsed}
+      items={items}
+    />
+  );
+};
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
     props;
+  const [collapsed, setCollapsed] = useState(true);
 
   if (!hosts) return <></>;
   const columns = [
@@ -52,12 +85,15 @@ export const HostsTable = (props: any) => {
           >
             Delete
           </a>
-          <a
+          {/* <a
             onClick={() => {
               navigateToNewTab(host);
             }}
           >
             Rubix-Wires
+          </a> */}
+          <a onClick={() => setCollapsed(!collapsed)}>
+            <MenuFoldOutlined />
           </a>
         </Space>
       ),
@@ -85,13 +121,14 @@ export const HostsTable = (props: any) => {
   };
 
   return (
-    <>
+    <div className="aaaa">
       <Table
         rowKey="uuid"
         dataSource={hosts}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
-    </>
+      <SidePanel collapsed={collapsed} />
+    </div>
   );
 };
