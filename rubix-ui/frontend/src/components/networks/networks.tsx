@@ -36,7 +36,7 @@ export const Networks = () => {
     try {
       setIsFetching(true);
       const res = await GetHostNetworks(connUUID);
-      const networksByLocUUID = res.filter((n) => n.uuid === locUUID);
+      const networksByLocUUID = res.filter((n) => n.location_uuid === locUUID);
       setNetworks(networksByLocUUID);
     } catch (error) {
       console.log(error);

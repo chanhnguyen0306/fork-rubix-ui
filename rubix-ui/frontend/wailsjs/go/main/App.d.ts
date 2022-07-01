@@ -3,153 +3,153 @@
 import {model} from '../models';
 import {storage} from '../models';
 import {assistmodel} from '../models';
-import {edge} from '../models';
-import {btypes} from '../models';
-import {assitcli} from '../models';
 import {main} from '../models';
+import {edge} from '../models';
+import {assitcli} from '../models';
+import {btypes} from '../models';
 import {networking} from '../models';
 import {datelib} from '../models';
 
-export function GetPoints(arg1:string,arg2:string):Promise<Array<model.Point>>;
-
-export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
-
-export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
-
-export function GetConnection(arg1:string):Promise<storage.RubixConnection>;
-
-export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
-
-export function GetHostTime(arg1:string,arg2:string):Promise<any>;
-
-export function GetLocationTableSchema(arg1:string):Promise<any>;
-
-export function GetDevice(arg1:string,arg2:string,arg3:string):Promise<model.Device>;
-
-export function GetHost(arg1:string,arg2:string):Promise<assistmodel.Host>;
-
-export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
+export function GetDevices(arg1:string,arg2:string):Promise<Array<model.Device>>;
 
 export function GetLogs():Promise<any>;
 
-export function AddHostNetwork(arg1:string,arg2:assistmodel.Network):Promise<assistmodel.Network>;
+export function OpenURL(arg1:string):void;
 
-export function DeleteBackup(arg1:string):Promise<string>;
-
-export function EditHost(arg1:string,arg2:string,arg3:assistmodel.Host):Promise<assistmodel.Host>;
+export function DeleteConnection(arg1:string):Promise<string>;
 
 export function GetConnections():Promise<Array<storage.RubixConnection>>;
 
+export function EditHostNetwork(arg1:string,arg2:string,arg3:assistmodel.Network):Promise<assistmodel.Network>;
+
 export function GetHosts(arg1:string):Promise<Array<assistmodel.Host>>;
+
+export function AddConnection(arg1:storage.RubixConnection):Promise<storage.RubixConnection>;
+
+export function DeletePoint(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<model.Network>;
+
+export function GetPoints(arg1:string,arg2:string):Promise<Array<model.Point>>;
+
+export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
+
+export function GetNetwork(arg1:string,arg2:string,arg3:string):Promise<model.Network>;
+
+export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
+
+export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
+
+export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function EditPoint(arg1:string,arg2:string,arg3:string,arg4:model.Point):Promise<model.Point>;
+
+export function GetLogsWithData():Promise<any>;
+
+export function AddHost(arg1:string,arg2:assistmodel.Host):Promise<assistmodel.Host>;
+
+export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetHostTime(arg1:string,arg2:string):Promise<any>;
+
+export function GetPcGetNetworksSchema():Promise<any>;
+
+export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
+
+export function DeleteDevice(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetNetworkSchema(arg1:string):Promise<any>;
+
+export function PingRubixAssist(arg1:string):Promise<boolean>;
+
+export function GetBackupsNoData():Promise<Array<storage.Backup>>;
+
+export function GetConnection(arg1:string):Promise<storage.RubixConnection>;
+
+export function GetNetworks(arg1:string,arg2:string):Promise<Array<model.Network>>;
+
+export function GetServerTime(arg1:string):Promise<any>;
+
+export function GetBackups():Promise<Array<storage.Backup>>;
+
+export function GetHostInternetIP(arg1:string,arg2:string):Promise<edge.InternetIP>;
+
+export function GetHostInterfaces(arg1:string,arg2:string):Promise<edge.InterfaceNames>;
+
+export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
+
+export function GetHostSchema(arg1:string):Promise<any>;
+
+export function GetPoint(arg1:string,arg2:string,arg3:string):Promise<model.Point>;
+
+export function EditHost(arg1:string,arg2:string,arg3:assistmodel.Host):Promise<assistmodel.Host>;
+
+export function EditNetwork(arg1:string,arg2:string,arg3:string,arg4:model.Network):Promise<model.Network>;
 
 export function GetLogsByConnection(arg1:string):Promise<any>;
 
 export function GetPcGetNetworks():Promise<any>;
 
-export function PingRubixAssist(arg1:string):Promise<boolean>;
-
-export function AddConnection(arg1:storage.RubixConnection):Promise<storage.RubixConnection>;
+export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
 
 export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
 
-export function EditPoint(arg1:string,arg2:string,arg3:string,arg4:model.Point):Promise<model.Point>;
-
-export function GetHostInternetIP(arg1:string,arg2:string):Promise<edge.InternetIP>;
-
-export function GetServerNetworking(arg1:string):Promise<any>;
-
-export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetBackupsByApplication(arg1:string,arg2:boolean):Promise<Array<storage.Backup>>;
-
-export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
-
-export function BacnetWhois(arg1:string,arg2:string,arg3:Array<string>):Promise<btypes.Device|Error>;
-
-export function DeleteLocation(arg1:string,arg2:string):Promise<assitcli.Response>;
-
-export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
-
-export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<model.Network>;
-
-export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
-
-export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetPcGetNetworksSchema():Promise<any>;
-
-export function GetPcInterfaces():Promise<networking.InterfaceNames>;
-
-export function WiresBackup(arg1:string,arg2:string):Promise<storage.Backup>;
-
-export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
-
-export function DeleteNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetLocations(arg1:string):Promise<Array<assistmodel.Location>>;
-
-export function GetLogsWithData():Promise<any>;
-
-export function PingHost(arg1:string,arg2:string):Promise<boolean>;
-
-export function AddHost(arg1:string,arg2:assistmodel.Host):Promise<assistmodel.Host>;
-
-export function GetHostInterfaces(arg1:string,arg2:string):Promise<edge.InterfaceNames>;
-
-export function GetPlugins(arg1:string,arg2:string):Promise<Array<model.PluginConf>>;
-
-export function OpenURL(arg1:string):void;
-
-export function EditNetwork(arg1:string,arg2:string,arg3:string,arg4:model.Network):Promise<model.Network>;
-
-export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetConnectionSchema():Promise<main.ConnectionSchema>;
-
-export function GetHostSchema(arg1:string):Promise<any>;
-
-export function AddLocation(arg1:string,arg2:assistmodel.Location):Promise<assistmodel.Location>;
-
-export function DeleteConnection(arg1:string):Promise<string>;
-
-export function DeleteHost(arg1:string,arg2:string):Promise<assitcli.Response>;
-
-export function EditHostNetwork(arg1:string,arg2:string,arg3:assistmodel.Network):Promise<assistmodel.Network>;
-
-export function GetLocationSchema(arg1:string):Promise<any>;
-
-export function GetNetwork(arg1:string,arg2:string,arg3:string):Promise<model.Network>;
-
-export function GetPoint(arg1:string,arg2:string,arg3:string):Promise<model.Point>;
-
-export function GetServerTime(arg1:string):Promise<any>;
-
-export function DeletePoint(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetBackup(arg1:string):Promise<storage.Backup>;
-
-export function GetNetworkSchema(arg1:string):Promise<any>;
-
-export function GetPcTime():Promise<datelib.Time>;
-
-export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<model.Network>;
-
-export function DeleteDevice(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function EditDevice(arg1:string,arg2:string,arg3:string,arg4:model.Device):Promise<model.Device>;
+export function DeleteHostNetwork(arg1:string,arg2:string):Promise<assitcli.Response>;
 
 export function GetHostActiveNetworks(arg1:string,arg2:string):Promise<any>;
 
-export function GetNetworks(arg1:string,arg2:string):Promise<Array<model.Network>>;
+export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Network>;
 
-export function GetBackupsNoData():Promise<Array<storage.Backup>>;
+export function GetLocationTableSchema(arg1:string):Promise<any>;
 
-export function GetDevices(arg1:string,arg2:string):Promise<Array<model.Device>>;
+export function GetLocations(arg1:string):Promise<Array<assistmodel.Location>>;
+
+export function GetBackup(arg1:string):Promise<storage.Backup>;
+
+export function GetHost(arg1:string,arg2:string):Promise<assistmodel.Host>;
+
+export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<model.Network>;
+
+export function GetLocationSchema(arg1:string):Promise<any>;
+
+export function GetPlugins(arg1:string,arg2:string):Promise<Array<model.PluginConf>>;
 
 export function GetScannerSchema():Promise<any>;
 
-export function DeleteHostNetwork(arg1:string,arg2:string):Promise<assitcli.Response>;
+export function PingHost(arg1:string,arg2:string):Promise<boolean>;
 
-export function GetBackups():Promise<Array<storage.Backup>>;
+export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 
-export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Network>;
+export function AddHostNetwork(arg1:string,arg2:assistmodel.Network):Promise<assistmodel.Network>;
+
+export function AddLocation(arg1:string,arg2:assistmodel.Location):Promise<assistmodel.Location>;
+
+export function GetConnectionSchema():Promise<main.ConnectionSchema>;
+
+export function GetDevice(arg1:string,arg2:string,arg3:string):Promise<model.Device>;
+
+export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
+
+export function BacnetWhois(arg1:string,arg2:string,arg3:Array<string>):Promise<btypes.Device|Error>;
+
+export function DeleteNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function EditDevice(arg1:string,arg2:string,arg3:string,arg4:model.Device):Promise<model.Device>;
+
+export function WiresBackup(arg1:string,arg2:string):Promise<storage.Backup>;
+
+export function DeleteHost(arg1:string,arg2:string):Promise<assitcli.Response>;
+
+export function DeleteLocation(arg1:string,arg2:string):Promise<assitcli.Response>;
+
+export function GetServerNetworking(arg1:string):Promise<any>;
+
+export function GetPcInterfaces():Promise<networking.InterfaceNames>;
+
+export function GetPcTime():Promise<datelib.Time>;
+
+export function DeleteBackup(arg1:string):Promise<string>;
+
+export function GetBackupsByApplication(arg1:string,arg2:boolean):Promise<Array<storage.Backup>>;

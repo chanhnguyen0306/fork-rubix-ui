@@ -1,4 +1,4 @@
-import {assistmodel, model} from "../../../../wailsjs/go/models";
+import {assistmodel} from "../../../../wailsjs/go/models";
 import {Space, Spin, Table} from "antd";
 import {DeleteHostNetwork} from "../../../../wailsjs/go/main/App";
 import {useNavigate} from "react-router-dom";
@@ -46,7 +46,7 @@ export const NetworksTable = (props: any) => {
             title: "Actions",
             dataIndex: "actions",
             key: "actions",
-            render: (_: any, network: model.Network) => (
+            render: (_: any, network: assistmodel.Network) => (
                 <Space size="middle">
                     <a
                         onClick={() =>
