@@ -17,4 +17,10 @@ func TestApp_GetNetworks(t *testing.T) {
 	//
 	//pprint.PrintJOSN(backup)
 
+	whois, err := app.BacnetWhois("cloud", "rc")
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(whois)
+
 }

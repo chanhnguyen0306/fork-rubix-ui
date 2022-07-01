@@ -1,9 +1,8 @@
 package humanize
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"github.com/iancoleman/strcase"
 	"testing"
 )
 
@@ -46,22 +45,25 @@ func parseArray(anArray []interface{}) {
 }
 
 func TestHumanize(t *testing.T) {
-
-	jsonFile, err := ioutil.ReadFile("testJson.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	m := map[string]interface{}{}
-
-	// Parsing/Unmarshalling JSON encoding/json
-	err = json.Unmarshal([]byte(jsonFile), &m)
-
-	if err != nil {
-		panic(err)
-	}
-	parseMap(m)
+	fmt.Println(toTitleCase("Analog Input"))
+	fmt.Println(toTitleCase("AnalogInput"))
+	fmt.Println(toTitleCase("analog_input"))
+	fmt.Println(strcase.ToSnake("analog input"))
+	//jsonFile, err := ioutil.ReadFile("testJson.json")
+	//// if we os.Open returns an error then handle it
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//m := map[string]interface{}{}
+	//
+	//// Parsing/Unmarshalling JSON encoding/json
+	//err = json.Unmarshal([]byte(jsonFile), &m)
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
+	//parseMap(m)
 
 	//fmt.Println(Map(name{AA: "hey", BB: "hey", CC: "hey", DD: "hey"}))
 

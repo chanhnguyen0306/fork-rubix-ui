@@ -2,7 +2,7 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
 
 require (
 	github.com/NubeDev/bacnet v0.0.4
@@ -13,7 +13,7 @@ require (
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.5
-	github.com/NubeIO/rubix-assist v0.0.8
+	github.com/NubeIO/rubix-assist v0.0.9
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/na4ma4/config v1.0.0
