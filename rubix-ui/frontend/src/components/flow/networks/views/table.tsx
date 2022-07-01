@@ -1,8 +1,8 @@
 import { Spin, Table } from "antd";
 
-export const LogsTable = (props: any) => {
-  const { logs, isFetching } = props;
-  if (!logs) return <></>;
+export const FlowNetworkTable = (props: any) => {
+  const { data, isFetching } = props;
+  if (!data) return <></>;
 
   const columns = [
     {
@@ -11,26 +11,21 @@ export const LogsTable = (props: any) => {
       key: "uuid",
     },
     {
-      title: "Timestamp",
-      dataIndex: "time",
-      key: "time",
+      title: "name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Table",
-      dataIndex: "function",
-      key: "function",
-    },
-    {
-      title: "Action Type",
-      dataIndex: "type",
-      key: "type",
-    },
+      title: "plugin",
+      dataIndex: "plugin",
+      key: "plugin",
+    }
   ];
 
   return (
     <Table
       rowKey="uuid"
-      dataSource={logs}
+      dataSource={data}
       columns={columns}
       loading={{ indicator: <Spin />, spinning: isFetching }}
     />

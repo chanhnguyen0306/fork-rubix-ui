@@ -1,14 +1,14 @@
-import {model, storage} from "../../../../wailsjs/go/models";
+import {model} from "../../../../wailsjs/go/models";
 import React, { useEffect, useState } from "react";
 import { FlowNetworkFactory } from "./factory";
-import { LogsTable } from "./views/table";
+import {FlowNetworkTable} from "./views/table";
 
 import VieLogs = model.Network;
 import {Button} from "antd";
 import {RedoOutlined} from "@ant-design/icons";
 
-export const Flow = () => {
-  const [logs, setLogs] = useState([] as VieLogs[]);
+export const FlowNetwork = () => {
+  const [data, setLogs] = useState([] as VieLogs[]);
   const [isFetching, setIsFetching] = useState(true);
   let factory = new FlowNetworkFactory();
 
@@ -37,8 +37,8 @@ export const Flow = () => {
         >
           <RedoOutlined/> Refresh
         </Button>
-        <LogsTable
-            logs={logs}
+        <FlowNetworkTable
+            data={data}
             isFetching={isFetching}
             setIsFetching={setIsFetching}
         />
