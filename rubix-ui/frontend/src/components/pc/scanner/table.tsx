@@ -3,6 +3,7 @@ import { Button, Spin, Table } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { AddButton, CreateModal } from "./create";
 import { openNotificationWithIcon } from "../../../utils/utils";
+import {Scanner} from "../../../../wailsjs/go/main/App";
 
 const ScannerTable = (props: any) => {
   let { data, isFetching, setSelectedIpPorts } = props;
@@ -55,31 +56,14 @@ export const PcScanner = () => {
 
   const fetch = async () => {
     setIsFetching(true);
-    // const res = await Scanner("", "", 0, ["1662"]);
-    const res = [
-      {
-        ip: "192.168.15.194",
-        ports: [
-          {
-            service: "nube-assist",
-            port: "1662",
-            key: 1,
-          },
-        ],
-      },
-      {
-        ip: "192.168.15.55",
-        ports: [
-          {
-            service: "nube-assist",
-            port: "1662",
-            key: 1,
-          },
-        ],
-      },
-    ] as any;
-    setData(res);
-    setIsFetching(false);
+    const res = await Scanner("", "", 0, ["1662"]);
+    if (res != undefined) {
+      setData(res["hosts"]);
+      setIsFetching(false);
+    } else {
+      setIsFetching(false);
+    }
+
   };
 
   const refreshList = () => {

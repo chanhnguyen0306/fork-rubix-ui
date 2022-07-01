@@ -28,7 +28,7 @@ export const Connections = () => {
   }, []);
 
   const fetchList = async () => {
-    console.log(1111);
+
 
     try {
       setIsFetching(true);
