@@ -1,4 +1,4 @@
-import {model} from "../../../wailsjs/go/models";
+import {assistmodel} from "../../../wailsjs/go/models";
 import {AddHost, EditHost, GetHost, GetHosts, PingHost} from "../../../wailsjs/go/main/App";
 import {Helpers} from "../../helpers/checks";
 
@@ -10,15 +10,15 @@ function hasUUID(uuid: string): Error {
 
 export class HostsFactory {
     uuid!: string;
-    private _this!: model.Host;
+    private _this!: assistmodel.Host;
     private connectionUUID!: string;
     private count!: number
 
-    get this(): model.Host {
+    get this(): assistmodel.Host {
         return this._this;
     }
 
-    set this(value: model.Host) {
+    set this(value: assistmodel.Host) {
         this._this = value;
     }
 
@@ -39,10 +39,10 @@ export class HostsFactory {
     }
 
     // get the first connection uuid
-    async GetFist(): Promise<model.Host> {
-        let one: model.Host = {} as model.Host
+    async GetFist(): Promise<assistmodel.Host> {
+        let one: assistmodel.Host = {} as assistmodel.Host
         await this.GetAll().then(res => {
-            one = res.at(0) as model.Host
+            one = res.at(0) as assistmodel.Host
             this._this = one
         }).catch(err => {
             return undefined
@@ -60,21 +60,21 @@ export class HostsFactory {
     }
 
 
-    async GetAll(): Promise<Array<model.Host>> {
-        let all: Array<model.Host> = {} as Array<model.Host>
+    async GetAll(): Promise<Array<assistmodel.Host>> {
+        let all: Array<assistmodel.Host> = {} as Array<assistmodel.Host>
         await GetHosts(this.connectionUUID).then(res => {
-            all = res as Array<model.Host>
+            all = res as Array<assistmodel.Host>
         }).catch(err => {
             return undefined
         })
         return all
     }
 
-    async GetOne(): Promise<model.Host> {
+    async GetOne(): Promise<assistmodel.Host> {
         hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
+        let one: assistmodel.Host = {} as assistmodel.Host
         await GetHost(this.connectionUUID, this.uuid).then(res => {
-            one = res as model.Host
+            one = res as assistmodel.Host
             this._this = one
         }).catch(err => {
             return undefined
@@ -82,11 +82,11 @@ export class HostsFactory {
         return one
     }
 
-    async Add(): Promise<model.Host> {
+    async Add(): Promise<assistmodel.Host> {
         hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
+        let one: assistmodel.Host = {} as assistmodel.Host
         await AddHost(this.connectionUUID, this._this).then(res => {
-            one = res as model.Host
+            one = res as assistmodel.Host
             this._this = one
         }).catch(err => {
             return undefined
@@ -94,11 +94,11 @@ export class HostsFactory {
         return one
     }
 
-    async Update(): Promise<model.Host> {
+    async Update(): Promise<assistmodel.Host> {
         hasUUID(this.uuid)
-        let one: model.Host = {} as model.Host
+        let one: assistmodel.Host = {} as assistmodel.Host
         await EditHost(this.connectionUUID, this.uuid, this._this).then(res => {
-            one = res as model.Host
+            one = res as assistmodel.Host
             this._this = one
         }).catch(err => {
             return undefined

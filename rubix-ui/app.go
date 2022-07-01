@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/NubeIO/rubix-assist/pkg/model"
+	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
 	"github.com/NubeIO/rubix-ui/backend/flow"
@@ -33,7 +33,7 @@ func NewApp() *App {
 }
 
 //resetHost will be used later to cache a host ip, port and token
-func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*model.Host, error) {
+func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
 	host, _ := app.getHost(connUUID, hostUUID)
 	if resetFlow {
 		app.resetFlow(host.IP, flowPort)

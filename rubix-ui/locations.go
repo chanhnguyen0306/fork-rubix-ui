@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/pkg/model"
+	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
@@ -36,7 +36,7 @@ func (app *App) GetLocationTableSchema(connUUID string) interface{} {
 	return humanize.BuildTableSchema(data)
 }
 
-func (app *App) AddLocation(connUUID string, body *model.Location) *model.Location {
+func (app *App) AddLocation(connUUID string, body *assistmodel.Location) *assistmodel.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -51,8 +51,8 @@ func (app *App) AddLocation(connUUID string, body *model.Location) *model.Locati
 	return data
 }
 
-func (app *App) GetLocations(connUUID string) (resp []model.Location) {
-	resp = []model.Location{}
+func (app *App) GetLocations(connUUID string) (resp []assistmodel.Location) {
+	resp = []assistmodel.Location{}
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -81,7 +81,7 @@ func (app *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response 
 	return res
 }
 
-func (app *App) GetLocation(connUUID string, uuid string) *model.Location {
+func (app *App) GetLocation(connUUID string, uuid string) *assistmodel.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -95,7 +95,7 @@ func (app *App) GetLocation(connUUID string, uuid string) *model.Location {
 	return data
 }
 
-func (app *App) UpdateLocation(connUUID string, uuid string, host *model.Location) *model.Location {
+func (app *App) UpdateLocation(connUUID string, uuid string, host *assistmodel.Location) *assistmodel.Location {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

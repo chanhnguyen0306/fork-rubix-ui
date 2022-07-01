@@ -7,7 +7,7 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import { model, storage } from "../wailsjs/go/models";
+import {assistmodel, model, storage} from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Networks } from "./components/networks/networks";
@@ -20,8 +20,8 @@ import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
 
-import Location = model.Location;
-import Network = model.Network;
+import Location = assistmodel.Location;
+import Network = assistmodel.Network;
 
 import "./App.css";
 import Upload from "./components/file";

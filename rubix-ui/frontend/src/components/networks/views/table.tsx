@@ -1,4 +1,4 @@
-import {model} from "../../../../wailsjs/go/models";
+import {assistmodel, model} from "../../../../wailsjs/go/models";
 import {Space, Spin, Table} from "antd";
 import {DeleteHostNetwork} from "../../../../wailsjs/go/main/App";
 import {useNavigate} from "react-router-dom";
@@ -83,7 +83,7 @@ export const NetworksTable = (props: any) => {
 
     const getLocationNameByUUID = (location_uuid: string) => {
         const location = locations.find(
-            (l: model.Location) => l.uuid === location_uuid
+            (l: assistmodel.Location) => l.uuid === location_uuid
         );
         return location ? location.name : "";
     };
