@@ -5,8 +5,10 @@ import {RedoOutlined} from "@ant-design/icons";
 import {assistmodel, model} from "../../../../wailsjs/go/models";
 import {HostsFactory} from "../factory";
 import {HostTable} from "./views/hostTable";
-import {FlowNetworkFactory} from "../../flow/networks/factory";
-import {NetworksTable} from "./views/networksTable";
+import {FlowNetworkFactory} from "./flow/networks/factory";
+import {BacnetWhoIsTable} from "./flow/bacnet/bacnetTable";
+import {BacnetFactory} from "./flow/bacnet/factory";
+import {FlowNetworkTable} from "./flow/networks/views/table";
 
 
 export const Host = () => {
@@ -15,9 +17,12 @@ export const Host = () => {
   const hostUUID = location.state.hostUUID ?? "";
   const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);
+  const [whoIs, setWhois] = useState([] as model.Device[]);
   const [isFetching, setIsFetching] = useState(true);
   let hostFactory = new HostsFactory();
   let networkFactory = new FlowNetworkFactory();
+  let bacnetFactory = new BacnetFactory();
+
   const { TabPane } = Tabs;
   const onChange = (key: string) => {
     console.log(key);
@@ -25,6 +30,7 @@ export const Host = () => {
   useEffect(() => {
     fetchHost();
     fetchNetworks();
+    // runWhois();
   }, []);
 
   const fetchHost = async () => {
@@ -55,6 +61,21 @@ export const Host = () => {
     }
   };
 
+  const runWhois = async () => {
+    try {
+      bacnetFactory.connectionUUID = connUUID
+      bacnetFactory.uuid = hostUUID
+      // bacnetFactory.bacnetNetworkUUID
+      let res = await bacnetFactory.Whois();
+      console.log("runWhois", res, connUUID, hostUUID)
+      setWhois(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return (
       <>
         <Tabs defaultActiveKey="1" onChange={onChange}>
@@ -73,7 +94,7 @@ export const Host = () => {
             >
               <RedoOutlined/> Refresh
             </Button>
-            <NetworksTable
+            <FlowNetworkTable
                 data={networks}
                 isFetching={isFetching}
                 setIsFetching={setIsFetching}
@@ -82,13 +103,13 @@ export const Host = () => {
           <TabPane tab="BACNET" key="3">
             <Button
                 type="primary"
-                onClick={fetchHost}
+                onClick={runWhois}
                 style={{margin: "5px", float: "right"}}
             >
-              <RedoOutlined/> Refresh
+              <RedoOutlined/> WHO-IS
             </Button>
-            <NetworksTable
-                data={networks}
+            <BacnetWhoIsTable
+                data={whoIs}
                 isFetching={isFetching}
                 setIsFetching={setIsFetching}
             />

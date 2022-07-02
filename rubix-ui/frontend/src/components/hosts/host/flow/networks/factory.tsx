@@ -1,12 +1,12 @@
-import {model} from "../../../../wailsjs/go/models";
+import {model} from "../../../../../../wailsjs/go/models";
 import {
     AddNetwork,
     DeleteNetwork,
     EditNetwork,
     GetNetwork,
     GetNetworks
-} from "../../../../wailsjs/go/main/App";
-import {Helpers} from "../../../helpers/checks";
+} from "../../../../../../wailsjs/go/main/App";
+import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
     return Helpers.IsUndefined(uuid, "host or connection uuid") as Error

@@ -2,7 +2,7 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
 
 require (
 	github.com/NubeDev/bacnet v0.0.4

@@ -1,4 +1,4 @@
-import {model} from "../../../../wailsjs/go/models";
+import {model} from "../../../../../../wailsjs/go/models";
 import React, { useEffect, useState } from "react";
 import { FlowPluginFactory } from "./factory";
 import {FlowPluginsTable} from "./views/table";

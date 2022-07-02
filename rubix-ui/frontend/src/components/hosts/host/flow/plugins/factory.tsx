@@ -1,6 +1,6 @@
-import {model} from "../../../../wailsjs/go/models";
-import {DisablePlugin, EnablePlugin, GetPlugins} from "../../../../wailsjs/go/main/App";
-import {Helpers} from "../../../helpers/checks";
+import {model} from "../../../../../../wailsjs/go/models";
+import {DisablePlugin, EnablePlugin, GetPlugins} from "../../../../../../wailsjs/go/main/App";
+import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
     return Helpers.IsUndefined(uuid, "host or connection uuid") as Error

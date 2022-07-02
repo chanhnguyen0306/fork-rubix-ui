@@ -1,20 +1,31 @@
 import {Spin, Table} from "antd";
 
-export const NetworksTable = (props: any) => {
+export const BacnetWhoIsTable = (props: any) => {
     const { data, isFetching } = props;
     if (!data) return <></>;
 
     const columns = [
-        {
-            title: "uuid",
-            dataIndex: "uuid",
-            key: "uuid",
-        },
+
         {
             title: "name",
             dataIndex: "name",
             key: "name",
-        }
+        },
+        {
+            title: "device id",
+            dataIndex: "device_object_id",
+            key: "device_object_id",
+        },
+        {
+            title: "ip",
+            dataIndex: "host",
+            key: "host",
+        },
+        {
+            title: "port",
+            dataIndex: "port",
+            key: "port",
+        },
     ];
     return (
         <Table

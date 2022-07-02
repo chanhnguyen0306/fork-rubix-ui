@@ -1,4 +1,4 @@
-import {model} from "../../../../wailsjs/go/models";
+import {model} from "../../../../../../wailsjs/go/models";
 import React, { useEffect, useState } from "react";
 import { FlowDeviceFactory } from "./factory";
 import {FlowDeviceTable} from "./views/table";
@@ -7,7 +7,7 @@ import Devices = model.Device;
 import {Button} from "antd";
 import {RedoOutlined} from "@ant-design/icons";
 
-export const FlowNetwork = () => {
+export const FlowDevices= () => {
   const [data, setLogs] = useState([] as Devices[]);
   const [isFetching, setIsFetching] = useState(true);
   let factory = new FlowDeviceFactory();
