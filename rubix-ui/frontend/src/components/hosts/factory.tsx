@@ -11,7 +11,7 @@ function hasUUID(uuid: string): Error {
 export class HostsFactory {
     uuid!: string;
     private _this!: assistmodel.Host;
-    private connectionUUID!: string;
+    connectionUUID!: string;
     private count!: number
 
     get this(): assistmodel.Host {
@@ -74,6 +74,7 @@ export class HostsFactory {
         hasUUID(this.uuid)
         let one: assistmodel.Host = {} as assistmodel.Host
         await GetHost(this.connectionUUID, this.uuid).then(res => {
+            console.log(6666, res)
             one = res as assistmodel.Host
             this._this = one
         }).catch(err => {

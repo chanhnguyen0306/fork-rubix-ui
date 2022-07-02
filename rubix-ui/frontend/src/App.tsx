@@ -27,6 +27,7 @@ import "./App.css";
 import Upload from "./components/file";
 import {Backups} from "./components/backups/backups";
 import {BackupFactory} from "./components/backups/factory";
+import {Host} from "./components/hosts/host/host";
 
 const { Content, Sider } = Layout;
 
@@ -202,7 +203,7 @@ const App: React.FC = () => {
             <Route path="/locations/:connUUID" element={<Locations />} />
             <Route path="/networks/:locUUID" element={<Networks />} />
             <Route path="/hosts/:netUUID" element={<Hosts />} />
-
+            <Route path="/host/:hostUUID" element={<Host />} />
             <Route path="/logs" element={<Logs />} />
             <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />

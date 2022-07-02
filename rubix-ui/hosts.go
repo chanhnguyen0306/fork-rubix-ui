@@ -67,13 +67,12 @@ func (app *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error)
 }
 
 func (app *App) GetHost(connUUID string, uuid string) *assistmodel.Host {
-	client, err := app.initConnection(connUUID)
+	host, err := app.getHost(connUUID, uuid)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, _ := client.GetHost(uuid)
-	return data
+	return host
 }
 
 func (app *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) *assistmodel.Host {

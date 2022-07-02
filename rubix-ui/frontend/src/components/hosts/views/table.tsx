@@ -3,12 +3,14 @@ import { Space, Spin, Table } from "antd";
 import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import {assistmodel} from "../../../../wailsjs/go/models";
+import {useNavigate} from "react-router-dom";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
     props;
 
   if (!hosts) return <></>;
+  const navigate = useNavigate();
   const columns = [
     {
       title: "Name",
@@ -39,6 +41,15 @@ export const HostsTable = (props: any) => {
       key: "actions",
       render: (_: any, host: assistmodel.Host) => (
         <Space size="middle">
+          <a
+              onClick={() =>
+                  navigate(`/host/${host.uuid}`, {
+                    state: { connUUID: connUUID, hostUUID: host.uuid },
+                  })
+              }
+          >
+            View
+          </a>
           <a
             onClick={() => {
               showModal(host);
