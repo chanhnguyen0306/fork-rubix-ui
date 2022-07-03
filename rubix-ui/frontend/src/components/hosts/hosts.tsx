@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { model } from "../../../wailsjs/go/models";
 import { useLocation, useParams } from "react-router-dom";
 import {
   GetHostNetworks,
@@ -12,6 +11,7 @@ import { HostsTable } from "./views/table";
 import { Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
+import {assistmodel} from "../../../wailsjs/go/models";
 
 export const Hosts = () => {
   const { TabPane } = Tabs;
@@ -19,9 +19,9 @@ export const Hosts = () => {
   const location = useLocation() as any;
   const connUUID = location.state.connUUID ?? "";
 
-  const [hosts, setHosts] = useState([] as model.Host[]);
-  const [networks, setNetworks] = useState([] as model.Network[]);
-  const [currentHost, setCurrentHost] = useState({} as model.Host);
+  const [hosts, setHosts] = useState([] as assistmodel.Host[]);
+  const [networks, setNetworks] = useState([] as assistmodel.Network[]);
+  const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
   const [hostSchema, setHostSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -67,7 +67,7 @@ export const Hosts = () => {
       network_uuid: {
         title: "network",
         type: "string",
-        anyOf: networks.map((n: model.Network) => {
+        anyOf: networks.map((n: assistmodel.Network) => {
           return { type: "string", enum: [n.uuid], title: n.name };
         }),
         default: netUUID,
@@ -81,7 +81,7 @@ export const Hosts = () => {
     fetchList();
   };
 
-  const showModal = (host: model.Host) => {
+  const showModal = (host: assistmodel.Host) => {
     setCurrentHost(host);
     setIsModalVisible(true);
     if (isObjectEmpty(hostSchema)) {

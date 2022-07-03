@@ -1,8 +1,8 @@
 import {Button, Modal, Spin} from "antd";
-import {model} from "../../../../wailsjs/go/models";
+import {assistmodel} from "../../../../wailsjs/go/models";
 import {PlusOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
-import {AddHost, AddHostNetwork, EditHost, EditHostNetwork} from "../../../../wailsjs/go/main/App";
+import {AddHostNetwork, EditHostNetwork} from "../../../../wailsjs/go/main/App";
 import {openNotificationWithIcon} from "../../../utils/utils";
 import {JsonForm} from "../../../common/json-form";
 
@@ -12,7 +12,7 @@ export const AddButton = (props: any) => {
     return (
         <Button
             type="primary"
-            onClick={() => showModal({} as model.Network)}
+            onClick={() => showModal({} as assistmodel.Network)}
             style={{ margin: "5px", float: "right" }}
         >
             <PlusOutlined /> Network
@@ -37,7 +37,7 @@ export const CreateEditModal = (props: any) => {
         setFormData(currentNetwork);
     }, [currentNetwork]);
 
-    const addNetwork = async (network: model.Network) => {
+    const addNetwork = async (network: assistmodel.Network) => {
         try {
             const res = await AddHostNetwork(connUUID, network);
             openNotificationWithIcon("success", `added ${network.name} success`);
@@ -46,7 +46,7 @@ export const CreateEditModal = (props: any) => {
         }
     };
 
-    const editNetwork = async (network: model.Network) => {
+    const editNetwork = async (network: assistmodel.Network) => {
         try {
             const res = await EditHostNetwork(connUUID, network.uuid, network);
             openNotificationWithIcon("success", `updated ${network.name} success`);
@@ -56,11 +56,11 @@ export const CreateEditModal = (props: any) => {
     };
 
     const handleClose = () => {
-        setFormData({} as model.Network);
+        setFormData({} as assistmodel.Network);
         onCloseModal();
     };
 
-    const handleSubmit = (network: model.Network) => {
+    const handleSubmit = (network: assistmodel.Network) => {
         setConfirmLoading(true);
         if (currentNetwork.uuid) {
             network.uuid = currentNetwork.uuid;

@@ -1,10 +1,11 @@
 import {Button, Modal, Spin} from "antd";
-import {model} from "../../../../wailsjs/go/models";
 import {PlusOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
 import {AddHost, EditHost} from "../../../../wailsjs/go/main/App";
 import {openNotificationWithIcon} from "../../../utils/utils";
 import {JsonForm} from "../../../common/json-form";
+import {assistmodel} from "../../../../wailsjs/go/models";
+
 
 export const AddButton = (props: any) => {
     const { showModal } = props;
@@ -12,7 +13,7 @@ export const AddButton = (props: any) => {
     return (
         <Button
             type="primary"
-            onClick={() => showModal({} as model.Host)}
+            onClick={() => showModal({} as assistmodel.Host)}
             style={{ margin: "5px", float: "right" }}
         >
             <PlusOutlined /> Host
@@ -38,7 +39,7 @@ export const CreateEditModal = (props: any) => {
         setFormData(currentHost);
     }, [currentHost]);
 
-    const addHost = async (host: model.Host) => {
+    const addHost = async (host: assistmodel.Host) => {
         try {
             const res = await AddHost(connUUID, host);
             openNotificationWithIcon("success", `added ${host.name} success`);
@@ -47,10 +48,10 @@ export const CreateEditModal = (props: any) => {
         }
     };
 
-    const editHost = async (host: model.Host) => {
+    const editHost = async (host: assistmodel.Host) => {
         try {
             const res = await EditHost(connUUID, host.uuid, host);
-            const index = hosts.findIndex((n: model.Host) => n.uuid === host.uuid);
+            const index = hosts.findIndex((n: assistmodel.Host) => n.uuid === host.uuid);
             openNotificationWithIcon("success", `updated ${host.name} success`);
         } catch (error) {
             openNotificationWithIcon("error", `updated ${host.name} fail`);
@@ -58,11 +59,11 @@ export const CreateEditModal = (props: any) => {
     };
 
     const handleClose = () => {
-        setFormData({} as model.Host);
+        setFormData({} as assistmodel.Host);
         onCloseModal();
     };
 
-    const handleSubmit = (host: model.Host) => {
+    const handleSubmit = (host: assistmodel.Host) => {
         setConfirmLoading(true);
         if (currentHost.uuid) {
             host.uuid = currentHost.uuid;

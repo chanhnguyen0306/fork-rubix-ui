@@ -5,8 +5,9 @@ import { AddLocation, UpdateLocation} from "../../../../wailsjs/go/main/App";
 import {openNotificationWithIcon} from "../../../utils/utils";
 import {JsonForm} from "../../../common/json-form";
 
-import Location = model.Location;
-import {model} from "../../../../wailsjs/go/models";
+import Location = assistmodel.Location;
+import {assistmodel} from "../../../../wailsjs/go/models";
+
 
 export const AddButton = (props: any) => {
     const { onShowModal } = props;

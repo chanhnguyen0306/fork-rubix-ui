@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Menu, MenuProps, Space, Spin, Table } from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
-import { model } from "../../../../wailsjs/go/models";
 import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
+import { assistmodel } from "../../../../wailsjs/go/models";
+import { useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -41,6 +42,7 @@ export const HostsTable = (props: any) => {
   const [collapsed, setCollapsed] = useState(true);
 
   if (!hosts) return <></>;
+  const navigate = useNavigate();
   const columns = [
     {
       title: "Name",
@@ -69,8 +71,17 @@ export const HostsTable = (props: any) => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, host: model.Host) => (
+      render: (_: any, host: assistmodel.Host) => (
         <Space size="middle">
+          <a
+            onClick={() =>
+              navigate(`/host/${host.uuid}`, {
+                state: { connUUID: connUUID, hostUUID: host.uuid },
+              })
+            }
+          >
+            View
+          </a>
           <a
             onClick={() => {
               showModal(host);
@@ -106,11 +117,11 @@ export const HostsTable = (props: any) => {
   };
 
   const getNetworkNameByUUID = (uuid: string) => {
-    const network = networks.find((l: model.Location) => l.uuid === uuid);
+    const network = networks.find((l: assistmodel.Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
 
-  const navigateToNewTab = (host: model.Host) => {
+  const navigateToNewTab = (host: assistmodel.Host) => {
     try {
       const { ip } = host;
       const source = `http://${ip}:1313/`;

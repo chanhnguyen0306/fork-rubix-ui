@@ -92,8 +92,8 @@ github.com/NubeIO/lib-uuid v0.0.2/go.mod h1:lLx2E+mqNntnVsgnA44rEVQXoXzKTcZDYTQd
 github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7 h1:QKgcOjDkVujyAXWK+OysVFnQKzpZx335vGPG95UNXuI=
 github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7/go.mod h1:oLI6n9wuko0KIEzrLc8saOquiQvtMUUBrUjXf0TLDVQ=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.0.4/go.mod h1:A1BPuc3UpE1EF3ugdf+8QIIKTT8s3eK+pfUcheJX2JM=
-github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.5 h1:4h9YfVe6y/qXCIaYRAQAtJhBCbqmwy5gDt2pVAasOVM=
-github.com/NubeIO/nubeio-rubix-lib-models-go v1.2.5/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
+github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0 h1:8dGLH9FnYFdpufF8VLXr9G2r7M3F+bz+wJuxR4zUWDw=
+github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
 github.com/NubeIO/rubix-automater v0.0.6 h1:ie1bnX2C51aPCjW2apMKVDLr7g84QMFjRkyHcNwzt+s=
 github.com/NubeIO/rubix-automater v0.0.6/go.mod h1:MKKL8VvaO8W5vGO05SMO9k4Vur+xHSxU2JQLW/4RguA=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=

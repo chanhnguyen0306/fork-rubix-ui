@@ -1,5 +1,5 @@
 import {Helpers} from "../../../helpers/checks";
-import {GetServerTime, Scanner} from "../../../../wailsjs/go/main/App";
+import {Scanner} from "../../../../wailsjs/go/main/App";
 
 
 function hasUUID(uuid: string): Error {

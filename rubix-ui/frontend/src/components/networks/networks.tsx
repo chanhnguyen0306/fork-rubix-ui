@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { model } from "../../../wailsjs/go/models";
 import { useLocation, useParams } from "react-router-dom";
 import {
   GetHostNetworks,
@@ -9,11 +8,12 @@ import {
 import { isObjectEmpty } from "../../utils/utils";
 import { AddButton, CreateEditModal } from "./views/create";
 import { NetworksTable } from "./views/table";
+import {assistmodel} from "../../../wailsjs/go/models";
 
 export const Networks = () => {
-  const [networks, setNetworks] = useState([] as model.Network[]);
-  const [locations, setLocations] = useState([] as model.Location[]);
-  const [currentNetwork, setCurrentNetwork] = useState({} as model.Network);
+  const [networks, setNetworks] = useState([] as assistmodel.Network[]);
+  const [locations, setLocations] = useState([] as assistmodel.Location[]);
+  const [currentNetwork, setCurrentNetwork] = useState({} as assistmodel.Network);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -58,7 +58,7 @@ export const Networks = () => {
       location_uuid: {
         title: "location",
         type: "string",
-        anyOf: locations.map((l: model.Location) => {
+        anyOf: locations.map((l: assistmodel.Location) => {
           return { type: "string", enum: [l.uuid], title: l.name };
         }),
         default: locUUID,
@@ -72,7 +72,7 @@ export const Networks = () => {
     fetchList();
   };
 
-  const showModal = (network: model.Network) => {
+  const showModal = (network: assistmodel.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
     if (isObjectEmpty(networkSchema)) {

@@ -7,7 +7,7 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import { model, storage } from "../wailsjs/go/models";
+import {assistmodel, model, storage} from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Networks } from "./components/networks/networks";
@@ -20,13 +20,15 @@ import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
 
-import Location = model.Location;
-import Network = model.Network;
+import Location = assistmodel.Location;
+import Network = assistmodel.Network;
 
 import "./App.css";
 import Upload from "./components/file";
 import {Backups} from "./components/backups/backups";
 import {BackupFactory} from "./components/backups/factory";
+import {Host} from "./components/hosts/host/host";
+import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
 
 const { Content, Sider } = Layout;
 
@@ -202,7 +204,8 @@ const App: React.FC = () => {
             <Route path="/locations/:connUUID" element={<Locations />} />
             <Route path="/networks/:locUUID" element={<Networks />} />
             <Route path="/hosts/:netUUID" element={<Hosts />} />
-
+            <Route path="/host/:hostUUID" element={<Host />} />
+            <Route path="/flow/networks/:networkUUID" element={<FlowDevices />} />  // open flow network devices
             <Route path="/logs" element={<Logs />} />
             <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />

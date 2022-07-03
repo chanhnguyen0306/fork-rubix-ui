@@ -8,11 +8,11 @@ import {
 } from "../../../wailsjs/go/main/App";
 import { isObjectEmpty } from "../../utils/utils";
 import { Space } from "antd";
-import { model, storage } from "../../../wailsjs/go/models";
+import {assistmodel, model, storage} from "../../../wailsjs/go/models";
 import RubixConnection = storage.RubixConnection;
 import { AddButton, CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
-import Location = model.Location;
+import Location = assistmodel.Location;
 
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
