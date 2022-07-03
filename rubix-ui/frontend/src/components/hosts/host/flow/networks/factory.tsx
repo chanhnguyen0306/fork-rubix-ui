@@ -27,9 +27,9 @@ export class FlowNetworkFactory {
         this._this = value;
     }
 
-    async GetAll(): Promise<Array<model.Network>> {
+    async GetAll(withDevice:boolean): Promise<Array<model.Network>> {
         let all: Promise<Array<model.Network>> = {} as Promise<Array<model.Network>>
-        await GetNetworks(this.connectionUUID, this.hostUUID).then(res => {
+        await GetNetworks(this.connectionUUID, this.hostUUID, withDevice).then(res => {
             all = res as unknown as Promise<Array<model.Network>>
         }).catch(err => {
             return undefined
@@ -37,10 +37,10 @@ export class FlowNetworkFactory {
         return all
     }
 
-    async GetOne(): Promise<model.Network> {
+    async GetOne(withDevice:boolean): Promise<model.Network> {
         hasUUID(this.uuid)
         let one: model.Network = {} as model.Network
-        await GetNetwork(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
+        await GetNetwork(this.connectionUUID, this.hostUUID, this.uuid, withDevice).then(res => {
             one = res as model.Network
             this._this = one
         }).catch(err => {

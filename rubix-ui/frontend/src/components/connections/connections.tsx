@@ -28,8 +28,6 @@ export const Connections = () => {
   }, []);
 
   const fetchList = async () => {
-
-
     try {
       setIsFetching(true);
       let res = await factory.GetAll();

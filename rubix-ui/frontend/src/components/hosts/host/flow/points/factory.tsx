@@ -3,8 +3,8 @@ import {
     AddPoint,
     DeletePoint,
     EditPoint,
-    GetPoint, GetPoints,
-    } from "../../../../../../wailsjs/go/main/App";
+    GetPoint, GetPoints, GetPointsForDevice,
+} from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -29,6 +29,16 @@ export class FlowPointFactory {
     async GetAll(): Promise<Array<model.Point>> {
         let all: Promise<Array<model.Point>> = {} as Promise<Array<model.Point>>
         await GetPoints(this.connectionUUID, this.hostUUID).then(res => {
+            all = res as unknown as Promise<Array<model.Point>>
+        }).catch(err => {
+            return undefined
+        })
+        return all
+    }
+
+    async GetPointsForDevice(deviceUUID: string): Promise<Array<model.Point>> {
+        let all: Promise<Array<model.Point>> = {} as Promise<Array<model.Point>>
+        await GetPointsForDevice(this.connectionUUID, this.hostUUID, deviceUUID).then(res => {
             all = res as unknown as Promise<Array<model.Point>>
         }).catch(err => {
             return undefined

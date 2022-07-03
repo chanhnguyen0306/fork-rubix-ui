@@ -18,7 +18,6 @@ export const Hosts = () => {
   let { netUUID } = useParams();
   const location = useLocation() as any;
   const connUUID = location.state.connUUID ?? "";
-
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
   const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
@@ -95,7 +94,7 @@ export const Hosts = () => {
 
   return (
     <>
-      <h1>Hosts</h1>
+      <h2>Hosts</h2>
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={
