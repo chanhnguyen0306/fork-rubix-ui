@@ -35,11 +35,11 @@ export class FlowPluginFactory {
 
     async BulkEnable(pluginUUIDs: string[]): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
-        // await EnablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
-        //     out = res as Promise<any>
-        // }).catch(err => {
-        //     return undefined
-        // })
+        await EnablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
         return out
     }
 

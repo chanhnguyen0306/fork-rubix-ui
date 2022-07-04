@@ -25,8 +25,11 @@ func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []string)
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	fmt.Println(pluginUUID)
 	for _, plg := range pluginUUID {
+		fmt.Println(plg)
 		_, err := app.flow.EnablePlugin(plg)
+		fmt.Println(err)
 		if err != nil {
 			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		}

@@ -1,3 +1,111 @@
+export namespace main {
+	
+	
+	export class ConnectionSchema {
+	    // Go type: schema.UUID
+	    uuid: any;
+	    // Go type: schema.Name
+	    name: any;
+	    // Go type: schema.Description
+	    description: any;
+	    // Go type: schema.IP
+	    ip: any;
+	    // Go type: schema.Port
+	    port: any;
+	    // Go type: schema.HTTPS
+	    https: any;
+	    // Go type: schema.Username
+	    username: any;
+	    // Go type: schema.Password
+	    password: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConnectionSchema(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = this.convertValues(source["uuid"], null);
+	        this.name = this.convertValues(source["name"], null);
+	        this.description = this.convertValues(source["description"], null);
+	        this.ip = this.convertValues(source["ip"], null);
+	        this.port = this.convertValues(source["port"], null);
+	        this.https = this.convertValues(source["https"], null);
+	        this.username = this.convertValues(source["username"], null);
+	        this.password = this.convertValues(source["password"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+
+}
+
+export namespace assitcli {
+	
+	export class Response {
+	    code: number;
+	    message: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.code = source["code"];
+	        this.message = source["message"];
+	    }
+	}
+
+}
+
+export namespace edge {
+	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
+	export class InternetIP {
+	    ip_address: string;
+	    ok: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new InternetIP(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip_address = source["ip_address"];
+	        this.ok = source["ok"];
+	    }
+	}
+
+}
+
 export namespace networking {
 	
 	export class InterfaceNames {
@@ -751,6 +859,124 @@ export namespace model {
 		    return a;
 		}
 	}
+	export class Network {
+	    uuid: string;
+	    name: string;
+	    description?: string;
+	    enable?: boolean;
+	    fault?: boolean;
+	    message_level?: string;
+	    message_code?: string;
+	    message?: string;
+	    // Go type: time.Time
+	    last_ok?: any;
+	    // Go type: time.Time
+	    last_fail?: any;
+	    // Go type: time.Time
+	    created_on?: any;
+	    // Go type: time.Time
+	    updated_on?: any;
+	    manufacture?: string;
+	    model?: string;
+	    writeable_network?: boolean;
+	    thing_class?: string;
+	    thing_reference?: string;
+	    thing_type?: string;
+	    transport_type?: string;
+	    plugin_conf_id?: string;
+	    plugin_name?: string;
+	    auto_mapping_networks_selection: string;
+	    auto_mapping_flow_network_uuid: string;
+	    auto_mapping_flow_network_name: string;
+	    auto_mapping_enable_histories?: boolean;
+	    number_of_networks_permitted?: number;
+	    network_interface: string;
+	    ip: string;
+	    port?: number;
+	    network_mask?: number;
+	    address_id: string;
+	    address_uuid: string;
+	    serial_port?: string;
+	    serial_baud_rate?: number;
+	    serial_stop_bits?: number;
+	    serial_parity?: string;
+	    serial_data_bits?: number;
+	    serial_timeout?: number;
+	    serial_connected?: boolean;
+	    host?: string;
+	    devices?: Device[];
+	    tags?: Tag[];
+	    max_poll_rate?: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Network(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.name = source["name"];
+	        this.description = source["description"];
+	        this.enable = source["enable"];
+	        this.fault = source["fault"];
+	        this.message_level = source["message_level"];
+	        this.message_code = source["message_code"];
+	        this.message = source["message"];
+	        this.last_ok = this.convertValues(source["last_ok"], null);
+	        this.last_fail = this.convertValues(source["last_fail"], null);
+	        this.created_on = this.convertValues(source["created_on"], null);
+	        this.updated_on = this.convertValues(source["updated_on"], null);
+	        this.manufacture = source["manufacture"];
+	        this.model = source["model"];
+	        this.writeable_network = source["writeable_network"];
+	        this.thing_class = source["thing_class"];
+	        this.thing_reference = source["thing_reference"];
+	        this.thing_type = source["thing_type"];
+	        this.transport_type = source["transport_type"];
+	        this.plugin_conf_id = source["plugin_conf_id"];
+	        this.plugin_name = source["plugin_name"];
+	        this.auto_mapping_networks_selection = source["auto_mapping_networks_selection"];
+	        this.auto_mapping_flow_network_uuid = source["auto_mapping_flow_network_uuid"];
+	        this.auto_mapping_flow_network_name = source["auto_mapping_flow_network_name"];
+	        this.auto_mapping_enable_histories = source["auto_mapping_enable_histories"];
+	        this.number_of_networks_permitted = source["number_of_networks_permitted"];
+	        this.network_interface = source["network_interface"];
+	        this.ip = source["ip"];
+	        this.port = source["port"];
+	        this.network_mask = source["network_mask"];
+	        this.address_id = source["address_id"];
+	        this.address_uuid = source["address_uuid"];
+	        this.serial_port = source["serial_port"];
+	        this.serial_baud_rate = source["serial_baud_rate"];
+	        this.serial_stop_bits = source["serial_stop_bits"];
+	        this.serial_parity = source["serial_parity"];
+	        this.serial_data_bits = source["serial_data_bits"];
+	        this.serial_timeout = source["serial_timeout"];
+	        this.serial_connected = source["serial_connected"];
+	        this.host = source["host"];
+	        this.devices = this.convertValues(source["devices"], Device);
+	        this.tags = this.convertValues(source["tags"], Tag);
+	        this.max_poll_rate = source["max_poll_rate"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class Tag {
 	    tag: string;
 	    networks?: Network[];
@@ -1106,124 +1332,7 @@ export namespace model {
 		    return a;
 		}
 	}
-	export class Network {
-	    uuid: string;
-	    name: string;
-	    description?: string;
-	    enable?: boolean;
-	    fault?: boolean;
-	    message_level?: string;
-	    message_code?: string;
-	    message?: string;
-	    // Go type: time.Time
-	    last_ok?: any;
-	    // Go type: time.Time
-	    last_fail?: any;
-	    // Go type: time.Time
-	    created_on?: any;
-	    // Go type: time.Time
-	    updated_on?: any;
-	    manufacture?: string;
-	    model?: string;
-	    writeable_network?: boolean;
-	    thing_class?: string;
-	    thing_reference?: string;
-	    thing_type?: string;
-	    transport_type?: string;
-	    plugin_conf_id?: string;
-	    plugin_name?: string;
-	    auto_mapping_networks_selection: string;
-	    auto_mapping_flow_network_uuid: string;
-	    auto_mapping_flow_network_name: string;
-	    auto_mapping_enable_histories?: boolean;
-	    number_of_networks_permitted?: number;
-	    network_interface: string;
-	    ip: string;
-	    port?: number;
-	    network_mask?: number;
-	    address_id: string;
-	    address_uuid: string;
-	    serial_port?: string;
-	    serial_baud_rate?: number;
-	    serial_stop_bits?: number;
-	    serial_parity?: string;
-	    serial_data_bits?: number;
-	    serial_timeout?: number;
-	    serial_connected?: boolean;
-	    host?: string;
-	    devices?: Device[];
-	    tags?: Tag[];
-	    max_poll_rate?: number;
 	
-	    static createFrom(source: any = {}) {
-	        return new Network(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.name = source["name"];
-	        this.description = source["description"];
-	        this.enable = source["enable"];
-	        this.fault = source["fault"];
-	        this.message_level = source["message_level"];
-	        this.message_code = source["message_code"];
-	        this.message = source["message"];
-	        this.last_ok = this.convertValues(source["last_ok"], null);
-	        this.last_fail = this.convertValues(source["last_fail"], null);
-	        this.created_on = this.convertValues(source["created_on"], null);
-	        this.updated_on = this.convertValues(source["updated_on"], null);
-	        this.manufacture = source["manufacture"];
-	        this.model = source["model"];
-	        this.writeable_network = source["writeable_network"];
-	        this.thing_class = source["thing_class"];
-	        this.thing_reference = source["thing_reference"];
-	        this.thing_type = source["thing_type"];
-	        this.transport_type = source["transport_type"];
-	        this.plugin_conf_id = source["plugin_conf_id"];
-	        this.plugin_name = source["plugin_name"];
-	        this.auto_mapping_networks_selection = source["auto_mapping_networks_selection"];
-	        this.auto_mapping_flow_network_uuid = source["auto_mapping_flow_network_uuid"];
-	        this.auto_mapping_flow_network_name = source["auto_mapping_flow_network_name"];
-	        this.auto_mapping_enable_histories = source["auto_mapping_enable_histories"];
-	        this.number_of_networks_permitted = source["number_of_networks_permitted"];
-	        this.network_interface = source["network_interface"];
-	        this.ip = source["ip"];
-	        this.port = source["port"];
-	        this.network_mask = source["network_mask"];
-	        this.address_id = source["address_id"];
-	        this.address_uuid = source["address_uuid"];
-	        this.serial_port = source["serial_port"];
-	        this.serial_baud_rate = source["serial_baud_rate"];
-	        this.serial_stop_bits = source["serial_stop_bits"];
-	        this.serial_parity = source["serial_parity"];
-	        this.serial_data_bits = source["serial_data_bits"];
-	        this.serial_timeout = source["serial_timeout"];
-	        this.serial_connected = source["serial_connected"];
-	        this.host = source["host"];
-	        this.devices = this.convertValues(source["devices"], Device);
-	        this.tags = this.convertValues(source["tags"], Tag);
-	        this.max_poll_rate = source["max_poll_rate"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	
 	export class Job {
 	    uuid: string;
@@ -1564,113 +1673,6 @@ export namespace assistmodel {
 		    }
 		    return a;
 		}
-	}
-
-}
-
-export namespace main {
-	
-	export class ConnectionSchema {
-	    // Go type: schema.UUID
-	    uuid: any;
-	    // Go type: schema.Name
-	    name: any;
-	    // Go type: schema.Description
-	    description: any;
-	    // Go type: schema.IP
-	    ip: any;
-	    // Go type: schema.Port
-	    port: any;
-	    // Go type: schema.HTTPS
-	    https: any;
-	    // Go type: schema.Username
-	    username: any;
-	    // Go type: schema.Password
-	    password: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new ConnectionSchema(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = this.convertValues(source["uuid"], null);
-	        this.name = this.convertValues(source["name"], null);
-	        this.description = this.convertValues(source["description"], null);
-	        this.ip = this.convertValues(source["ip"], null);
-	        this.port = this.convertValues(source["port"], null);
-	        this.https = this.convertValues(source["https"], null);
-	        this.username = this.convertValues(source["username"], null);
-	        this.password = this.convertValues(source["password"], null);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-
-}
-
-export namespace assitcli {
-	
-	export class Response {
-	    code: number;
-	    message: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Response(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.code = source["code"];
-	        this.message = source["message"];
-	    }
-	}
-
-}
-
-export namespace edge {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-	export class InternetIP {
-	    ip_address: string;
-	    ok: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InternetIP(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ip_address = source["ip_address"];
-	        this.ok = source["ok"];
-	    }
 	}
 
 }
