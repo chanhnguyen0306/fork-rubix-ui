@@ -19,17 +19,29 @@ func (app *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
 	return out
 }
 
+func (app *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []string) interface{} {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, plg := range pluginUUID {
+		_, err := app.flow.DisablePlugin(plg)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		}
+	}
+	return "ok"
+}
+
 func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []string) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	fmt.Println(pluginUUID)
 	for _, plg := range pluginUUID {
-		fmt.Println(plg)
 		_, err := app.flow.EnablePlugin(plg)
-		fmt.Println(err)
 		if err != nil {
 			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		}

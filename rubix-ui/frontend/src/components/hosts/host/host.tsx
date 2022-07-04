@@ -11,6 +11,9 @@ import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
 import { CreateEditModal } from "./flow/networks/views/create";
 
+let networksKey = "NETWORKS"
+let pluginsKey = "PLUGINS"
+
 export const Host = () => {
   const location = useLocation() as any;
   const connUUID = location.state.connUUID ?? "";
@@ -30,11 +33,13 @@ export const Host = () => {
 
   const { TabPane } = Tabs;
   const onChange = (key: string) => {
-    console.log(key);
+    if (key == pluginsKey) {
+      fetchPlugins();
+    }
   };
   useEffect(() => {
     fetchHost();
-    fetchPlugins();
+
     fetchNetworks();
     // runWhois();
   }, []);
@@ -85,8 +90,8 @@ export const Host = () => {
 
   return (
     <>
-      <Tabs defaultActiveKey="NETWORKS" onChange={onChange}>
-        <TabPane tab="NETWORKS" key="NETWORKS">
+      <Tabs defaultActiveKey={networksKey} onChange={onChange}>
+        <TabPane tab={networksKey} key={networksKey}>
           <Button
             type="primary"
             onClick={fetchNetworks}
@@ -111,7 +116,7 @@ export const Host = () => {
             connUUID={connUUID}
           />
         </TabPane>
-        <TabPane tab="PLUGINS" key="PLUGINS">
+        <TabPane tab={pluginsKey}key={pluginsKey}>
           <Button
             type="primary"
             onClick={fetchPlugins}
