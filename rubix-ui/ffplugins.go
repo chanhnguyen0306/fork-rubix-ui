@@ -19,6 +19,21 @@ func (app *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
 	return out
 }
 
+func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []string) interface{} {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, plg := range pluginUUID {
+		_, err := app.flow.EnablePlugin(plg)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		}
+	}
+	return "ok"
+}
+
 func (app *App) EnablePlugin(connUUID, hostUUID, pluginUUID string) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
