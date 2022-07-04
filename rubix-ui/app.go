@@ -34,11 +34,11 @@ func NewApp() *App {
 
 //resetHost will be used later to cache a host ip, port and token
 func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
-	host, _ := app.getHost(connUUID, hostUUID)
+	host, err := app.getHost(connUUID, hostUUID)
 	if resetFlow {
 		app.resetFlow(host.IP, flowPort)
 	}
-	return host, nil
+	return host, err
 }
 
 func (app *App) resetFlow(ip string, port int) {
@@ -46,6 +46,7 @@ func (app *App) resetFlow(ip string, port int) {
 		Ip:   ip,
 		Port: port,
 	})
+
 }
 
 // startup is called when the app starts. The context is saved

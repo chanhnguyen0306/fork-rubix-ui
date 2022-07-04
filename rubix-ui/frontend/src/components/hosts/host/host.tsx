@@ -1,45 +1,68 @@
-import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
-import {Button, Tabs} from "antd";
-import {RedoOutlined} from "@ant-design/icons";
-import {assistmodel, model} from "../../../../wailsjs/go/models";
-import {HostsFactory} from "../factory";
-import {HostTable} from "./views/hostTable";
-import {FlowNetworkFactory} from "./flow/networks/factory";
-import {BacnetWhoIsTable} from "./flow/bacnet/bacnetTable";
-import {BacnetFactory} from "./flow/bacnet/factory";
-import {FlowNetworkTable} from "./flow/networks/views/table";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Button, Form, Modal, Tabs } from "antd";
+import { RedoOutlined } from "@ant-design/icons";
+import { assistmodel, model } from "../../../../wailsjs/go/models";
+import { HostsFactory } from "../factory";
+import { HostTable } from "./views/hostTable";
+import { FlowNetworkFactory } from "./flow/networks/factory";
+import { FlowNetworkTable } from "./flow/networks/views/table";
+import { FlowPluginFactory } from "./flow/plugins/factory";
+import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { CreateEditModal } from "./flow/networks/views/create";
 
+let networksKey = "NETWORKS"
+let pluginsKey = "PLUGINS"
 
 export const Host = () => {
   const location = useLocation() as any;
   const connUUID = location.state.connUUID ?? "";
   const hostUUID = location.state.hostUUID ?? "";
+
+  const [currentItem, setCurrentItem] = useState({});
   const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);
-  const [whoIs, setWhois] = useState([] as model.Device[]);
+  const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+
   let hostFactory = new HostsFactory();
   let networkFactory = new FlowNetworkFactory();
-  let bacnetFactory = new BacnetFactory();
+  let flowPluginFactory = new FlowPluginFactory();
 
   const { TabPane } = Tabs;
   const onChange = (key: string) => {
-    console.log(key);
+    if (key == pluginsKey) {
+      fetchPlugins();
+    }
   };
   useEffect(() => {
     fetchHost();
+
     fetchNetworks();
     // runWhois();
   }, []);
 
   const fetchHost = async () => {
     try {
-      hostFactory.connectionUUID = connUUID
-      hostFactory.uuid = hostUUID
+      hostFactory.connectionUUID = connUUID;
+      hostFactory.uuid = hostUUID;
       let res = await hostFactory.GetOne();
-      console.log("fetch", res, connUUID, hostUUID)
       setHost(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const fetchPlugins = async () => {
+    try {
+      flowPluginFactory.connectionUUID = connUUID;
+      flowPluginFactory.hostUUID = hostUUID;
+      let res = await flowPluginFactory.GetAll();
+      setPlugins(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -49,10 +72,9 @@ export const Host = () => {
 
   const fetchNetworks = async () => {
     try {
-      networkFactory.connectionUUID = connUUID
-      networkFactory.uuid = hostUUID
-      let res = await networkFactory.GetAll();
-      console.log("fetch", res, connUUID, hostUUID)
+      networkFactory.connectionUUID = connUUID;
+      networkFactory.hostUUID = hostUUID;
+      let res = await networkFactory.GetAll(false);
       setNetworks(res);
     } catch (error) {
       console.log(error);
@@ -61,63 +83,63 @@ export const Host = () => {
     }
   };
 
-  const runWhois = async () => {
-    try {
-      bacnetFactory.connectionUUID = connUUID
-      bacnetFactory.uuid = hostUUID
-      // bacnetFactory.bacnetNetworkUUID
-      let res = await bacnetFactory.Whois();
-      console.log("runWhois", res, connUUID, hostUUID)
-      setWhois(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
+  const showModal = (item: any) => {
+    setCurrentItem(item);
+    setIsModalVisible(true);
   };
 
   return (
-      <>
-        <Tabs defaultActiveKey="1" onChange={onChange}>
-          <TabPane tab="INFO" key="1">
-            <HostTable
-                data={host}
-                isFetching={isFetching}
-                setIsFetching={setIsFetching}
-            />
-          </TabPane>
-          <TabPane tab="NETWORKS" key="2">
-            <Button
-                type="primary"
-                onClick={fetchHost}
-                style={{margin: "5px", float: "right"}}
-            >
-              <RedoOutlined/> Refresh
-            </Button>
-            <FlowNetworkTable
-                data={networks}
-                isFetching={isFetching}
-                setIsFetching={setIsFetching}
-            />
-          </TabPane>
-          <TabPane tab="BACNET" key="3">
-            <Button
-                type="primary"
-                onClick={runWhois}
-                style={{margin: "5px", float: "right"}}
-            >
-              <RedoOutlined/> WHO-IS
-            </Button>
-            <BacnetWhoIsTable
-                data={whoIs}
-                isFetching={isFetching}
-                setIsFetching={setIsFetching}
-            />
-          </TabPane>
-        </Tabs>
-
-      </>
-
+    <>
+      <Tabs defaultActiveKey={networksKey} onChange={onChange}>
+        <TabPane tab={networksKey} key={networksKey}>
+          <Button
+            type="primary"
+            onClick={fetchNetworks}
+            style={{ margin: "5px", float: "right" }}
+          >
+            <RedoOutlined /> Refresh
+          </Button>
+          <FlowNetworkTable
+            data={networks}
+            isFetching={isFetching}
+            setIsFetching={setIsFetching}
+            connUUID={connUUID}
+            hostUUID={hostUUID}
+            showModal={showModal}
+          />
+          <CreateEditModal
+            currentItem={currentItem}
+            isModalVisible={isModalVisible}
+            isLoadingForm={isLoadingForm}
+            refreshList={fetchNetworks}
+            onCloseModal={() => setIsModalVisible(false)}
+            connUUID={connUUID}
+          />
+        </TabPane>
+        <TabPane tab={pluginsKey}key={pluginsKey}>
+          <Button
+            type="primary"
+            onClick={fetchPlugins}
+            style={{ margin: "5px", float: "right" }}
+          >
+            <RedoOutlined /> Refresh
+          </Button>
+          <FlowPluginsTable
+            data={plugins}
+            isFetching={isFetching}
+            setIsFetching={setIsFetching}
+            connUUID={connUUID}
+            hostUUID={hostUUID}
+          />
+        </TabPane>
+        <TabPane tab="INFO" key="INFO">
+          <HostTable
+            data={host}
+            isFetching={isFetching}
+            setIsFetching={setIsFetching}
+          />
+        </TabPane>
+      </Tabs>
+    </>
   );
 };
-

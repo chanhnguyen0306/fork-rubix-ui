@@ -19,6 +19,15 @@ func (app *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	return points
 }
 
+func (app *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
+	device, err := app.getDevice(connUUID, hostUUID, deviceUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return device.Points
+}
+
 func (app *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {

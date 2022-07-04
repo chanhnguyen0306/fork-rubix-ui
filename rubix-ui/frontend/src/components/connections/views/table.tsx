@@ -11,6 +11,7 @@ export const ConnectionsTable = (props: any) => {
 
     const navigate = useNavigate();
 
+
     const columns = [
         {
             title: "uuid",
@@ -49,21 +50,21 @@ export const ConnectionsTable = (props: any) => {
             render: (_: any, conn: RubixConnection) => (
                 <Space size="middle">
                     <a onClick={() => navigate(`locations/${conn.uuid}`)}>View</a>
-                    <a
+                    <a // edit
                         onClick={() => {
                             showModal(conn);
                         }}
                     >
                         Edit
                     </a>
-                    <a
+                    <a // delete
                         onClick={() => {
                             deleteConnection(conn.uuid);
                         }}
                     >
                         Delete
                     </a>
-                    <a
+                    <a //ping
                         onClick={() => {
                             pingConnection(conn.uuid);
                         }}

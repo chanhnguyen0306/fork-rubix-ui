@@ -3,8 +3,8 @@ import {
     AddDevice,
     DeleteDevice,
     EditDevice,
-    GetDevice, GetDevices,
-    } from "../../../../../../wailsjs/go/main/App";
+    GetDevice, GetDevices, GetNetworkDevices,
+} from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -26,9 +26,9 @@ export class FlowDeviceFactory {
         this._this = value;
     }
 
-    async GetAll(): Promise<Array<model.Device>> {
+    async GetAll(withPoints:boolean): Promise<Array<model.Device>> {
         let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
-        await GetDevices(this.connectionUUID, this.hostUUID).then(res => {
+        await GetDevices(this.connectionUUID, this.hostUUID, withPoints).then(res => {
             all = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
             return undefined
@@ -36,16 +36,26 @@ export class FlowDeviceFactory {
         return all
     }
 
-    async GetOne(): Promise<model.Device> {
+    async GetOne(withPoints:boolean): Promise<model.Device> {
         hasUUID(this.uuid)
         let one: model.Device = {} as model.Device
-        await GetDevice(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
+        await GetDevice(this.connectionUUID, this.hostUUID, this.uuid, withPoints).then(res => {
             one = res as model.Device
             this._this = one
         }).catch(err => {
             return undefined
         })
         return one
+    }
+
+    async GetNetworkDevices(networkUUID:string): Promise<Array<model.Device>> {
+        let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
+        await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID).then(res => {
+            all = res as unknown as Promise<Array<model.Device>>
+        }).catch(err => {
+            return undefined
+        })
+        return all
     }
 
 

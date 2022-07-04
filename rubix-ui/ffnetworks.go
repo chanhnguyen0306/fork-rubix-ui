@@ -5,13 +5,13 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (app *App) GetNetworks(connUUID, hostUUID string) []model.Network {
+func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	networks, err := app.flow.GetNetworks()
+	networks, err := app.flow.GetNetworks(withDevice)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -60,13 +60,20 @@ func (app *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{
 	return "delete ok"
 }
 
-func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string) *model.Network {
+func (app *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.Network, error) {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	networks, err := app.flow.GetNetwork(networkUUID)
+	networks, err := app.flow.GetNetwork(networkUUID, withDevice)
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
+}
+
+func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
+	networks, err := app.getNetwork(connUUID, hostUUID, networkUUID, withDevice)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
