@@ -9,8 +9,6 @@ export const FlowNetworkTable = (props: any) => {
     const {data, isFetching, connUUID, hostUUID} = props;
     if (!data) return <></>;
     const navigate = useNavigate();
-
-
     const columns = [
         {
             title: "uuid",

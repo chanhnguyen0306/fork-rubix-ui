@@ -1,5 +1,5 @@
 import {model} from "../../../../../../wailsjs/go/models";
-import {DisablePlugin, EnablePlugin, GetPlugins} from "../../../../../../wailsjs/go/main/App";
+import {DisablePlugin, EnablePlugin, EnablePluginBulk, GetPlugins} from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -32,6 +32,17 @@ export class FlowPluginFactory {
         })
         return out
     }
+
+    async BulkEnable(pluginUUIDs: string[]): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        // await EnablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
+        //     out = res as Promise<any>
+        // }).catch(err => {
+        //     return undefined
+        // })
+        return out
+    }
+
 
     async Disable(): Promise<any> {
         hasUUID(this.uuid)

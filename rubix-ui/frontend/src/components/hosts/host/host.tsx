@@ -42,7 +42,6 @@ export const Host = () => {
             hostFactory.connectionUUID = connUUID
             hostFactory.uuid = hostUUID
             let res = await hostFactory.GetOne();
-            console.log("fetch", res, connUUID, hostUUID)
             setHost(res);
         } catch (error) {
             console.log(error);
@@ -54,9 +53,8 @@ export const Host = () => {
     const fetchPlugins = async () => {
         try {
             flowPluginFactory.connectionUUID = connUUID
-            flowPluginFactory.uuid = hostUUID
+            flowPluginFactory.hostUUID = hostUUID
             let res = await flowPluginFactory.GetAll();
-            console.log("flowPluginFactory", res, connUUID, hostUUID)
             setPlugins(res);
         } catch (error) {
             console.log(error);
@@ -68,9 +66,8 @@ export const Host = () => {
     const fetchNetworks = async () => {
         try {
             networkFactory.connectionUUID = connUUID
-            networkFactory.uuid = hostUUID
+            networkFactory.hostUUID = hostUUID
             let res = await networkFactory.GetAll(false);
-            console.log("fetch", res, connUUID, hostUUID)
             setNetworks(res);
         } catch (error) {
             console.log(error);

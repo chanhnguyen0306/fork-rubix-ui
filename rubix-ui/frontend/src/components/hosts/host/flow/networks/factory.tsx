@@ -29,6 +29,7 @@ export class FlowNetworkFactory {
 
     async GetAll(withDevice:boolean): Promise<Array<model.Network>> {
         let all: Promise<Array<model.Network>> = {} as Promise<Array<model.Network>>
+        hasUUID(this.hostUUID)
         await GetNetworks(this.connectionUUID, this.hostUUID, withDevice).then(res => {
             all = res as unknown as Promise<Array<model.Network>>
         }).catch(err => {
