@@ -7,14 +7,13 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import {assistmodel, model, storage} from "../wailsjs/go/models";
+import {assistmodel} from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
 import { Logs } from "./components/logs/logs";
 import { PcScanner } from "./components/pc/scanner/table";
 import { PcNetworking } from "./components/pc/networking/networking";
-import Iframe from "./components/iframe/iframe";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
@@ -25,7 +24,6 @@ import Network = assistmodel.Network;
 import "./App.css";
 import Upload from "./components/file";
 import {Backups} from "./components/backups/backups";
-import {BackupFactory} from "./components/backups/factory";
 import {Host} from "./components/hosts/host/host";
 import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
 import {FlowPoints} from "./components/hosts/host/flow/points/flowPoints";
@@ -47,7 +45,9 @@ const sidebarItems = [
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-
+  locationFactory.connectionUUID = "con_24B6412F2018"
+  locationFactory.GetAll().then(e => console.log(111, e)).catch(e => console.log(222, e))
+  console.log(444)
 
   // backups test
   // let back = new BackupFactory();

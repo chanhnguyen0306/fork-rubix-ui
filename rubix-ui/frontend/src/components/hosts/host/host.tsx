@@ -7,6 +7,8 @@ import {HostsFactory} from "../factory";
 import {HostTable} from "./views/hostTable";
 import {FlowNetworkFactory} from "./flow/networks/factory";
 import {FlowNetworkTable} from "./flow/networks/views/table";
+import {FlowPluginFactory} from "./flow/plugins/factory";
+import {FlowPluginsTable} from "./flow/plugins/views/table";
 
 
 
@@ -18,10 +20,11 @@ export const Host = () => {
     const hostUUID = location.state.hostUUID ?? "";
     const [host, setHost] = useState({} as assistmodel.Host);
     const [networks, setNetworks] = useState([] as model.Network[]);
+    const [plugins, setPlugins] = useState([] as model.PluginConf[]);
     const [isFetching, setIsFetching] = useState(true);
     let hostFactory = new HostsFactory();
     let networkFactory = new FlowNetworkFactory();
-
+    let flowPluginFactory = new FlowPluginFactory();
 
     const {TabPane} = Tabs;
     const onChange = (key: string) => {
@@ -29,6 +32,7 @@ export const Host = () => {
     };
     useEffect(() => {
         fetchHost();
+        fetchPlugins();
         fetchNetworks();
         // runWhois();
     }, []);
@@ -40,6 +44,20 @@ export const Host = () => {
             let res = await hostFactory.GetOne();
             console.log("fetch", res, connUUID, hostUUID)
             setHost(res);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsFetching(false);
+        }
+    };
+
+    const fetchPlugins = async () => {
+        try {
+            flowPluginFactory.connectionUUID = connUUID
+            flowPluginFactory.uuid = hostUUID
+            let res = await flowPluginFactory.GetAll();
+            console.log("flowPluginFactory", res, connUUID, hostUUID)
+            setPlugins(res);
         } catch (error) {
             console.log(error);
         } finally {
@@ -62,11 +80,11 @@ export const Host = () => {
     };
     return (
         <>
-            <Tabs defaultActiveKey="1" onChange={onChange}>
-                <TabPane tab="NETWORKS" key="1">
+            <Tabs defaultActiveKey="NETWORKS" onChange={onChange}>
+                <TabPane tab="NETWORKS" key="NETWORKS">
                     <Button
                         type="primary"
-                        onClick={fetchHost}
+                        onClick={fetchNetworks}
                         style={{margin: "5px", float: "right"}}
                     >
                         <RedoOutlined/> Refresh
@@ -79,7 +97,23 @@ export const Host = () => {
                         hostUUID={hostUUID}
                     />
                 </TabPane>
-                <TabPane tab="INFO" key="2">
+                <TabPane tab="PLUGINS" key="PLUGINS">
+                    <Button
+                        type="primary"
+                        onClick={fetchPlugins}
+                        style={{margin: "5px", float: "right"}}
+                    >
+                        <RedoOutlined/> Refresh
+                    </Button>
+                    <FlowPluginsTable
+                        data={plugins}
+                        isFetching={isFetching}
+                        setIsFetching={setIsFetching}
+                        connUUID={connUUID}
+                        hostUUID={hostUUID}
+                    />
+                </TabPane>
+                <TabPane tab="INFO" key="INFO">
                     <HostTable
                         data={host}
                         isFetching={isFetching}

@@ -14,6 +14,7 @@ import { AddButton, CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
 import Location = assistmodel.Location;
 
+
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as Location);

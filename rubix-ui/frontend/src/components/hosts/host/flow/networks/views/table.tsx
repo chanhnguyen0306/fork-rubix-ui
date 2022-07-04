@@ -2,6 +2,7 @@ import {Button, Form, Modal, Space, Spin, Table} from "antd";
 import {model} from "../../../../../../../wailsjs/go/models";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from 'react';
+import {RedoOutlined} from "@ant-design/icons";
 
 
 export const FlowNetworkTable = (props: any) => {
@@ -61,11 +62,14 @@ export const FlowNetworkTable = (props: any) => {
     ];
 
     return (
-        <Table
-            rowKey="uuid"
-            dataSource={data}
-            columns={columns}
-            loading={{indicator: <Spin/>, spinning: isFetching}}
-        />
+        <>
+            <Table
+                rowKey="uuid"
+                dataSource={data}
+                columns={columns}
+                loading={{indicator: <Spin/>, spinning: isFetching}}
+            />
+            </>
+
     );
 };
