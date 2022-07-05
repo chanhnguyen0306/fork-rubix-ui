@@ -39,3 +39,21 @@ func GetJsonNetworkSchema() *NetworkSchema {
 	m.Interface.Options = out
 	return m
 }
+
+type NetworkSystemSchema struct {
+	UUID                         schema.UUID                         `json:"uuid"`
+	Name                         schema.Name                         `json:"name"`
+	Description                  schema.Description                  `json:"description"`
+	Enable                       schema.Enable                       `json:"enable"`
+	PluginName                   schema.PluginName                   `json:"plugin_name"`
+	AutoMappingNetworksSelection schema.AutoMappingNetworksSelection `json:"auto_mapping_networks_selection"`
+	AutoMappingFlowNetworkName   schema.AutoMappingFlowNetworkName   `json:"auto_mapping_flow_network_name"`
+	AutoMappingFlowNetworkUUID   schema.AutoMappingFlowNetworkUUID   `json:"auto_mapping_flow_network_uuid"`
+	AutoMappingEnableHistories   schema.AutoMappingEnableHistories   `json:"auto_mapping_enable_histories"`
+}
+
+func GetNetworkSystemSchema() *NetworkSystemSchema {
+	m := &NetworkSystemSchema{}
+	schema.Set(m)
+	return m
+}

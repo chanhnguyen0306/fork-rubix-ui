@@ -4,22 +4,31 @@ import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/jsonschema"
+	log "github.com/sirupsen/logrus"
 )
 
-func (app *App) GetFlowNetworkSchema(connUUID, hostUUID string) *jsonschema.NetworkSchema {
-	return jsonschema.GetJsonNetworkSchema()
+func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
+	if pluginName == "" {
+		log.Errorln("GetFlowNetworkSchema() plugin name can not be empty")
+	}
+	if pluginName == "system" {
+		return jsonschema.GetNetworkSystemSchema()
+	} else if pluginName == "bacnetmaster" {
+		return jsonschema.GetJsonNetworkSchema()
+	}
+	return jsonschema.GetNetworkSystemSchema()
 }
 
 func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return []model.Network{}
 	}
 	networks, err := app.flow.GetNetworks(withDevice)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return []model.Network{}
 	}
 	return networks
 }

@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom";
 
 export const FlowDeviceTable = (props: any) => {
     const {data, isFetching, connUUID, hostUUID, networkUUID} = props;
-    if (!data) return <></>;
     const navigate = useNavigate();
 
 
@@ -54,11 +53,14 @@ export const FlowDeviceTable = (props: any) => {
     ];
 
     return (
+        <>
+            <h3> DEVICES </h3>
         <Table
             rowKey="uuid"
             dataSource={data}
             columns={columns}
             loading={{indicator: <Spin/>, spinning: isFetching}}
         />
+        </>
     );
 };

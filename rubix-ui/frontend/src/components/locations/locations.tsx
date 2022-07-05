@@ -8,12 +8,12 @@ import {
 } from "../../../wailsjs/go/main/App";
 import { isObjectEmpty } from "../../utils/utils";
 import { Space } from "antd";
-import {assistmodel, model, storage} from "../../../wailsjs/go/models";
+import { assistmodel, storage } from "../../../wailsjs/go/models";
 import RubixConnection = storage.RubixConnection;
 import { AddButton, CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
-import Location = assistmodel.Location;
 
+import Location = assistmodel.Location;
 
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
@@ -89,7 +89,7 @@ export const Locations = () => {
     fetchList();
   };
 
-  const onShowModal = (location: Location) => {
+  const showModal = (location: Location) => {
     setCurrentLocation(location);
     setIsModalVisible(true);
     if (isObjectEmpty(locationSchema)) {
@@ -99,6 +99,7 @@ export const Locations = () => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
+    setCurrentLocation({} as Location);
   };
 
   const getSchemaTable = async () => {
@@ -130,7 +131,7 @@ export const Locations = () => {
               </a>
               <a
                 onClick={() => {
-                  onShowModal(location);
+                  showModal(location);
                 }}
               >
                 Edit
@@ -153,17 +154,17 @@ export const Locations = () => {
   return (
     <>
       <h2>Locations</h2>
-      <AddButton onShowModal={onShowModal} />
+      <AddButton showModal={showModal} />
       <CreateEditModal
         locations={locations}
         currentLocation={currentLocation}
         locationSchema={locationSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
         refreshList={refreshList}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
-        connUUID={connUUID}
       />
       <LocationsTable
         locations={locations}
