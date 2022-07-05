@@ -22,33 +22,6 @@ export const FlowPluginsTable = (props: any) => {
 
   if (!data) return <></>;
 
-  for (const val of data) {
-    if (val.enabled) {
-      // react is crap and can't render a bool
-      val.enabled = "enabled";
-    } else {
-      val.enabled = "disabled";
-    }
-  }
-
-  const enable = async () => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
-    factory.BulkEnable(plugins);
-  };
-
-  const disable = async () => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
-    factory.BulkDisable(plugins);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setPlugins(selectedRowKeys);
-    },
-  };
-
   const columns = [
     {
       title: "uuid",
@@ -79,6 +52,33 @@ export const FlowPluginsTable = (props: any) => {
       },
     },
   ];
+
+  for (const val of data) {
+    if (val.enabled) {
+      // react is crap and can't render a bool
+      val.enabled = "enabled";
+    } else {
+      val.enabled = "disabled";
+    }
+  }
+
+  const enable = async () => {
+    factory.connectionUUID = connUUID;
+    factory.hostUUID = hostUUID;
+    factory.BulkEnable(plugins);
+  };
+
+  const disable = async () => {
+    factory.connectionUUID = connUUID;
+    factory.hostUUID = hostUUID;
+    factory.BulkDisable(plugins);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setPlugins(selectedRowKeys);
+    },
+  };
 
   const getSchema = async () => {
     setIsLoadingForm(true);

@@ -19,17 +19,20 @@ export const CreateModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({});
 
-  let factory = new FlowPluginFactory();
-  let flowNetworkFactory = new FlowNetworkFactory();
+  let networkFactory = new FlowNetworkFactory();
 
   useEffect(() => {
     setFormData({});
   }, []);
 
   const addNetwork = async (net: Network) => {
-    flowNetworkFactory.connectionUUID = connUUID;
-    flowNetworkFactory.hostUUID = hostUUID;
-    flowNetworkFactory.Add(net);
+    try {
+      networkFactory.connectionUUID = connUUID;
+      networkFactory.hostUUID = hostUUID;
+      await networkFactory.Add(net);
+    } catch (error) {
+      console.log("Add fail", error);
+    }
   };
 
   const handleClose = () => {
