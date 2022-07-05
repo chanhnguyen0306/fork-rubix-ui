@@ -52,7 +52,8 @@ export class FlowNetworkFactory {
 
 
     async Add(body: model.Network): Promise<model.Network> {
-        hasUUID(this.uuid)
+        // hasUUID(this.uuid)
+        console.log("ADD NEW NETWORK", this.connectionUUID, this.hostUUID)
         let one: model.Network = {} as model.Network
         await AddNetwork(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Network
