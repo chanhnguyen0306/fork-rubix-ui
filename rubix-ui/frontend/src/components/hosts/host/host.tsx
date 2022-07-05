@@ -9,10 +9,11 @@ import { FlowNetworkFactory } from "./flow/networks/factory";
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
-import { CreateEditModal } from "./flow/networks/views/create";
+import { CreateEditModal } from "./flow/networks/views/edit";
+import { isObjectEmpty } from "../../../utils/utils";
 
-let networksKey = "NETWORKS"
-let pluginsKey = "PLUGINS"
+let networksKey = "NETWORKS";
+let pluginsKey = "PLUGINS";
 
 export const Host = () => {
   const location = useLocation() as any;
@@ -21,6 +22,7 @@ export const Host = () => {
 
   const [currentItem, setCurrentItem] = useState({});
   const [host, setHost] = useState({} as assistmodel.Host);
+  const [networkSchema, setnetworkSchema] = useState({});
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
@@ -39,7 +41,6 @@ export const Host = () => {
   };
   useEffect(() => {
     fetchHost();
-
     fetchNetworks();
     // runWhois();
   }, []);
@@ -48,7 +49,7 @@ export const Host = () => {
     try {
       hostFactory.connectionUUID = connUUID;
       hostFactory.uuid = hostUUID;
-      let res = await hostFactory.GetOne();
+      let res = (await hostFactory.GetOne()) || [];
       setHost(res);
     } catch (error) {
       console.log(error);
@@ -61,7 +62,7 @@ export const Host = () => {
     try {
       flowPluginFactory.connectionUUID = connUUID;
       flowPluginFactory.hostUUID = hostUUID;
-      let res = await flowPluginFactory.GetAll();
+      let res = (await flowPluginFactory.GetAll()) || [];
       setPlugins(res);
     } catch (error) {
       console.log(error);
@@ -74,7 +75,7 @@ export const Host = () => {
     try {
       networkFactory.connectionUUID = connUUID;
       networkFactory.hostUUID = hostUUID;
-      let res = await networkFactory.GetAll(false);
+      let res = (await networkFactory.GetAll(false)) || [];
       setNetworks(res);
     } catch (error) {
       console.log(error);
@@ -83,9 +84,27 @@ export const Host = () => {
     }
   };
 
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    const res = await networkFactory.Schema(connUUID, hostUUID, "bacnetmaster");
+    const jsonSchema = {
+      properties: res,
+    };
+    setnetworkSchema(jsonSchema);
+    setIsLoadingForm(false);
+  };
+
   const showModal = (item: any) => {
     setCurrentItem(item);
     setIsModalVisible(true);
+    if (isObjectEmpty(networkSchema)) {
+      getSchema();
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setCurrentItem({});
   };
 
   return (
@@ -111,10 +130,11 @@ export const Host = () => {
             currentItem={currentItem}
             isModalVisible={isModalVisible}
             isLoadingForm={isLoadingForm}
-            refreshList={fetchNetworks}
-            onCloseModal={() => setIsModalVisible(false)}
             connUUID={connUUID}
             hostUUID={hostUUID}
+            networkSchema={networkSchema}
+            refreshList={fetchNetworks}
+            onCloseModal={closeModal}
           />
         </TabPane>
         <TabPane tab={pluginsKey} key={pluginsKey}>

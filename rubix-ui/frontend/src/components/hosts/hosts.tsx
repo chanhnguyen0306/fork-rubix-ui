@@ -11,7 +11,7 @@ import { HostsTable } from "./views/table";
 import { Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
-import {assistmodel} from "../../../wailsjs/go/models";
+import { assistmodel } from "../../../wailsjs/go/models";
 
 export const Hosts = () => {
   const { TabPane } = Tabs;
@@ -90,6 +90,7 @@ export const Hosts = () => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
+    setCurrentHost({} as assistmodel.Host);
   };
 
   return (
@@ -112,9 +113,9 @@ export const Hosts = () => {
             hostSchema={hostSchema}
             isModalVisible={isModalVisible}
             isLoadingForm={isLoadingForm}
+            connUUID={connUUID}
             refreshList={refreshList}
             onCloseModal={onCloseModal}
-            connUUID={connUUID}
           />
           <HostsTable
             hosts={hosts}

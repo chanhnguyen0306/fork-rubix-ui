@@ -7,7 +7,7 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import {assistmodel} from "../wailsjs/go/models";
+import { assistmodel } from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
@@ -17,21 +17,18 @@ import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
-
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
 
 import "./App.css";
 import Upload from "./components/file";
-import {Backups} from "./components/backups/backups";
-import {Host} from "./components/hosts/host/host";
-import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
-import {FlowPoints} from "./components/hosts/host/flow/points/flowPoints";
-import {Networks} from "./components/hostNetworks/networks";
+import { Backups } from "./components/backups/backups";
+import { Host } from "./components/hosts/host/host";
+import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
+import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
+import { Networks } from "./components/hostNetworks/networks";
 
 const { Content, Sider } = Layout;
-
-
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
@@ -45,9 +42,11 @@ const sidebarItems = [
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-  locationFactory.connectionUUID = "con_24B6412F2018"
-  locationFactory.GetAll().then(e => console.log(111, e)).catch(e => console.log(222, e))
-  console.log(444)
+  locationFactory.connectionUUID = "con_24B6412F2018";
+  locationFactory
+    .GetAll()
+    .then((e) => console.log("getAll Locations: ", e))
+    .catch((e) => console.log("getAll Locations error", e));
 
   // backups test
   // let back = new BackupFactory();
@@ -205,17 +204,20 @@ const App: React.FC = () => {
             <Route path="/locations/:connUUID" element={<Locations />} />
             <Route path="/networks/:locUUID" element={<Networks />} />
             <Route path="/hosts/:netUUID" element={<Hosts />} />
-            <Route path="/host/:hostUUID" element={<Host />} /> / open flow networks
-            <Route path="/flow/networks/:networkUUID" element={<FlowDevices />} />  // open flow devices
-            <Route path="/flow/devices/:deviceUUID" element={<FlowPoints />} />  // open flow network points
+            <Route path="/host/:hostUUID" element={<Host />} />
+            // open flow networks
+            <Route
+              path="/flow/networks/:networkUUID"
+              element={<FlowDevices />}
+            />
+            // open flow devices
+            <Route path="/flow/devices/:deviceUUID" element={<FlowPoints />} />
+            // open flow network points
             <Route path="/logs" element={<Logs />} />
             <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />
             <Route path="/networking" element={<PcNetworking />} />
-            <Route
-              path="/iframe"
-              element={<Upload/>}
-            />
+            <Route path="/iframe" element={<Upload />} />
           </Routes>
         </Content>
       </Layout>

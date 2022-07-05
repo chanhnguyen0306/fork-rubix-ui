@@ -81,12 +81,13 @@ export const CreateEditModal = (props: any) => {
       }
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}
-      onCancel={handleClose}
       okText="Save"
       okButtonProps={{
         disabled: isDisabled(),
       }}
+      onCancel={handleClose}
       confirmLoading={confirmLoading}
+      maskClosable={false} // prevent modal from closing on click outside
       style={{ textAlign: "start" }}
     >
       <Spin spinning={isLoadingForm}>
