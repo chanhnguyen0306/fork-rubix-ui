@@ -1,4 +1,4 @@
-import {jsonschema, model} from "../../../../../../wailsjs/go/models";
+import {model} from "../../../../../../wailsjs/go/models";
 import {
     AddNetwork,
     DeleteNetwork,
@@ -88,13 +88,13 @@ export class FlowNetworkFactory {
         return one
     }
 
-    async Schema(connUUID:string, hostUUID:string, setPluginName:string): Promise<jsonschema.NetworkSchema> {
-        let all: Promise<jsonschema.NetworkSchema> = {} as Promise<jsonschema.NetworkSchema>
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
         hasUUID(connUUID)
         hasUUID(hostUUID)
-        await GetFlowNetworkSchema(connUUID, hostUUID).then(res => {
+        await GetFlowNetworkSchema(connUUID, hostUUID, setPluginName).then(res => {
             res.plugin_name = setPluginName;
-            all = res as unknown as Promise<jsonschema.NetworkSchema>
+            all = res as unknown as Promise<any>
 
         }).catch(err => {
             return undefined
