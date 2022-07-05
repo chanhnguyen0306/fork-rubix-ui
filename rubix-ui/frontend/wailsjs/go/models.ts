@@ -80,49 +80,52 @@ export namespace storage {
 
 }
 
-export namespace jsonschema {
+export namespace assitcli {
 	
-	export class NetworkSchema {
-	    // Go type: schema.UUID
-	    uuid: any;
-	    // Go type: schema.Name
-	    name: any;
-	    // Go type: schema.Description
-	    description: any;
-	    // Go type: schema.Enable
-	    enable: any;
-	    // Go type: schema.Port
-	    port: any;
-	    // Go type: schema.Interface
-	    interface: any;
-	    // Go type: schema.PluginName
-	    plugin_name: any;
-	    // Go type: schema.AutoMappingNetworksSelection
-	    auto_mapping_networks_selection: any;
-	    // Go type: schema.AutoMappingFlowNetworkName
-	    auto_mapping_flow_network_name: any;
-	    // Go type: schema.AutoMappingFlowNetworkUUID
-	    auto_mapping_flow_network_uuid: any;
-	    // Go type: schema.AutoMappingEnableHistories
-	    auto_mapping_enable_histories: any;
+	export class Response {
+	    code: number;
+	    message: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new NetworkSchema(source);
+	        return new Response(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = this.convertValues(source["uuid"], null);
-	        this.name = this.convertValues(source["name"], null);
-	        this.description = this.convertValues(source["description"], null);
-	        this.enable = this.convertValues(source["enable"], null);
-	        this.port = this.convertValues(source["port"], null);
-	        this.interface = this.convertValues(source["interface"], null);
-	        this.plugin_name = this.convertValues(source["plugin_name"], null);
-	        this.auto_mapping_networks_selection = this.convertValues(source["auto_mapping_networks_selection"], null);
-	        this.auto_mapping_flow_network_name = this.convertValues(source["auto_mapping_flow_network_name"], null);
-	        this.auto_mapping_flow_network_uuid = this.convertValues(source["auto_mapping_flow_network_uuid"], null);
-	        this.auto_mapping_enable_histories = this.convertValues(source["auto_mapping_enable_histories"], null);
+	        this.code = source["code"];
+	        this.message = source["message"];
+	    }
+	}
+
+}
+
+export namespace datelib {
+	
+	export class Time {
+	    // Go type: time.Time
+	    date_stamp: any;
+	    time_local: string;
+	    time_utc: string;
+	    current_day: string;
+	    current_day_utc: string;
+	    date_format_local: string;
+	    date_format_utc: string;
+	    system_time_zone: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Time(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.date_stamp = this.convertValues(source["date_stamp"], null);
+	        this.time_local = source["time_local"];
+	        this.time_utc = source["time_utc"];
+	        this.current_day = source["current_day"];
+	        this.current_day_utc = source["current_day_utc"];
+	        this.date_format_local = source["date_format_local"];
+	        this.date_format_utc = source["date_format_utc"];
+	        this.system_time_zone = source["system_time_zone"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -146,39 +149,7 @@ export namespace jsonschema {
 
 }
 
-export namespace edge {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-	export class InternetIP {
-	    ip_address: string;
-	    ok: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InternetIP(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ip_address = source["ip_address"];
-	        this.ok = source["ok"];
-	    }
-	}
-
-}
-
 export namespace main {
-	
 	
 	export class ConnectionSchema {
 	    // Go type: schema.UUID
@@ -232,25 +203,7 @@ export namespace main {
 		    return a;
 		}
 	}
-
-}
-
-export namespace assitcli {
 	
-	export class Response {
-	    code: number;
-	    message: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Response(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.code = source["code"];
-	        this.message = source["message"];
-	    }
-	}
 
 }
 
@@ -1693,33 +1646,49 @@ export namespace networking {
 
 }
 
-export namespace datelib {
+export namespace jsonschema {
 	
-	export class Time {
-	    // Go type: time.Time
-	    date_stamp: any;
-	    time_local: string;
-	    time_utc: string;
-	    current_day: string;
-	    current_day_utc: string;
-	    date_format_local: string;
-	    date_format_utc: string;
-	    system_time_zone: string;
+	export class NetworkSchema {
+	    // Go type: schema.UUID
+	    uuid: any;
+	    // Go type: schema.Name
+	    name: any;
+	    // Go type: schema.Description
+	    description: any;
+	    // Go type: schema.Enable
+	    enable: any;
+	    // Go type: schema.Port
+	    port: any;
+	    // Go type: schema.Interface
+	    interface: any;
+	    // Go type: schema.PluginName
+	    plugin_name: any;
+	    // Go type: schema.AutoMappingNetworksSelection
+	    auto_mapping_networks_selection: any;
+	    // Go type: schema.AutoMappingFlowNetworkName
+	    auto_mapping_flow_network_name: any;
+	    // Go type: schema.AutoMappingFlowNetworkUUID
+	    auto_mapping_flow_network_uuid: any;
+	    // Go type: schema.AutoMappingEnableHistories
+	    auto_mapping_enable_histories: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new Time(source);
+	        return new NetworkSchema(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.date_stamp = this.convertValues(source["date_stamp"], null);
-	        this.time_local = source["time_local"];
-	        this.time_utc = source["time_utc"];
-	        this.current_day = source["current_day"];
-	        this.current_day_utc = source["current_day_utc"];
-	        this.date_format_local = source["date_format_local"];
-	        this.date_format_utc = source["date_format_utc"];
-	        this.system_time_zone = source["system_time_zone"];
+	        this.uuid = this.convertValues(source["uuid"], null);
+	        this.name = this.convertValues(source["name"], null);
+	        this.description = this.convertValues(source["description"], null);
+	        this.enable = this.convertValues(source["enable"], null);
+	        this.port = this.convertValues(source["port"], null);
+	        this.interface = this.convertValues(source["interface"], null);
+	        this.plugin_name = this.convertValues(source["plugin_name"], null);
+	        this.auto_mapping_networks_selection = this.convertValues(source["auto_mapping_networks_selection"], null);
+	        this.auto_mapping_flow_network_name = this.convertValues(source["auto_mapping_flow_network_name"], null);
+	        this.auto_mapping_flow_network_uuid = this.convertValues(source["auto_mapping_flow_network_uuid"], null);
+	        this.auto_mapping_enable_histories = this.convertValues(source["auto_mapping_enable_histories"], null);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -1739,6 +1708,37 @@ export namespace datelib {
 		    }
 		    return a;
 		}
+	}
+
+}
+
+export namespace edge {
+	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
+	export class InternetIP {
+	    ip_address: string;
+	    ok: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new InternetIP(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip_address = source["ip_address"];
+	        this.ok = source["ok"];
+	    }
 	}
 
 }

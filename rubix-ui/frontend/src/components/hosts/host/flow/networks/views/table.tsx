@@ -1,12 +1,22 @@
-import { Button, Form, Modal, Space, Spin, Table } from "antd";
-import { model } from "../../../../../../../wailsjs/go/models";
+import { Space, Spin, Table } from "antd";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-import { RedoOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { FlowNetworkFactory } from "../factory";
+import { isObjectEmpty } from "../../../../../../utils/utils";
+import { model } from "../../../../../../../wailsjs/go/models";
+import { EditModal } from "./edit";
 
 export const FlowNetworkTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, showModal } = props;
+  const { data, isFetching, connUUID, hostUUID, refreshList } = props;
+  const [currentItem, setCurrentItem] = useState({});
+  const [networkSchema, setnetworkSchema] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+
+  let networkFactory = new FlowNetworkFactory();
+
   if (!data) return <></>;
+
   const navigate = useNavigate();
   const columns = [
     {
@@ -63,6 +73,29 @@ export const FlowNetworkTable = (props: any) => {
     },
   ];
 
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    const res = await networkFactory.Schema(connUUID, hostUUID, "bacnetmaster");
+    const jsonSchema = {
+      properties: res,
+    };
+    setnetworkSchema(jsonSchema);
+    setIsLoadingForm(false);
+  };
+
+  const showModal = (item: any) => {
+    setCurrentItem(item);
+    setIsModalVisible(true);
+    if (isObjectEmpty(networkSchema)) {
+      getSchema();
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setCurrentItem({});
+  };
+
   return (
     <>
       <Table
@@ -70,6 +103,16 @@ export const FlowNetworkTable = (props: any) => {
         dataSource={data}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+      <EditModal
+        currentItem={currentItem}
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        networkSchema={networkSchema}
+        refreshList={refreshList}
+        onCloseModal={closeModal}
       />
     </>
   );

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, Form, Modal, Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { assistmodel, model } from "../../../../wailsjs/go/models";
 import { HostsFactory } from "../factory";
@@ -9,23 +9,19 @@ import { FlowNetworkFactory } from "./flow/networks/factory";
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
-import { CreateEditModal } from "./flow/networks/views/create";
 
-let networksKey = "NETWORKS"
-let pluginsKey = "PLUGINS"
+let networksKey = "NETWORKS";
+let pluginsKey = "PLUGINS";
 
 export const Host = () => {
   const location = useLocation() as any;
   const connUUID = location.state.connUUID ?? "";
   const hostUUID = location.state.hostUUID ?? "";
 
-  const [currentItem, setCurrentItem] = useState({});
   const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let hostFactory = new HostsFactory();
   let networkFactory = new FlowNetworkFactory();
@@ -39,7 +35,6 @@ export const Host = () => {
   };
   useEffect(() => {
     fetchHost();
-
     fetchNetworks();
     // runWhois();
   }, []);
@@ -48,7 +43,7 @@ export const Host = () => {
     try {
       hostFactory.connectionUUID = connUUID;
       hostFactory.uuid = hostUUID;
-      let res = await hostFactory.GetOne();
+      let res = (await hostFactory.GetOne()) || [];
       setHost(res);
     } catch (error) {
       console.log(error);
@@ -61,7 +56,7 @@ export const Host = () => {
     try {
       flowPluginFactory.connectionUUID = connUUID;
       flowPluginFactory.hostUUID = hostUUID;
-      let res = await flowPluginFactory.GetAll();
+      let res = (await flowPluginFactory.GetAll()) || [];
       setPlugins(res);
     } catch (error) {
       console.log(error);
@@ -74,18 +69,13 @@ export const Host = () => {
     try {
       networkFactory.connectionUUID = connUUID;
       networkFactory.hostUUID = hostUUID;
-      let res = await networkFactory.GetAll(false);
+      let res = (await networkFactory.GetAll(false)) || [];
       setNetworks(res);
     } catch (error) {
       console.log(error);
     } finally {
       setIsFetching(false);
     }
-  };
-
-  const showModal = (item: any) => {
-    setCurrentItem(item);
-    setIsModalVisible(true);
   };
 
   return (
@@ -102,19 +92,10 @@ export const Host = () => {
           <FlowNetworkTable
             data={networks}
             isFetching={isFetching}
+            connUUID={connUUID}
+            hostUUID={hostUUID}
             setIsFetching={setIsFetching}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
-            showModal={showModal}
-          />
-          <CreateEditModal
-            currentItem={currentItem}
-            isModalVisible={isModalVisible}
-            isLoadingForm={isLoadingForm}
             refreshList={fetchNetworks}
-            onCloseModal={() => setIsModalVisible(false)}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
           />
         </TabPane>
         <TabPane tab={pluginsKey} key={pluginsKey}>
@@ -128,9 +109,9 @@ export const Host = () => {
           <FlowPluginsTable
             data={plugins}
             isFetching={isFetching}
-            setIsFetching={setIsFetching}
             connUUID={connUUID}
             hostUUID={hostUUID}
+            setIsFetching={setIsFetching}
           />
         </TabPane>
         <TabPane tab="INFO" key="INFO">

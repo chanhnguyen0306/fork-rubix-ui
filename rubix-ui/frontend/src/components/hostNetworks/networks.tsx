@@ -8,12 +8,14 @@ import {
 import { isObjectEmpty } from "../../utils/utils";
 import { AddButton, CreateEditModal } from "./views/create";
 import { NetworksTable } from "./views/table";
-import {assistmodel} from "../../../wailsjs/go/models";
+import { assistmodel } from "../../../wailsjs/go/models";
 
 export const Networks = () => {
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
   const [locations, setLocations] = useState([] as assistmodel.Location[]);
-  const [currentNetwork, setCurrentNetwork] = useState({} as assistmodel.Network);
+  const [currentNetwork, setCurrentNetwork] = useState(
+    {} as assistmodel.Network
+  );
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -82,6 +84,7 @@ export const Networks = () => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
+    setCurrentNetwork({} as assistmodel.Network);
   };
 
   return (
@@ -95,9 +98,9 @@ export const Networks = () => {
         networkSchema={networkSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
         onCloseModal={onCloseModal}
         refreshList={refreshList}
-        connUUID={connUUID}
       />
       <NetworksTable
         networks={networks}

@@ -102,6 +102,7 @@ export const CreateModal = (props: any) => {
       onCancel={handleClose}
       okText="Save"
       confirmLoading={confirmLoading}
+      maskClosable={false} // prevent modal from closing on click outside
       style={{ textAlign: "start" }}
     >
       <Spin spinning={isLoadingForm}>

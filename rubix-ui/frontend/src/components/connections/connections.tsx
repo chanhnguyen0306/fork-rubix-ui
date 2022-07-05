@@ -64,6 +64,7 @@ export const Connections = () => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
+    setCurrentConnection({} as RubixConnection);
   };
 
   return (

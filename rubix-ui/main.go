@@ -35,8 +35,8 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:       "rubix",
-		Width:       1440,
-		Height:      850,
+		Width:       1300,
+		Height:      750,
 		Assets:      assets,
 		StartHidden: false,
 		Menu:        AppMenu,

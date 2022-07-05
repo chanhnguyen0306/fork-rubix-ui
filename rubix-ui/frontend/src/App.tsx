@@ -1,13 +1,13 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import {MenuProps, notification, Spin} from "antd";
+import { MenuProps, notification, Spin } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import {assistmodel, model} from "../wailsjs/go/models";
+import { assistmodel } from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
@@ -17,23 +17,20 @@ import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 
-
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
 
 import "./App.css";
 import Upload from "./components/file";
-import {Backups} from "./components/backups/backups";
-import {Host} from "./components/hosts/host/host";
-import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
-import {FlowPoints} from "./components/hosts/host/flow/points/flowPoints";
-import {Networks} from "./components/hostNetworks/networks";
-import {EventsOn} from "../wailsjs/runtime";
-import {FlowNetworkFactory} from "./components/hosts/host/flow/networks/factory";
+import { Backups } from "./components/backups/backups";
+import { Host } from "./components/hosts/host/host";
+import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
+import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
+import { Networks } from "./components/hostNetworks/networks";
+import { EventsOn } from "../wailsjs/runtime";
+import { FlowNetworkFactory } from "./components/hosts/host/flow/networks/factory";
 
 const { Content, Sider } = Layout;
-
-
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
@@ -44,12 +41,11 @@ const sidebarItems = [
   { name: "networking", icon: LinkOutlined, link: "/networking" },
 ];
 
-let loadCount = 0
+let loadCount = 0;
 
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-
 
   type NotificationType = "success" | "info" | "warning" | "error";
 
@@ -60,10 +56,9 @@ const App: React.FC = () => {
     });
   };
 
-
-
-  if (loadCount == 0) { // main app loads a few time, I don't know why Aidan
-    console.log("INSIDE HERE")
+  if (loadCount == 0) {
+    // main app loads a few time, I don't know why Aidan
+    console.log("INSIDE HERE");
     EventsOn("ok", (val) => {
       console.log(val, "networks");
       openNotificationWithIcon("success", val);
@@ -75,17 +70,16 @@ const App: React.FC = () => {
     });
 
     let flowNetworkFactory = new FlowNetworkFactory();
-    console.log("try and add new network")
+    console.log("try and add new network");
     // flowNetworkFactory.connectionUUID = "con_7CF4BD8FDDC9"
     // flowNetworkFactory.hostUUID = "hos_A2CC8CE54B9B"
     // let net = new model.Network;
     // net.name = "my name new"
     // net.plugin_name = "system"
     // flowNetworkFactory.Add(net).then(e => console.log("new network", e.name)).catch(e => console.log("new network err", e))
-
   }
 
-  console.log("LOAD APP COUNT", loadCount++)
+  console.log("LOAD APP COUNT", loadCount++);
 
   // backups test
   // let back = new BackupFactory();
@@ -243,17 +237,23 @@ const App: React.FC = () => {
             <Route path="/locations/:connUUID" element={<Locations />} />
             <Route path="/networks/:locUUID" element={<Networks />} />
             <Route path="/hosts/:netUUID" element={<Hosts />} />
-            <Route path="/host/:hostUUID" element={<Host />} /> / open flow networks
-            <Route path="/flow/networks/:networkUUID" element={<FlowDevices />} />  // open flow devices
-            <Route path="/flow/devices/:deviceUUID" element={<FlowPoints />} />  // open flow network points
+            <Route path="/host/:hostUUID" element={<Host />} /> / open flow
+            networks
+            <Route
+              path="/flow/networks/:networkUUID"
+              element={<FlowDevices />}
+            />{" "}
+            // open flow devices
+            <Route
+              path="/flow/devices/:deviceUUID"
+              element={<FlowPoints />}
+            />{" "}
+            // open flow network points
             <Route path="/logs" element={<Logs />} />
             <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />
             <Route path="/networking" element={<PcNetworking />} />
-            <Route
-              path="/iframe"
-              element={<Upload/>}
-            />
+            <Route path="/iframe" element={<Upload />} />
           </Routes>
         </Content>
       </Layout>
