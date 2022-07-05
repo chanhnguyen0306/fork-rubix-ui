@@ -80,8 +80,6 @@ github.com/NubeIO/lib-networking v0.0.6 h1:f7MsAtsqHuLrlXcrdKSFkBwi3Sp7v7cdpw8lK
 github.com/NubeIO/lib-networking v0.0.6/go.mod h1:wO04Ul6Wdr5w/7s8UMZzV1/HMXuVSVFzqq7h5A3Vl6k=
 github.com/NubeIO/lib-redis v0.0.3 h1:Vwi+qU3OGIJHIrREG2boWnSHkwdAZ1taceNKqpMePTc=
 github.com/NubeIO/lib-redis v0.0.3/go.mod h1:W2I3OIAOzJor76k7D+i8tJ+wVl/5RX0ED8cpOKFbVxM=
-github.com/NubeIO/lib-schema v0.0.3 h1:s1RkXZ4u423n0ggtET6m/aAWjr5iXUp390ydjqtmgJA=
-github.com/NubeIO/lib-schema v0.0.3/go.mod h1:+XEsOqjtJ/NlVo13p+5nZQK4LDRKkJTB3SxPi6u8vhM=
 github.com/NubeIO/lib-store v0.0.1 h1:7VwFEf70oLnSTDIRckNA2tXELPoxfTkH1rEU5wAkNSw=
 github.com/NubeIO/lib-store v0.0.1/go.mod h1:N+uMx5s5C8clvAKOUaNNLaHmjVSxHrTvcca73d6DNAk=
 github.com/NubeIO/lib-systemctl-go v0.0.5 h1:Bh0ibU56WR/Em+39J4ygQ7KQEqT2+kSkml4WcHl0hv8=

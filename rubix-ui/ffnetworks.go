@@ -3,7 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-ui/backend/jsonschema"
 )
+
+func (app *App) GetFlowNetworkSchema(connUUID, hostUUID string) *jsonschema.NetworkSchema {
+	return jsonschema.GetJsonNetworkSchema()
+}
 
 func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	_, err := app.resetHost(connUUID, hostUUID, true)
