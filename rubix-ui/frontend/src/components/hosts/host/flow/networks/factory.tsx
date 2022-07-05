@@ -1,8 +1,8 @@
-import {model} from "../../../../../../wailsjs/go/models";
+import {jsonschema, model} from "../../../../../../wailsjs/go/models";
 import {
     AddNetwork,
     DeleteNetwork,
-    EditNetwork,
+    EditNetwork, GetFlowNetworkSchema,
     GetNetwork,
     GetNetworks
 } from "../../../../../../wailsjs/go/main/App";
@@ -51,10 +51,11 @@ export class FlowNetworkFactory {
     }
 
 
-    async Add(): Promise<model.Network> {
-        hasUUID(this.uuid)
+    async Add(body: model.Network): Promise<model.Network> {
+        // hasUUID(this.uuid)
+        console.log("ADD NEW NETWORK", this.connectionUUID, this.hostUUID)
         let one: model.Network = {} as model.Network
-        await AddNetwork(this.connectionUUID, this.hostUUID, this._this).then(res => {
+        await AddNetwork(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Network
             this._this = one
         }).catch(err => {
@@ -63,10 +64,10 @@ export class FlowNetworkFactory {
         return one
     }
 
-    async Update(): Promise<model.Network> {
+    async Update(body: model.Network): Promise<model.Network> {
         hasUUID(this.uuid)
         let one: model.Network = {} as model.Network
-        await EditNetwork(this.connectionUUID, this.hostUUID, this.uuid, this._this).then(res => {
+        await EditNetwork(this.connectionUUID, this.hostUUID, this.uuid, body).then(res => {
             one = res as model.Network
             this._this = one
         }).catch(err => {
@@ -86,4 +87,19 @@ export class FlowNetworkFactory {
         })
         return one
     }
+
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string): Promise<jsonschema.NetworkSchema> {
+        let all: Promise<jsonschema.NetworkSchema> = {} as Promise<jsonschema.NetworkSchema>
+        hasUUID(connUUID)
+        hasUUID(hostUUID)
+        await GetFlowNetworkSchema(connUUID, hostUUID).then(res => {
+            res.plugin_name = setPluginName;
+            all = res as unknown as Promise<jsonschema.NetworkSchema>
+
+        }).catch(err => {
+            return undefined
+        })
+        return all
+    }
+
 }

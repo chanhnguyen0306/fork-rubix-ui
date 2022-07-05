@@ -1,13 +1,13 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin } from "antd";
+import {MenuProps, notification, Spin} from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import {assistmodel} from "../wailsjs/go/models";
+import {assistmodel, model} from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
@@ -28,6 +28,8 @@ import {Host} from "./components/hosts/host/host";
 import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
 import {FlowPoints} from "./components/hosts/host/flow/points/flowPoints";
 import {Networks} from "./components/hostNetworks/networks";
+import {EventsOn} from "../wailsjs/runtime";
+import {FlowNetworkFactory} from "./components/hosts/host/flow/networks/factory";
 
 const { Content, Sider } = Layout;
 
@@ -42,12 +44,48 @@ const sidebarItems = [
   { name: "networking", icon: LinkOutlined, link: "/networking" },
 ];
 
+let loadCount = 0
+
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-  locationFactory.connectionUUID = "con_24B6412F2018"
-  locationFactory.GetAll().then(e => console.log(111, e)).catch(e => console.log(222, e))
-  console.log(444)
+
+
+  type NotificationType = "success" | "info" | "warning" | "error";
+
+  const openNotificationWithIcon = (type: NotificationType, data: any) => {
+    notification[type]({
+      message: "message",
+      description: data,
+    });
+  };
+
+
+
+  if (loadCount == 0) { // main app loads a few time, I don't know why Aidan
+    console.log("INSIDE HERE")
+    EventsOn("ok", (val) => {
+      console.log(val, "networks");
+      openNotificationWithIcon("success", val);
+    });
+
+    EventsOn("err", (val) => {
+      console.log(val, "networks");
+      openNotificationWithIcon("error", val);
+    });
+
+    let flowNetworkFactory = new FlowNetworkFactory();
+    console.log("try and add new network")
+    // flowNetworkFactory.connectionUUID = "con_7CF4BD8FDDC9"
+    // flowNetworkFactory.hostUUID = "hos_A2CC8CE54B9B"
+    // let net = new model.Network;
+    // net.name = "my name new"
+    // net.plugin_name = "system"
+    // flowNetworkFactory.Add(net).then(e => console.log("new network", e.name)).catch(e => console.log("new network err", e))
+
+  }
+
+  console.log("LOAD APP COUNT", loadCount++)
 
   // backups test
   // let back = new BackupFactory();

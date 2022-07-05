@@ -114,9 +114,10 @@ export const Host = () => {
             refreshList={fetchNetworks}
             onCloseModal={() => setIsModalVisible(false)}
             connUUID={connUUID}
+            hostUUID={hostUUID}
           />
         </TabPane>
-        <TabPane tab={pluginsKey}key={pluginsKey}>
+        <TabPane tab={pluginsKey} key={pluginsKey}>
           <Button
             type="primary"
             onClick={fetchPlugins}

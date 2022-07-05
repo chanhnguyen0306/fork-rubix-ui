@@ -1,10 +1,12 @@
 import {Button, Spin, Table} from "antd";
-import {PlayCircleOutlined, StopOutlined} from "@ant-design/icons";
+import {PlayCircleOutlined, PlusOutlined, StopOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
 import {FlowPluginFactory} from "../factory";
+import {FlowNetworkFactory} from "../../networks/factory";
+import {model} from "../../../../../../../wailsjs/go/models";
 
 export const FlowPluginsTable = (props: any) => {
-    const {data, isFetching, connUUID, hostUUID,} = props;
+    const {data, isFetching, connUUID, hostUUID} = props;
     const [plugins, setPlugins] = useState([] as string[]);
     if (!data) return <></>;
 
@@ -15,6 +17,10 @@ export const FlowPluginsTable = (props: any) => {
             val.enabled = "disabled"
         }
     }
+
+    let flowNetworkFactory = new FlowNetworkFactory();
+    flowNetworkFactory.Schema(connUUID, hostUUID, "bacnetmaster").then(e => console.log(e))
+    // todo pass in the UserSelectedPluginName for flowNetworkFactory.Schema
 
     let factory = new FlowPluginFactory();
     const enable = async () => {
@@ -28,6 +34,14 @@ export const FlowPluginsTable = (props: any) => {
         factory.hostUUID = hostUUID
         factory.BulkDisable(plugins);
     };
+
+    const addNetwork = async () => {
+        factory.connectionUUID = connUUID
+        factory.hostUUID = hostUUID
+        const net = new model.Network;
+        flowNetworkFactory.Add(net)
+    };
+
 
     const rowSelection = {
         onChange: (selectedRowKeys: any, selectedRows: any) => {
@@ -82,6 +96,13 @@ export const FlowPluginsTable = (props: any) => {
                 style={{margin: "5px", float: "right"}}
             >
                 <StopOutlined/> Disable Plugins
+            </Button>
+            <Button
+                type="ghost"
+                onClick={addNetwork}
+                style={{margin: "5px", float: "right"}}
+            >
+                <PlusOutlined/> Add Network
             </Button>
             <Table
                 rowKey="uuid"
