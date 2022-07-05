@@ -4,16 +4,20 @@ import {
   PlusOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { model } from "../../../../../../../wailsjs/go/models";
+import { CreateModal } from "./create";
+import { isObjectEmpty } from "../../../../../../utils/utils";
 
 export const FlowPluginsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID } = props;
-
+  const { data, isFetching, connUUID, hostUUID, refreshList } = props;
   const [plugins, setPlugins] = useState([] as string[]);
+  const [networkSchema, setnetworkSchema] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
 
+  let factory = new FlowPluginFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
 
   if (!data) return <></>;
@@ -27,10 +31,6 @@ export const FlowPluginsTable = (props: any) => {
     }
   }
 
-  // flowNetworkFactory.Schema(connUUID, hostUUID, "bacnetmaster").then(e => console.log(e))
-  // todo pass in the UserSelectedPluginName for flowNetworkFactory.Schema
-
-  let factory = new FlowPluginFactory();
   const enable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
@@ -41,13 +41,6 @@ export const FlowPluginsTable = (props: any) => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
     factory.BulkDisable(plugins);
-  };
-
-  const addNetwork = async () => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
-    const net = new model.Network();
-    flowNetworkFactory.Add(net);
   };
 
   const rowSelection = {
@@ -87,6 +80,27 @@ export const FlowPluginsTable = (props: any) => {
     },
   ];
 
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    const res = await flowNetworkFactory.Schema(
+      connUUID,
+      hostUUID,
+      "bacnetmaster"
+    );
+    const jsonSchema = {
+      properties: res,
+    };
+    setnetworkSchema(jsonSchema);
+    setIsLoadingForm(false);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+    if (isObjectEmpty(networkSchema)) {
+      getSchema();
+    }
+  };
+
   return (
     <>
       <Button
@@ -105,7 +119,7 @@ export const FlowPluginsTable = (props: any) => {
       </Button>
       <Button
         type="ghost"
-        onClick={addNetwork}
+        onClick={showModal}
         style={{ margin: "5px", float: "right" }}
       >
         <PlusOutlined /> Add Network
@@ -116,6 +130,14 @@ export const FlowPluginsTable = (props: any) => {
         dataSource={data}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+      <CreateModal
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        networkSchema={networkSchema}
+        onCloseModal={() => setIsModalVisible(false)}
       />
     </>
   );

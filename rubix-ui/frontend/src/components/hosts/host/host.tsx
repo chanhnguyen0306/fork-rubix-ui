@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, Form, Modal, Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { assistmodel, model } from "../../../../wailsjs/go/models";
 import { HostsFactory } from "../factory";
@@ -9,8 +9,6 @@ import { FlowNetworkFactory } from "./flow/networks/factory";
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
-import { CreateEditModal } from "./flow/networks/views/edit";
-import { isObjectEmpty } from "../../../utils/utils";
 
 let networksKey = "NETWORKS";
 let pluginsKey = "PLUGINS";
@@ -20,14 +18,10 @@ export const Host = () => {
   const connUUID = location.state.connUUID ?? "";
   const hostUUID = location.state.hostUUID ?? "";
 
-  const [currentItem, setCurrentItem] = useState({});
   const [host, setHost] = useState({} as assistmodel.Host);
-  const [networkSchema, setnetworkSchema] = useState({});
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let hostFactory = new HostsFactory();
   let networkFactory = new FlowNetworkFactory();
@@ -84,29 +78,6 @@ export const Host = () => {
     }
   };
 
-  const getSchema = async () => {
-    setIsLoadingForm(true);
-    const res = await networkFactory.Schema(connUUID, hostUUID, "bacnetmaster");
-    const jsonSchema = {
-      properties: res,
-    };
-    setnetworkSchema(jsonSchema);
-    setIsLoadingForm(false);
-  };
-
-  const showModal = (item: any) => {
-    setCurrentItem(item);
-    setIsModalVisible(true);
-    if (isObjectEmpty(networkSchema)) {
-      getSchema();
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalVisible(false);
-    setCurrentItem({});
-  };
-
   return (
     <>
       <Tabs defaultActiveKey={networksKey} onChange={onChange}>
@@ -121,20 +92,10 @@ export const Host = () => {
           <FlowNetworkTable
             data={networks}
             isFetching={isFetching}
+            connUUID={connUUID}
+            hostUUID={hostUUID}
             setIsFetching={setIsFetching}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
-            showModal={showModal}
-          />
-          <CreateEditModal
-            currentItem={currentItem}
-            isModalVisible={isModalVisible}
-            isLoadingForm={isLoadingForm}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
-            networkSchema={networkSchema}
             refreshList={fetchNetworks}
-            onCloseModal={closeModal}
           />
         </TabPane>
         <TabPane tab={pluginsKey} key={pluginsKey}>
@@ -148,9 +109,9 @@ export const Host = () => {
           <FlowPluginsTable
             data={plugins}
             isFetching={isFetching}
-            setIsFetching={setIsFetching}
             connUUID={connUUID}
             hostUUID={hostUUID}
+            setIsFetching={setIsFetching}
           />
         </TabPane>
         <TabPane tab="INFO" key="INFO">

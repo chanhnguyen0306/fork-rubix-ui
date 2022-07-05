@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { JsonForm } from "../../../../../../common/json-form";
 import { FlowNetworkFactory } from "../factory";
 
-export const CreateEditModal = (props: any) => {
+export const EditModal = (props: any) => {
   const {
     currentItem,
     isModalVisible,
@@ -30,7 +30,7 @@ export const CreateEditModal = (props: any) => {
       flowNetworkFactory.uuid = item.uuid;
       await flowNetworkFactory.Update(item);
     } catch (error) {
-      console.log("edit flowNetwrok fail", error);
+      console.log("edit fail", error);
     }
   };
 
