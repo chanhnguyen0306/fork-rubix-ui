@@ -48,8 +48,8 @@ const App: React.FC = () => {
   locationFactory.connectionUUID = "con_24B6412F2018";
   locationFactory
     .GetAll()
-    .then((e) => console.log(111, e))
-    .catch((e) => console.log(222, e));
+    .then((e) => console.log("locationFactory-getAll", e))
+    .catch((e) => console.log("locationFactory-getAll-fail", e));
 
   type NotificationType = "success" | "info" | "warning" | "error";
 
