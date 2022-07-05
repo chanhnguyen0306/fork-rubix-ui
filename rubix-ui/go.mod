@@ -3,13 +3,13 @@ module github.com/NubeIO/rubix-ui
 go 1.17
 
 //replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
-replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
+//replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 
 require (
 	github.com/NubeIO/lib-date v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.2
 	github.com/NubeIO/lib-networking v0.0.6
-	github.com/NubeIO/lib-schema v0.0.3
+	github.com/NubeIO/lib-schema v0.0.4
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0
