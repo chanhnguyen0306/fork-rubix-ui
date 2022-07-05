@@ -1,11 +1,10 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { FlowPluginFactory } from "../factory";
+import { FlowNetworkFactory } from "../../networks/factory";
+import { JsonForm } from "../../../../../../common/json-form";
 import { model } from "../../../../../../../wailsjs/go/models";
 
 import Network = model.Network;
-import { FlowNetworkFactory } from "../../networks/factory";
-import { JsonForm } from "../../../../../../common/json-form";
 
 export const CreateModal = (props: any) => {
   const {
@@ -26,13 +25,10 @@ export const CreateModal = (props: any) => {
   }, []);
 
   const addNetwork = async (net: Network) => {
-    try {
-      networkFactory.connectionUUID = connUUID;
-      networkFactory.hostUUID = hostUUID;
-      await networkFactory.Add(net);
-    } catch (error) {
-      console.log("Add fail", error);
-    }
+    networkFactory.connectionUUID = connUUID;
+    networkFactory.hostUUID = hostUUID;
+    net.plugin_name = "system";
+    await networkFactory.Add(net);
   };
 
   const handleClose = () => {

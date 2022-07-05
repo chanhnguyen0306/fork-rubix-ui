@@ -1,11 +1,10 @@
-import { Button, Form, Modal, Space, Spin, Table } from "antd";
-import { model } from "../../../../../../../wailsjs/go/models";
+import { Space, Spin, Table } from "antd";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-import { RedoOutlined } from "@ant-design/icons";
-import { EditModal } from "./edit";
-import { isObjectEmpty } from "../../../../../../utils/utils";
+import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
+import { isObjectEmpty } from "../../../../../../utils/utils";
+import { model } from "../../../../../../../wailsjs/go/models";
+import { EditModal } from "./edit";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;

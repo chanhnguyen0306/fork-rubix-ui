@@ -1,7 +1,10 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { JsonForm } from "../../../../../../common/json-form";
 import { FlowNetworkFactory } from "../factory";
+import { JsonForm } from "../../../../../../common/json-form";
+import { model } from "../../../../../../../wailsjs/go/models";
+
+import Network = model.Network;
 
 export const EditModal = (props: any) => {
   const {
@@ -23,15 +26,12 @@ export const EditModal = (props: any) => {
     setFormData(currentItem);
   }, [currentItem]);
 
-  const edit = async (item: any) => {
-    try {
-      flowNetworkFactory.connectionUUID = connUUID;
-      flowNetworkFactory.hostUUID = hostUUID;
-      flowNetworkFactory.uuid = item.uuid;
-      await flowNetworkFactory.Update(item);
-    } catch (error) {
-      console.log("edit fail", error);
-    }
+  const edit = async (net: Network) => {
+    flowNetworkFactory.connectionUUID = connUUID;
+    flowNetworkFactory.hostUUID = hostUUID;
+    flowNetworkFactory.uuid = net.uuid;
+    net.plugin_name = "system";
+    await flowNetworkFactory.Update(net);
   };
 
   const handleClose = () => {

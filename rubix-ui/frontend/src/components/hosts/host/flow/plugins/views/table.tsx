@@ -7,8 +7,8 @@ import {
 import { useState } from "react";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { CreateModal } from "./create";
 import { isObjectEmpty } from "../../../../../../utils/utils";
+import { CreateModal } from "./create";
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;

@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { MenuProps, notification, Spin } from "antd";
 import { Layout, Menu } from "antd";
@@ -7,7 +7,7 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import { assistmodel, model } from "../wailsjs/go/models";
+import { assistmodel } from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
