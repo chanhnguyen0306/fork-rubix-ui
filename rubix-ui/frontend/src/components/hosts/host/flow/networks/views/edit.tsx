@@ -30,7 +30,15 @@ export const EditModal = (props: any) => {
     flowNetworkFactory.connectionUUID = connUUID;
     flowNetworkFactory.hostUUID = hostUUID;
     flowNetworkFactory.uuid = net.uuid;
-    net.plugin_name = "system";
+    console.log(
+      "connectionUUID:",
+      connUUID,
+      ", hostUUID:",
+      hostUUID,
+      ", uuid:",
+      net.uuid
+    );
+    console.log("payload", net);
     await flowNetworkFactory.Update(net);
   };
 
