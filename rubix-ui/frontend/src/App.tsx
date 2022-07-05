@@ -7,7 +7,7 @@ import {
   HistoryOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
-import {assistmodel} from "../wailsjs/go/models";
+import {assistmodel, model} from "../wailsjs/go/models";
 import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
@@ -29,6 +29,7 @@ import {FlowDevices} from "./components/hosts/host/flow/devices/flowDevices";
 import {FlowPoints} from "./components/hosts/host/flow/points/flowPoints";
 import {Networks} from "./components/hostNetworks/networks";
 import {EventsOn} from "../wailsjs/runtime";
+import {FlowNetworkFactory} from "./components/hosts/host/flow/networks/factory";
 
 const { Content, Sider } = Layout;
 
@@ -48,8 +49,6 @@ let loadCount = 0
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-  locationFactory.connectionUUID = "con_24B6412F2018"
-  locationFactory.GetAll().then(e => console.log(111, e)).catch(e => console.log(222, e))
 
 
   type NotificationType = "success" | "info" | "warning" | "error";
@@ -74,6 +73,16 @@ const App: React.FC = () => {
       console.log(val, "networks");
       openNotificationWithIcon("error", val);
     });
+
+    let flowNetworkFactory = new FlowNetworkFactory();
+    console.log("try and add new network")
+    // flowNetworkFactory.connectionUUID = "con_7CF4BD8FDDC9"
+    // flowNetworkFactory.hostUUID = "hos_A2CC8CE54B9B"
+    // let net = new model.Network;
+    // net.name = "my name new"
+    // net.plugin_name = "system"
+    // flowNetworkFactory.Add(net).then(e => console.log("new network", e.name)).catch(e => console.log("new network err", e))
+
   }
 
   console.log("LOAD APP COUNT", loadCount++)
