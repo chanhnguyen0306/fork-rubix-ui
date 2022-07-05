@@ -50,9 +50,11 @@ func (app *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []string
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		_, err := app.flow.DisablePlugin(plg)
+		msg, err := app.flow.DisablePlugin(plg)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			app.crudMessage(false, fmt.Sprintf("disable plugin %s", err.Error()))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("disable plugin %s", msg))
 		}
 	}
 	return "ok"
@@ -65,9 +67,11 @@ func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []string)
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		_, err := app.flow.EnablePlugin(plg)
+		msg, err := app.flow.EnablePlugin(plg)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			app.crudMessage(false, fmt.Sprintf("enable plugin %s", err.Error()))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("enable plugin %s", msg))
 		}
 	}
 	return "ok"
