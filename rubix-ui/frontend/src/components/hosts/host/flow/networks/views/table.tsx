@@ -1,4 +1,4 @@
-import {Button, Popconfirm, Space, Spin, Table, Tag} from "antd";
+import {Button, Image, Popconfirm, Space, Spin, Table, Tag} from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
@@ -6,6 +6,8 @@ import { isObjectEmpty } from "../../../../../../utils/utils";
 import {main, model} from "../../../../../../../wailsjs/go/models";
 import { EditModal } from "./edit";
 import { DeleteOutlined } from "@ant-design/icons";
+import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
+import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
@@ -59,6 +61,28 @@ export const FlowNetworkTable = (props: any) => {
   };
   const navigate = useNavigate();
   const columns = [
+    {
+      title: 'network',
+      key: 'plugin_name',
+      dataIndex: 'plugin_name',
+      render(name: string) {
+        let image = nubeLogo
+        console.log(name)
+        if (name == "bacnetmaster"){
+          image = bacnetLogo
+        }
+        if (name == "bacnet"){
+          image = bacnetLogo
+        }
+
+        return (
+            <Image
+                width={70}
+                src={image}
+            />
+        );
+      },
+    },
     {
       title: 'network-type',
       key: 'plugin_name',
