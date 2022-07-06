@@ -53,7 +53,6 @@ export const FlowNetworkTable = (props: any) => {
             setSelectedUUIDs(selectedRowKeys)
         },
     };
-
     const navigate = useNavigate();
     const columns = [
         {
