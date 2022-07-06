@@ -53,7 +53,6 @@ export class FlowDeviceFactory {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         hasUUID(networkUUID)
-        console.log(this.connectionUUID, this.hostUUID, networkUUID)
         await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID).then(res => {
             all = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
