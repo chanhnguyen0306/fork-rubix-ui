@@ -1,8 +1,8 @@
-import {jsonschema, model} from "../../../../../../wailsjs/go/models";
+import {model} from "../../../../../../wailsjs/go/models";
 import {
     AddNetwork,
-    DeleteNetwork,
-    EditNetwork, GetFlowNetworkSchema,
+    DeleteNetwork, DeleteNetworkBulk,
+    EditNetwork, EnablePluginBulk, GetFlowNetworkSchema,
     GetNetwork,
     GetNetworks
 } from "../../../../../../wailsjs/go/main/App";
@@ -88,13 +88,24 @@ export class FlowNetworkFactory {
         return one
     }
 
-    async Schema(connUUID:string, hostUUID:string, setPluginName:string): Promise<jsonschema.NetworkSchema> {
-        let all: Promise<jsonschema.NetworkSchema> = {} as Promise<jsonschema.NetworkSchema>
+    async BulkDelete(uuids: string[]): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        await DeleteNetworkBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return out
+    }
+
+
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
         hasUUID(connUUID)
         hasUUID(hostUUID)
-        await GetFlowNetworkSchema(connUUID, hostUUID).then(res => {
+        await GetFlowNetworkSchema(connUUID, hostUUID, setPluginName).then(res => {
             res.plugin_name = setPluginName;
-            all = res as unknown as Promise<jsonschema.NetworkSchema>
+            all = res as unknown as Promise<any>
 
         }).catch(err => {
             return undefined

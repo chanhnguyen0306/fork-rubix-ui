@@ -1,8 +1,9 @@
 import {model} from "../../../../../../wailsjs/go/models";
 import {
-    AddPoint,
-    DeletePoint,
-    EditPoint,
+    AddDevice,
+    AddPoint, DeleteDeviceBulk,
+    DeletePoint, DeletePointBulk,
+    EditPoint, GetFlowNetworkSchema, GetFlowPointSchema,
     GetPoint, GetPoints, GetPointsForDevice,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
@@ -59,10 +60,12 @@ export class FlowPointFactory {
     }
 
 
-    async Add(): Promise<model.Point> {
-        hasUUID(this.uuid)
+    async Add(deviceUUID:string, body:model.Point): Promise<model.Point> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
-        await AddPoint(this.connectionUUID, this.hostUUID, this._this).then(res => {
+        body.device_uuid = deviceUUID
+        await AddPoint(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Point
             this._this = one
         }).catch(err => {
@@ -71,10 +74,12 @@ export class FlowPointFactory {
         return one
     }
 
-    async Update(): Promise<model.Point> {
-        hasUUID(this.uuid)
+
+    async Update(uuid:string, body:model.Point): Promise<model.Point> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
-        await EditPoint(this.connectionUUID, this.hostUUID, this.uuid, this._this).then(res => {
+        await EditPoint(this.connectionUUID, this.hostUUID, uuid, body).then(res => {
             one = res as model.Point
             this._this = one
         }).catch(err => {
@@ -93,5 +98,31 @@ export class FlowPointFactory {
             return undefined
         })
         return one
+    }
+
+
+
+    async BulkDelete(uuids: string[]): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        await DeletePointBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return out
+    }
+
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
+        hasUUID(connUUID)
+        hasUUID(hostUUID)
+        await GetFlowPointSchema(connUUID, hostUUID, setPluginName).then(res => {
+            res.plugin_name = setPluginName;
+            all = res as unknown as Promise<any>
+
+        }).catch(err => {
+            return undefined
+        })
+        return all
     }
 }

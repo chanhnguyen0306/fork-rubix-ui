@@ -3,7 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-ui/backend/jsonschema"
+	log "github.com/sirupsen/logrus"
 )
+
+func (app *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
+	if pluginName == "" {
+		log.Errorln("GetFlowPointSchema() plugin name can not be empty")
+	}
+	if pluginName == "system" {
+		return jsonschema.GetPointSchema()
+	} else if pluginName == "bacnetmaster" {
+		return jsonschema.GetPointSchema()
+	}
+	return jsonschema.GetPointSchema()
+}
 
 func (app *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	_, err := app.resetHost(connUUID, hostUUID, true)
@@ -55,6 +69,24 @@ func (app *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Poin
 	}
 	return points
 }
+
+func (app *App) DeletePointBulk(connUUID, hostUUID string, pointUUIDs []string) interface{} {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, net := range pointUUIDs {
+		msg := app.DeletePoint(connUUID, hostUUID, net)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("delete point %s", msg))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("delete point %s", msg))
+		}
+	}
+	return "ok"
+}
+
 func (app *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {

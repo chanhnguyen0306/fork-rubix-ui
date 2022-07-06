@@ -16,10 +16,6 @@ import { PcScanner } from "./components/pc/scanner/table";
 import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
-
-import Location = assistmodel.Location;
-import Network = assistmodel.Network;
-
 import "./App.css";
 import Upload from "./components/file";
 import { Backups } from "./components/backups/backups";
@@ -28,8 +24,11 @@ import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
 import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
 import { Networks } from "./components/hostNetworks/networks";
 import { EventsOn } from "../wailsjs/runtime";
-import { FlowNetworkFactory } from "./components/hosts/host/flow/networks/factory";
 
+
+
+import Location = assistmodel.Location;
+import Network = assistmodel.Network;
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
@@ -58,7 +57,7 @@ const App: React.FC = () => {
 
   if (loadCount == 0) {
     // main app loads a few time, I don't know why Aidan
-    console.log("INSIDE HERE");
+    console.log("INSIDE HERE Main App");
     EventsOn("ok", (val) => {
       console.log(val, "networks");
       openNotificationWithIcon("success", val);
@@ -68,31 +67,9 @@ const App: React.FC = () => {
       console.log(val, "networks");
       openNotificationWithIcon("error", val);
     });
-
-    let flowNetworkFactory = new FlowNetworkFactory();
-    console.log("try and add new network");
-    // flowNetworkFactory.connectionUUID = "con_7CF4BD8FDDC9"
-    // flowNetworkFactory.hostUUID = "hos_A2CC8CE54B9B"
-    // let net = new model.Network;
-    // net.name = "my name new"
-    // net.plugin_name = "system"
-    // flowNetworkFactory.Add(net).then(e => console.log("new network", e.name)).catch(e => console.log("new network err", e))
   }
+  loadCount++
 
-  console.log("LOAD APP COUNT", loadCount++);
-
-  // backups test
-  // let back = new BackupFactory();
-  // back.connectionUUID = "cloud";
-  // back.hostUUID = "rc";
-  // back.application = "RubixWires"
-  // back.uuid = "bac_0EF8BBF1894E"; //change this as needed
-  // back.GetBackupsRubixWires().then(r => console.log("GetBackupsRubixWires", r))
-  // back.WiresBackup().then(r => console.log("WiresBackup", r))
-  // back.WiresRestore().then(r => console.log("WiresRestore", r))
-
-  // const location = useLocation();
-  // const { pathname } = location;
   let navigate = useNavigate();
 
   const [connections, setConnections] = useState([] as any[]);

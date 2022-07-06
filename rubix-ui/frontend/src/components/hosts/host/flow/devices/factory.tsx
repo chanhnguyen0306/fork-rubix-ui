@@ -1,9 +1,9 @@
 import {model} from "../../../../../../wailsjs/go/models";
 import {
     AddDevice,
-    DeleteDevice,
+    DeleteDevice, DeleteDeviceBulk,
     EditDevice,
-    GetDevice, GetDevices, GetNetworkDevices,
+    GetDevice, GetDevices, GetFlowDeviceSchema, GetNetworkDevices,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -50,6 +50,9 @@ export class FlowDeviceFactory {
 
     async GetNetworkDevices(networkUUID:string): Promise<Array<model.Device>> {
         let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
+        hasUUID(networkUUID)
         await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID).then(res => {
             all = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
@@ -59,10 +62,12 @@ export class FlowDeviceFactory {
     }
 
 
-    async Add(): Promise<model.Device> {
-        hasUUID(this.uuid)
+    async Add(networkUUID: string | undefined, body: model.Device): Promise<model.Device> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Device = {} as model.Device
-        await AddDevice(this.connectionUUID, this.hostUUID, this._this).then(res => {
+        body.network_uuid = networkUUID
+        await AddDevice(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Device
             this._this = one
         }).catch(err => {
@@ -71,10 +76,11 @@ export class FlowDeviceFactory {
         return one
     }
 
-    async Update(): Promise<model.Device> {
-        hasUUID(this.uuid)
+    async Update(deviceUUID:string, body:model.Device): Promise<model.Device> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Device = {} as model.Device
-        await EditDevice(this.connectionUUID, this.hostUUID, this.uuid, this._this).then(res => {
+        await EditDevice(this.connectionUUID, this.hostUUID, deviceUUID, body).then(res => {
             one = res as model.Device
             this._this = one
         }).catch(err => {
@@ -93,5 +99,32 @@ export class FlowDeviceFactory {
             return undefined
         })
         return one
+    }
+
+
+    async BulkDelete(uuids: string[]): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        await DeleteDeviceBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return out
+    }
+
+
+
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
+        hasUUID(connUUID)
+        hasUUID(hostUUID)
+        await GetFlowDeviceSchema(connUUID, hostUUID, setPluginName).then(res => {
+            res.plugin_name = setPluginName;
+            all = res as unknown as Promise<any>
+
+        }).catch(err => {
+            return undefined
+        })
+        return all
     }
 }

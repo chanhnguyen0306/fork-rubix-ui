@@ -1,4 +1,4 @@
-import { Button, Spin, Table } from "antd";
+import {Button, Spin, Table, Tag} from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -9,19 +9,62 @@ import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { CreateModal } from "./create";
+import {model} from "../../../../../../../wailsjs/go/models";
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
   const [plugins, setPlugins] = useState([] as string[]);
-  const [networkSchema, setnetworkSchema] = useState({});
+  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as string[]);
+  const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let factory = new FlowPluginFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
 
-  if (!data) return <></>;
+  const enable = async () => {
+    factory.connectionUUID = connUUID;
+    factory.hostUUID = hostUUID;
+    factory.BulkEnable(pluginsUUIDs);
+  };
 
+  const disable = async () => {
+    factory.connectionUUID = connUUID;
+    factory.hostUUID = hostUUID;
+    factory.BulkDisable(pluginsUUIDs);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setPluginsUUIDs(selectedRowKeys);
+      setPlugins(selectedRows);
+    },
+  };
+
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    if (plugins.length > 0) {
+      let plg = plugins.at(0) as unknown as model.PluginConf
+      const res = await flowNetworkFactory.Schema(
+          connUUID,
+          hostUUID,
+          plg.name
+      );
+      const jsonSchema = {
+        properties: res,
+      };
+      setNetworkSchema(jsonSchema);
+      setIsLoadingForm(false);
+    }
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+    if (isObjectEmpty(networkSchema)) {
+      getSchema();
+    }
+  };
+  console.log(data)
   const columns = [
     {
       title: "uuid",
@@ -39,67 +82,42 @@ export const FlowPluginsTable = (props: any) => {
       key: "module_path",
     },
     {
+      title: 'Tags',
+      key: 'has_network',
+      dataIndex: 'has_network',
+      render(has_network: boolean) {
+        let colour = "blue"
+        let text = "non network plugin"
+        if (has_network) {
+          colour = "orange"
+          text = "network driver"
+        }
+        return (
+            <Tag color={colour}>
+              {text}
+            </Tag>
+        );
+      },
+    },
+    {
       title: "status",
       key: "enabled",
       dataIndex: "enabled",
-      render(enabled: string) {
-        return {
-          props: {
-            style: { background: enabled == "enabled" ? "#e6ffee" : "#d1d1e0" },
-          },
-          children: <div>{enabled}</div>,
-        };
+      render(enabled: boolean) {
+        let colour = "blue"
+        let text = "disabled"
+        if (enabled) {
+          colour = "orange"
+          text = "enabled"
+        }
+        return (
+            <Tag color={colour}>
+              {text}
+            </Tag>
+        );
       },
     },
   ];
-
-  for (const val of data) {
-    if (val.enabled) {
-      // react is crap and can't render a bool
-      val.enabled = "enabled";
-    } else {
-      val.enabled = "disabled";
-    }
-  }
-
-  const enable = async () => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
-    factory.BulkEnable(plugins);
-  };
-
-  const disable = async () => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
-    factory.BulkDisable(plugins);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setPlugins(selectedRowKeys);
-    },
-  };
-
-  const getSchema = async () => {
-    setIsLoadingForm(true);
-    const res = await flowNetworkFactory.Schema(
-      connUUID,
-      hostUUID,
-      "bacnetmaster"
-    );
-    const jsonSchema = {
-      properties: res,
-    };
-    setnetworkSchema(jsonSchema);
-    setIsLoadingForm(false);
-  };
-
-  const showModal = () => {
-    setIsModalVisible(true);
-    if (isObjectEmpty(networkSchema)) {
-      getSchema();
-    }
-  };
 
   return (
     <>
