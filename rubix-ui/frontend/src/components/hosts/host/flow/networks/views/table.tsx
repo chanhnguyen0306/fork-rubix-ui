@@ -88,14 +88,14 @@ export const FlowNetworkTable = (props: any) => {
                             })
                         }
                     >
-                        View
+                        View Devices
                     </a>
                     <a // edit
                         onClick={() => {
                             showModal(network);
                         }}
                     >
-                        Edit
+                        Edit Network
                     </a>
                 </Space>
             ),

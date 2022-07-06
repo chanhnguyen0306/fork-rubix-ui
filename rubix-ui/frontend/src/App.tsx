@@ -57,7 +57,7 @@ const App: React.FC = () => {
 
   if (loadCount == 0) {
     // main app loads a few time, I don't know why Aidan
-    console.log("INSIDE HERE");
+    console.log("INSIDE HERE Main App");
     EventsOn("ok", (val) => {
       console.log(val, "networks");
       openNotificationWithIcon("success", val);
@@ -68,6 +68,7 @@ const App: React.FC = () => {
       openNotificationWithIcon("error", val);
     });
   }
+  loadCount++
 
   let navigate = useNavigate();
 
