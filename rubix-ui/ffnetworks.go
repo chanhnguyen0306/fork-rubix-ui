@@ -7,6 +7,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []string) interface{} {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, net := range networkUUIDs {
+		msg := app.DeleteNetwork(connUUID, hostUUID, net)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("delete network %s", msg))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("delete network %s", msg))
+		}
+	}
+	return "ok"
+}
+
 func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
 	if pluginName == "" {
 		log.Errorln("GetFlowNetworkSchema() plugin name can not be empty")
