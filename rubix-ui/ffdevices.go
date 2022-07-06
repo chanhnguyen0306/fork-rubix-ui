@@ -3,7 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-ui/backend/jsonschema"
+	log "github.com/sirupsen/logrus"
 )
+
+func (app *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) interface{} {
+	if pluginName == "" {
+		log.Errorln("GetFlowDeviceSchema() plugin name can not be empty")
+	}
+	if pluginName == "system" {
+		return jsonschema.GetDeviceSchema()
+	} else if pluginName == "bacnetmaster" {
+		return jsonschema.GetDeviceSchema()
+	}
+	return jsonschema.GetDeviceSchema()
+}
 
 func (app *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
 	_, err := app.resetHost(connUUID, hostUUID, true)

@@ -3,7 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-ui/backend/jsonschema"
+	log "github.com/sirupsen/logrus"
 )
+
+func (app *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
+	if pluginName == "" {
+		log.Errorln("GetFlowPointSchema() plugin name can not be empty")
+	}
+	if pluginName == "system" {
+		return jsonschema.GetPointSchema()
+	} else if pluginName == "bacnetmaster" {
+		return jsonschema.GetPointSchema()
+	}
+	return jsonschema.GetPointSchema()
+}
 
 func (app *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	_, err := app.resetHost(connUUID, hostUUID, true)

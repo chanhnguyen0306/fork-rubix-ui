@@ -22,15 +22,6 @@ export const FlowPluginsTable = (props: any) => {
   let factory = new FlowPluginFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
 
-  // for (const val of data) {
-  //   if (val.enabled) {
-  //     // react is crap and can't render a bool
-  //     val.enabled = "enabled";
-  //   } else {
-  //     val.enabled = "disabled";
-  //   }
-  // }
-
   const enable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
@@ -127,7 +118,6 @@ export const FlowPluginsTable = (props: any) => {
       },
     },
   ];
-
 
   return (
     <>

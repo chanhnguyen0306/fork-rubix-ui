@@ -2,7 +2,7 @@ import {model} from "../../../../../../wailsjs/go/models";
 import {
     AddPoint,
     DeletePoint,
-    EditPoint,
+    EditPoint, GetFlowNetworkSchema, GetFlowPointSchema,
     GetPoint, GetPoints, GetPointsForDevice,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
@@ -93,5 +93,19 @@ export class FlowPointFactory {
             return undefined
         })
         return one
+    }
+
+    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
+        let all: Promise<any> = {} as Promise<any>
+        hasUUID(connUUID)
+        hasUUID(hostUUID)
+        await GetFlowPointSchema(connUUID, hostUUID, setPluginName).then(res => {
+            res.plugin_name = setPluginName;
+            all = res as unknown as Promise<any>
+
+        }).catch(err => {
+            return undefined
+        })
+        return all
     }
 }
