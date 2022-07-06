@@ -1,11 +1,28 @@
-import {Space, Spin, Table} from "antd";
+import {Button, Space, Spin, Table} from "antd";
 import {model} from "../../../../../../../wailsjs/go/models";
 import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {FlowNetworkFactory} from "../../networks/factory";
+import {FlowPointFactory} from "../../points/factory";
+import {DeleteOutlined} from "@ant-design/icons";
 
 export const FlowDeviceTable = (props: any) => {
     const {data, isFetching, connUUID, hostUUID, networkUUID} = props;
     const navigate = useNavigate();
+    const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
+    let flowPointFactory = new FlowPointFactory();
 
+    const bulkDelete = async () => {
+        flowPointFactory.connectionUUID = connUUID;
+        flowPointFactory.hostUUID = hostUUID;
+        // flowPointFactory.BulkDelete(selectedUUIDs);
+    };
+
+    const rowSelection = {
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+            setSelectedUUIDs(selectedRowKeys)
+        },
+    };
 
     const columns = [
         {
@@ -40,13 +57,6 @@ export const FlowDeviceTable = (props: any) => {
                     >
                         Edit
                     </a>
-                    <a
-                        onClick={() => {
-                            // deleteNetwork(network.uuid);
-                        }}
-                    >
-                        Delete
-                    </a>
                 </Space>
             ),
         },
@@ -54,9 +64,18 @@ export const FlowDeviceTable = (props: any) => {
 
     return (
         <>
-            <h3> DEVICES </h3>
+            {/*<h3> DEVICES </h3>*/}
+            <Button
+                type="primary"
+                danger
+                onClick={bulkDelete}
+                style={{ margin: "5px", float: "right" }}
+            >
+                <DeleteOutlined /> Delete
+            </Button>
         <Table
             rowKey="uuid"
+            rowSelection={rowSelection}
             dataSource={data}
             columns={columns}
             loading={{indicator: <Spin/>, spinning: isFetching}}
