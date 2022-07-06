@@ -103,6 +103,20 @@ func (app *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bo
 	return networks, nil
 }
 
+func (app *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, withDevice bool) *model.Network {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	network, err := app.flow.GetNetworkByPluginName(networkName)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return network
+}
+
 func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
 	networks, err := app.getNetwork(connUUID, hostUUID, networkUUID, withDevice)
 	if err != nil {

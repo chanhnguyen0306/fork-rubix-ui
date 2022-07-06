@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
@@ -27,6 +28,39 @@ func (app *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
 		names = append(names, PluginName{UUID: plg.UUID, Name: plg.Name})
 	}
 	return names
+}
+
+func (app *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.PluginConf, error) {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, nil
+	}
+	plugins, err := app.flow.GetPlugins()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, nil
+	}
+	for _, plg := range plugins {
+		if plg.Name == pluginName {
+			return &plg, nil
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("no plugin found with that name:%s", pluginName))
+}
+
+func (app *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginConf {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	out, err := app.flow.GetPlugin(pluginUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return out
 }
 
 func (app *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
