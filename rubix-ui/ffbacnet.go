@@ -31,9 +31,20 @@ func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) *[]model.Networ
 }
 
 func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID string) (*[]model.Device, error) {
-	network, err := app.bacnetNetwork(connUUID, hostUUID)
+	plugin, err := app.GetPluginByName(connUUID, hostUUID, "bacnetmaster")
 	if err != nil {
 		return nil, err
+	}
+	if !plugin.Enabled {
+		return nil, errors.New("bacnet plugin is not enabled, please enable the plugin")
+	}
+	getNetwork := app.GetNetworkByPluginName(connUUID, hostUUID, "bacnetmaster", false)
+	if getNetwork == nil {
+		return nil, err
+	}
+	network, err := app.bacnetNetwork(connUUID, hostUUID)
+	if err != nil {
+		return nil, errors.New("no network is added, please add network")
 	}
 	var netUUID string
 	if networkUUID != "" {

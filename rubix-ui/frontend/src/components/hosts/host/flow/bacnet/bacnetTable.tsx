@@ -2,7 +2,7 @@ import {Spin, Table} from "antd";
 
 export const BacnetWhoIsTable = (props: any) => {
     const { data, isFetching } = props;
-    if (!data) return <></>;
+    // if (!data) return <></>;
 
     const columns = [
 
