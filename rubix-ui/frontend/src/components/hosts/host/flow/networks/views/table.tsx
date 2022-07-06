@@ -1,16 +1,18 @@
-import {Space, Spin, Table} from "antd";
+import {Button, Space, Spin, Table} from "antd";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {FlowNetworkFactory} from "../factory";
 import {isObjectEmpty} from "../../../../../../utils/utils";
 import {model} from "../../../../../../../wailsjs/go/models";
 import {EditModal} from "./edit";
+import {DeleteOutlined} from "@ant-design/icons";
 
 export const FlowNetworkTable = (props: any) => {
     const {data, isFetching, connUUID, hostUUID, refreshList} = props;
     const [currentItem, setCurrentItem] = useState({});
     const [networkSchema, setNetworkSchema] = useState({});
     const [pluginName, setPluginName] = useState();
+    const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoadingForm, setIsLoadingForm] = useState(false);
 
@@ -40,12 +42,17 @@ export const FlowNetworkTable = (props: any) => {
         setCurrentItem({});
     };
 
-    const rowSelection = {
-        onChange: (selectedRowKeys: any, selectedRows: any) => {
-        },
+    const bulkDelete = async () => {
+        networkFactory.connectionUUID = connUUID;
+        networkFactory.hostUUID = hostUUID;
+        networkFactory.BulkDelete(selectedUUIDs);
     };
 
-    // if (!data) return <></>;
+    const rowSelection = {
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+            setSelectedUUIDs(selectedRowKeys)
+        },
+    };
 
     const navigate = useNavigate();
     const columns = [
@@ -91,13 +98,6 @@ export const FlowNetworkTable = (props: any) => {
                     >
                         Edit
                     </a>
-                    <a
-                        onClick={() => {
-                            // deleteNetwork(network.uuid);
-                        }}
-                    >
-                        Delete
-                    </a>
                 </Space>
             ),
         },
@@ -106,6 +106,14 @@ export const FlowNetworkTable = (props: any) => {
 
     return (
         <>
+            <Button
+                type="primary"
+                danger
+                onClick={bulkDelete}
+                style={{ margin: "5px", float: "right" }}
+            >
+                <DeleteOutlined /> Delete
+            </Button>
             <Table
                 rowKey="uuid"
                 rowSelection={rowSelection}
