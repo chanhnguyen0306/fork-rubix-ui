@@ -64,7 +64,6 @@ export const FlowDeviceTable = (props: any) => {
 
     return (
         <>
-            {/*<h3> DEVICES </h3>*/}
             <Button
                 type="primary"
                 danger
