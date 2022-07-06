@@ -6,7 +6,6 @@ import {DeleteOutlined} from "@ant-design/icons";
 
 export const FlowPointsTable = (props: any) => {
   const {data, isFetching, connUUID, hostUUID, deviceUUID} = props;
-  if (!data) return <></>;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
   let flowDeviceFactory = new FlowDeviceFactory();
 

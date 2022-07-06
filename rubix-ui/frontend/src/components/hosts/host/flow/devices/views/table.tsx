@@ -23,13 +23,12 @@ export const FlowDeviceTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
 
   const navigate = useNavigate();
-  let flowPointFactory = new FlowPointFactory();
   let flowDeviceFactory = new FlowDeviceFactory();
 
   const bulkDelete = async () => {
-    flowPointFactory.connectionUUID = connUUID;
-    flowPointFactory.hostUUID = hostUUID;
-    // flowPointFactory.BulkDelete(selectedUUIDs);
+      flowDeviceFactory.connectionUUID = connUUID;
+      flowDeviceFactory.hostUUID = hostUUID;
+      flowDeviceFactory.BulkDelete(selectedUUIDs);
   };
 
   const rowSelection = {
