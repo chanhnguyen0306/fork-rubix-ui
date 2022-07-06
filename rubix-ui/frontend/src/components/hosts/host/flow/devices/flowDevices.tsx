@@ -65,7 +65,7 @@ export const FlowDevices = () => {
 
         <Tabs defaultActiveKey="1" onChange={onChange}>
 
-            <TabPane tab="NETWORKS" key="1">
+            <TabPane tab="DEVICES" key="1">
                 <Button
                     type="primary"
                     onClick={fetch}
