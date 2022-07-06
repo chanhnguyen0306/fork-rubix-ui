@@ -29,9 +29,7 @@ export const EditModal = (props: any) => {
   const edit = async (device: Device) => {
     flowDeviceFactory.connectionUUID = connUUID;
     flowDeviceFactory.hostUUID = hostUUID;
-    flowDeviceFactory.uuid = device.uuid;
-    flowDeviceFactory._this = device;
-    await flowDeviceFactory.Update();
+    await flowDeviceFactory.Update(device.uuid, device);
   };
 
   const handleClose = () => {

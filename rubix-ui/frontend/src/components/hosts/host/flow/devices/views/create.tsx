@@ -27,11 +27,10 @@ export const CreateModal = (props: any) => {
   const add = async (device: Device) => {
     flowDeviceFactory.connectionUUID = connUUID;
     flowDeviceFactory.hostUUID = hostUUID;
-    flowDeviceFactory._this = device;
-    console.log("connectionUUID", connUUID, ", hostUUID", hostUUID);
-    console.log("payload", device);
-
-    await flowDeviceFactory.Add();
+    let networkUUID = device.network_uuid
+    if (networkUUID != undefined){
+      await flowDeviceFactory.Add(networkUUID, device);
+    }
   };
 
   const handleClose = () => {
