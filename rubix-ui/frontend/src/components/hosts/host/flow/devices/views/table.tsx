@@ -162,6 +162,7 @@ export const FlowDeviceTable = (props: any) => {
         isLoadingForm={isLoadingForm}
         connUUID={connUUID}
         hostUUID={hostUUID}
+        networkUUID={networkUUID}
         schema={schema}
         onCloseModal={closeCreateModal}
         refreshList={refreshList}

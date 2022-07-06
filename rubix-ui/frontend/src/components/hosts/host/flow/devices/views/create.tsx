@@ -12,25 +12,20 @@ export const CreateModal = (props: any) => {
     isLoadingForm,
     connUUID,
     hostUUID,
+    networkUUID,
     schema,
     onCloseModal,
+    refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Device);
 
   let flowDeviceFactory = new FlowDeviceFactory();
 
-  useEffect(() => {
-    setFormData({});
-  }, []);
-
   const add = async (device: Device) => {
     flowDeviceFactory.connectionUUID = connUUID;
     flowDeviceFactory.hostUUID = hostUUID;
-    let networkUUID = device.network_uuid
-    if (networkUUID != undefined){
-      await flowDeviceFactory.Add(networkUUID, device);
-    }
+    await flowDeviceFactory.Add(networkUUID, device);
   };
 
   const handleClose = () => {
@@ -41,6 +36,7 @@ export const CreateModal = (props: any) => {
   const handleSubmit = async (item: Device) => {
     setConfirmLoading(true);
     await add(item);
+    refreshList();
     setConfirmLoading(false);
     handleClose();
   };
