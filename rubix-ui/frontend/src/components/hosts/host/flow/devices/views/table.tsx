@@ -1,11 +1,15 @@
-import { Space, Spin, Table } from "antd";
-import { useNavigate } from "react-router-dom";
-import { FlowDeviceFactory } from "../factory";
+import { Button, Space, Spin, Table } from "antd";
 import { model } from "../../../../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../../../../utils/utils";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { EditModal } from "./edit";
+import { FlowNetworkFactory } from "../../networks/factory";
+import { FlowPointFactory } from "../../points/factory";
+import { DeleteOutlined } from "@ant-design/icons";
+
 import Device = model.Device;
+import { isObjectEmpty } from "../../../../../../utils/utils";
+import { FlowDeviceFactory } from "../factory";
+import { EditModal } from "./edit";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, networkUUID, refreshList } =
@@ -15,9 +19,23 @@ export const FlowDeviceTable = (props: any) => {
   const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
 
   const navigate = useNavigate();
+  let flowPointFactory = new FlowPointFactory();
   let flowDeviceFactory = new FlowDeviceFactory();
+
+  const bulkDelete = async () => {
+    flowPointFactory.connectionUUID = connUUID;
+    flowPointFactory.hostUUID = hostUUID;
+    // flowPointFactory.BulkDelete(selectedUUIDs);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRowKeys);
+    },
+  };
 
   const columns = [
     {
@@ -58,13 +76,6 @@ export const FlowDeviceTable = (props: any) => {
           >
             Edit
           </a>
-          <a
-            onClick={() => {
-              // deleteNetwork(network.uuid);
-            }}
-          >
-            Delete
-          </a>
         </Space>
       ),
     },
@@ -100,9 +111,18 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
-      <h3> DEVICES </h3>
+      {/*<h3> DEVICES </h3>*/}
+      <Button
+        type="primary"
+        danger
+        onClick={bulkDelete}
+        style={{ margin: "5px", float: "right" }}
+      >
+        <DeleteOutlined /> Delete
+      </Button>
       <Table
         rowKey="uuid"
+        rowSelection={rowSelection}
         dataSource={data}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}

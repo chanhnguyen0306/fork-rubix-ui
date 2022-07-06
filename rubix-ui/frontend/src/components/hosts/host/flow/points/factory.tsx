@@ -1,7 +1,7 @@
 import {model} from "../../../../../../wailsjs/go/models";
 import {
-    AddPoint,
-    DeletePoint,
+    AddPoint, DeleteDeviceBulk,
+    DeletePoint, DeletePointBulk,
     EditPoint, GetFlowNetworkSchema, GetFlowPointSchema,
     GetPoint, GetPoints, GetPointsForDevice,
 } from "../../../../../../wailsjs/go/main/App";
@@ -93,6 +93,16 @@ export class FlowPointFactory {
             return undefined
         })
         return one
+    }
+
+    async BulkDelete(uuids: string[]): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        await DeletePointBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return out
     }
 
     async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
