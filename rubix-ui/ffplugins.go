@@ -77,35 +77,40 @@ func (app *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
 	return out
 }
 
-func (app *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []string) interface{} {
+type PluginUUIDs struct {
+	Name string `json:"name"`
+	UUID string `json:"uuid"`
+}
+
+func (app *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		msg, err := app.flow.DisablePlugin(plg)
+		_, err := app.flow.DisablePlugin(plg.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("disable plugin %s", err.Error()))
+			app.crudMessage(false, fmt.Sprintf("disabled plugin fail: %s", plg.Name))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("disable plugin %s", msg))
+			app.crudMessage(true, fmt.Sprintf("disabled plugin:%s", plg.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []string) interface{} {
+func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		msg, err := app.flow.EnablePlugin(plg)
+		_, err := app.flow.EnablePlugin(plg.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("enable plugin %s", err.Error()))
+			app.crudMessage(false, fmt.Sprintf("enable plugin fail: %s", plg.Name))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("enable plugin %s", msg))
+			app.crudMessage(true, fmt.Sprintf("enabled plugin:%s", plg.Name))
 		}
 	}
 	return "ok"

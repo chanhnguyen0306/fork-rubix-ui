@@ -1,12 +1,13 @@
-import {Button, Spin, Table} from "antd";
+import {Button, Popconfirm, Spin, Table} from "antd";
 import {useState} from "react";
 import {FlowPointFactory} from "../factory";
 import {FlowDeviceFactory} from "../../devices/factory";
 import {DeleteOutlined} from "@ant-design/icons";
+import {main} from "../../../../../../../wailsjs/go/models";
 
 export const FlowPointsTable = (props: any) => {
   const {data, isFetching, connUUID, hostUUID, deviceUUID} = props;
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   let flowDeviceFactory = new FlowDeviceFactory();
 
   const bulkDelete = async () => {
@@ -17,7 +18,7 @@ export const FlowPointsTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRowKeys)
+      setSelectedUUIDs(selectedRows)
     },
   };
 
@@ -41,14 +42,18 @@ export const FlowPointsTable = (props: any) => {
 
   return (
       <>
-        <Button
-            type="primary"
-            danger
-            onClick={bulkDelete}
-            style={{ margin: "5px", float: "right" }}
+        <Popconfirm
+            title="Delete"
+            onConfirm={bulkDelete}
         >
-          <DeleteOutlined /> Delete
-        </Button>
+          <Button
+              type="primary"
+              danger
+              style={{margin: "5px", float: "right"}}
+          >
+            <DeleteOutlined/> Delete
+          </Button>
+        </Popconfirm>
       <Table
           rowKey="uuid"
           rowSelection={rowSelection}

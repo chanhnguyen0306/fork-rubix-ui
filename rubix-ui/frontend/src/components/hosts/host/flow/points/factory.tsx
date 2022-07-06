@@ -1,4 +1,4 @@
-import {model} from "../../../../../../wailsjs/go/models";
+import {main, model} from "../../../../../../wailsjs/go/models";
 import {
     AddDevice,
     AddPoint, DeleteDeviceBulk,
@@ -29,6 +29,8 @@ export class FlowPointFactory {
 
     async GetAll(): Promise<Array<model.Point>> {
         let all: Promise<Array<model.Point>> = {} as Promise<Array<model.Point>>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await GetPoints(this.connectionUUID, this.hostUUID).then(res => {
             all = res as unknown as Promise<Array<model.Point>>
         }).catch(err => {
@@ -39,6 +41,8 @@ export class FlowPointFactory {
 
     async GetPointsForDevice(deviceUUID: string): Promise<Array<model.Point>> {
         let all: Promise<Array<model.Point>> = {} as Promise<Array<model.Point>>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await GetPointsForDevice(this.connectionUUID, this.hostUUID, deviceUUID).then(res => {
             all = res as unknown as Promise<Array<model.Point>>
         }).catch(err => {
@@ -49,6 +53,8 @@ export class FlowPointFactory {
 
     async GetOne(): Promise<model.Point> {
         hasUUID(this.uuid)
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
         await GetPoint(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
             one = res as model.Point
@@ -90,6 +96,8 @@ export class FlowPointFactory {
 
     async Delete(): Promise<model.Point> {
         hasUUID(this.uuid)
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
         await DeletePoint(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
             one = res as model.Point
@@ -102,8 +110,10 @@ export class FlowPointFactory {
 
 
 
-    async BulkDelete(uuids: string[]): Promise<any> {
+    async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await DeletePointBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
             out = res as Promise<any>
         }).catch(err => {

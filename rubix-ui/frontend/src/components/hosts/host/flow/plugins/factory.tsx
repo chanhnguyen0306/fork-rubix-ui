@@ -1,11 +1,5 @@
-import {model} from "../../../../../../wailsjs/go/models";
-import {
-    DisablePlugin,
-    DisablePluginBulk,
-    EnablePlugin,
-    EnablePluginBulk,
-    GetPlugins
-} from "../../../../../../wailsjs/go/main/App";
+import {main, model} from "../../../../../../wailsjs/go/models";
+import {DisablePluginBulk, EnablePluginBulk, GetPlugins} from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -20,6 +14,8 @@ export class FlowPluginFactory {
 
     async GetAll(): Promise<Array<model.PluginConf>> {
         let all: Promise<Array<model.PluginConf>> = {} as Promise<Array<model.PluginConf>>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await GetPlugins(this.connectionUUID, this.hostUUID).then(res => {
             all = res as unknown as Promise<Array<model.PluginConf>>
         }).catch(err => {
@@ -28,19 +24,10 @@ export class FlowPluginFactory {
         return all
     }
 
-    async Enable(): Promise<any> {
-        hasUUID(this.uuid)
+    async BulkEnable(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
-        await EnablePlugin(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
-            out = res as Promise<any>
-        }).catch(err => {
-            return undefined
-        })
-        return out
-    }
-
-    async BulkEnable(pluginUUIDs: string[]): Promise<any> {
-        let out: Promise<any> = {} as Promise<any>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await EnablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
             out = res as Promise<any>
         }).catch(err => {
@@ -49,21 +36,11 @@ export class FlowPluginFactory {
         return out
     }
 
-    async BulkDisable(pluginUUIDs: string[]): Promise<any> {
+    async BulkDisable(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         await DisablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
-            out = res as Promise<any>
-        }).catch(err => {
-            return undefined
-        })
-        return out
-    }
-
-
-    async Disable(): Promise<any> {
-        hasUUID(this.uuid)
-        let out: Promise<any> = {} as Promise<any>
-        await DisablePlugin(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
             out = res as Promise<any>
         }).catch(err => {
             return undefined

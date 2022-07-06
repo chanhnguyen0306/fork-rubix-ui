@@ -1,5 +1,5 @@
 import {Button, Popconfirm, Space, Spin, Table} from "antd";
-import {model} from "../../../../../../../wailsjs/go/models";
+import {main, model} from "../../../../../../../wailsjs/go/models";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
@@ -18,7 +18,7 @@ export const FlowDeviceTable = (props: any) => {
     const [pluginName, setPluginName] = useState();
     const [schema, setSchema] = useState({});
     const [currentItem, setCurrentItem] = useState({});
-    const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
+    const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
     const navigate = useNavigate();
     let flowDeviceFactory = new FlowDeviceFactory();
@@ -31,7 +31,7 @@ export const FlowDeviceTable = (props: any) => {
 
     const rowSelection = {
         onChange: (selectedRowKeys: any, selectedRows: any) => {
-            setSelectedUUIDs(selectedRowKeys);
+            setSelectedUUIDs(selectedRows);
         },
     };
 

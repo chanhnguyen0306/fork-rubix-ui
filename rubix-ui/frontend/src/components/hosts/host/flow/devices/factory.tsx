@@ -1,4 +1,4 @@
-import {model} from "../../../../../../wailsjs/go/models";
+import {main, model} from "../../../../../../wailsjs/go/models";
 import {
     AddDevice,
     DeleteDevice, DeleteDeviceBulk,
@@ -102,7 +102,7 @@ export class FlowDeviceFactory {
     }
 
 
-    async BulkDelete(uuids: string[]): Promise<any> {
+    async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
         await DeleteDeviceBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
             out = res as Promise<any>
