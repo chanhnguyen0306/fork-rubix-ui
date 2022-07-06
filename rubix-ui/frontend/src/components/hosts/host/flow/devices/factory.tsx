@@ -3,7 +3,7 @@ import {
     AddDevice,
     DeleteDevice,
     EditDevice,
-    GetDevice, GetDevices, GetFlowDeviceSchema, GetFlowPointSchema, GetNetworkDevices,
+    GetDevice, GetDevices, GetFlowDeviceSchema, GetNetworkDevices,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
