@@ -47,7 +47,7 @@ export const HostsTable = (props: any) => {
               })
             }
           >
-            View
+            View-Device
           </a>
           <a
             onClick={() => {
@@ -68,7 +68,7 @@ export const HostsTable = (props: any) => {
               navigateToNewTab(host);
             }}
           >
-            Rubix-Wires
+            Open-Rubix-Wires
           </a>
         </Space>
       ),

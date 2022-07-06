@@ -33,7 +33,7 @@ export const FlowDevices = () => {
     const fetch = async () => {
         try {
             flowDeviceFactory.connectionUUID = connUUID
-            flowDeviceFactory.uuid = hostUUID
+            flowDeviceFactory.hostUUID = hostUUID
             let res = await flowDeviceFactory.GetNetworkDevices(networkUUID);
             console.log("fetch", res, connUUID, hostUUID)
             setDevices(res);

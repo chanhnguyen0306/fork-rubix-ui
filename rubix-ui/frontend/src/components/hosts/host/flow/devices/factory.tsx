@@ -50,6 +50,9 @@ export class FlowDeviceFactory {
 
     async GetNetworkDevices(networkUUID:string): Promise<Array<model.Device>> {
         let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
+        hasUUID(networkUUID)
         await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID).then(res => {
             all = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
