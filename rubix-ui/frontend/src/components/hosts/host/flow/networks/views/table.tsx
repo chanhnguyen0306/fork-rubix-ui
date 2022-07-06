@@ -45,7 +45,6 @@ export const FlowNetworkTable = (props: any) => {
     const bulkDelete = async () => {
         networkFactory.connectionUUID = connUUID;
         networkFactory.hostUUID = hostUUID;
-        // console.log(selectedUUIDs)
         networkFactory.BulkDelete(selectedUUIDs);
     };
 
@@ -108,7 +107,8 @@ export const FlowNetworkTable = (props: any) => {
     return (
         <>
             <Button
-                type="default"
+                type="primary"
+                danger
                 onClick={bulkDelete}
                 style={{ margin: "5px", float: "right" }}
             >
