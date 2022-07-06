@@ -27,7 +27,7 @@ export const FlowPoints = () => {
     const fetch = async () => {
         try {
             flowPointFactory.connectionUUID = connUUID
-            flowPointFactory.uuid = hostUUID
+            flowPointFactory.hostUUID = hostUUID
             let res = await flowPointFactory.GetPointsForDevice(deviceUUID);
             console.log("fetch", res, connUUID, hostUUID)
             setDevices(res);
