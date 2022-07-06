@@ -1,10 +1,10 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { FlowNetworkFactory } from "../factory";
+import { FlowDeviceFactory } from "../factory";
 import { JsonForm } from "../../../../../../common/json-form";
 import { model } from "../../../../../../../wailsjs/go/models";
 
-import Network = model.Network;
+import Device = model.Device;
 
 export const EditModal = (props: any) => {
   const {
@@ -13,24 +13,23 @@ export const EditModal = (props: any) => {
     isLoadingForm,
     connUUID,
     hostUUID,
-    networkSchema,
+    schema,
     onCloseModal,
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
 
-  let flowNetworkFactory = new FlowNetworkFactory();
+  let flowDeviceFactory = new FlowDeviceFactory();
 
   useEffect(() => {
     setFormData(currentItem);
   }, [currentItem]);
 
-  const edit = async (net: Network) => {
-    flowNetworkFactory.connectionUUID = connUUID;
-    flowNetworkFactory.hostUUID = hostUUID;
-    flowNetworkFactory.uuid = net.uuid;
-    await flowNetworkFactory.Update(net);
+  const edit = async (device: Device) => {
+    flowDeviceFactory.connectionUUID = connUUID;
+    flowDeviceFactory.hostUUID = hostUUID;
+    await flowDeviceFactory.Update(device.uuid, device);
   };
 
   const handleClose = () => {
@@ -55,7 +54,7 @@ export const EditModal = (props: any) => {
         onCancel={handleClose}
         confirmLoading={confirmLoading}
         okText="Save"
-        maskClosable={false} // prevent modal from closing on click outside
+        maskClosable={false}
         style={{ textAlign: "start" }}
       >
         <Spin spinning={isLoadingForm}>
@@ -63,7 +62,7 @@ export const EditModal = (props: any) => {
             formData={formData}
             setFormData={setFormData}
             handleSubmit={handleSubmit}
-            jsonSchema={networkSchema}
+            jsonSchema={schema}
           />
         </Spin>
       </Modal>

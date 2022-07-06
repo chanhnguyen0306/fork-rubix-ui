@@ -1,5 +1,6 @@
 import {model} from "../../../../../../wailsjs/go/models";
 import {
+    AddDevice,
     AddPoint, DeleteDeviceBulk,
     DeletePoint, DeletePointBulk,
     EditPoint, GetFlowNetworkSchema, GetFlowPointSchema,
@@ -59,10 +60,12 @@ export class FlowPointFactory {
     }
 
 
-    async Add(): Promise<model.Point> {
-        hasUUID(this.uuid)
+    async Add(deviceUUID:string, body:model.Point): Promise<model.Point> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
-        await AddPoint(this.connectionUUID, this.hostUUID, this._this).then(res => {
+        body.device_uuid = deviceUUID
+        await AddPoint(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Point
             this._this = one
         }).catch(err => {
@@ -71,10 +74,12 @@ export class FlowPointFactory {
         return one
     }
 
-    async Update(): Promise<model.Point> {
-        hasUUID(this.uuid)
+
+    async Update(uuid:string, body:model.Point): Promise<model.Point> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point
-        await EditPoint(this.connectionUUID, this.hostUUID, this.uuid, this._this).then(res => {
+        await EditPoint(this.connectionUUID, this.hostUUID, uuid, body).then(res => {
             one = res as model.Point
             this._this = one
         }).catch(err => {
@@ -94,6 +99,8 @@ export class FlowPointFactory {
         })
         return one
     }
+
+
 
     async BulkDelete(uuids: string[]): Promise<any> {
         let out: Promise<any> = {} as Promise<any>

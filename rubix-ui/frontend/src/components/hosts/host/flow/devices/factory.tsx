@@ -62,10 +62,12 @@ export class FlowDeviceFactory {
     }
 
 
-    async Add(): Promise<model.Device> {
-        hasUUID(this.uuid)
+    async Add(networkUUID: string | undefined, body: model.Device): Promise<model.Device> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Device = {} as model.Device
-        await AddDevice(this.connectionUUID, this.hostUUID, this._this).then(res => {
+        body.network_uuid = networkUUID
+        await AddDevice(this.connectionUUID, this.hostUUID, body).then(res => {
             one = res as model.Device
             this._this = one
         }).catch(err => {
@@ -74,10 +76,11 @@ export class FlowDeviceFactory {
         return one
     }
 
-    async Update(): Promise<model.Device> {
-        hasUUID(this.uuid)
+    async Update(deviceUUID:string, body:model.Device): Promise<model.Device> {
+        hasUUID(this.connectionUUID)
+        hasUUID(this.hostUUID)
         let one: model.Device = {} as model.Device
-        await EditDevice(this.connectionUUID, this.hostUUID, this.uuid, this._this).then(res => {
+        await EditDevice(this.connectionUUID, this.hostUUID, deviceUUID, body).then(res => {
             one = res as model.Device
             this._this = one
         }).catch(err => {
