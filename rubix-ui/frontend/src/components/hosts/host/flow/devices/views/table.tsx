@@ -2,19 +2,20 @@ import { Button, Space, Spin, Table } from "antd";
 import { model } from "../../../../../../../wailsjs/go/models";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPointFactory } from "../../points/factory";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import Device = model.Device;
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { FlowDeviceFactory } from "../factory";
 import { EditModal } from "./edit";
+import { CreateModal } from "./create";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, networkUUID, refreshList } =
     props;
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
@@ -71,7 +72,7 @@ export const FlowDeviceTable = (props: any) => {
           </a>
           <a
             onClick={() => {
-              showModal(device);
+              showEditModal(device);
             }}
           >
             Edit
@@ -95,18 +96,30 @@ export const FlowDeviceTable = (props: any) => {
     setIsLoadingForm(false);
   };
 
-  const showModal = (item: any) => {
+  const showEditModal = (item: any) => {
     setCurrentItem(item);
-    setIsModalVisible(true);
+    setIsEditModalVisible(true);
     setPluginName(item.plugin_name);
     if (isObjectEmpty(schema)) {
       getSchema();
     }
   };
 
-  const closeModal = () => {
-    setIsModalVisible(false);
+  const closeEditModal = () => {
+    setIsEditModalVisible(false);
     setCurrentItem({});
+  };
+
+  const showCreateModal = (item: any) => {
+    setIsCreateModalVisible(true);
+    setPluginName(item.plugin_name);
+    if (isObjectEmpty(schema)) {
+      getSchema();
+    }
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateModalVisible(false);
   };
 
   return (
@@ -120,6 +133,13 @@ export const FlowDeviceTable = (props: any) => {
       >
         <DeleteOutlined /> Delete
       </Button>
+      <Button
+        type="primary"
+        onClick={() => showCreateModal({} as Device)}
+        style={{ margin: "5px", float: "right" }}
+      >
+        <PlusOutlined /> Add
+      </Button>
       <Table
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -129,12 +149,21 @@ export const FlowDeviceTable = (props: any) => {
       />
       <EditModal
         currentItem={currentItem}
-        isModalVisible={isModalVisible}
+        isModalVisible={isEditModalVisible}
         isLoadingForm={isLoadingForm}
         connUUID={connUUID}
         hostUUID={hostUUID}
-        networkSchema={schema}
-        onCloseModal={closeModal}
+        schema={schema}
+        onCloseModal={closeEditModal}
+        refreshList={refreshList}
+      />
+      <CreateModal
+        isModalVisible={isCreateModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        schema={schema}
+        onCloseModal={closeCreateModal}
         refreshList={refreshList}
       />
     </>

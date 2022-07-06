@@ -13,7 +13,7 @@ export const EditModal = (props: any) => {
     isLoadingForm,
     connUUID,
     hostUUID,
-    networkSchema,
+    schema,
     onCloseModal,
     refreshList,
   } = props;
@@ -64,7 +64,7 @@ export const EditModal = (props: any) => {
             formData={formData}
             setFormData={setFormData}
             handleSubmit={handleSubmit}
-            jsonSchema={networkSchema}
+            jsonSchema={schema}
           />
         </Spin>
       </Modal>
