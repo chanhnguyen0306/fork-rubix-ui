@@ -76,7 +76,7 @@ export const FlowNetworkTable = (props: any) => {
           image = bacnetLogo;
         }
 
-        return <Image width={70} src={image} />;
+        return <Image width={70} preview={false} src={image} />;
       },
     },
     {
@@ -130,6 +130,7 @@ export const FlowNetworkTable = (props: any) => {
       ),
     },
   ];
+
   return (
     <>
       <Popconfirm title="Delete" onConfirm={bulkDelete}>
