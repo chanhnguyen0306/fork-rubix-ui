@@ -1,0 +1,21 @@
+.hosts-table {
+    display: flex;
+}
+
+.hosts-table>.ant-menu-inline-collapsed {
+    width: 0 !important;
+}
+
+.hosts-table>.ant-menu {
+    width: 200px;
+}
+
+.hosts-table>.uncollapsed-style {
+    opacity: 0.5;
+    height: 100%;
+    width: 100%;
+}
+
+.hosts-table>.full-width {
+    width: 100%;
+}
