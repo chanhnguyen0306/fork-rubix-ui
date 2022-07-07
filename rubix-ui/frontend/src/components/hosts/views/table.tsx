@@ -132,7 +132,7 @@ export const HostsTable = (props: any) => {
   };
 
   return (
-    <div className="aaaa">
+    <div>
       <Table
         rowKey="uuid"
         dataSource={hosts}

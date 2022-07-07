@@ -1,18 +1,21 @@
-import { Button, Space, Spin, Table } from "antd";
+import { Button, Image, Popconfirm, Space, Spin, Table, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
 import { isObjectEmpty } from "../../../../../../utils/utils";
-import { model } from "../../../../../../../wailsjs/go/models";
+import { main, model } from "../../../../../../../wailsjs/go/models";
 import { EditModal } from "./edit";
 import { DeleteOutlined } from "@ant-design/icons";
+import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
+import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
+import "./style.css";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
   const [pluginName, setPluginName] = useState();
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
@@ -54,15 +57,37 @@ export const FlowNetworkTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRowKeys);
+      setSelectedUUIDs(selectedRows);
     },
   };
   const navigate = useNavigate();
   const columns = [
     {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
+      title: "network",
+      key: "plugin_name",
+      dataIndex: "plugin_name",
+      render(name: string) {
+        let image = nubeLogo;
+        console.log(name);
+        if (name == "bacnetmaster") {
+          image = bacnetLogo;
+        }
+        if (name == "bacnet") {
+          image = bacnetLogo;
+        }
+
+        return <Image width={70} preview={false} src={image} />;
+      },
+    },
+    {
+      title: "network-type",
+      key: "plugin_name",
+      dataIndex: "plugin_name",
+      render(plugin_name: string) {
+        let colour = "#4d4dff";
+        let text = plugin_name.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
+      },
     },
     {
       title: "name",
@@ -70,9 +95,9 @@ export const FlowNetworkTable = (props: any) => {
       key: "name",
     },
     {
-      title: "network-type",
-      dataIndex: "plugin_name",
-      key: "plugin_name",
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
     },
     {
       title: "Actions",
@@ -108,15 +133,13 @@ export const FlowNetworkTable = (props: any) => {
 
   return (
     <>
-      <Button
-        type="primary"
-        danger
-        onClick={bulkDelete}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <DeleteOutlined /> Delete
-      </Button>
+      <Popconfirm title="Delete" onConfirm={bulkDelete}>
+        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+          <DeleteOutlined /> Delete
+        </Button>
+      </Popconfirm>
       <Table
+        className="flow-networks"
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}

@@ -99,19 +99,13 @@ export const Host = () => {
           />
         </TabPane>
         <TabPane tab={pluginsKey} key={pluginsKey}>
-          <Button
-            type="primary"
-            onClick={fetchPlugins}
-            style={{ margin: "5px", float: "right" }}
-          >
-            <RedoOutlined /> Refresh
-          </Button>
           <FlowPluginsTable
             data={plugins}
             isFetching={isFetching}
             connUUID={connUUID}
             hostUUID={hostUUID}
             setIsFetching={setIsFetching}
+            fetchPlugins={fetchPlugins}
           />
         </TabPane>
         <TabPane tab="INFO" key="INFO">

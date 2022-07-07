@@ -1,4 +1,4 @@
-import {Button, Spin, Table, Tag} from "antd";
+import {Button, Spin, Table, Tag, Image} from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -9,12 +9,16 @@ import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { CreateModal } from "./create";
-import {model} from "../../../../../../../wailsjs/go/models";
+import {main, model} from "../../../../../../../wailsjs/go/models";
+
+import bacnetLogo from '../../../../../../assets/images/BACnet_logo.png';
+import nubeLogo from '../../../../../../assets/images/Nube-logo.png';
+
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
-  const [plugins, setPlugins] = useState([] as string[]);
-  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as string[]);
+  const [plugins, setPlugins] = useState([] as Array<model.PluginConf>);
+  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<main.PluginUUIDs>);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -35,8 +39,8 @@ export const FlowPluginsTable = (props: any) => {
   };
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setPluginsUUIDs(selectedRowKeys);
+    onChange: (selectedRowKeys: any, selectedRows: Array<model.PluginConf>) => {
+      setPluginsUUIDs(selectedRows);
       setPlugins(selectedRows);
     },
   };
@@ -67,19 +71,48 @@ export const FlowPluginsTable = (props: any) => {
   console.log(data)
   const columns = [
     {
+      title: 'name',
+      key: 'name',
+      dataIndex: 'name',
+      render(name: string) {
+        let image = nubeLogo
+        console.log(name)
+        if (name == "bacnetmaster"){
+          image = bacnetLogo
+        }
+        if (name == "bacnet"){
+          image = bacnetLogo
+        }
+
+        return (
+            <Image
+                width={70}
+                src={image}
+            />
+            // <Tag color={colour}>
+            //   {text}
+            // </Tag>
+        );
+      },
+    },
+    {
+      title: 'name',
+      key: 'name',
+      dataIndex: 'name',
+      render(plugin_name: string) {
+        let colour = "#4d4dff"
+        let text = plugin_name.toUpperCase()
+        return (
+            <Tag color={colour}>
+              {text}
+            </Tag>
+        );
+      },
+    },
+    {
       title: "uuid",
       dataIndex: "uuid",
       key: "uuid",
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "plugin",
-      dataIndex: "module_path",
-      key: "module_path",
     },
     {
       title: 'Tags',

@@ -70,18 +70,18 @@ func (app *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.De
 	return devices
 }
 
-func (app *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []string) interface{} {
+func (app *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range deviceUUIDs {
-		msg := app.DeleteDevice(connUUID, hostUUID, net)
+	for _, dev := range deviceUUIDs {
+		msg := app.DeleteDevice(connUUID, hostUUID, dev.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete device %s", msg))
+			app.crudMessage(false, fmt.Sprintf("delete device error: %s %s", dev.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("delete device %s", msg))
+			app.crudMessage(true, fmt.Sprintf("deleted device: %s", dev.Name))
 		}
 	}
 	return "ok"

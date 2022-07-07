@@ -1,15 +1,13 @@
-import { Button, Space, Spin, Table } from "antd";
-import { model } from "../../../../../../../wailsjs/go/models";
+import { Button, Popconfirm, Space, Spin, Table } from "antd";
+import { main, model } from "../../../../../../../wailsjs/go/models";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FlowPointFactory } from "../../points/factory";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-
-import Device = model.Device;
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { FlowDeviceFactory } from "../factory";
 import { EditModal } from "./edit";
 import { CreateModal } from "./create";
+import Device = model.Device;
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, networkUUID, refreshList } =
@@ -20,21 +18,20 @@ export const FlowDeviceTable = (props: any) => {
   const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as string[]);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
   const navigate = useNavigate();
-  let flowPointFactory = new FlowPointFactory();
   let flowDeviceFactory = new FlowDeviceFactory();
 
   const bulkDelete = async () => {
-    flowPointFactory.connectionUUID = connUUID;
-    flowPointFactory.hostUUID = hostUUID;
-    // flowPointFactory.BulkDelete(selectedUUIDs);
+    flowDeviceFactory.connectionUUID = connUUID;
+    flowDeviceFactory.hostUUID = hostUUID;
+    flowDeviceFactory.BulkDelete(selectedUUIDs);
   };
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRowKeys);
+      setSelectedUUIDs(selectedRows);
     },
   };
 
@@ -124,15 +121,12 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
-      {/*<h3> DEVICES </h3>*/}
-      <Button
-        type="primary"
-        danger
-        onClick={bulkDelete}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <DeleteOutlined /> Delete
-      </Button>
+      <Popconfirm title="Delete" onConfirm={bulkDelete}>
+        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+          <DeleteOutlined /> Delete
+        </Button>
+      </Popconfirm>
+
       <Button
         type="primary"
         onClick={() => showCreateModal({} as Device)}

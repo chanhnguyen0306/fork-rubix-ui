@@ -7,18 +7,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []string) interface{} {
+type UUIDs struct {
+	Name string `json:"name"`
+	UUID string `json:"uuid"`
+}
+
+func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, net := range networkUUIDs {
-		msg := app.DeleteNetwork(connUUID, hostUUID, net)
+		msg := app.DeleteNetwork(connUUID, hostUUID, net.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete network %s", msg))
+			app.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("delete network %s", msg))
+			app.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
 		}
 	}
 	return "ok"

@@ -70,18 +70,18 @@ func (app *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Poin
 	return points
 }
 
-func (app *App) DeletePointBulk(connUUID, hostUUID string, pointUUIDs []string) interface{} {
+func (app *App) DeletePointBulk(connUUID, hostUUID string, pointUUIDs []UUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range pointUUIDs {
-		msg := app.DeletePoint(connUUID, hostUUID, net)
+	for _, pnt := range pointUUIDs {
+		msg := app.DeletePoint(connUUID, hostUUID, pnt.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete point %s", msg))
+			app.crudMessage(false, fmt.Sprintf("delete point error: %s %s", pnt.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("delete point %s", msg))
+			app.crudMessage(true, fmt.Sprintf("deleted point: %s", pnt.Name))
 		}
 	}
 	return "ok"
