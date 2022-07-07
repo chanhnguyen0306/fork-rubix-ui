@@ -29,13 +29,13 @@ export const FlowPluginsTable = (props: any) => {
   const enable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
-    factory.BulkEnable(pluginsUUIDs);
+    await factory.BulkEnable(pluginsUUIDs);
   };
 
   const disable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
-    factory.BulkDisable(pluginsUUIDs);
+    await factory.BulkDisable(pluginsUUIDs);
   };
 
   const rowSelection = {
@@ -89,9 +89,6 @@ export const FlowPluginsTable = (props: any) => {
                 width={70}
                 src={image}
             />
-            // <Tag color={colour}>
-            //   {text}
-            // </Tag>
         );
       },
     },

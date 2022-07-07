@@ -1,8 +1,11 @@
-import {Space, Spin, Table} from "antd";
+import {Image, Space, Spin, Table} from "antd";
 import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
 import {openNotificationWithIcon} from "../../../utils/utils";
 import {assistmodel} from "../../../../wailsjs/go/models";
 import {useNavigate} from "react-router-dom";
+import imageRC5 from "../../../assets/images/RC5.png";
+import imageRCIO from "../../../assets/images/RC-IO.png";
+import {PlayCircleOutlined, BookOutlined} from "@ant-design/icons";
 
 export const HostsTable = (props: any) => {
     const {hosts, networks, showModal, isFetching, connUUID, refreshList} =
@@ -10,20 +13,50 @@ export const HostsTable = (props: any) => {
     const navigate = useNavigate();
     const columns = [
         {
+            title: 'product',
+            key: 'product_type',
+            dataIndex: 'product_type',
+            render(product: string) {
+                let image = imageRC5
+                if (product == "RubixCompute"){
+                    image = imageRC5
+                }
+                if (product == "RubixComputeIO"){
+                    image = imageRCIO
+                }
+                return (
+                    <Image
+                        width={70}
+                        src={image}
+                    />
+                );
+            },
+        },
+        {
             title: "name",
             dataIndex: "name",
             key: "name",
         },
-
         {
             title: "description",
             dataIndex: "description",
             key: "description",
         },
         {
-            title: "ProductType",
-            dataIndex: "ProductType",
-            key: "ProductType",
+            title: 'product',
+            key: 'product_type',
+            dataIndex: 'product_type',
+            render(product: string) {
+                let icon =   <PlayCircleOutlined />
+                if (product == "RubixCompute"){
+                    icon = <BookOutlined />
+                }
+                if (product == "RubixComputeIO"){
+                }
+                return ( //BookOutlined
+                    icon
+                );
+            },
         },
         {
             title: "network",

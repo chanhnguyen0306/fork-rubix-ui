@@ -17,7 +17,6 @@ import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 import "./App.css";
-import Upload from "./components/file";
 import { Backups } from "./components/backups/backups";
 import { Host } from "./components/hosts/host/host";
 import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
@@ -35,7 +34,6 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Backups", icon: HistoryOutlined, link: "/backups" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  { name: "iframe", icon: LinkOutlined, link: "/iframe" },
   { name: "scanner", icon: LinkOutlined, link: "/scanner" },
   { name: "networking", icon: LinkOutlined, link: "/networking" },
 ];
@@ -230,7 +228,6 @@ const App: React.FC = () => {
             <Route path="/backups" element={<Backups />} />
             <Route path="/scanner" element={<PcScanner />} />
             <Route path="/networking" element={<PcNetworking />} />
-            <Route path="/iframe" element={<Upload />} />
           </Routes>
         </Content>
       </Layout>
