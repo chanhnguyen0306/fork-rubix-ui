@@ -116,8 +116,6 @@ export const HostsTable = (props: any) => {
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
 
   useEffect(() => {
-    console.log(11111);
-
     const height = (hosts.length + 1) * 55;
     setSidePanelHeight(height);
   }, [hosts.length]);
@@ -197,13 +195,6 @@ export const HostsTable = (props: any) => {
   const getNetworkNameByUUID = (uuid: string) => {
     const network = networks.find((l: assistmodel.Location) => l.uuid === uuid);
     return network ? network.name : "";
-  };
-  const collapsedStyle = () => {
-    if (collapsed) {
-      return "opacity: 0.5, height: 100%";
-    } else {
-      return "width: '-webkit-fill-available'";
-    }
   };
 
   return (
