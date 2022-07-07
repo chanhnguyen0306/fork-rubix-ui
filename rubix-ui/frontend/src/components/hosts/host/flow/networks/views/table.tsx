@@ -1,13 +1,14 @@
-import {Button, Image, Popconfirm, Space, Spin, Table, Tag} from "antd";
+import { Button, Image, Popconfirm, Space, Spin, Table, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
 import { isObjectEmpty } from "../../../../../../utils/utils";
-import {main, model} from "../../../../../../../wailsjs/go/models";
+import { main, model } from "../../../../../../../wailsjs/go/models";
 import { EditModal } from "./edit";
 import { DeleteOutlined } from "@ant-design/icons";
 import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
 import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
+import "./style.css";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
@@ -62,39 +63,30 @@ export const FlowNetworkTable = (props: any) => {
   const navigate = useNavigate();
   const columns = [
     {
-      title: 'network',
-      key: 'plugin_name',
-      dataIndex: 'plugin_name',
+      title: "network",
+      key: "plugin_name",
+      dataIndex: "plugin_name",
       render(name: string) {
-        let image = nubeLogo
-        console.log(name)
-        if (name == "bacnetmaster"){
-          image = bacnetLogo
+        let image = nubeLogo;
+        console.log(name);
+        if (name == "bacnetmaster") {
+          image = bacnetLogo;
         }
-        if (name == "bacnet"){
-          image = bacnetLogo
+        if (name == "bacnet") {
+          image = bacnetLogo;
         }
 
-        return (
-            <Image
-                width={70}
-                src={image}
-            />
-        );
+        return <Image width={70} src={image} />;
       },
     },
     {
-      title: 'network-type',
-      key: 'plugin_name',
-      dataIndex: 'plugin_name',
+      title: "network-type",
+      key: "plugin_name",
+      dataIndex: "plugin_name",
       render(plugin_name: string) {
-        let colour = "#4d4dff"
-        let text = plugin_name.toUpperCase()
-        return (
-            <Tag color={colour}>
-              {text}
-            </Tag>
-        );
+        let colour = "#4d4dff";
+        let text = plugin_name.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
       },
     },
     {
@@ -138,22 +130,15 @@ export const FlowNetworkTable = (props: any) => {
       ),
     },
   ];
-
   return (
     <>
-      <Popconfirm
-          title="Delete"
-          onConfirm={bulkDelete}
-      >
-        <Button
-            type="primary"
-            danger
-            style={{margin: "5px", float: "right"}}
-        >
-          <DeleteOutlined/> Delete
+      <Popconfirm title="Delete" onConfirm={bulkDelete}>
+        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+          <DeleteOutlined /> Delete
         </Button>
       </Popconfirm>
       <Table
+        className="flow-networks"
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}
