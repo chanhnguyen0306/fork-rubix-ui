@@ -1,4 +1,4 @@
-import { Button, Image, Popconfirm, Space, Spin, Table, Tag } from "antd";
+import { Button, Image, Popconfirm, Space, Spin, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
@@ -8,8 +8,8 @@ import { EditModal } from "./edit";
 import { DeleteOutlined } from "@ant-design/icons";
 import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
 import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
+import RbTable from "../../../../../../common/rb-table";
 import "./style.css";
-
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, refreshList } = props;
   const [currentItem, setCurrentItem] = useState({});
@@ -138,7 +138,7 @@ export const FlowNetworkTable = (props: any) => {
           <DeleteOutlined /> Delete
         </Button>
       </Popconfirm>
-      <Table
+      <RbTable
         className="flow-networks"
         rowKey="uuid"
         rowSelection={rowSelection}

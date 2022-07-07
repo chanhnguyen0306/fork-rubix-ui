@@ -1,9 +1,8 @@
 import {assistmodel} from "../../../../wailsjs/go/models";
-import {Space, Spin, Table} from "antd";
+import {Space, Spin} from "antd";
 import {DeleteHostNetwork} from "../../../../wailsjs/go/main/App";
 import {useNavigate} from "react-router-dom";
-
-
+import RbTable from "../../../common/rb-table";
 
 export const NetworksTable = (props: any) => {
     const { networks, locations, refreshList, showModal, isFetching, connUUID } =
@@ -89,7 +88,7 @@ export const NetworksTable = (props: any) => {
     };
 
     return (
-        <Table
+        <RbTable
             rowKey="uuid"
             dataSource={networks}
             columns={columns}

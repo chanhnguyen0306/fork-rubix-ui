@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Spin, Table } from "antd";
+import { Button, Spin } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { AddButton, CreateModal } from "./create";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import {Scanner} from "../../../../wailsjs/go/main/App";
+import RbTable from "../../../common/rb-table";
 
 const ScannerTable = (props: any) => {
   let { data, isFetching, setSelectedIpPorts } = props;
@@ -34,7 +35,7 @@ const ScannerTable = (props: any) => {
   ];
 
   return (
-    <Table
+    <RbTable
       rowKey="ip"
       rowSelection={rowSelection}
       dataSource={data}
