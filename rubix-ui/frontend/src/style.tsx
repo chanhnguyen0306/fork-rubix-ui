@@ -9,3 +9,4 @@ export const DisabledText = "disabled"
 export function Heading(name:string):string {
     return Case.title(name)
 }
+
