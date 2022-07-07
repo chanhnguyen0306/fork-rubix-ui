@@ -1,0 +1,7 @@
+backend/build/**
+
+frontend/dist/**
+
+frontend/wailsjs/**
+
+frontend/node_modules
