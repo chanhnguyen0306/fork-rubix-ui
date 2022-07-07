@@ -72,10 +72,15 @@ const ScannerTable = (props: any) => {
         },
     };
 
-    const columns = [
-        ...schema.sort((a: { [x: string]: any; }) => a["interface"])
-
-    ]
+    const columns = schema.sort((a: any, b: any) => {
+        if (a.key < b.key) {
+          return -1;
+        }
+        if (a.key > b.key) {
+          return 1;
+        }
+        return 0;
+      });
 
     return (
         <div>
