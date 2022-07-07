@@ -8,21 +8,27 @@ export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
     props;
 
-  if (!hosts) return <></>;
+  console.log(hosts)
   const navigate = useNavigate();
   const columns = [
     {
-      title: "Name",
+      title: "name",
       dataIndex: "name",
       key: "name",
     },
+
     {
-      title: "Description",
+      title: "description",
       dataIndex: "description",
       key: "description",
     },
+      {
+          title: "ProductType",
+          dataIndex: "ProductType",
+          key: "ProductType",
+      },
     {
-      title: "Network",
+      title: "network",
       dataIndex: "network_uuid",
       key: "network_uuid",
       render: (network_uuid: string) => (
