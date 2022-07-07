@@ -1,8 +1,9 @@
-import {Space, Spin, Table} from "antd";
+import {Space, Spin} from "antd";
 import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
 import {openNotificationWithIcon} from "../../../utils/utils";
 import {assistmodel} from "../../../../wailsjs/go/models";
 import {useNavigate} from "react-router-dom";
+import RbTable from "../../../common/rb-table";
 
 export const HostsTable = (props: any) => {
     const {hosts, networks, showModal, isFetching, connUUID, refreshList} =
@@ -101,7 +102,7 @@ export const HostsTable = (props: any) => {
 
     return (
         <>
-            <Table
+            <RbTable
                 rowKey="uuid"
                 dataSource={hosts}
                 columns={columns}

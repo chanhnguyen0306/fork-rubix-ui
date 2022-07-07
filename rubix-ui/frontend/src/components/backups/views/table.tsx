@@ -1,6 +1,6 @@
-import {notification, Spin, Table} from "antd";
+import {notification, Spin} from "antd";
 import {EventsOn} from "../../../../wailsjs/runtime";
-
+import RbTable from "../../../common/rb-table";
 export const BackupsTable = (props: any) => {
     const {data, isFetching} = props;
     if (!data) return <></>;
@@ -60,7 +60,7 @@ export const BackupsTable = (props: any) => {
     };
 
     return (
-        <Table
+        <RbTable
             rowKey="uuid"
             dataSource={data}
             columns={columns}

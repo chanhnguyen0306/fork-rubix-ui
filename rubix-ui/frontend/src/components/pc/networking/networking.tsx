@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {GetPcGetNetworks, GetPcGetNetworksSchema, Scanner} from "../../../../wailsjs/go/main/App";
-import {Button, Spin, Table} from "antd";
+import {Button, Spin} from "antd";
 import {RedoOutlined} from "@ant-design/icons";
-
+import RbTable from "../../../common/rb-table";
 
 
 export const PcNetworking = () => {
@@ -79,7 +79,7 @@ const ScannerTable = (props: any) => {
 
     return (
         <div>
-            <Table
+            <RbTable
                 rowKey={"interface"}
                 rowSelection={rowSelection}
                 dataSource={data}
