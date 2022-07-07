@@ -1,27 +1,99 @@
-import { useState } from "react";
-import { Menu, MenuProps, Space, Spin, Table } from "antd";
-import { MenuFoldOutlined } from "@ant-design/icons";
-import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
-import { openNotificationWithIcon } from "../../../utils/utils";
-import { assistmodel } from "../../../../wailsjs/go/models";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Menu, MenuProps, Space, Spin, Table } from "antd";
+import { MenuFoldOutlined } from "@ant-design/icons";
+import { BackupFactory } from "../../backups/factory";
+import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
+import { assistmodel } from "../../../../wailsjs/go/models";
+import { openNotificationWithIcon } from "../../../utils/utils";
+import "./style.css";
+
+import Host = assistmodel.Host;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const SidePanel = (props: any) => {
-  const { collapsed } = props;
+  const { collapsed, selectedHost, connUUID, sidePanelHeight } = props;
+  const [isSaveBackup, setIsSaveBackup] = useState(false);
+  const [isRestorebackup, setIsRestorebackup] = useState(false);
 
-  function getItem(label: React.ReactNode, key: React.Key): MenuItem {
+  let backupFactory = new BackupFactory();
+
+  const getItem = (label: React.ReactNode, key: React.Key): MenuItem => {
     return {
       key,
       label,
     } as MenuItem;
-  }
+  };
+
+  const navigateToNewTab = (host: Host) => {
+    try {
+      const { ip } = host;
+      const source = `http://${ip}:1313/`;
+      OpenURL(source);
+    } catch (err: any) {
+      openNotificationWithIcon("error", err.message);
+    }
+  };
+
+  const saveBackupHanlde = async (host: Host) => {
+    setIsSaveBackup(true);
+    try {
+      backupFactory.connectionUUID = connUUID;
+      backupFactory.hostUUID = host.uuid;
+      backupFactory.uuid = host.uuid;
+      const res = await backupFactory.WiresBackup();
+      console.log("saveBackupHanlde", res);
+    } catch (err: any) {
+      openNotificationWithIcon("error", err.message);
+    } finally {
+      setIsSaveBackup(false);
+    }
+  };
+
+  const restoreBackupHanlde = async (host: Host) => {
+    setIsRestorebackup(true);
+
+    try {
+      backupFactory.connectionUUID = connUUID;
+      backupFactory.hostUUID = host.uuid;
+      backupFactory.uuid = host.uuid;
+      const res = await backupFactory.WiresRestore();
+      console.log("restoreBackupHanlde", res);
+    } catch (err: any) {
+      openNotificationWithIcon("error", err.message);
+    } finally {
+      setIsRestorebackup(false);
+    }
+  };
 
   const items: MenuItem[] = [
-    getItem("Option 1", "1"),
-    getItem("Option 2", "2"),
-    getItem("Option 3", "3"),
+    getItem(
+      <Button type="text" onClick={() => navigateToNewTab(selectedHost)}>
+        open Rubix-Wires
+      </Button>,
+      "1"
+    ),
+    getItem(
+      <Button
+        type="text"
+        onClick={() => saveBackupHanlde(selectedHost)}
+        loading={isSaveBackup}
+      >
+        save backup
+      </Button>,
+      "2"
+    ),
+    getItem(
+      <Button
+        type="text"
+        onClick={() => restoreBackupHanlde(selectedHost)}
+        loading={isRestorebackup}
+      >
+        restore backup
+      </Button>,
+      "3"
+    ),
   ];
 
   return (
@@ -29,9 +101,9 @@ export const SidePanel = (props: any) => {
       defaultSelectedKeys={["1"]}
       defaultOpenKeys={["sub1"]}
       mode="inline"
-      theme="dark"
       inlineCollapsed={collapsed}
       items={items}
+      style={{ height: sidePanelHeight + "px" }}
     />
   );
 };
@@ -40,6 +112,15 @@ export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
     props;
   const [collapsed, setCollapsed] = useState(true);
+  const [selectedHost, setSelectedHost] = useState({} as Host);
+  const [sidePanelHeight, setSidePanelHeight] = useState(0);
+
+  useEffect(() => {
+    console.log(11111);
+
+    const height = (hosts.length + 1) * 55;
+    setSidePanelHeight(height);
+  }, [hosts.length]);
 
   if (!hosts) return <></>;
   const navigate = useNavigate();
@@ -96,14 +177,11 @@ export const HostsTable = (props: any) => {
           >
             Delete
           </a>
-          {/* <a
+          <a
             onClick={() => {
-              navigateToNewTab(host);
+              setSelectedHost(host), setCollapsed(!collapsed);
             }}
           >
-            Open-Rubix-Wires
-          </a> */}
-          <a onClick={() => setCollapsed(!collapsed)}>
             <MenuFoldOutlined />
           </a>
         </Space>
@@ -120,26 +198,29 @@ export const HostsTable = (props: any) => {
     const network = networks.find((l: assistmodel.Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
-
-  const navigateToNewTab = (host: assistmodel.Host) => {
-    try {
-      const { ip } = host;
-      const source = `http://${ip}:1313/`;
-      OpenURL(source);
-    } catch (err: any) {
-      openNotificationWithIcon("error", err.message);
+  const collapsedStyle = () => {
+    if (collapsed) {
+      return "opacity: 0.5, height: 100%";
+    } else {
+      return "width: '-webkit-fill-available'";
     }
   };
 
   return (
-    <div>
+    <div className="hosts-table">
       <Table
         rowKey="uuid"
         dataSource={hosts}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
+        className={collapsed ? "full-width" : "uncollapsed-style"}
       />
-      <SidePanel collapsed={collapsed} />
+      <SidePanel
+        collapsed={collapsed}
+        selectedHost={selectedHost}
+        connUUID={connUUID}
+        sidePanelHeight={sidePanelHeight}
+      />
     </div>
   );
 };
