@@ -32,6 +32,9 @@ export const Host = () => {
     if (key == pluginsKey) {
       fetchPlugins();
     }
+    if (key == networksKey) {
+      fetchNetworks();
+    }
   };
   useEffect(() => {
     fetchHost();
@@ -95,7 +98,7 @@ export const Host = () => {
             connUUID={connUUID}
             hostUUID={hostUUID}
             setIsFetching={setIsFetching}
-            refreshList={fetchNetworks}
+            fetchNetworks={fetchNetworks}
           />
         </TabPane>
         <TabPane tab={pluginsKey} key={pluginsKey}>
