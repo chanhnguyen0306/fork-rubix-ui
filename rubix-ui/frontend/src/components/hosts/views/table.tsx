@@ -237,6 +237,7 @@ export const HostsTable = (props: any) => {
     const height =
       hosts.length >= 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
     const totalPage = Math.ceil(hosts.length / 10);
+    setCollapsed(true);
     setTotalPage(totalPage);
     setSidePanelHeight(height);
   }, [hosts.length]);
