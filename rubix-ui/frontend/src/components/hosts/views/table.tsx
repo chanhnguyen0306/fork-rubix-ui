@@ -234,22 +234,15 @@ export const HostsTable = (props: any) => {
   ];
 
   useEffect(() => {
-    const height =
-      hosts.length >= 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
-    const totalPage = Math.ceil(hosts.length / 10);
     setCollapsed(true);
+    const totalPage = Math.ceil(hosts.length / 10);
     setTotalPage(totalPage);
-    setSidePanelHeight(height);
+    sidePanelHeightHandle();
   }, [hosts.length]);
 
   useEffect(() => {
     setCollapsed(true);
-    if (currentPage === totalPage) {
-      const height = (hosts.length % 10) * 103 + 55; //get height of last page
-      setSidePanelHeight(height);
-    } else {
-      setSidePanelHeight(10 * 103 + 55);
-    }
+    sidePanelHeightHandle();
   }, [currentPage]);
 
   const deleteHost = async (uuid: string) => {
@@ -261,10 +254,20 @@ export const HostsTable = (props: any) => {
     const network = networks.find((l: Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
-  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
-    console.log(current);
 
+  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
     setCurrentPage(current);
+  };
+
+  const sidePanelHeightHandle = () => {
+    if (currentPage === totalPage) {
+      const height = (hosts.length % 10) * 103 + 55; //get height of last page
+      setSidePanelHeight(height);
+    } else {
+      const height =
+        hosts.length > 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
+      setSidePanelHeight(height);
+    }
   };
 
   return (
