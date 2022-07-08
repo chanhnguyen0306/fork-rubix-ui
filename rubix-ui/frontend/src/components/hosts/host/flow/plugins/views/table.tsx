@@ -1,24 +1,26 @@
-import {Button, Spin, Tag, Image} from "antd";
+import { Button, Spin, Tag, Image } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { CreateModal } from "./create";
-import {main, model} from "../../../../../../../wailsjs/go/models";
+import { main, model } from "../../../../../../../wailsjs/go/models";
 
-import bacnetLogo from '../../../../../../assets/images/BACnet_logo.png';
-import nubeLogo from '../../../../../../assets/images/Nube-logo.png';
+import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
+import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
 import RbTable from "../../../../../../common/rb-table";
 
 export const FlowPluginsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, fetchPlugins} = props;
+  const { data, isFetching, connUUID, hostUUID, fetchPlugins } = props;
   const [plugins, setPlugins] = useState([] as Array<model.PluginConf>);
-  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<main.PluginUUIDs>);
+  const [pluginsUUIDs, setPluginsUUIDs] = useState(
+    [] as Array<main.PluginUUIDs>
+  );
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -26,18 +28,24 @@ export const FlowPluginsTable = (props: any) => {
   let factory = new FlowPluginFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
 
+  useEffect(() => {
+    if (isModalVisible) {
+      getSchema();
+    }
+  }, [pluginsUUIDs, isModalVisible]);
+
   const enable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
     await factory.BulkEnable(pluginsUUIDs);
-    fetchPlugins()
+    fetchPlugins();
   };
 
   const disable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
     await factory.BulkDisable(pluginsUUIDs);
-    fetchPlugins()
+    fetchPlugins();
   };
 
   const rowSelection = {
@@ -50,13 +58,9 @@ export const FlowPluginsTable = (props: any) => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     if (plugins.length > 0) {
-      let plg = plugins.at(0) as unknown as model.PluginConf
-      const res = await flowNetworkFactory.Schema(
-          connUUID,
-          hostUUID,
-          plg.name
-      );
-      console.log("USER-SELECTED-PLUGIN", plg.name)
+      let plg = plugins.at(0) as unknown as model.PluginConf;
+      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
+      // console.log("USER-SELECTED-PLUGIN", plg.name);
       const jsonSchema = {
         properties: res,
       };
@@ -67,44 +71,32 @@ export const FlowPluginsTable = (props: any) => {
 
   const showModal = () => {
     setIsModalVisible(true);
-    if (isObjectEmpty(networkSchema)) {
-      getSchema();
-    }
   };
 
   const columns = [
     {
-      title: 'name',
-      key: 'name',
-      dataIndex: 'name',
+      title: "name",
+      key: "name",
+      dataIndex: "name",
       render(name: string) {
-        let image = nubeLogo
-        if (name == "bacnetmaster"){
-          image = bacnetLogo
+        let image = nubeLogo;
+        if (name == "bacnetmaster") {
+          image = bacnetLogo;
         }
-        if (name == "bacnet"){
-          image = bacnetLogo
+        if (name == "bacnet") {
+          image = bacnetLogo;
         }
-        return (
-            <Image
-                width={70}
-                src={image}
-            />
-        );
+        return <Image width={70} src={image} />;
       },
     },
     {
-      title: 'name',
-      key: 'name',
-      dataIndex: 'name',
+      title: "name",
+      key: "name",
+      dataIndex: "name",
       render(plugin_name: string) {
-        let colour = "#4d4dff"
-        let text = plugin_name.toUpperCase()
-        return (
-            <Tag color={colour}>
-              {text}
-            </Tag>
-        );
+        let colour = "#4d4dff";
+        let text = plugin_name.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
       },
     },
     {
@@ -113,21 +105,17 @@ export const FlowPluginsTable = (props: any) => {
       key: "uuid",
     },
     {
-      title: 'Tags',
-      key: 'has_network',
-      dataIndex: 'has_network',
+      title: "Tags",
+      key: "has_network",
+      dataIndex: "has_network",
       render(has_network: boolean) {
-        let colour = "blue"
-        let text = "non network plugin"
+        let colour = "blue";
+        let text = "non network plugin";
         if (has_network) {
-          colour = "orange"
-          text = "network driver"
+          colour = "orange";
+          text = "network driver";
         }
-        return (
-            <Tag color={colour}>
-              {text}
-            </Tag>
-        );
+        return <Tag color={colour}>{text}</Tag>;
       },
     },
     {
@@ -135,17 +123,13 @@ export const FlowPluginsTable = (props: any) => {
       key: "enabled",
       dataIndex: "enabled",
       render(enabled: boolean) {
-        let colour = "blue"
-        let text = "disabled"
+        let colour = "blue";
+        let text = "disabled";
         if (enabled) {
-          colour = "orange"
-          text = "enabled"
+          colour = "orange";
+          text = "enabled";
         }
-        return (
-            <Tag color={colour}>
-              {text}
-            </Tag>
-        );
+        return <Tag color={colour}>{text}</Tag>;
       },
     },
   ];
