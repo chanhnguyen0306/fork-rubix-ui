@@ -1,10 +1,19 @@
 import {Spin} from "antd";
 
 import RbTable from "../../../../../common/rb-table";
+import {useState} from "react";
+import {main, model} from "../../../../../../wailsjs/go/models";
 
 export const BacnetWhoIsTable = (props: any) => {
     const { data, isFetching } = props;
-    // if (!data) return <></>;
+    const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<model.Device>);
+
+
+    const rowSelection = {
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+            setSelectedUUIDs(selectedRows);
+        },
+    };
 
     const columns = [
 
@@ -32,6 +41,7 @@ export const BacnetWhoIsTable = (props: any) => {
     return (
         <RbTable
             rowKey="uuid"
+            rowSelection={rowSelection}
             dataSource={data}
             columns={columns}
             loading={{ indicator: <Spin />, spinning: isFetching }}

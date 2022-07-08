@@ -46,10 +46,8 @@ export const FlowDevices = () => {
   const runWhois = async () => {
     try {
       bacnetFactory.connectionUUID = connUUID;
-      bacnetFactory.uuid = hostUUID;
-      // bacnetFactory.bacnetNetworkUUID
-      let res = await bacnetFactory.Whois();
-      console.log("runWhois", res, connUUID, hostUUID);
+      bacnetFactory.hostUUID = hostUUID;
+      let res = await bacnetFactory.Whois("");
       setWhois(res);
     } catch (error) {
       console.log(error);
