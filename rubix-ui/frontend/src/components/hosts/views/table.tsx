@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Menu, MenuProps, Space, Spin, Image } from "antd";
+import {
+  Button,
+  Menu,
+  MenuProps,
+  Space,
+  Spin,
+  Image,
+  PaginationProps,
+} from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
@@ -223,7 +231,8 @@ export const HostsTable = (props: any) => {
   ];
 
   useEffect(() => {
-    const height = (hosts.length + 1) * 55;
+    const height =
+      hosts.length > 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
     setSidePanelHeight(height);
   }, [hosts.length]);
 
@@ -236,6 +245,10 @@ export const HostsTable = (props: any) => {
     const network = networks.find((l: Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
+  const onChange: PaginationProps["onChange"] = (page) => {
+    console.log("page", page);
+    // setCurrent(page);
+  };
 
   return (
     <div className="hosts-table">
@@ -245,6 +258,7 @@ export const HostsTable = (props: any) => {
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
         className={collapsed ? "full-width" : "uncollapsed-style"}
+        onChange={onChange}
       />
       <SidePanel
         collapsed={collapsed}
