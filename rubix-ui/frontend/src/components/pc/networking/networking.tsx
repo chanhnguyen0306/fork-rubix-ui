@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {GetPcGetNetworks, GetPcGetNetworksSchema, Scanner} from "../../../../wailsjs/go/main/App";
-import {Button, Spin, Table} from "antd";
+import {Button, Spin} from "antd";
 import {RedoOutlined} from "@ant-design/icons";
-
+import RbTable from "../../../common/rb-table";
 
 
 export const PcNetworking = () => {
@@ -72,14 +72,19 @@ const ScannerTable = (props: any) => {
         },
     };
 
-    const columns = [
-        ...schema.sort((a: { [x: string]: any; }) => a["interface"])
-
-    ]
+    const columns = schema.sort((a: any, b: any) => {
+        if (a.key < b.key) {
+          return -1;
+        }
+        if (a.key > b.key) {
+          return 1;
+        }
+        return 0;
+      });
 
     return (
         <div>
-            <Table
+            <RbTable
                 rowKey={"interface"}
                 rowSelection={rowSelection}
                 dataSource={data}

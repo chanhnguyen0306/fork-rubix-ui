@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Spin, Table } from "antd";
+import { Button, Popconfirm, Space, Spin } from "antd";
 import { useState } from "react";
 import { FlowPointFactory } from "../factory";
 import { FlowDeviceFactory } from "../../devices/factory";
@@ -8,6 +8,7 @@ import { isObjectEmpty } from "../../../../../../utils/utils";
 import { EditModal } from "./edit";
 import { CreateModal } from "./create";
 import Point = model.Point;
+import RbTable from "../../../../../../common/rb-table";
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, deviceUUID, refreshList } =
@@ -123,7 +124,7 @@ export const FlowPointsTable = (props: any) => {
       >
         <PlusOutlined /> Add
       </Button>
-      <Table
+      <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}

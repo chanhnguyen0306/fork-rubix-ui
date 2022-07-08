@@ -1,4 +1,4 @@
-import { Button, Image, Popconfirm, Space, Spin, Table, Tag } from "antd";
+import { Button, Image, Popconfirm, Space, Spin, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FlowNetworkFactory } from "../factory";
@@ -8,10 +8,11 @@ import { EditModal } from "./edit";
 import { DeleteOutlined } from "@ant-design/icons";
 import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
 import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
+import RbTable from "../../../../../../common/rb-table";
 import "./style.css";
 
 export const FlowNetworkTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, refreshList } = props;
+  const { data, isFetching, connUUID, hostUUID, fetchNetworks } = props;
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
   const [pluginName, setPluginName] = useState();
@@ -52,7 +53,9 @@ export const FlowNetworkTable = (props: any) => {
   const bulkDelete = async () => {
     networkFactory.connectionUUID = connUUID;
     networkFactory.hostUUID = hostUUID;
-    networkFactory.BulkDelete(selectedUUIDs);
+    await networkFactory.BulkDelete(selectedUUIDs);
+    fetchNetworks()
+
   };
 
   const rowSelection = {
@@ -68,7 +71,6 @@ export const FlowNetworkTable = (props: any) => {
       dataIndex: "plugin_name",
       render(name: string) {
         let image = nubeLogo;
-        console.log(name);
         if (name == "bacnetmaster") {
           image = bacnetLogo;
         }
@@ -100,7 +102,7 @@ export const FlowNetworkTable = (props: any) => {
       key: "uuid",
     },
     {
-      title: "Actions",
+      title: "actions",
       dataIndex: "actions",
       key: "actions",
       render: (_: any, network: model.Network) => (
@@ -138,7 +140,7 @@ export const FlowNetworkTable = (props: any) => {
           <DeleteOutlined /> Delete
         </Button>
       </Popconfirm>
-      <Table
+      <RbTable
         className="flow-networks"
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -153,7 +155,7 @@ export const FlowNetworkTable = (props: any) => {
         connUUID={connUUID}
         hostUUID={hostUUID}
         networkSchema={networkSchema}
-        refreshList={refreshList}
+        refreshList={fetchNetworks}
         onCloseModal={closeModal}
       />
     </>

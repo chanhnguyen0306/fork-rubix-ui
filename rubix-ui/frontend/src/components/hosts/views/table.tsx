@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Menu, MenuProps, Space, Spin, Table } from "antd";
-import { MenuFoldOutlined } from "@ant-design/icons";
-import { BackupFactory } from "../../backups/factory";
+import { Button, Menu, MenuProps, Space, Spin, Image } from "antd";
+import {
+  MenuFoldOutlined,
+  PlayCircleOutlined,
+  BookOutlined,
+} from "@ant-design/icons";
 import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
 import { assistmodel } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
+import { BackupFactory } from "../../backups/factory";
+import RbTable from "../../../common/rb-table";
+import imageRC5 from "../../../assets/images/RC5.png";
+import imageRCIO from "../../../assets/images/RC-IO.png";
 import "./style.css";
 
 import Host = assistmodel.Host;
+import Location = assistmodel.Location;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -115,26 +123,53 @@ export const HostsTable = (props: any) => {
   const [selectedHost, setSelectedHost] = useState({} as Host);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
 
-  useEffect(() => {
-    const height = (hosts.length + 1) * 55;
-    setSidePanelHeight(height);
-  }, [hosts.length]);
-
-  if (!hosts) return <></>;
   const navigate = useNavigate();
   const columns = [
     {
-      title: "Name",
+      title: "product",
+      key: "product_type",
+      dataIndex: "product_type",
+      render(product: string) {
+        let image = imageRC5;
+        if (product == "RubixCompute") {
+          image = imageRC5;
+        }
+        if (product == "RubixComputeIO") {
+          image = imageRCIO;
+        }
+        return <Image width={70} src={image} />;
+      },
+    },
+    {
+      title: "name",
       dataIndex: "name",
       key: "name",
     },
+
     {
-      title: "Description",
+      title: "description",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "Network",
+      title: "product",
+      key: "product_type",
+      dataIndex: "product_type",
+      render(product: string) {
+        let icon = <PlayCircleOutlined />;
+        if (product == "RubixCompute") {
+          icon = <BookOutlined />;
+        }
+        if (product == "RubixComputeIO") {
+        }
+        return (
+          //BookOutlined
+          icon
+        );
+      },
+    },
+    {
+      title: "network",
       dataIndex: "network_uuid",
       key: "network_uuid",
       render: (network_uuid: string) => (
@@ -150,7 +185,7 @@ export const HostsTable = (props: any) => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, host: assistmodel.Host) => (
+      render: (_: any, host: Host) => (
         <Space size="middle">
           <a
             onClick={() =>
@@ -187,19 +222,24 @@ export const HostsTable = (props: any) => {
     },
   ];
 
+  useEffect(() => {
+    const height = (hosts.length + 1) * 55;
+    setSidePanelHeight(height);
+  }, [hosts.length]);
+
   const deleteHost = async (uuid: string) => {
     await DeleteHost(connUUID, uuid);
     refreshList();
   };
 
   const getNetworkNameByUUID = (uuid: string) => {
-    const network = networks.find((l: assistmodel.Location) => l.uuid === uuid);
+    const network = networks.find((l: Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
 
   return (
     <div className="hosts-table">
-      <Table
+      <RbTable
         rowKey="uuid"
         dataSource={hosts}
         columns={columns}

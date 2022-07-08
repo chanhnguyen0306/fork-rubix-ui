@@ -8,6 +8,7 @@ import { FlowDeviceFactory } from "../factory";
 import { EditModal } from "./edit";
 import { CreateModal } from "./create";
 import Device = model.Device;
+import RbTable from "../../../../../../common/rb-table";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, networkUUID, refreshList } =
@@ -134,7 +135,7 @@ export const FlowDeviceTable = (props: any) => {
       >
         <PlusOutlined /> Add
       </Button>
-      <Table
+      <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}

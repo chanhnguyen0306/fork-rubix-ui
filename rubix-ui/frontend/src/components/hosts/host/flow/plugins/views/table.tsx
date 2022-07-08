@@ -1,4 +1,4 @@
-import {Button, Spin, Table, Tag, Image} from "antd";
+import {Button, Spin, Tag, Image} from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -13,10 +13,10 @@ import {main, model} from "../../../../../../../wailsjs/go/models";
 
 import bacnetLogo from '../../../../../../assets/images/BACnet_logo.png';
 import nubeLogo from '../../../../../../assets/images/Nube-logo.png';
-
+import RbTable from "../../../../../../common/rb-table";
 
 export const FlowPluginsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, refreshList } = props;
+  const { data, isFetching, connUUID, hostUUID, fetchPlugins} = props;
   const [plugins, setPlugins] = useState([] as Array<model.PluginConf>);
   const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<main.PluginUUIDs>);
   const [networkSchema, setNetworkSchema] = useState({});
@@ -29,13 +29,15 @@ export const FlowPluginsTable = (props: any) => {
   const enable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
-    factory.BulkEnable(pluginsUUIDs);
+    await factory.BulkEnable(pluginsUUIDs);
+    fetchPlugins()
   };
 
   const disable = async () => {
     factory.connectionUUID = connUUID;
     factory.hostUUID = hostUUID;
-    factory.BulkDisable(pluginsUUIDs);
+    await factory.BulkDisable(pluginsUUIDs);
+    fetchPlugins()
   };
 
   const rowSelection = {
@@ -54,6 +56,7 @@ export const FlowPluginsTable = (props: any) => {
           hostUUID,
           plg.name
       );
+      console.log("USER-SELECTED-PLUGIN", plg.name)
       const jsonSchema = {
         properties: res,
       };
@@ -68,7 +71,7 @@ export const FlowPluginsTable = (props: any) => {
       getSchema();
     }
   };
-  console.log(data)
+
   const columns = [
     {
       title: 'name',
@@ -76,22 +79,17 @@ export const FlowPluginsTable = (props: any) => {
       dataIndex: 'name',
       render(name: string) {
         let image = nubeLogo
-        console.log(name)
         if (name == "bacnetmaster"){
           image = bacnetLogo
         }
         if (name == "bacnet"){
           image = bacnetLogo
         }
-
         return (
             <Image
                 width={70}
                 src={image}
             />
-            // <Tag color={colour}>
-            //   {text}
-            // </Tag>
         );
       },
     },
@@ -175,7 +173,7 @@ export const FlowPluginsTable = (props: any) => {
       >
         <PlusOutlined /> Add Network
       </Button>
-      <Table
+      <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}

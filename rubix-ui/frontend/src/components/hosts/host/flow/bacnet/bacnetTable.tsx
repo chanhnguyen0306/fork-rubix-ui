@@ -1,4 +1,6 @@
-import {Spin, Table} from "antd";
+import {Spin} from "antd";
+
+import RbTable from "../../../../../common/rb-table";
 
 export const BacnetWhoIsTable = (props: any) => {
     const { data, isFetching } = props;
@@ -28,7 +30,7 @@ export const BacnetWhoIsTable = (props: any) => {
         },
     ];
     return (
-        <Table
+        <RbTable
             rowKey="uuid"
             dataSource={data}
             columns={columns}

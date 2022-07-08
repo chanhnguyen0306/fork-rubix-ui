@@ -1,4 +1,5 @@
-import {Space, Spin, Table} from "antd";
+import {Space, Spin} from "antd";
+import RbTable from "../../../common/rb-table";
 
 
 export const LocationsTable = (props: any) => {
@@ -7,7 +8,7 @@ export const LocationsTable = (props: any) => {
 
     return (
         <div>
-            <Table
+            <RbTable
                 rowKey="uuid"
                 dataSource={locations}
                 columns={tableSchema}

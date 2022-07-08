@@ -1,5 +1,5 @@
-import { Spin, Table } from "antd";
-
+import { Spin } from "antd";
+import RbTable from "../../../common/rb-table";
 export const LogsTable = (props: any) => {
   const { logs, isFetching } = props;
   if (!logs) return <></>;
@@ -28,7 +28,7 @@ export const LogsTable = (props: any) => {
   ];
 
   return (
-    <Table
+    <RbTable
       rowKey="uuid"
       dataSource={logs}
       columns={columns}
