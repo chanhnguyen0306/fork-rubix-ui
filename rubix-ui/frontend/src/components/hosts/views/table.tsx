@@ -130,7 +130,7 @@ export const HostsTable = (props: any) => {
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
 
   const navigate = useNavigate();
@@ -265,7 +265,7 @@ export const HostsTable = (props: any) => {
       setSidePanelHeight(height);
     } else {
       const height =
-        hosts.length > 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
+        hosts.length >= 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
       setSidePanelHeight(height);
     }
   };
