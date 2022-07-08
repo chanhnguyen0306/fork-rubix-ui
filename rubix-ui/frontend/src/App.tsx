@@ -24,8 +24,6 @@ import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
 import { Networks } from "./components/hostNetworks/networks";
 import { EventsOn } from "../wailsjs/runtime";
 
-
-
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
 const { Content, Sider } = Layout;
@@ -66,7 +64,7 @@ const App: React.FC = () => {
       openNotificationWithIcon("error", val);
     });
   }
-  loadCount++
+  loadCount++;
 
   let navigate = useNavigate();
 
@@ -187,7 +185,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Sider width={250} style={{ height: "100vh" }}>
+      <Sider width={250} style={{ minHeight: "100vh" }}>
         {isFetching ? (
           <Spin />
         ) : (

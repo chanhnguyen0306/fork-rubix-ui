@@ -106,7 +106,9 @@ export const Hosts = () => {
           }
           key="1"
         >
-          <AddButton showModal={showModal} />
+          <div style={{ textAlign: "end" }}>
+            <AddButton showModal={showModal} />
+          </div>
           <CreateEditModal
             hosts={hosts}
             currentHost={currentHost}
@@ -117,6 +119,7 @@ export const Hosts = () => {
             refreshList={refreshList}
             onCloseModal={onCloseModal}
           />
+
           <HostsTable
             hosts={hosts}
             networks={networks}
