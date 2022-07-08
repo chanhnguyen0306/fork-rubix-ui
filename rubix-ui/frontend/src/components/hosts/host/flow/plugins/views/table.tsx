@@ -56,6 +56,7 @@ export const FlowPluginsTable = (props: any) => {
           hostUUID,
           plg.name
       );
+      console.log("USER-SELECTED-PLUGIN", plg.name)
       const jsonSchema = {
         properties: res,
       };
