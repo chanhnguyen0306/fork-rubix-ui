@@ -51,7 +51,6 @@ func (app *App) GetServerNetworking(connUUID string) interface{} {
 		return nil
 	}
 	data, msg, err := client.GetNetworking()
-	fmt.Println(data, msg, err)
 	if msg != nil || err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", msg.Message))
 		return nil

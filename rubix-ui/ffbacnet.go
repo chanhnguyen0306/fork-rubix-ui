@@ -40,7 +40,7 @@ func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID string) (*[]m
 	}
 	getNetwork := app.GetNetworkByPluginName(connUUID, hostUUID, "bacnetmaster", false)
 	if getNetwork == nil {
-		return nil, err
+		return nil, errors.New("no network is added, please add network")
 	}
 	network, err := app.bacnetNetwork(connUUID, hostUUID)
 	if err != nil {
