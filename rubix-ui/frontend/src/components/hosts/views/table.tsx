@@ -1,9 +1,6 @@
 import { useState, useEffect, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal} from "react";
 import {useNavigate} from "react-router-dom";
 import {
-  Button,
-  Menu,
-  MenuProps,
   Space,
   Spin,
   Image,
@@ -16,11 +13,11 @@ import {
 } from "@ant-design/icons";
 import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
 import {assistmodel, model, storage} from "../../../../wailsjs/go/models";
-import {openNotificationWithIcon} from "../../../utils/utils";
 import {BackupFactory} from "../../backups/factory";
 import RbTable from "../../../common/rb-table";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
+import imageEdge28 from "../../../assets/images/Edge-iO-28.png";
 import "./style.css";
 
 import Host = assistmodel.Host;
@@ -54,6 +51,9 @@ export const HostsTable = (props: any) => {
         }
         if (product == "RubixComputeIO") {
           image = imageRCIO;
+        }
+        if (product == "Edge28") {
+          image = imageEdge28;
         }
         return <Image width={70} src={image} />;
       },
