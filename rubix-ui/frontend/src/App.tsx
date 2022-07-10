@@ -32,7 +32,6 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Backups", icon: HistoryOutlined, link: "/backups" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  { name: "scanner", icon: LinkOutlined, link: "/scanner" },
   { name: "networking", icon: LinkOutlined, link: "/networking" },
 ];
 
@@ -224,7 +223,6 @@ const App: React.FC = () => {
             // open flow network points
             <Route path="/logs" element={<Logs />} />
             <Route path="/backups" element={<Backups />} />
-            <Route path="/scanner" element={<PcScanner />} />
             <Route path="/networking" element={<PcNetworking />} />
           </Routes>
         </Content>

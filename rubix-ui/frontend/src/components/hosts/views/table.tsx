@@ -208,7 +208,8 @@ export const HostsTable = (props: any) => {
         selectedHost={selectedHost}
         connUUID={connUUID}
         sidePanelHeight={sidePanelHeight}
-        fetchBackups={backups}
+        backups={backups}
+        fetchBackups={fetchBackups}
       />
     </div>
   );

@@ -9,7 +9,7 @@ import Host = assistmodel.Host;
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const SidePanel = (props: any) => {
-    const {collapsed, selectedHost, connUUID, sidePanelHeight, fetchBackups} = props;
+    const {collapsed, selectedHost, connUUID, sidePanelHeight, backups, fetchBackups} = props;
     const [isSaveBackup, setIsSaveBackup] = useState(false);
     const [isRestoreBackup, setIsRestoreBackup] = useState(false);
     const [comment, setComment] = useState<any>();
@@ -47,6 +47,7 @@ export const SidePanel = (props: any) => {
             }
             await backupFactory.WiresBackup(comment as unknown as string);
             openNotificationWithIcon("success", `saved backup: ${host.name}`);
+            fetchBackups()
         } catch (err: any) {
             openNotificationWithIcon("error", err.message);
         } finally {
@@ -116,7 +117,7 @@ export const SidePanel = (props: any) => {
                         (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                     }
                 >
-                    {fetchBackups.map((data: storage.Backup) => <Option key={data.uuid} value={data.uuid}>{data.user_comment}</Option>)}
+                    {backups.map((data: storage.Backup) => <Option key={data.uuid} value={data.uuid}>{data.user_comment}</Option>)}
                 </Select>
                 <Button
                     type="primary"
