@@ -37,3 +37,15 @@ func (app *App) GetLogsByConnection(connUUID string) interface{} {
 	}
 	return logs
 }
+
+func (app *App) DeleteLogBulk(logUUIDs []UUIDs) interface{} {
+	for _, uuid := range logUUIDs {
+		err := app.DB.DeleteLog(uuid.UUID)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("deleted log: %s", uuid.UUID))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("deleted log: %s", uuid.UUID))
+		}
+	}
+	return "ok"
+}

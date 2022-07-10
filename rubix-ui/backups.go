@@ -48,6 +48,18 @@ func (app *App) DeleteBackup(uuid string) string {
 	return "deleted ok"
 }
 
+func (app *App) DeleteBackupBulk(backUUIDs []UUIDs) interface{} {
+	for _, uuid := range backUUIDs {
+		err := app.DB.DeleteBackup(uuid.UUID)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("deleted backup: %s", uuid.UUID))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("deleted backup: %s", uuid.UUID))
+		}
+	}
+	return "ok"
+}
+
 // GetBackupsByApplication get all backups as example RubixWires
 func (app *App) GetBackupsByApplication(application string, withData bool) []storage.Backup {
 	back, err := app.getBackups()

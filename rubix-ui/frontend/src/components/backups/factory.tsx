@@ -1,6 +1,6 @@
-import {storage} from "../../../wailsjs/go/models";
+import {main, storage} from "../../../wailsjs/go/models";
 import {
-    DeleteBackup,
+    DeleteBackup, DeleteBackupBulk, DeleteLogBulk,
     GetBackup,
     GetBackups,
     GetBackupsByApplication,
@@ -19,6 +19,7 @@ export class BackupFactory {
     connectionUUID!: string;
     hostUUID!: string;
     private _this!: storage.Backup;
+
     async GetAll(): Promise<Array<storage.Backup>> {
         let all: Promise<Array<storage.Backup>> = {} as Promise<Array<storage.Backup>>
         await GetBackups().then(res => {
@@ -44,8 +45,6 @@ export class BackupFactory {
         return all
     }
 
-
-
     async GetOne(): Promise<storage.Backup> {
         hasUUID(this.uuid);
         let one: storage.Backup = {} as storage.Backup;
@@ -59,7 +58,6 @@ export class BackupFactory {
             });
         return one;
     }
-
 
     async GetBackupsRubixWires(): Promise<Array<storage.Backup>> {
         let all: Promise<Array<storage.Backup>> = {} as Promise<Array<storage.Backup>>
@@ -95,5 +93,16 @@ export class BackupFactory {
             });
         return out;
     }
+
+    async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+        let out: Promise<any> = {} as Promise<any>
+        await DeleteBackupBulk(uuids).then(res => {
+            out = res as Promise<any>
+        }).catch(err => {
+            return undefined
+        })
+        return out
+    }
+
 
 }

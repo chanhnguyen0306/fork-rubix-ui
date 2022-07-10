@@ -2,6 +2,7 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-ui/backend/helpers/ttime"
@@ -90,4 +91,19 @@ func (inst *db) GetLogsByConnection(uuid string) ([]Log, error) {
 		return []Log{}, err
 	}
 	return resp, nil
+}
+
+func (inst *db) DeleteLog(uuid string) error {
+	if matchLogUUID(uuid) {
+		err := inst.DB.Update(func(tx *buntdb.Tx) error {
+			_, err := tx.Delete(uuid)
+			return err
+		})
+		if err != nil {
+			fmt.Printf("Error delete: %s", err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("incorrect log uuid")
 }

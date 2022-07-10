@@ -1,16 +1,18 @@
-import { storage } from "../../../wailsjs/go/models";
+import {main, storage} from "../../../wailsjs/go/models";
 import React, { useEffect, useState } from "react";
 import { LogFactory } from "./factory";
 import { LogsTable } from "./views/table";
 
 import VieLogs = storage.RubixConnection;
-import {Button} from "antd";
-import {RedoOutlined} from "@ant-design/icons";
+import {Button, Popconfirm} from "antd";
+import {DeleteOutlined, RedoOutlined} from "@ant-design/icons";
 
 export const Logs = () => {
   const [logs, setLogs] = useState([] as VieLogs[]);
   const [isFetching, setIsFetching] = useState(true);
-  let factory = new LogFactory();
+
+  let logFactory = new LogFactory();
+
 
   useEffect(() => {
     fetch();
@@ -18,7 +20,7 @@ export const Logs = () => {
 
   const fetch = async () => {
     try {
-      let res = await factory.GetAll();
+      let res = await logFactory.GetAll();
       setLogs(res);
     } catch (error) {
       console.log(error);
@@ -41,6 +43,7 @@ export const Logs = () => {
             logs={logs}
             isFetching={isFetching}
             setIsFetching={setIsFetching}
+            fetch={fetch}
         />
       </>
 

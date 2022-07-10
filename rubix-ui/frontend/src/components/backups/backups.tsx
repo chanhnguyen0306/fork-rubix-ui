@@ -41,6 +41,7 @@ export const Backups = () => {
             data={backups}
             isFetching={isFetching}
             setIsFetching={setIsFetching}
+            fetch={fetch}
         />
       </>
 

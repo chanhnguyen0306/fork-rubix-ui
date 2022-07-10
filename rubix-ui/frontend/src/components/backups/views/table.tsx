@@ -1,9 +1,27 @@
-import {notification, Spin} from "antd";
+import {Button, notification, Popconfirm, Spin} from "antd";
 import {EventsOn} from "../../../../wailsjs/runtime";
 import RbTable from "../../../common/rb-table";
+import React, {useState} from "react";
+import {main} from "../../../../wailsjs/go/models";
+import {DeleteOutlined} from "@ant-design/icons";
+import {LogFactory} from "../../logs/factory";
+import {BackupFactory} from "../factory";
 export const BackupsTable = (props: any) => {
-    const {data, isFetching} = props;
-    if (!data) return <></>;
+    const {data, isFetching, fetch} = props;
+    const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+    let backupFactory = new BackupFactory();
+
+    const rowSelection = {
+        onChange: (selectedRowKeys: any, selectedRows: any) => {
+            setSelectedUUIDs(selectedRows);
+        },
+    };
+
+    const bulkDelete = async () => {
+        await backupFactory.BulkDelete(selectedUUIDs);
+        fetch()
+
+    };
 
     const columns = [
         {
@@ -53,19 +71,23 @@ export const BackupsTable = (props: any) => {
         },
     ];
 
-    const rowSelection = {
-        onChange: (selectedRowKeys: any, selectedRows: any) => {
 
-        },
-    };
 
     return (
-        <RbTable
-            rowKey="uuid"
-            dataSource={data}
-            columns={columns}
-            rowSelection={rowSelection}
-            loading={{indicator: <Spin/>, spinning: isFetching}}
-        />
+        <>
+            <Popconfirm title="Delete" onConfirm={bulkDelete}>
+                <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+                    <DeleteOutlined /> Delete
+                </Button>
+            </Popconfirm>
+            <RbTable
+                rowKey="uuid"
+                dataSource={data}
+                columns={columns}
+                rowSelection={rowSelection}
+                loading={{indicator: <Spin/>, spinning: isFetching}}
+            />
+        </>
+
     );
 };
