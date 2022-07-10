@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal} from "react";
+import {useNavigate} from "react-router-dom";
 import {
   Button,
   Menu,
@@ -7,17 +7,17 @@ import {
   Space,
   Spin,
   Image,
-  PaginationProps,
+  PaginationProps, Select, Input,
 } from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { DeleteHost, OpenURL } from "../../../../wailsjs/go/main/App";
-import { assistmodel } from "../../../../wailsjs/go/models";
-import { openNotificationWithIcon } from "../../../utils/utils";
-import { BackupFactory } from "../../backups/factory";
+import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
+import {assistmodel, model, storage} from "../../../../wailsjs/go/models";
+import {openNotificationWithIcon} from "../../../utils/utils";
+import {BackupFactory} from "../../backups/factory";
 import RbTable from "../../../common/rb-table";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
@@ -29,10 +29,11 @@ import Location = assistmodel.Location;
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const SidePanel = (props: any) => {
-  const { collapsed, selectedHost, connUUID, sidePanelHeight } = props;
+  const {collapsed, selectedHost, connUUID, sidePanelHeight, fetchBackups} = props;
   const [isSaveBackup, setIsSaveBackup] = useState(false);
-  const [isRestorebackup, setIsRestorebackup] = useState(false);
-
+  const [isRestoreBackup, setIsRestoreBackup] = useState(false);
+  const [comment, setComment] = useState();
+  const [backup, setBackup] = useState();
   let backupFactory = new BackupFactory();
 
   const getItem = (label: React.ReactNode, key: React.Key): MenuItem => {
@@ -44,7 +45,7 @@ export const SidePanel = (props: any) => {
 
   const navigateToNewTab = (host: Host) => {
     try {
-      const { ip } = host;
+      const {ip} = host;
       const source = `http://${ip}:1313/`;
       OpenURL(source);
     } catch (err: any) {
@@ -52,14 +53,13 @@ export const SidePanel = (props: any) => {
     }
   };
 
-  const saveBackupHanlde = async (host: Host) => {
+  const saveBackupHandle = async (host: Host) => {
     setIsSaveBackup(true);
     try {
       backupFactory.connectionUUID = connUUID;
       backupFactory.hostUUID = host.uuid;
-      backupFactory.uuid = host.uuid;
-      const res = await backupFactory.WiresBackup();
-      console.log("saveBackupHanlde", res);
+
+      await backupFactory.WiresBackup(comment as unknown as string);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     } finally {
@@ -67,47 +67,79 @@ export const SidePanel = (props: any) => {
     }
   };
 
-  const restoreBackupHanlde = async (host: Host) => {
-    setIsRestorebackup(true);
-
+  const restoreBackupHandle = async (host: Host) => {
+    setIsRestoreBackup(true);
     try {
       backupFactory.connectionUUID = connUUID;
       backupFactory.hostUUID = host.uuid;
-      backupFactory.uuid = host.uuid;
-      const res = await backupFactory.WiresRestore();
-      console.log("restoreBackupHanlde", res);
+      backupFactory.uuid = backup as unknown as string;
+      await backupFactory.WiresRestore();
+      openNotificationWithIcon("success", `uploaded backup: ${host.name}`);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     } finally {
-      setIsRestorebackup(false);
+      setIsRestoreBackup(false);
     }
+  };
+  const {Option} = Select;
+
+  const onChange = (value: any) => {
+    setBackup(value)
+  };
+
+  const onChangeComment = (value:any) => {
+    setComment(value.target.value)
   };
 
   const items: MenuItem[] = [
     getItem(
-      <Button type="text" onClick={() => navigateToNewTab(selectedHost)}>
-        open Rubix-Wires
-      </Button>,
-      "1"
+        <Button type="primary" onClick={() => navigateToNewTab(selectedHost)}>
+          open Rubix-Wires
+        </Button>,
+        "1"
     ),
     getItem(
-      <Button
-        type="text"
-        onClick={() => saveBackupHanlde(selectedHost)}
-        loading={isSaveBackup}
-      >
-        save backup
-      </Button>,
-      "2"
+        <Input.Group compact>
+          <Button
+              type="primary"
+              onClick={() => saveBackupHandle(selectedHost)}
+              loading={isSaveBackup}
+          >
+            save backup
+          </Button>,
+          <Input
+              style={{width: "250px", margin: "5px", float: "right"}}
+              placeholder="enter a comment" maxLength={150}
+              onChange={onChangeComment}
+              value={comment}
+          />
+
+        </Input.Group>,
+        "2"
     ),
     getItem(
-      <Button
-        type="text"
-        onClick={() => restoreBackupHanlde(selectedHost)}
-        loading={isRestorebackup}
-      >
-        restore backup
-      </Button>,
+        <>
+          <Select
+              showSearch
+              placeholder="select a backup"
+              style={{width: "250px", margin: "5px", float: "right"}}
+              optionFilterProp="children"
+              onChange={onChange}
+              filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+              }
+          >
+            {fetchBackups.map((data: storage.Backup) => <Option key={data.uuid} value={data.uuid}>{data.user_comment}</Option>)}
+          </Select>
+          <Button
+              type="primary"
+              onClick={() => restoreBackupHandle(selectedHost)}
+              loading={isRestoreBackup}
+          >
+            restore backup
+          </Button>,
+        </>,
+
       "3"
     ),
   ];
@@ -119,7 +151,7 @@ export const SidePanel = (props: any) => {
       mode="inline"
       inlineCollapsed={collapsed}
       items={items}
-      style={{ height: sidePanelHeight + "px" }}
+      style={{ height: sidePanelHeight + "px", width: "600px",  margin: "1px" }}
     />
   );
 };
@@ -132,8 +164,10 @@ export const HostsTable = (props: any) => {
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-
   const navigate = useNavigate();
+  const [backups, setBackups] = useState([] as Array<storage.Backup>);
+  let backupFactory = new BackupFactory()
+
 
   const columns = [
     {
@@ -245,6 +279,22 @@ export const HostsTable = (props: any) => {
     sidePanelHeightHandle();
   }, [currentPage]);
 
+  useEffect(() => {
+    fetchBackups()
+  }, []);
+
+
+  const fetchBackups = async () => {
+    try {
+      let res = (await backupFactory.GetBackupsRubixWires()) || [];
+      setBackups(res)
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
+
   const deleteHost = async (uuid: string) => {
     await DeleteHost(connUUID, uuid);
     refreshList();
@@ -285,6 +335,7 @@ export const HostsTable = (props: any) => {
         selectedHost={selectedHost}
         connUUID={connUUID}
         sidePanelHeight={sidePanelHeight}
+        fetchBackups={backups}
       />
     </div>
   );

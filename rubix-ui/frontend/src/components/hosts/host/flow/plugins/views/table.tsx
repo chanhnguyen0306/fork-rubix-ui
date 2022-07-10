@@ -1,4 +1,4 @@
-import { Button, Spin, Tag, Image } from "antd";
+import {Button, Spin, Tag, Image} from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -7,7 +7,6 @@ import {
 import { useEffect, useState } from "react";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { isObjectEmpty } from "../../../../../../utils/utils";
 import { CreateModal } from "./create";
 import { main, model } from "../../../../../../../wailsjs/go/models";
 
@@ -60,7 +59,6 @@ export const FlowPluginsTable = (props: any) => {
     if (plugins.length > 0) {
       let plg = plugins.at(0) as unknown as model.PluginConf;
       const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
-      // console.log("USER-SELECTED-PLUGIN", plg.name);
       const jsonSchema = {
         properties: res,
       };

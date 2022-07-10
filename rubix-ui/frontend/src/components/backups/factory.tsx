@@ -71,10 +71,9 @@ export class BackupFactory {
         return all
     }
 
-    async WiresBackup(): Promise<storage.Backup>{
-        hasUUID(this.uuid);
+    async WiresBackup(userComment:string): Promise<storage.Backup>{
         let one: storage.Backup = {} as storage.Backup;
-        await WiresBackup(this.connectionUUID, this.hostUUID)
+        await WiresBackup(this.connectionUUID, this.hostUUID, userComment)
             .then((res) => {
                 one = res as storage.Backup;
                 this._this = one;

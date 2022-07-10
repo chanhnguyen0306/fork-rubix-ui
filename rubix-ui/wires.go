@@ -71,7 +71,7 @@ func (app *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) interf
 	return backup
 }
 
-func (app *App) WiresBackup(connUUID, hostUUID string) *storage.Backup {
+func (app *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Backup {
 	data, err := app.wiresBackup(connUUID, hostUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -82,6 +82,7 @@ func (app *App) WiresBackup(connUUID, hostUUID string) *storage.Backup {
 		ConnectionUUID: connUUID,
 		HostUUID:       hostUUID,
 		Data:           data,
+		UserComment:    userComment,
 	}
 	addBackup, err := app.addBackup(backup)
 	if err != nil {
