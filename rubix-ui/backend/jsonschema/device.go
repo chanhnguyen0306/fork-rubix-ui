@@ -15,6 +15,21 @@ func GetDeviceSchema() *DeviceSchema {
 	return m
 }
 
+type BacnetDeviceSchema struct {
+	UUID        schema.UUID        `json:"uuid"`
+	Name        schema.Name        `json:"name"`
+	Description schema.Description `json:"description"`
+	Enable      schema.Enable      `json:"enable"`
+	IP          schema.IP          `json:"ip"`
+	Port        schema.Port        `json:"port"`
+}
+
+func GetBacnetDeviceSchema() *BacnetDeviceSchema {
+	m := &BacnetDeviceSchema{}
+	schema.Set(m)
+	return m
+}
+
 type PointSchema struct {
 	UUID        schema.UUID        `json:"uuid"`
 	Name        schema.Name        `json:"name"`

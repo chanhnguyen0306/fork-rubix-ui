@@ -14,7 +14,7 @@ func (app *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inter
 	if pluginName == "system" {
 		return jsonschema.GetDeviceSchema()
 	} else if pluginName == "bacnetmaster" {
-		return jsonschema.GetDeviceSchema()
+		return jsonschema.GetBacnetDeviceSchema()
 	}
 	return jsonschema.GetDeviceSchema()
 }

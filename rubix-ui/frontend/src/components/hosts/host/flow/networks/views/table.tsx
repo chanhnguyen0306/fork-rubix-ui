@@ -115,6 +115,7 @@ export const FlowNetworkTable = (props: any) => {
                   connUUID: connUUID,
                   hostUUID: hostUUID,
                   networkUUID: network.uuid,
+                  pluginName:network.plugin_name
                 },
               })
             }

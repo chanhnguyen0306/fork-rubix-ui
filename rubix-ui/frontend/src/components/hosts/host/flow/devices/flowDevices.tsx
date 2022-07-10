@@ -19,6 +19,7 @@ export const FlowDevices = () => {
   const connUUID = location.state.connUUID ?? "";
   const hostUUID = location.state.hostUUID ?? "";
   const networkUUID = location.state.networkUUID ?? "";
+  const pluginName = location.state.pluginName ?? "";
 
   const { TabPane } = Tabs;
   const onChange = (key: string) => {
@@ -74,6 +75,7 @@ export const FlowDevices = () => {
           networkUUID={networkUUID}
           setIsFetching={setIsFetching}
           refreshList={fetch}
+          pluginName={pluginName}
         />
       </TabPane>
       <TabPane tab="BACNET" key="3">
