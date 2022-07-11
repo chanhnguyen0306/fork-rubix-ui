@@ -6,6 +6,7 @@ export const openNotificationWithIcon = (type: NotificationType, data: any) => {
   notification[type]({
     message: "",
     description: data,
+    placement:"bottomRight",
   });
 };
 

@@ -26,6 +26,7 @@ import { EventsOn } from "../wailsjs/runtime";
 
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
+import {openNotificationWithIcon} from "./utils/utils";
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
@@ -41,18 +42,8 @@ const App: React.FC = () => {
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
 
-  type NotificationType = "success" | "info" | "warning" | "error";
-
-  const openNotificationWithIcon = (type: NotificationType, data: any) => {
-    notification[type]({
-      message: "message",
-      description: data,
-    });
-  };
-
   if (loadCount == 0) {
     // main app loads a few time, I don't know why Aidan
-    console.log("INSIDE HERE Main App");
     EventsOn("ok", (val) => {
       console.log(val, "networks");
       openNotificationWithIcon("success", val);

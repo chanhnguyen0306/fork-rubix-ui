@@ -21,11 +21,11 @@ export class BacnetFactory {
         this._this = value;
     }
 
-    async Whois(bacnetNetworkUUID:string): Promise<Array<model.Device>> {
+    async Whois(bacnetNetworkUUID:string, pluginName:string): Promise<Array<model.Device>> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
-        await BacnetWhois(this.connectionUUID, this.hostUUID, bacnetNetworkUUID).then(res => {
+        await BacnetWhois(this.connectionUUID, this.hostUUID, bacnetNetworkUUID, pluginName).then(res => {
             all = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
             console.log("bacnet err", err)

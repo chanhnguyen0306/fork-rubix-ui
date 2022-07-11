@@ -9,6 +9,7 @@ import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 
 import Devices = model.Device;
+import {openNotificationWithIcon} from "../../../../../utils/utils";
 
 export const FlowDevices = () => {
   const [data, setDevices] = useState([] as Devices[]);
@@ -46,12 +47,15 @@ export const FlowDevices = () => {
   let bacnetFactory = new BacnetFactory();
   const runWhois = async () => {
     try {
+      openNotificationWithIcon("info", `run bacnet discovery....`);
       bacnetFactory.connectionUUID = connUUID;
       bacnetFactory.hostUUID = hostUUID;
-      let res = await bacnetFactory.Whois("");
+      let res = await bacnetFactory.Whois(networkUUID, pluginName);
+      openNotificationWithIcon("success", `device count found: ${res.length}`);
       setWhois(res);
     } catch (error) {
       console.log(error);
+      openNotificationWithIcon("error", `discovery error: ${error}`);
     } finally {
       setIsFetching(false);
     }

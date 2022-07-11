@@ -17,15 +17,18 @@ func (app *App) bacnetNetwork(connUUID, hostUUID string) (*model.Network, error)
 	return app.flow.GetNetworkByPluginName(bacnetMaster)
 }
 
-func (app *App) bacnetChecks(connUUID, hostUUID string) error {
-	plugin, err := app.GetPluginByName(connUUID, hostUUID, "bacnetmaster")
+func (app *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
+	if pluginName != "bacnetmaster" {
+		return errors.New(fmt.Sprintf("network:%s is not not bacnet-master", pluginName))
+	}
+	plugin, err := app.GetPluginByName(connUUID, hostUUID, pluginName)
 	if err != nil {
 		return err
 	}
 	if !plugin.Enabled {
 		return errors.New("bacnet plugin is not enabled, please enable the plugin")
 	}
-	getNetwork := app.GetNetworkByPluginName(connUUID, hostUUID, "bacnetmaster", false)
+	getNetwork := app.GetNetworkByPluginName(connUUID, hostUUID, pluginName, false)
 	if getNetwork == nil {
 		return errors.New("no network is added, please add network")
 	}
@@ -46,7 +49,7 @@ func (app *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, add
 	if err != nil {
 		return nil, err
 	}
-	err = app.bacnetChecks(connUUID, hostUUID)
+	err = app.bacnetChecks(connUUID, hostUUID, "bacnetmaster")
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +60,7 @@ func (app *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, add
 }
 
 func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) *[]model.Network {
-	err := app.bacnetChecks(connUUID, hostUUID)
+	err := app.bacnetChecks(connUUID, hostUUID, "bacnetmaster")
 	if err != nil {
 		return nil
 	}
@@ -73,8 +76,8 @@ func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) *[]model.Networ
 	return nil
 }
 
-func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID string) (*[]model.Device, error) {
-	err := app.bacnetChecks(connUUID, hostUUID)
+func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) (*[]model.Device, error) {
+	err := app.bacnetChecks(connUUID, hostUUID, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -91,15 +94,15 @@ func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID string) (*[]m
 	if netUUID == "" {
 		return nil, errors.New("flow network uuid can not be empty")
 	}
-	devices, err := app.flow.BacnetWhoIs(&ffclient.WhoIsOpts{}, netUUID, false)
+	devices, err := app.flow.BacnetWhoIs(&ffclient.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
 	if err != nil {
 		return nil, err
 	}
 	return devices, nil
 }
 
-func (app *App) BacnetWhois(connUUID, hostUUID, networkUUID string) *[]model.Device {
-	devices, err := app.bacnetWhois(connUUID, hostUUID, networkUUID)
+func (app *App) BacnetWhois(connUUID, hostUUID, networkUUID, pluginName string) *[]model.Device {
+	devices, err := app.bacnetWhois(connUUID, hostUUID, networkUUID, pluginName)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
