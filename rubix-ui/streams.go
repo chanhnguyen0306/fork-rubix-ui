@@ -22,21 +22,7 @@ func (app *App) DeleteStreamBulk(connUUID, hostUUID string, streamUUIDs []UUIDs)
 	return "ok"
 }
 
-func (app *App) GetStreamClones(connUUID, hostUUID string) []model.Stream {
-	_, err := app.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.Stream{}
-	}
-	streams, err := app.flow.GetStreams()
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.Stream{}
-	}
-	return streams
-}
-
-func (app *App) GetStreams(connUUID, hostUUID string) []model.StreamClone {
+func (app *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -46,6 +32,20 @@ func (app *App) GetStreams(connUUID, hostUUID string) []model.StreamClone {
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.StreamClone{}
+	}
+	return streams
+}
+
+func (app *App) GetStreams(connUUID, hostUUID string) []model.Stream {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return []model.Stream{}
+	}
+	streams, err := app.flow.GetStreams()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return []model.Stream{}
 	}
 	return streams
 }

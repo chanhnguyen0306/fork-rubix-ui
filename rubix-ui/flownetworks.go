@@ -22,13 +22,13 @@ func (app *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, networkUUIDs []
 	return "ok"
 }
 
-func (app *App) GetFlowNetworks(connUUID, hostUUID string, withDevice bool) []model.FlowNetwork {
+func (app *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []model.FlowNetwork {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetwork{}
 	}
-	networks, err := app.flow.GetFlowNetworks(withDevice)
+	networks, err := app.flow.GetFlowNetworks(withStream)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetwork{}
@@ -77,20 +77,20 @@ func (app *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) interf
 	return "delete ok"
 }
 
-func (app *App) getFlowNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.FlowNetwork, error) {
+func (app *App) getFlowNetwork(connUUID, hostUUID, networkUUID string, withStream bool) (*model.FlowNetwork, error) {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := app.flow.GetFlowNetwork(networkUUID, withDevice)
+	networks, err := app.flow.GetFlowNetwork(networkUUID, withStream)
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (app *App) GetFlowNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.FlowNetwork {
-	networks, err := app.getFlowNetwork(connUUID, hostUUID, networkUUID, withDevice)
+func (app *App) GetFlowNetwork(connUUID, hostUUID, networkUUID string, withStream bool) *model.FlowNetwork {
+	networks, err := app.getFlowNetwork(connUUID, hostUUID, networkUUID, withStream)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

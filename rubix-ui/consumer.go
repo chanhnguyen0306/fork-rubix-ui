@@ -77,6 +77,20 @@ func (app *App) DeleteConsumer(connUUID, hostUUID, streamUUID string) interface{
 	return "delete ok"
 }
 
+func (app *App) GetConsumers(connUUID, hostUUID string) []model.Consumer {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	resp, err := app.flow.GetConsumers()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
 func (app *App) getConsumer(connUUID, hostUUID, streamUUID string) (*model.Consumer, error) {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
