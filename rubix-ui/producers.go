@@ -77,6 +77,20 @@ func (app *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface{
 	return "delete ok"
 }
 
+func (app *App) GetProducers(connUUID, hostUUID string) []model.Producer {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	resp, err := app.flow.GetProducers()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
 func (app *App) getProducer(connUUID, hostUUID, streamUUID string) (*model.Producer, error) {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {

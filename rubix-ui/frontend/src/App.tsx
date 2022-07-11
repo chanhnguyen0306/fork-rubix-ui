@@ -1,6 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, notification, Spin } from "antd";
+import { MenuProps, Spin } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -12,7 +12,6 @@ import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Connections } from "./components/connections/connections";
 import { Logs } from "./components/logs/logs";
-import { PcScanner } from "./components/pc/scanner/table";
 import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";

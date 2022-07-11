@@ -1224,8 +1224,6 @@ export namespace model {
 		    return a;
 		}
 	}
-	
-	
 	export class FlowNetworkClone {
 	    uuid: string;
 	    sync_uuid: string;
@@ -1318,6 +1316,11 @@ export namespace model {
 		    return a;
 		}
 	}
+	
+	
+	
+	
+	
 	export class Job {
 	    uuid: string;
 	    name: string;
@@ -1533,9 +1536,6 @@ export namespace model {
 		    return a;
 		}
 	}
-	
-	
-	
 	
 
 }
