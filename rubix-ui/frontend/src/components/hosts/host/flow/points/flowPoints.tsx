@@ -16,6 +16,7 @@ export const FlowPoints = () => {
   const connUUID = location.state.connUUID ?? "";
   const hostUUID = location.state.hostUUID ?? "";
   const deviceUUID = location.state.deviceUUID ?? "";
+  const pluginName = location.state.pluginName ?? "";
 
   useEffect(() => {
     fetch();
@@ -51,6 +52,7 @@ export const FlowPoints = () => {
         deviceUUID={deviceUUID}
         setIsFetching={setIsFetching}
         refreshList={fetch}
+        pluginName={pluginName}
       />
     </>
   );

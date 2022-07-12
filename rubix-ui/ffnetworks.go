@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-ui/backend/jsonschema"
-	log "github.com/sirupsen/logrus"
 )
 
 type UUIDs struct {
@@ -30,15 +28,17 @@ func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUID
 }
 
 func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-	if pluginName == "" {
-		log.Errorln("GetFlowNetworkSchema() plugin name can not be empty")
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
 	}
-	if pluginName == "system" {
-		return jsonschema.GetNetworkSystemSchema()
-	} else if pluginName == "bacnetmaster" {
-		return jsonschema.GetJsonNetworkSchema()
+	sch, err := app.flow.NetworkSchema(pluginName)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
 	}
-	return jsonschema.GetNetworkSystemSchema()
+	return sch
 }
 
 func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {

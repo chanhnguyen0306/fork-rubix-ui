@@ -95,7 +95,6 @@ export class FlowPointFactory {
     }
 
     async Delete(): Promise<model.Point> {
-        hasUUID(this.uuid)
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         let one: model.Point = {} as model.Point

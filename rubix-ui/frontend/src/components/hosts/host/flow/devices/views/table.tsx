@@ -61,6 +61,7 @@ export const FlowDeviceTable = (props: any) => {
                                     hostUUID: hostUUID,
                                     networkUUID: networkUUID,
                                     deviceUUID: device.uuid,
+                                    pluginName: pluginName,
                                 },
                             })
                         }

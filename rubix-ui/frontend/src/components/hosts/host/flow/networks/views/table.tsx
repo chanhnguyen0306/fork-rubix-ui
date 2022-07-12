@@ -15,19 +15,19 @@ export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, fetchNetworks } = props;
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
-  const [pluginName, setPluginName] = useState();
+  const [pluginName, setPluginName] = useState<string>();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let networkFactory = new FlowNetworkFactory();
 
-  const getSchema = async () => {
+  const getSchema = async (pluginName :string) => {
     setIsLoadingForm(true);
     const res = await networkFactory.Schema(
       connUUID,
       hostUUID,
-      pluginName as unknown as string
+      pluginName
     );
     const jsonSchema = {
       properties: res,
@@ -41,7 +41,7 @@ export const FlowNetworkTable = (props: any) => {
     setIsModalVisible(true);
     setPluginName(item.plugin_name);
     if (isObjectEmpty(networkSchema)) {
-      getSchema();
+      getSchema(item.plugin_name);
     }
   };
 

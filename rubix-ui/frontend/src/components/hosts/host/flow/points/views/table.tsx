@@ -11,23 +11,21 @@ import Point = model.Point;
 import RbTable from "../../../../../../common/rb-table";
 
 export const FlowPointsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, deviceUUID, refreshList } =
+  const { data, isFetching, connUUID, hostUUID, deviceUUID, refreshList, pluginName } =
     props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const [pluginName, setPluginName] = useState();
+  // const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
-
-  let flowDeviceFactory = new FlowDeviceFactory();
   let flowPointFactory = new FlowPointFactory();
 
   const bulkDelete = async () => {
-    flowDeviceFactory.connectionUUID = connUUID;
-    flowDeviceFactory.hostUUID = hostUUID;
-    flowDeviceFactory.BulkDelete(selectedUUIDs);
+    flowPointFactory.connectionUUID = connUUID;
+    flowPointFactory.hostUUID = hostUUID;
+    flowPointFactory.BulkDelete(selectedUUIDs);
   };
 
   const rowSelection = {
@@ -70,12 +68,12 @@ export const FlowPointsTable = (props: any) => {
     },
   ];
 
-  const getSchema = async () => {
+  const getSchema = async (pluginName:string) => {
     setIsLoadingForm(true);
     const res = await flowPointFactory.Schema(
       connUUID,
       hostUUID,
-      pluginName as unknown as string
+      pluginName
     );
     const jsonSchema = {
       properties: res,
@@ -87,9 +85,8 @@ export const FlowPointsTable = (props: any) => {
   const showEditModal = (item: any) => {
     setCurrentItem(item);
     setIsEditModalVisible(true);
-    setPluginName(item.plugin_name);
     if (isObjectEmpty(schema)) {
-      getSchema();
+      getSchema(pluginName);
     }
   };
 
@@ -100,9 +97,8 @@ export const FlowPointsTable = (props: any) => {
 
   const showCreateModal = (item: any) => {
     setIsCreateModalVisible(true);
-    setPluginName(item.plugin_name);
     if (isObjectEmpty(schema)) {
-      getSchema();
+      getSchema(pluginName);
     }
   };
 
