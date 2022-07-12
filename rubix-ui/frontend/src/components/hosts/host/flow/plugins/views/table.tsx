@@ -17,6 +17,7 @@ import RbTable from "../../../../../../common/rb-table";
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, fetchPlugins } = props;
   const [plugins, setPlugins] = useState([] as Array<model.PluginConf>);
+  const [pluginName, setPluginName] = useState<string>();
   const [pluginsUUIDs, setPluginsUUIDs] = useState(
     [] as Array<main.PluginUUIDs>
   );
@@ -58,6 +59,7 @@ export const FlowPluginsTable = (props: any) => {
     setIsLoadingForm(true);
     if (plugins.length > 0) {
       let plg = plugins.at(0) as unknown as model.PluginConf;
+      setPluginName(plg.name)
       const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
       const jsonSchema = {
         properties: res,
@@ -169,6 +171,7 @@ export const FlowPluginsTable = (props: any) => {
         hostUUID={hostUUID}
         networkSchema={networkSchema}
         onCloseModal={() => setIsModalVisible(false)}
+        pluginName={pluginName}
       />
     </>
   );

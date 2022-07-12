@@ -14,6 +14,7 @@ export const CreateModal = (props: any) => {
     hostUUID,
     networkSchema,
     onCloseModal,
+    pluginName,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({});
@@ -27,7 +28,7 @@ export const CreateModal = (props: any) => {
   const addNetwork = async (net: Network) => {
     networkFactory.connectionUUID = connUUID;
     networkFactory.hostUUID = hostUUID;
-    net.plugin_name = "system";
+    net.plugin_name = pluginName;
     await networkFactory.Add(net);
   };
 

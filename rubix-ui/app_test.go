@@ -9,7 +9,7 @@ func TestNewApp(t *testing.T) {
 	app := NewApp()
 	//data := app.wiresFileUpload("cloud", "hos_A2CC8CE54B9B", "wires-example.json")
 	//fmt.Println(data)
-	back := app.WiresBackup("cloud", "rc")
+	back := app.WiresBackup("cloud", "rc", "hello")
 	pprint.PrintJOSN(back)
 	//backup := app.WiresBackupRestore("cloud", "rc", "bac_0EF8BBF1894E")
 	//pprint.PrintJOSN(backup)

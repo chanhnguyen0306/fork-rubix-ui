@@ -95,13 +95,12 @@ export const Hosts = () => {
 
   return (
     <>
-      <h2>Hosts</h2>
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={
             <span>
               <ApartmentOutlined />
-              Hosts
+              HOSTS
             </span>
           }
           key="1"
@@ -133,7 +132,7 @@ export const Hosts = () => {
           tab={
             <span>
               <RedoOutlined />
-              Discover
+              DISCOVER
             </span>
           }
           key="2"
