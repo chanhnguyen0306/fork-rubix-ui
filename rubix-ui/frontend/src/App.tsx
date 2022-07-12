@@ -8,24 +8,15 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { assistmodel } from "../wailsjs/go/models";
-import { Hosts } from "./components/hosts/hosts";
-import { Locations } from "./components/locations/locations";
-import { Connections } from "./components/connections/connections";
-import { Logs } from "./components/logs/logs";
-import { PcNetworking } from "./components/pc/networking/networking";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 import "./App.css";
-import { Backups } from "./components/backups/backups";
-import { Host } from "./components/hosts/host/host";
-import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
-import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
-import { Networks } from "./components/hostNetworks/networks";
-import { EventsOn } from "../wailsjs/runtime";
 
+import AppRoutes from './AppRoutes';
+import { EventsOn } from "../wailsjs/runtime";
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
-import {openNotificationWithIcon} from "./utils/utils";
+import { openNotificationWithIcon } from "./utils/utils";
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
@@ -36,6 +27,37 @@ const sidebarItems = [
 ];
 
 let loadCount = 0;
+
+const AppContainer = (props: any) => {
+  const { isFetching, menuItems } = props;
+  return (
+    <Layout>
+      <Sider width={250} style={{ minHeight: "100vh" }}>
+        {isFetching ? (
+          <Spin />
+        ) : (
+          <Menu
+            mode="inline"
+            theme="dark"
+            items={menuItems}
+            selectedKeys={[location.pathname]}
+          />
+        )}
+      </Sider>
+      <Layout style={{ padding: "0 24px 24px" }}>
+        <Content
+          style={{
+            padding: 24,
+            margin: 0,
+            minHeight: 280,
+          }}
+        >
+          {props.children}
+        </Content>
+      </Layout>
+    </Layout>
+  );
+};
 
 const App: React.FC = () => {
   let locationFactory = new LocationFactory();
@@ -173,51 +195,9 @@ const App: React.FC = () => {
   });
 
   return (
-    <Layout>
-      <Sider width={250} style={{ minHeight: "100vh" }}>
-        {isFetching ? (
-          <Spin />
-        ) : (
-          <Menu
-            mode="inline"
-            theme="dark"
-            items={menuItems}
-            selectedKeys={[location.pathname]}
-          />
-        )}
-      </Sider>
-      <Layout style={{ padding: "0 24px 24px" }}>
-        <Content
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<Connections />} />
-            <Route path="/locations/:connUUID" element={<Locations />} />
-            <Route path="/networks/:locUUID" element={<Networks />} />
-            <Route path="/hosts/:netUUID" element={<Hosts />} />
-            <Route path="/host/:hostUUID" element={<Host />} /> / open flow
-            networks
-            <Route
-              path="/flow/networks/:networkUUID"
-              element={<FlowDevices />}
-            />{" "}
-            // open flow devices
-            <Route
-              path="/flow/devices/:deviceUUID"
-              element={<FlowPoints />}
-            />{" "}
-            // open flow network points
-            <Route path="/logs" element={<Logs />} />
-            <Route path="/backups" element={<Backups />} />
-            <Route path="/networking" element={<PcNetworking />} />
-          </Routes>
-        </Content>
-      </Layout>
-    </Layout>
+    <AppContainer menuItems={menuItems} isFetching={isFetching}>
+      <AppRoutes></AppRoutes>
+    </AppContainer>
   );
 };
 export default App;
