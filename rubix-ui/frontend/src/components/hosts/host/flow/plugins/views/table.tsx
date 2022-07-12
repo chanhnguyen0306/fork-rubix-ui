@@ -9,10 +9,8 @@ import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { CreateModal } from "./create";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-
-import bacnetLogo from "../../../../../../assets/images/BACnet_logo.png";
-import nubeLogo from "../../../../../../assets/images/Nube-logo.png";
 import RbTable from "../../../../../../common/rb-table";
+import {pluginLogo} from "../../../../../../utils/utils";
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, fetchPlugins } = props;
@@ -79,14 +77,8 @@ export const FlowPluginsTable = (props: any) => {
       key: "name",
       dataIndex: "name",
       render(name: string) {
-        let image = nubeLogo;
-        if (name == "bacnetmaster") {
-          image = bacnetLogo;
-        }
-        if (name == "bacnet") {
-          image = bacnetLogo;
-        }
-        return <Image width={70} src={image} />;
+        let image = pluginLogo(name)
+        return <Image preview={false} width={70} src={image} />;
       },
     },
     {
