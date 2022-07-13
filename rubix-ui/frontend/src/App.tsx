@@ -23,7 +23,9 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Backups", icon: HistoryOutlined, link: "/backups" },
   { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  { name: "networking", icon: LinkOutlined, link: "/networking" },
+  { name: "Networking", icon: LinkOutlined, link: "/networking" },
+  { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
+  { name: "Docs software", icon: LinkOutlined, link: "/software" },
 ];
 
 let loadCount = 0;
