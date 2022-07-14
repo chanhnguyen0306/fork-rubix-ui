@@ -31,6 +31,34 @@ link to doc **[rubix-compute](https://desk.zoho.com.au/portal/nubeio/en/kb/artic
 # Guides
 
 
+
+#### GLOBAL
+\`\`\`
+ -Config: Globals                       - (FC 3,6,16)
+     type: UINT16
+
+   -[10001] : Version MAJOR                     (r)
+   -[10002] : Version MINOR                     (r)
+   -[10003] : Dev Build ID                      (r)
+   -[10004] : Production Build                  (r)
+   -[10005] : IO Persistence Enable             (r/w)
+   -[10006] : IO Persistence Wipe               (r/w)
+   -[10007] : Factory Reset                     (w)
+   -[10008] : RTC Time            (INT32/DWORD) (r/w)
+   -[10010] : RTC Timezone Offset (INT32/DWORD) (r/w)
+   -[10012] : LoRa RSSI                         (r)
+   -[10013] : Pulse Debounce MS                 (r/w)
+   -[10014] : Modbus Watchdog Enable            (r/w)
+   -[10015] : Modbus Watchdog Minutes           (r/w)
+
+   -[10101] : Point References Lock             (r/w)
+   -[10102] : Commissioning Mode                (r/w)
+   -[10103] : App ID                            (r)
+   -[10104] : App Version                       (r)
+   -[10105] : App Revision                      (r)
+
+\`\`\`
+
 `
 
     return (

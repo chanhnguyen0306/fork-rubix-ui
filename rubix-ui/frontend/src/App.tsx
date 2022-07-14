@@ -26,6 +26,7 @@ const sidebarItems = [
   { name: "Networking", icon: LinkOutlined, link: "/networking" },
   { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
   { name: "Docs software", icon: LinkOutlined, link: "/software" },
+  { name: "Docs dips", icon: LinkOutlined, link: "switch" },
 ];
 
 let loadCount = 0;

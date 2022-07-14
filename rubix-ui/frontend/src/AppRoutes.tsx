@@ -7,6 +7,7 @@ import {Host} from "./components/hosts/host/host";
 import {Backups} from "./components/backups/backups";
 import {DocsRubixHardware} from "./components/docs/docs";
 import {DocsSoftware} from "./components/docs/software";
+import {DipSwitch} from "./components/switch/switch";
 import {Locations} from "./components/locations/locations";
 import {Networks} from "./components/hostNetworks/networks";
 import {Connections} from "./components/connections/connections";
@@ -24,6 +25,7 @@ export const routes: ROUTE = {
     BACKUPS: "/backups",
     DOCS: "/docs",
     DOCS_SOFTWARE: "/software",
+    DOCS_DIPS: "/switch",
     HOSTS: "/hosts/:netUUID",
     NETWORKING: "/networking",
     NETWORKS: "/networks/:locUUID",
@@ -47,6 +49,7 @@ function AppRoutes() {
             <Route path={routes.BACKUPS} element={<Backups/>}/>
             <Route path={routes.DOCS} element={<DocsRubixHardware/>}/>
             <Route path={routes.DOCS_SOFTWARE} element={<DocsSoftware/>}/>
+            <Route path={routes.DOCS_DIPS} element={<DipSwitch/>}/>
             <Route path={routes.NETWORKING} element={<PcNetworking/>}/>
         </Routes>
     );
