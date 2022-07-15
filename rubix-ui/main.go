@@ -44,6 +44,9 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
+		// Windows: &windows.Options{
+		// 	DisableWindowIcon: false,
+		// },
 	})
 
 	if err != nil {
