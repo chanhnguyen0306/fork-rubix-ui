@@ -90,75 +90,74 @@ export const SidePanel = (props: any) => {
         textAlign: "start",
       }}
     >
-      <h4 style={{ margin: "10px" }}>{selectedHost.name}</h4>
-      <Card
-        title="Rubix-Wires"
-        style={{ display: collapsed ? "none" : "block" }}
-      >
-        <Row style={actionRow}>
-          <Col span={10}>
-            <Button
-              type="primary"
-              onClick={() => navigateToNewTab(selectedHost)}
-              style={buttonStyle}
-            >
-              open Rubix-Wires
-            </Button>
-          </Col>
-        </Row>
-        <Row style={actionRow}>
-          <Col span={10}>
-            <Button
-              type="primary"
-              onClick={() => saveBackupHandle(selectedHost)}
-              loading={isSaveBackup}
-              style={buttonStyle}
-            >
-              save backup
-            </Button>
-          </Col>
-          <Col span={14}>
-            <Input
-              placeholder="enter a comment"
-              maxLength={150}
-              onChange={onChangeComment}
-              value={comment}
-            />
-          </Col>
-        </Row>
-        <Row style={actionRow}>
-          <Col span={10}>
-            <Button
-              type="primary"
-              onClick={() => restoreBackupHandle(selectedHost)}
-              loading={isRestoreBackup}
-              style={buttonStyle}
-            >
-              restore backup
-            </Button>
-          </Col>
-          <Col span={14}>
-            <Select
-              showSearch
-              placeholder="select a backup"
-              style={{ width: "100%" }}
-              optionFilterProp="children"
-              onChange={onChange}
-              filterOption={(input, option) =>
-                (option!.children as unknown as string)
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-            >
-              {backups.map((data: storage.Backup) => (
-                <Option key={data.uuid} value={data.uuid}>
-                  {data.user_comment}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-        </Row>
-      </Card>
+      <div style={{ display: collapsed ? "none" : "block" }}>
+        <h4 style={{ margin: "10px" }}>{selectedHost.name}</h4>
+        <Card title="Rubix-Wires">
+          <Row style={actionRow}>
+            <Col span={10}>
+              <Button
+                type="primary"
+                onClick={() => navigateToNewTab(selectedHost)}
+                style={buttonStyle}
+              >
+                open Rubix-Wires
+              </Button>
+            </Col>
+          </Row>
+          <Row style={actionRow}>
+            <Col span={10}>
+              <Button
+                type="primary"
+                onClick={() => saveBackupHandle(selectedHost)}
+                loading={isSaveBackup}
+                style={buttonStyle}
+              >
+                save backup
+              </Button>
+            </Col>
+            <Col span={14}>
+              <Input
+                placeholder="enter a comment"
+                maxLength={150}
+                onChange={onChangeComment}
+                value={comment}
+              />
+            </Col>
+          </Row>
+          <Row style={actionRow}>
+            <Col span={10}>
+              <Button
+                type="primary"
+                onClick={() => restoreBackupHandle(selectedHost)}
+                loading={isRestoreBackup}
+                style={buttonStyle}
+              >
+                restore backup
+              </Button>
+            </Col>
+            <Col span={14}>
+              <Select
+                showSearch
+                placeholder="select a backup"
+                style={{ width: "100%" }}
+                optionFilterProp="children"
+                onChange={onChange}
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {backups.map((data: storage.Backup) => (
+                  <Option key={data.uuid} value={data.uuid}>
+                    {data.user_comment}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+        </Card>
+      </div>
     </Menu>
   );
 };
