@@ -12,7 +12,7 @@ import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 import "./App.css";
 
-import AppRoutes from './AppRoutes';
+import AppRoutes from "./AppRoutes";
 import { EventsOn } from "../wailsjs/runtime";
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
