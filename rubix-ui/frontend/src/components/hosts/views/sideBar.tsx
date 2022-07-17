@@ -90,6 +90,7 @@ export const SidePanel = (props: any) => {
         textAlign: "start",
       }}
     >
+      <h4 style={{ margin: "10px" }}>{selectedHost.name}</h4>
       <Card
         title="Rubix-Wires"
         style={{ display: collapsed ? "none" : "block" }}
