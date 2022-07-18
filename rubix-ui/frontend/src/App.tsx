@@ -1,6 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin } from "antd";
+import { MenuProps, MenuTheme, Spin, Switch } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -33,18 +33,38 @@ let loadCount = 0;
 
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
+  const [theme, setTheme] = useState<MenuTheme>("dark");
+  const changeTheme = (value: boolean) => {
+    setTheme(value ? "dark" : "light");
+  };
+
   return (
     <Layout>
-      <Sider width={250} style={{ minHeight: "100vh" }}>
+      <Sider width={250} style={{ minHeight: "100vh" }} theme={theme}>
         {isFetching ? (
           <Spin />
         ) : (
-          <Menu
-            mode="inline"
-            theme="dark"
-            items={menuItems}
-            selectedKeys={[location.pathname]}
-          />
+          <>
+            <Menu
+              mode="inline"
+              theme={theme}
+              items={menuItems}
+              selectedKeys={[location.pathname]}
+            />
+            <Switch
+              checkedChildren="Dark"
+              unCheckedChildren="Light"
+              checked={theme === "dark"}
+              onChange={changeTheme}
+              style={{
+                paddingLeft: "10px",
+                marginLeft: "24px",
+                marginTop: "10px",
+                display: "block",
+                textAlign: "start",
+              }}
+            />
+          </>
         )}
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
