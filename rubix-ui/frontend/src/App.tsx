@@ -56,13 +56,6 @@ const AppContainer = (props: any) => {
               unCheckedChildren="☀"
               checked={darkMode}
               onChange={setDarkMode}
-              style={{
-                paddingLeft: "10px",
-                marginLeft: "24px",
-                marginTop: "10px",
-                display: "block",
-                textAlign: "start",
-              }}
             />
           </>
         )}

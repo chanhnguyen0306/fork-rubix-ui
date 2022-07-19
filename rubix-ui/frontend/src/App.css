@@ -74,6 +74,13 @@
     overflow-y: auto;
 }
 
-.menu-toggle> .ant-switch-inner{
+.menu-toggle {
+    padding-left: 5px !important;
+    margin-left: 24px !important;
+    margin-top: 10px !important;
+    display: block !important;
+    text-align: start;
+}
+.menu-toggle > .ant-switch-inner{
     font-size: larger;
 }
