@@ -36,9 +36,7 @@ let loadCount = 0;
 
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
-
   const [darkMode, setDarkMode] = useTheme();
-
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
@@ -53,6 +51,9 @@ const AppContainer = (props: any) => {
               selectedKeys={[location.pathname]}
             />
             <Switch
+              className="menu-toggle"
+              checkedChildren="🌙"
+              unCheckedChildren="☀"
               checked={darkMode}
               onChange={setDarkMode}
               style={{

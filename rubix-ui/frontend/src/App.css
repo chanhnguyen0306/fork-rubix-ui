@@ -73,3 +73,7 @@
     max-height: 75vh;
     overflow-y: auto;
 }
+
+.menu-toggle> .ant-switch-inner{
+    font-size: larger;
+}
