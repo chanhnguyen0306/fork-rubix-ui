@@ -1,19 +1,14 @@
-import { useState, useEffect, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal} from "react";
-import {useNavigate} from "react-router-dom";
-import {
-  Space,
-  Spin,
-  Image,
-  PaginationProps, Select, Input,
-} from "antd";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Space, Spin, Image, PaginationProps, Select, Input } from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import {DeleteHost, OpenURL} from "../../../../wailsjs/go/main/App";
-import {assistmodel, model, storage} from "../../../../wailsjs/go/models";
-import {BackupFactory} from "../../backups/factory";
+import { DeleteHost } from "../../../../wailsjs/go/main/App";
+import { assistmodel, storage } from "../../../../wailsjs/go/models";
+import { BackupFactory } from "../../backups/factory";
 import RbTable from "../../../common/rb-table";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
@@ -22,9 +17,7 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import {SidePanel} from "./sideBar";
-
-
+import { SidePanel } from "./sideBar";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
@@ -36,8 +29,7 @@ export const HostsTable = (props: any) => {
   const [totalPage, setTotalPage] = useState(1);
   const navigate = useNavigate();
   const [backups, setBackups] = useState([] as Array<storage.Backup>);
-  let backupFactory = new BackupFactory()
-
+  let backupFactory = new BackupFactory();
 
   const columns = [
     {
@@ -153,20 +145,18 @@ export const HostsTable = (props: any) => {
   }, [currentPage]);
 
   useEffect(() => {
-    fetchBackups()
+    fetchBackups();
   }, []);
-
 
   const fetchBackups = async () => {
     try {
       let res = (await backupFactory.GetBackupsRubixWires()) || [];
-      setBackups(res)
+      setBackups(res);
     } catch (error) {
       console.log(error);
     } finally {
     }
   };
-
 
   const deleteHost = async (uuid: string) => {
     await DeleteHost(connUUID, uuid);
@@ -201,6 +191,7 @@ export const HostsTable = (props: any) => {
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
         className={collapsed ? "full-width" : "uncollapsed-style"}
+        style={{ minHeight: "206px" }}
         onChange={onChange}
       />
       <SidePanel
