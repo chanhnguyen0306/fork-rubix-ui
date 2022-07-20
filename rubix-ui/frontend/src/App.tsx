@@ -1,6 +1,6 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin } from "antd";
+import { MenuProps, Spin, Switch } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -8,15 +8,22 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { assistmodel } from "../wailsjs/go/models";
+import { EventsOn } from "../wailsjs/runtime";
+import AppRoutes from "./AppRoutes";
+import { ThemeProvider } from "./themes/theme-provider";
+import { useTheme } from "./themes/use-theme";
+import { openNotificationWithIcon } from "./utils/utils";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 import "./App.css";
 
+
 import AppRoutes from "./AppRoutes";
 import { EventsOn } from "../wailsjs/runtime";
+
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
-import { openNotificationWithIcon } from "./utils/utils";
+
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
@@ -33,18 +40,28 @@ let loadCount = 0;
 
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
+  const [darkMode, setDarkMode] = useTheme();
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
         {isFetching ? (
           <Spin />
         ) : (
-          <Menu
-            mode="inline"
-            theme="dark"
-            items={menuItems}
-            selectedKeys={[location.pathname]}
-          />
+          <>
+            <Menu
+              mode="inline"
+              theme="dark"
+              items={menuItems}
+              selectedKeys={[location.pathname]}
+            />
+            <Switch
+              className="menu-toggle"
+              checkedChildren="🌙"
+              unCheckedChildren="☀"
+              checked={darkMode}
+              onChange={setDarkMode}
+            />
+          </>
         )}
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
@@ -198,9 +215,11 @@ const App: React.FC = () => {
   });
 
   return (
-    <AppContainer menuItems={menuItems} isFetching={isFetching}>
-      <AppRoutes></AppRoutes>
-    </AppContainer>
+    <ThemeProvider>
+      <AppContainer menuItems={menuItems} isFetching={isFetching}>
+        <AppRoutes></AppRoutes>
+      </AppContainer>
+    </ThemeProvider>
   );
 };
 export default App;
