@@ -17,7 +17,7 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import { SidePanel } from "./sideBar";
+import { SidePanel } from "./sidePanel";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
@@ -191,7 +191,6 @@ export const HostsTable = (props: any) => {
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
         className={collapsed ? "full-width" : "uncollapsed-style"}
-        style={{ minHeight: "206px" }}
         onChange={onChange}
       />
       <SidePanel
