@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin, Switch, Image } from "antd";
+import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -45,12 +45,11 @@ const AppContainer = (props: any) => {
           <Spin />
         ) : (
           <>
-            <div style={{ display: "flex", padding: "15px" }}>
-              <Image src={logo} preview={false} />
-
-              <h4 className="ml-1">Rubix-platform</h4>
-            </div>
-
+            <Row className="logo">
+              <Image width={36} src={logo} preview={false} />
+              <h4 className="title">Rubix Platform</h4>
+            </Row>
+            <Divider />
             <Menu
               mode="inline"
               theme="dark"
