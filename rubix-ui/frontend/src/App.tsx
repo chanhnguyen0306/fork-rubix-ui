@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin, Switch } from "antd";
+import { MenuProps, Spin, Switch, Image } from "antd";
 import { Layout, Menu } from "antd";
 import {
   LinkOutlined,
@@ -15,8 +15,8 @@ import { useTheme } from "./themes/use-theme";
 import { openNotificationWithIcon } from "./utils/utils";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
+import logo from "./assets/images/nube-frog-green.png";
 import "./App.css";
-
 
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
@@ -45,6 +45,12 @@ const AppContainer = (props: any) => {
           <Spin />
         ) : (
           <>
+            <div style={{ display: "flex", padding: "15px" }}>
+              <Image src={logo} preview={false} />
+
+              <h4 className="ml-1">Rubix-platform</h4>
+            </div>
+
             <Menu
               mode="inline"
               theme="dark"
