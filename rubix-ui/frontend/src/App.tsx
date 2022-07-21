@@ -49,7 +49,9 @@ const AppContainer = (props: any) => {
               <Image width={36} src={logo} preview={false} />
               <h4 className="title">Rubix Platform</h4>
             </Row>
-            <Divider />
+            <Divider
+              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
+            />
             <Menu
               mode="inline"
               theme="dark"
