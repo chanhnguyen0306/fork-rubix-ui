@@ -20,3 +20,7 @@
 .hosts-table>.full-width {
     width: 100%;
 }
+
+.rubix-wires-card > .ant-card-body {
+    padding: 17px 24px;
+}
