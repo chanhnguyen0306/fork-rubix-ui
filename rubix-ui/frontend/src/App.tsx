@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
@@ -34,6 +34,7 @@ let loadCount = 0;
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
+
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
@@ -48,12 +49,7 @@ const AppContainer = (props: any) => {
             <Divider
               style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
             />
-            <Menu
-              mode="inline"
-              theme="dark"
-              items={menuItems}
-              selectedKeys={[location.pathname]}
-            />
+            <Menu mode="inline" theme="dark" items={menuItems} />
             <Switch
               className="menu-toggle"
               checkedChildren="🌙"
@@ -101,6 +97,8 @@ const App: React.FC = () => {
 
   const [connections, setConnections] = useState([] as any[]);
   const [isFetching, setIsFetching] = useState(false);
+  const location = useLocation() as any;
+  // const current = useState(location.pathname);
 
   useEffect(() => {
     fetchConnections();
@@ -147,7 +145,10 @@ const App: React.FC = () => {
           return {
             key: c.uuid,
             label: (
-              <div onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
+              <div
+                onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}
+                className={getActiveClass(`/locations/${c.uuid}`)}
+              >
                 {c.name}
               </div>
             ),
@@ -169,6 +170,7 @@ const App: React.FC = () => {
                     state: { connUUID: connUUID },
                   })
                 }
+                className={getActiveClass(`/networks/${location.uuid}`)}
               >
                 {location.name}
               </div>
@@ -186,6 +188,7 @@ const App: React.FC = () => {
                               state: { connUUID: connUUID },
                             })
                           }
+                          className={getActiveClass(`/hosts/${network.uuid}`)}
                         >
                           {network.name}
                         </div>
@@ -196,13 +199,24 @@ const App: React.FC = () => {
         });
   };
 
+  const getActiveClass = (link: string) => {
+    return location.pathname === link ? "active" : "";
+  };
+
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon, link } = item;
     if (name === "Connections") {
       return {
         key: link,
         icon: React.createElement(icon),
-        label: <div onClick={(e) => onClickMenu(e, link)}>{name}</div>,
+        label: (
+          <div
+            onClick={(e) => onClickMenu(e, link)}
+            className={getActiveClass("/")}
+          >
+            {name}
+          </div>
+        ),
         children: getSubMenuConnections(),
       };
     }
@@ -216,7 +230,10 @@ const App: React.FC = () => {
           {
             key: "Networking",
             label: (
-              <div onClick={(e) => onClickMenu(e, "/networking")}>
+              <div
+                onClick={(e) => onClickMenu(e, "/networking")}
+                className={getActiveClass("/networking")}
+              >
                 Networking
               </div>
             ),
@@ -227,12 +244,24 @@ const App: React.FC = () => {
             children: [
               {
                 key: "Logs",
-                label: <div onClick={(e) => onClickMenu(e, "/logs")}>Logs</div>,
+                label: (
+                  <div
+                    onClick={(e) => onClickMenu(e, "/logs")}
+                    className={getActiveClass("/logs")}
+                  >
+                    Logs
+                  </div>
+                ),
               },
               {
                 key: "Backups",
                 label: (
-                  <div onClick={(e) => onClickMenu(e, "/backups")}>Backups</div>
+                  <div
+                    onClick={(e) => onClickMenu(e, "/backups")}
+                    className={getActiveClass("/backups")}
+                  >
+                    Backups
+                  </div>
                 ),
               },
             ],
@@ -249,17 +278,36 @@ const App: React.FC = () => {
         children: [
           {
             key: "Hardware",
-            label: <div onClick={(e) => onClickMenu(e, "/docs")}>Hardware</div>,
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/docs")}
+                className={getActiveClass("/docs")}
+              >
+                Hardware
+              </div>
+            ),
           },
           {
             key: "Software",
             label: (
-              <div onClick={(e) => onClickMenu(e, "/software")}>Software</div>
+              <div
+                onClick={(e) => onClickMenu(e, "/software")}
+                className={getActiveClass("/software")}
+              >
+                Software
+              </div>
             ),
           },
           {
             key: "Dips",
-            label: <div onClick={(e) => onClickMenu(e, "/switch")}>Dips</div>,
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/switch")}
+                className={getActiveClass("/switch")}
+              >
+                Dips
+              </div>
+            ),
           },
         ],
       };

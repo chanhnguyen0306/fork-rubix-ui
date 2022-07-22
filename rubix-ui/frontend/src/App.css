@@ -98,3 +98,8 @@
     margin: auto 0;
     color: #fff;
 }
+
+.active {
+    font-weight: bolder;
+    color: #fff;
+}
