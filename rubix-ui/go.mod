@@ -3,13 +3,16 @@ module github.com/NubeIO/rubix-ui
 go 1.17
 
 //replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 
 require (
+	github.com/NubeIO/git v0.0.4
 	github.com/NubeIO/lib-date v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.2
 	github.com/NubeIO/lib-networking v0.0.6
+	github.com/NubeIO/lib-rubix-installer v0.0.1
 	github.com/NubeIO/lib-schema v0.0.6
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
@@ -32,7 +35,6 @@ require (
 require (
 	github.com/NubeIO/edge v0.0.8 // indirect
 	github.com/NubeIO/flow-framework v0.5.6 // indirect
-	github.com/NubeIO/git v0.0.3 // indirect
 	github.com/NubeIO/lib-bus v0.0.1 // indirect
 	github.com/NubeIO/lib-command v0.0.2 // indirect
 	github.com/NubeIO/lib-redis v0.0.3 // indirect
@@ -105,7 +107,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
-	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
