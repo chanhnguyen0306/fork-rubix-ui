@@ -3,8 +3,11 @@ module github.com/NubeIO/rubix-ui
 go 1.17
 
 //replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/git => /home/aidan/code/go/nube/lib/git
+
 replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
+//replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 
 require (
@@ -18,6 +21,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0
 	github.com/NubeIO/rubix-assist v0.1.9
+	github.com/google/go-github/v32 v32.1.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/na4ma4/config v1.0.0
@@ -57,7 +61,6 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-github/v32 v32.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

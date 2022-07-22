@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/tidwall/buntdb"
 )
 
 func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
+	body.UUID = uuid.ShortUUID("rel")
 	data, err := json.Marshal(body)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
@@ -26,7 +28,7 @@ func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 }
 
 func (inst *db) DeleteRelease(uuid string) error {
-	if matchBackupUUID(uuid) {
+	if matchReleaseUUID(uuid) {
 		err := inst.DB.Update(func(tx *buntdb.Tx) error {
 			_, err := tx.Delete(uuid)
 			return err
@@ -41,7 +43,7 @@ func (inst *db) DeleteRelease(uuid string) error {
 }
 
 func (inst *db) GetRelease(uuid string) (*store.Release, error) {
-	if matchBackupUUID(uuid) {
+	if matchReleaseUUID(uuid) {
 		var data *store.Release
 		err := inst.DB.View(func(tx *buntdb.Tx) error {
 			val, err := tx.Get(uuid)
@@ -73,7 +75,10 @@ func (inst *db) GetReleases() ([]store.Release, error) {
 			if err != nil {
 				return false
 			}
-			resp = append(resp, data)
+			if matchReleaseUUID(data.UUID) {
+				resp = append(resp, data)
+				//fmt.Printf("key: %s, value: %s\n", key, value)
+			}
 			return true
 		})
 		return err

@@ -2,12 +2,14 @@ package store
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/NubeIO/git/pkg/git"
 	"github.com/google/go-github/v32/github"
 	"strings"
 )
 
 type Release struct {
+	UUID    string `json:"uuid"`
 	Name    string `json:"name"`
 	Repo    string `json:"repo"`
 	Release string `json:"release"`
@@ -28,7 +30,32 @@ type Releases struct {
 
 type ReleaseList struct {
 	Name string `json:"name"`
+	Path string `json:"path"`
 	URL  string `json:"url"`
+}
+
+//DownLoadReleases pass in the path: "flow/v0.6.1.json"
+func (inst *Store) DownLoadReleases(token, path string) (*Release, error) {
+	opts := &git.AssetOptions{
+		Owner: "NubeIO",
+		Repo:  "releases",
+		Tag:   "latest",
+	}
+	ctx := context.Background()
+	gitClient = git.NewClient(token, opts, ctx)
+
+	contents, _, _, err := gitClient.GetContents("NubeIO", "releases", path, &github.RepositoryContentGetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	content, err := contents.GetContent()
+	if err != nil {
+		return nil, err
+	}
+	var r *Release
+	err = json.Unmarshal([]byte(content), &r)
+	return r, err
 }
 
 func (inst *Store) Releases(token string) ([]ReleaseList, error) {
@@ -48,6 +75,7 @@ func (inst *Store) Releases(token string) ([]ReleaseList, error) {
 		name := strings.ReplaceAll(*content.Name, ".json", "")
 		newList := ReleaseList{
 			Name: name,
+			Path: *content.Path,
 			URL:  *content.DownloadURL,
 		}
 		list = append(list, newList)
