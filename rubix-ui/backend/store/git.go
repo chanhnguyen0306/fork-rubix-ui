@@ -8,15 +8,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *Store) GitDownload(destination, token string) (*git.DownloadResponse, error) {
+func (inst *Store) GitDownload(repo, version, arch, destination, token string) (*git.DownloadResponse, error) {
 	if token == "" {
 		return nil, errors.New("git token can not be empty")
 	}
 	opts := &git.AssetOptions{
 		Owner: inst.Owner,
-		Repo:  inst.Repo,
-		Tag:   inst.Version,
-		Arch:  inst.Arch,
+		Repo:  repo,
+		Tag:   version,
+		Arch:  arch,
 	}
 	ctx := context.Background()
 	gitClient = git.NewClient(token, opts, ctx)

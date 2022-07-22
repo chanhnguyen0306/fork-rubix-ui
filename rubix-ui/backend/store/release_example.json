@@ -1,0 +1,45 @@
+{
+  "name": "flow-framework",
+  "repo": "flow-framework",
+  "release": "v0.6.0",
+  "port": 1660,
+  "apps": [
+    {
+      "name": "bacnet-server-c",
+      "repo": "bacnet-server-c",
+      "description": "a bacnet server",
+      "products": [
+        "all"
+      ],
+      "version":"v0.0.2",
+      "flow_dependency": true,
+      "plugin_dependency": "bacnetserver"
+    },
+    {
+      "name": "pi-gpio",
+      "repo": "nubeio-rubix-app-pi-gpio-go",
+      "description": "rubix compute io service",
+      "port": 5001,
+      "products": [
+        "rubix-compute-io"
+      ],
+      "version":"v0.0.9",
+      "flow_dependency": true,
+      "plugin_dependency": "rubixio"
+    },
+    {
+      "name": "lora-serial",
+      "repo": "nubeio-rubix-app-lora-serial-py",
+      "description": "rubix compute io service",
+      "products": [
+        "rubix-compute-5",
+        "rubix-compute-io"
+      ],
+      "versions": [
+        "v0.0.1"
+      ],
+      "flow_dependency": true,
+      "plugin_dependency": "lora"
+    }
+  ]
+}

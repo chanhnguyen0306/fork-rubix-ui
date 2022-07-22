@@ -10,6 +10,21 @@ import (
 )
 
 func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
+	rel, _ := inst.GetReleaseByVersion(body.Release)
+	if rel != nil {
+		err := inst.DeleteRelease(rel.UUID)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(rel.UUID)
+		fmt.Println(rel.Release)
+	}
+
+	return inst.addRelease(body)
+
+}
+
+func (inst *db) addRelease(body *store.Release) (*store.Release, error) {
 	body.UUID = uuid.ShortUUID("rel")
 	data, err := json.Marshal(body)
 	if err != nil {
@@ -17,7 +32,7 @@ func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 		return nil, err
 	}
 	err = inst.DB.Update(func(tx *buntdb.Tx) error {
-		_, _, err := tx.Set(body.Release, string(data), nil)
+		_, _, err := tx.Set(body.UUID, string(data), nil)
 		return err
 	})
 	if err != nil {
@@ -64,6 +79,19 @@ func (inst *db) GetRelease(uuid string) (*store.Release, error) {
 	} else {
 		return nil, errors.New("incorrect backup uuid")
 	}
+}
+
+func (inst *db) GetReleaseByVersion(version string) (*store.Release, error) {
+	releases, err := inst.GetReleases()
+	if err != nil {
+		return nil, err
+	}
+	for _, release := range releases {
+		if release.Release == version {
+			return &release, err
+		}
+	}
+	return nil, err
 }
 
 func (inst *db) GetReleases() ([]store.Release, error) {

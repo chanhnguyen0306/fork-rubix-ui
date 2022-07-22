@@ -1,11 +1,25 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-ui/backend/store"
 )
 
-func (app *App) getRelease(token, path string) (*store.Release, error) {
+func (app *App) getReleases() ([]store.Release, error) {
+	return app.DB.GetReleases()
+}
+
+func (app *App) getRelease(uuid string) (*store.Release, error) {
+	return app.DB.GetRelease(uuid)
+}
+
+func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
+	return app.DB.GetReleaseByVersion(version)
+}
+
+func (app *App) gitGetRelease(token, path string) (*store.Release, error) {
 	inst := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
@@ -20,9 +34,38 @@ func (app *App) getRelease(token, path string) (*store.Release, error) {
 }
 
 func (app *App) addRelease(token, path string) (*store.Release, error) {
-	release, err := app.getRelease(token, path)
+	release, err := app.gitGetRelease(token, path)
 	if err != nil {
 		return nil, err
 	}
 	return app.DB.AddRelease(release)
+}
+
+func (app *App) downloadApp(token, release, appName, arch string) (*store.Release, error) {
+	inst := &store.Store{
+		App:     &installer.App{},
+		Version: "latest",
+		Repo:    "releases",
+		Arch:    "armv7",
+	}
+	appStore, err := store.New(inst)
+	fmt.Println(111, err)
+	if err != nil {
+		return nil, err
+	}
+	getRelease, err := app.getReleaseByVersion(release)
+	if err != nil {
+		return nil, err
+	}
+	if getRelease == nil {
+		return nil, errors.New(fmt.Sprintf("failed to find release by version: %s", release))
+	}
+	fmt.Println(getRelease.UUID, 9999)
+	_, err = appStore.DownloadApp(token, appName, arch, getRelease)
+	fmt.Println(333, err)
+	if err != nil {
+		return nil, err
+	}
+	return nil, err
+
 }

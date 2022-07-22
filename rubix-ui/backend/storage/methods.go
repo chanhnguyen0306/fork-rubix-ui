@@ -21,4 +21,7 @@ type Storage interface {
 	GetBackups() ([]Backup, error)
 	GetBackupsByHostUUID(uuid string) ([]Backup, error)
 	AddRelease(body *store.Release) (*store.Release, error)
+	GetReleaseByVersion(version string) (*store.Release, error)
+	GetRelease(uuid string) (*store.Release, error)
+	GetReleases() ([]store.Release, error)
 }

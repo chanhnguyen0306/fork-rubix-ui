@@ -1,6 +1,7 @@
 package store
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -8,22 +9,22 @@ import (
 	"strings"
 )
 
-type AppRepos struct {
-	Name        string `json:"name"` // rubix-wires
-	Repo        string `json:"repo"` // wires-builds
-	Description string `json:"description"`
-	URL         string `json:"url"`
-}
-
 type App struct {
 	Name    string `json:"name"`    // rubix-wires
 	Version string `json:"version"` // v1.1.1
+	Repo    string `json:"repo"`    // wires-builds
 }
 
 // AddApp make all the app store dirs
 func (inst *Store) AddApp(app *App) (*App, error) {
 	appName := app.Name
 	version := app.Version
+	if appName == "" {
+		return nil, errors.New("app name can not be empty")
+	}
+	if version == "" {
+		return nil, errors.New("app version can not be empty")
+	}
 	if err := inst.makeUserPath(); err != nil {
 		return nil, err
 	}

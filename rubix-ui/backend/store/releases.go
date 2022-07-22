@@ -18,7 +18,7 @@ type Release struct {
 		Repo             string   `json:"repo"`
 		Description      string   `json:"description"`
 		Products         []string `json:"products"`
-		Versions         []string `json:"versions"`
+		Version          string   `json:"version"`
 		FlowDependency   bool     `json:"flow_dependency"`
 		PluginDependency string   `json:"plugin_dependency"`
 	} `json:"apps"`

@@ -17,4 +17,10 @@ func TestApp_AddRelease(t *testing.T) {
 		return
 	}
 	fmt.Println(release)
+
+	_, err = app.downloadApp(token, "v0.6.1", "flow-framework", "")
+	fmt.Println(err)
+	if err != nil {
+		return
+	}
 }

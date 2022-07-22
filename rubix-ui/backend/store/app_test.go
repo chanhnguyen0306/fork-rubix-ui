@@ -12,23 +12,7 @@ func TestStore_AddApp(t *testing.T) {
 	appVersion := "v0.6.0"
 
 	inst := &Store{
-		App: &installer.App{
-			Name:             "",
-			AppBuildName:     "",
-			Version:          "",
-			DataDir:          "",
-			HostDownloadPath: "",
-			StoreDir:         "",
-			TmpDir:           "",
-			UserRubixHome:    "",
-			FilePerm:         0,
-			ServiceName:      "",
-			LibSystemPath:    "",
-			EtcSystemPath:    "",
-			DefaultTimeout:   0,
-			AppsInstallDir:   "",
-			AppsDownloadDir:  "",
-		},
+		App:           &installer.App{},
 		Perm:          0,
 		UserPath:      "",
 		UserStorePath: "",
@@ -50,19 +34,19 @@ func TestStore_AddApp(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(app)
 
-	store, err := appStore.ListStore()
-	if err != nil {
-		return
-	}
-	fmt.Println(err)
-	fmt.Println(store)
-
-	token := decodeToken("Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA==")
-	fmt.Printf("%q\n", token)
-
-	download, err := appStore.GitDownload(appStore.getAppPathAndVersion(appName, appVersion), token)
-
-	fmt.Println(err)
-	fmt.Println(download)
+	//store, err := appStore.ListStore()
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Println(err)
+	//fmt.Println(store)
+	//
+	//token := decodeToken("Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA==")
+	//fmt.Printf("%q\n", token)
+	//
+	//download, err := appStore.GitDownload(appStore.getAppPathAndVersion(appName, appVersion), token)
+	//
+	//fmt.Println(err)
+	//fmt.Println(download)
 
 }
