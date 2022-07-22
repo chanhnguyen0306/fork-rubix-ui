@@ -91,7 +91,9 @@ export const SidePanel = (props: any) => {
       }}
     >
       <div style={{ display: collapsed ? "none" : "block" }}>
-        <h4 style={{ margin: "10px" }}>{selectedHost.name}</h4>
+        <h4 style={{ margin: "10px", padding: "0 14px" }}>
+          {selectedHost.name}
+        </h4>
         <Card title="Rubix-Wires" className="rubix-wires-card">
           <Row style={actionRow}>
             <Col span={10}>
