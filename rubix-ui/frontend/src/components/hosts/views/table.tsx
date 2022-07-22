@@ -17,7 +17,7 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import { SidePanel } from "./sidePanel";
+import { SidePanel } from "./side-panel";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
