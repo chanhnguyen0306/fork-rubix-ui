@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
 import {
-  LinkOutlined,
-  HistoryOutlined,
   ApartmentOutlined,
   FileSearchOutlined,
   ToolOutlined,
@@ -28,14 +26,7 @@ const { Content, Sider } = Layout;
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
   { name: "Tools", icon: ToolOutlined, link: "" },
-  { name: "Documentatio", icon: FileSearchOutlined, link: "" },
-
-  // { name: "Backups", icon: HistoryOutlined, link: "/backups" },
-  // { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  // { name: "Networking", icon: LinkOutlined, link: "/networking" },
-  // { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
-  // { name: "Docs software", icon: LinkOutlined, link: "/software" },
-  // { name: "Docs dips", icon: LinkOutlined, link: "switch" },
+  { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
 
 let loadCount = 0;
@@ -216,11 +207,68 @@ const App: React.FC = () => {
       };
     }
 
+    if (name === "Tools") {
+      return {
+        key: name,
+        icon: React.createElement(icon),
+        label: <div>{name}</div>,
+        children: [
+          {
+            key: "Networking",
+            label: (
+              <div onClick={(e) => onClickMenu(e, "/networking")}>
+                Networking
+              </div>
+            ),
+          },
+          {
+            key: "Utils",
+            label: <div>Utils</div>,
+            children: [
+              {
+                key: "Logs",
+                label: <div onClick={(e) => onClickMenu(e, "/logs")}>Logs</div>,
+              },
+              {
+                key: "Backups",
+                label: (
+                  <div onClick={(e) => onClickMenu(e, "/backups")}>Backups</div>
+                ),
+              },
+            ],
+          },
+        ],
+      };
+    }
+
+    if (name === "Documentation") {
+      return {
+        key: name,
+        icon: React.createElement(icon),
+        label: <div>{name}</div>,
+        children: [
+          {
+            key: "Hardware",
+            label: <div onClick={(e) => onClickMenu(e, "/docs")}>Hardware</div>,
+          },
+          {
+            key: "Software",
+            label: (
+              <div onClick={(e) => onClickMenu(e, "/software")}>Software</div>
+            ),
+          },
+          {
+            key: "Dips",
+            label: <div onClick={(e) => onClickMenu(e, "/switch")}>Dips</div>,
+          },
+        ],
+      };
+    }
+
     return {
       key: name,
       icon: React.createElement(icon),
-      label: <div>{name}</div>,
-      children: [],
+      label: <div onClick={(e) => onClickMenu(e, link)}>{name}</div>,
     };
   });
 
