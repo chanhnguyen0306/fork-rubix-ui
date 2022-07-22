@@ -6,6 +6,8 @@ import {
   LinkOutlined,
   HistoryOutlined,
   ApartmentOutlined,
+  FileSearchOutlined,
+  ToolOutlined,
 } from "@ant-design/icons";
 import { assistmodel } from "../wailsjs/go/models";
 import { EventsOn } from "../wailsjs/runtime";
@@ -25,12 +27,15 @@ const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: "/" },
-  { name: "Backups", icon: HistoryOutlined, link: "/backups" },
-  { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  { name: "Networking", icon: LinkOutlined, link: "/networking" },
-  { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
-  { name: "Docs software", icon: LinkOutlined, link: "/software" },
-  { name: "Docs dips", icon: LinkOutlined, link: "switch" },
+  { name: "Tools", icon: ToolOutlined, link: "" },
+  { name: "Documentatio", icon: FileSearchOutlined, link: "" },
+
+  // { name: "Backups", icon: HistoryOutlined, link: "/backups" },
+  // { name: "Logs", icon: HistoryOutlined, link: "/logs" },
+  // { name: "Networking", icon: LinkOutlined, link: "/networking" },
+  // { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
+  // { name: "Docs software", icon: LinkOutlined, link: "/software" },
+  // { name: "Docs dips", icon: LinkOutlined, link: "switch" },
 ];
 
 let loadCount = 0;
@@ -212,9 +217,10 @@ const App: React.FC = () => {
     }
 
     return {
-      key: link,
+      key: name,
       icon: React.createElement(icon),
-      label: <div onClick={(e) => onClickMenu(e, link)}>{name}</div>,
+      label: <div>{name}</div>,
+      children: [],
     };
   });
 
