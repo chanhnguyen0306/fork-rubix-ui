@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
@@ -30,7 +30,7 @@ const sidebarItems = [
   { name: "Networking", icon: LinkOutlined, link: "/networking" },
   { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
   { name: "Docs software", icon: LinkOutlined, link: "/software" },
-  { name: "Docs dips", icon: LinkOutlined, link: "switch" },
+  { name: "Docs dips", icon: LinkOutlined, link: "/switch" },
 ];
 
 let loadCount = 0;
@@ -38,6 +38,8 @@ let loadCount = 0;
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
+  const location = useLocation() as any;
+
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
