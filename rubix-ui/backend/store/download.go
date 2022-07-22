@@ -2,30 +2,36 @@ package store
 
 import (
 	"errors"
-	"fmt"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 )
 
-// DownloadAll make all the app store dirs
-func (inst *Store) DownloadAll(token string, rel *Release) (*App, error) {
+const flow = "flow-framework"
 
-	//for i, app := range rel.Apps {
-	//
-	//}
-	//
-	//
-	//return app, nil
-	return nil, nil
+// DownloadAll make all the app store dirs
+func (inst *Store) DownloadAll(token, arch string, release *Release) ([]App, error) {
+	var out []App
+	app, err := inst.DownloadApp(token, flow, arch, release)
+	if err != nil {
+		return nil, err
+	}
+	out = append(out, *app)
+	for _, app := range release.Apps {
+		app, err := inst.DownloadApp(token, app.Name, arch, release)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, *app)
+	}
+	return out, err
 }
 
 // DownloadApp download an app
-func (inst *Store) DownloadApp(token, appName, arch string, rel *Release) (*App, error) {
+func (inst *Store) DownloadApp(token, appName, arch string, release *Release) (*App, error) {
 	newApp := &App{}
-	for _, app := range rel.Apps {
-		if appName == "flow-framework" {
-			newApp.Name = rel.Name
-			newApp.Version = rel.Release
-			newApp.Repo = rel.Repo
+	for _, app := range release.Apps {
+		if appName == flow {
+			newApp.Name = release.Name
+			newApp.Version = release.Release
+			newApp.Repo = release.Repo
 		} else {
 			if app.Name == appName {
 				newApp.Name = app.Name
@@ -33,26 +39,22 @@ func (inst *Store) DownloadApp(token, appName, arch string, rel *Release) (*App,
 				newApp.Repo = app.Repo
 			}
 		}
-
 	}
 	if newApp.Name == "" {
-		return nil, errors.New("app name can not be empty")
+		return nil, errors.New("downloadApp: app name can not be empty")
 	}
 	if newApp.Version == "" {
-
+		return nil, errors.New("downloadApp: app version can not be empty")
 	}
 	if newApp.Repo == "" {
-
+		return nil, errors.New("downloadApp: app repo can not be empty")
 	}
-	pprint.PrintJOSN(newApp)
 	app, err := inst.AddApp(newApp)
-	fmt.Println(4444, err)
 	if err != nil {
 		return nil, err
 	}
 	path := inst.getAppPathAndVersion(newApp.Name, newApp.Version)
 	_, err = inst.GitDownload(newApp.Repo, newApp.Version, arch, path, token)
-	fmt.Println(5555, err)
 	if err != nil {
 		return nil, err
 	}
