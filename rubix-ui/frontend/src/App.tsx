@@ -94,15 +94,19 @@ const App: React.FC = () => {
   loadCount++;
 
   let navigate = useNavigate();
+  const location = useLocation() as any;
 
   const [connections, setConnections] = useState([] as any[]);
   const [isFetching, setIsFetching] = useState(false);
-  const location = useLocation() as any;
-  // const current = useState(location.pathname);
 
   useEffect(() => {
     fetchConnections();
   }, []);
+
+  const onClickMenu = (e: any, link: string, state?: any) => {
+    e.stopPropagation();
+    navigate(link, state);
+  };
 
   const fetchConnections = async () => {
     try {
@@ -131,11 +135,6 @@ const App: React.FC = () => {
       res = [];
     }
     return res;
-  };
-
-  const onClickMenu = (e: any, link: string, state?: any) => {
-    e.stopPropagation();
-    navigate(link, state);
   };
 
   const getSubMenuConnections = () => {
