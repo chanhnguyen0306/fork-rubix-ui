@@ -13,15 +13,34 @@ type Release struct {
 	Name    string `json:"name"`
 	Repo    string `json:"repo"`
 	Release string `json:"release"`
-	Apps    []struct {
-		Name             string   `json:"name"`
-		Repo             string   `json:"repo"`
-		Description      string   `json:"description"`
-		Products         []string `json:"products"`
-		Version          string   `json:"version"`
-		FlowDependency   bool     `json:"flow_dependency"`
-		PluginDependency string   `json:"plugin_dependency"`
+	Port    int    `json:"port"`
+	Plugins []struct {
+		Name              string   `json:"name"`
+		Plugin            string   `json:"plugin"`
+		Description       string   `json:"description"`
+		AppDependency     []string `json:"app_dependency"`
+		PluginDependency  []string `json:"plugin_dependency"`
+		ServiceDependency []string `json:"service_dependency"`
+	} `json:"plugins"`
+	Apps []struct {
+		Name              string   `json:"name"`
+		Repo              string   `json:"repo"`
+		Description       string   `json:"description"`
+		Products          []string `json:"products"`
+		Version           string   `json:"version,omitempty"`
+		FlowDependency    bool     `json:"flow_dependency"`
+		PluginDependency  string   `json:"plugin_dependency"`
+		Port              int      `json:"port,omitempty"`
+		ServiceDependency []string `json:"service_dependency,omitempty"`
+		Versions          []string `json:"versions,omitempty"`
 	} `json:"apps"`
+	Services []struct {
+		Name        string   `json:"name"`
+		ServiceName string   `json:"service_name"`
+		Description string   `json:"description"`
+		Port        int      `json:"port"`
+		Products    []string `json:"products"`
+	} `json:"services"`
 }
 
 type Releases struct {

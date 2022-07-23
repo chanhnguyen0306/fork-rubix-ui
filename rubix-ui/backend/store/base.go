@@ -70,6 +70,11 @@ func New(store *Store) (*Store, error) {
 	return store, nil
 }
 
+// FilePath make the file path work for unix or windows
+func (inst *Store) FilePath(path string, debug ...bool) string {
+	return filePath(path)
+}
+
 // filePath make the file path work for unix or windows
 func filePath(path string, debug ...bool) string {
 	updated := filepath.FromSlash(path)

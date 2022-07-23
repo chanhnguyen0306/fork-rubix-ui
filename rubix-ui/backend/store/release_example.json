@@ -1,11 +1,70 @@
 {
+  "uuid": "",
   "name": "flow-framework",
   "repo": "flow-framework",
   "release": "v0.6.0",
   "port": 1660,
+  "plugins": [
+    {
+      "name": "system",
+      "plugin": "system",
+      "description": "system plugin is used for scheduling and a generic network, device and points",
+      "app_dependency": [""],
+      "plugin_dependency": [""],
+      "service_dependency": [""]
+    },
+    {
+      "name": "postgres",
+      "plugin": "postgres",
+      "description": "",
+      "app_dependency": [""],
+      "plugin_dependency": ["history"],
+      "service_dependency": [""]
+    },
+    {
+      "name": "bacnet-master",
+      "plugin": "postgres",
+      "description": "a bacnet master plugin",
+      "app_dependency": [""],
+      "plugin_dependency": [""],
+      "service_dependency": [""]
+    },
+    {
+      "name": "bacnet-server",
+      "plugin": "postgres",
+      "description": "nube bacnet server",
+      "app_dependency": ["bacnet-server-c"],
+      "plugin_dependency": [""],
+      "service_dependency": [""]
+    },
+    {
+      "name": "lora",
+      "plugin": "postgres",
+      "description": "nube lora protocol",
+      "app_dependency": ["loraserial"],
+      "plugin_dependency": [""],
+      "service_dependency": [""]
+    },
+    {
+      "name": "edge-28",
+      "plugin": "edge28",
+      "description": "nube edge-28 protocol",
+      "app_dependency": ["nubeio-rubix-app-bbb-rest-py"],
+      "plugin_dependency": [""],
+      "service_dependency": [""]
+    },
+    {
+      "name": "lorawan",
+      "plugin": "lorawan",
+      "description": "nube lorawan",
+      "app_dependency": [""],
+      "plugin_dependency": [""],
+      "service_dependency": ["chripstack", "mqtt"]
+    }
+  ],
   "apps": [
     {
-      "name": "bacnet-server-c",
+      "name": "bacnet-server-driver",
       "repo": "bacnet-server-c",
       "description": "a bacnet server",
       "products": [
@@ -16,7 +75,7 @@
       "plugin_dependency": "bacnetserver"
     },
     {
-      "name": "pi-gpio",
+      "name": "rubix-io-driver",
       "repo": "nubeio-rubix-app-pi-gpio-go",
       "description": "rubix compute io service",
       "port": 5001,
@@ -25,10 +84,11 @@
       ],
       "version":"v0.0.9",
       "flow_dependency": true,
-      "plugin_dependency": "rubixio"
+      "plugin_dependency": "rubixio",
+      "service_dependency": [""]
     },
     {
-      "name": "lora-serial",
+      "name": "lora-driver",
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
       "products": [
@@ -39,7 +99,33 @@
         "v0.0.1"
       ],
       "flow_dependency": true,
-      "plugin_dependency": "lora"
+      "plugin_dependency": "lora",
+      "service_dependency": [""]
+    },
+    {
+      "name": "edge-28-driver",
+      "repo": "bbb-py-rest",
+      "description": "edge-28 service",
+      "products": [
+        "edge-28"
+      ],
+      "versions": [
+        "v0.0.2"
+      ],
+      "flow_dependency": true,
+      "plugin_dependency": "edge28",
+      "service_dependency": [""]
+    }
+  ],
+  "services": [
+    {
+      "name": "mqtt-broker",
+      "service_name": "mosquitto",
+      "description": "a local mqtt broker",
+      "port": 1883,
+      "products": [
+        "all"
+      ]
     }
   ]
 }
