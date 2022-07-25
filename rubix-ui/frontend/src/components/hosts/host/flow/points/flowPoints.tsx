@@ -1,12 +1,11 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { model } from "../../../../../../wailsjs/go/models";
-import React, { useEffect, useState } from "react";
 import { FlowPointFactory } from "./factory";
+import { FlowPointsTable } from "./views/table";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Points = model.Point;
-import { Button } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
-import { FlowPointsTable } from "./views/table";
 
 export const FlowPoints = () => {
   const [data, setDevices] = useState([] as Points[]);
@@ -37,13 +36,7 @@ export const FlowPoints = () => {
   return (
     <>
       <h3>Points</h3>
-      <Button
-        type="primary"
-        onClick={fetch}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <RedoOutlined /> Refresh
-      </Button>
+      <RbRefreshButton refreshList={fetch} />
       <FlowPointsTable
         data={data}
         isFetching={isFetching}
