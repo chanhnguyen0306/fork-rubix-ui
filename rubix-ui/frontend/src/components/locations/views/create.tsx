@@ -9,15 +9,15 @@ import Location = assistmodel.Location;
 import { assistmodel } from "../../../../wailsjs/go/models";
 
 export const AddButton = (props: any) => {
-  const { onShowModal } = props;
+  const { showModal } = props;
 
   return (
     <Button
       type="primary"
-      onClick={() => onShowModal({} as Location)}
+      onClick={() => showModal({} as Location)}
       style={{ margin: "5px", float: "right" }}
     >
-      <PlusOutlined /> Location
+      <PlusOutlined /> Add
     </Button>
   );
 };

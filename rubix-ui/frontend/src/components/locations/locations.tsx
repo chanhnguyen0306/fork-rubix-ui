@@ -170,6 +170,8 @@ export const Locations = () => {
         locations={locations}
         isFetching={isFetching}
         tableSchema={tableSchema}
+        connUUID={connUUID}
+        refreshList={refreshList}
       />
     </>
   );
