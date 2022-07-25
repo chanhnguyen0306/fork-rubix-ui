@@ -81,18 +81,24 @@ export const SidePanel = (props: any) => {
   };
 
   return (
-    <Menu
-      mode="inline"
-      inlineCollapsed={collapsed}
+    <div
+      className={collapsed ? "ant-menu ant-menu-inline-collapsed" : "ant-menu "}
       style={{
         height: sidePanelHeight + "px",
         width: "600px",
         textAlign: "start",
       }}
     >
-      <div style={{ display: collapsed ? "none" : "block" }}>
-        <h4 style={{ margin: "10px" }}>{selectedHost.name}</h4>
-        <Card title="Rubix-Wires">
+      <div
+        className="content"
+        style={{
+          display: collapsed ? "none" : "block",
+        }}
+      >
+        <h4 style={{ margin: "10px", padding: "0 14px" }}>
+          {selectedHost.name}
+        </h4>
+        <Card title="Rubix-Wires" className="rubix-wires-card">
           <Row style={actionRow}>
             <Col span={10}>
               <Button
@@ -158,6 +164,6 @@ export const SidePanel = (props: any) => {
           </Row>
         </Card>
       </div>
-    </Menu>
+    </div>
   );
 };
