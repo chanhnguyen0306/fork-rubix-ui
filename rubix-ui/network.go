@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
@@ -50,6 +51,30 @@ func (app *App) GetHostNetworks(connUUID string) (resp []assistmodel.Network) {
 		app.crudMessage(false, fmt.Sprintf("issue in getting host networks %s", res.Message))
 	}
 	return data
+}
+
+func (app *App) DeleteHostNetworkBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+	for _, item := range uuids {
+		msg, err := app.deleteHostNetwork(connUUID, item.UUID)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("delete network %s %s", item.Name, msg.Message))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("deleteed network: %s", item.Name))
+		}
+	}
+	return "ok"
+}
+
+func (app *App) deleteHostNetwork(connUUID string, uuid string) (*assitcli.Response, error) {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	res := client.DeleteHostNetwork(uuid)
+	if res.StatusCode > 299 {
+		return nil, errors.New(fmt.Sprintf("issue in deleting host network %s", res.Message))
+	}
+	return res, nil
 }
 
 func (app *App) DeleteHostNetwork(connUUID string, uuid string) *assitcli.Response {
