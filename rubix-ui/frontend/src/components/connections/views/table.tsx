@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Button, Popconfirm, Space, Spin } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Space, Spin } from "antd";
 import {
   DeleteConnection,
   PingRubixAssist,
@@ -10,6 +9,7 @@ import { ConnectionFactory } from "../factory";
 import { main, storage } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import RbTable from "../../../common/rb-table";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
 
@@ -117,11 +117,7 @@ export const ConnectionsTable = (props: any) => {
 
   return (
     <div>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
         dataSource={connections}

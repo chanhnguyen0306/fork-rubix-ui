@@ -9,6 +9,7 @@ import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
 
 import RubixConnection = storage.RubixConnection;
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
 export const Connections = () => {
   const { TabPane } = Tabs;
@@ -80,15 +81,14 @@ export const Connections = () => {
           }
           key="1"
         >
-          <Button
-            type="primary"
-            onClick={refreshList}
-            style={{ margin: "5px", float: "right" }}
-          >
-            <RedoOutlined /> Refresh
-          </Button>
-          <AddButton showModal={showModal} />
-
+          <RbRefreshButton refreshList={refreshList} />
+          <RbAddButton showModal={() => showModal({} as RubixConnection)} />
+          <ConnectionsTable
+            connections={connections}
+            isFetching={isFetching}
+            showModal={showModal}
+            refreshList={refreshList}
+          />
           <CreateEditModal
             connections={connections}
             currentConnection={currentConnection}
@@ -97,12 +97,6 @@ export const Connections = () => {
             isLoadingForm={isLoadingForm}
             refreshList={refreshList}
             onCloseModal={onCloseModal}
-          />
-          <ConnectionsTable
-            connections={connections}
-            isFetching={isFetching}
-            showModal={showModal}
-            refreshList={refreshList}
           />
         </TabPane>
         <TabPane
