@@ -238,7 +238,7 @@ export const HostsTable = (props: any) => {
 
   return (
     <div>
-      <div style={{ textAlign: "end" }}>
+      <div style={{ textAlign: "end", margin: "5px" }}>
         <Popconfirm title="Delete" onConfirm={bulkDelete}>
           <Button type="primary" danger>
             <DeleteOutlined /> Delete
