@@ -71,6 +71,39 @@ func (app *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *st
 	return conn
 }
 
+func (app *App) DeleteConnectionBulk(uuids []UUIDs) interface{} {
+
+	for _, item := range uuids {
+		msg, err := app.deleteConnection(item.UUID)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("delete network %s %s", item.Name, msg))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("deleteed network: %s", item.Name))
+		}
+	}
+	return "ok"
+}
+
+func (app *App) deleteConnection(uuid string) (string, error) {
+	connection, err := app.DB.Select(uuid)
+	if err != nil {
+		return "failed to find connection to backup", err
+	}
+	_, err = app.DB.AddLog(&storage.Log{
+		Function: logstore.Connection.String(),
+		Type:     logstore.Delete.String(),
+		Data:     connection,
+	})
+	if err != nil {
+		return "", err
+	}
+	err = app.DB.Delete(uuid)
+	if err != nil {
+		return "", err
+	}
+	return "deleted ok", nil
+}
+
 func (app *App) DeleteConnection(uuid string) string {
 	connection, err := app.DB.Select(uuid)
 	if err != nil {
