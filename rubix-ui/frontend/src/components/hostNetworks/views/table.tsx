@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Popconfirm, Space, Spin } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Space, Spin } from "antd";
 import { NetworksFactory } from "../factory";
 import { assistmodel, main } from "../../../../wailsjs/go/models";
 import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
 import RbTable from "../../../common/rb-table";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 export const NetworksTable = (props: any) => {
   const { networks, locations, refreshList, showModal, isFetching, connUUID } =
@@ -107,11 +107,7 @@ export const NetworksTable = (props: any) => {
 
   return (
     <div>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

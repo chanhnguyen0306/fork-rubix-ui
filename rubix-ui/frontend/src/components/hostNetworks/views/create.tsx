@@ -1,6 +1,5 @@
-import { Button, Modal, Spin } from "antd";
+import { Modal, Spin } from "antd";
 import { assistmodel } from "../../../../wailsjs/go/models";
-import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import {
   AddHostNetwork,
@@ -8,20 +7,6 @@ import {
 } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { JsonForm } from "../../../common/json-form";
-
-export const AddButton = (props: any) => {
-  const { showModal } = props;
-
-  return (
-    <Button
-      type="primary"
-      onClick={() => showModal({} as assistmodel.Network)}
-      style={{ margin: "5px", float: "right" }}
-    >
-      <PlusOutlined /> Add
-    </Button>
-  );
-};
 
 export const CreateEditModal = (props: any) => {
   const {
