@@ -1,15 +1,16 @@
-import { Button, Tabs } from "antd";
 import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { Button, Tabs } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
-import { BacnetFactory } from "../bacnet/factory";
 import { model } from "../../../../../../wailsjs/go/models";
+import { openNotificationWithIcon } from "../../../../../utils/utils";
+import { BacnetFactory } from "../bacnet/factory";
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
+import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
-import {openNotificationWithIcon} from "../../../../../utils/utils";
 
 export const FlowDevices = () => {
   const [data, setDevices] = useState([] as Devices[]);
@@ -64,13 +65,7 @@ export const FlowDevices = () => {
   return (
     <Tabs defaultActiveKey="1" onChange={onChange}>
       <TabPane tab="DEVICES" key="1">
-        <Button
-          type="primary"
-          onClick={fetch}
-          style={{ margin: "5px", float: "right" }}
-        >
-          <RedoOutlined /> Refresh
-        </Button>
+        <RbRefreshButton refreshList={fetch} />
         <FlowDeviceTable
           data={data}
           isFetching={isFetching}
