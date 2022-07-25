@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Space, Spin, Image, PaginationProps, Popconfirm, Button } from "antd";
+import { Space, Spin, Image, PaginationProps } from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
   BookOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
 import { isObjectEmpty } from "../../../utils/utils";
 import { HostsFactory } from "../factory";
 import { BackupFactory } from "../../backups/factory";
 import RbTable from "../../../common/rb-table";
-import { AddButton, CreateEditModal } from "./create";
+import { CreateEditModal } from "./create";
 import { SidePanel } from "./side-panel";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
@@ -21,6 +20,11 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
+import {
+  RbAddButton,
+  RbDeleteButton,
+  RbRefreshButton,
+} from "../../../common/rb-table-actions";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, connUUID, netUUID, refreshList } = props;
@@ -238,24 +242,11 @@ export const HostsTable = (props: any) => {
 
   return (
     <div>
-      <div style={{ textAlign: "end", margin: "5px" }}>
-        <Popconfirm title="Delete" onConfirm={bulkDelete}>
-          <Button type="primary" danger>
-            <DeleteOutlined /> Delete
-          </Button>
-        </Popconfirm>
-        <AddButton showModal={showModal} />
+      <div className="hosts-table-actions">
+        <RbDeleteButton bulkDelete={bulkDelete} />
+        <RbAddButton showModal={() => showModal({} as assistmodel.Host)} />
+        <RbRefreshButton refreshList={refreshList} />
       </div>
-      <CreateEditModal
-        hosts={hosts}
-        currentHost={currentHost}
-        hostSchema={hostSchema}
-        isModalVisible={isModalVisible}
-        isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        refreshList={refreshList}
-        onCloseModal={onCloseModal}
-      />
       <div className="hosts-table">
         <RbTable
           rowKey="uuid"
@@ -275,6 +266,16 @@ export const HostsTable = (props: any) => {
           fetchBackups={fetchBackups}
         />
       </div>
+      <CreateEditModal
+        hosts={hosts}
+        currentHost={currentHost}
+        hostSchema={hostSchema}
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        refreshList={refreshList}
+        onCloseModal={onCloseModal}
+      />
     </div>
   );
 };
