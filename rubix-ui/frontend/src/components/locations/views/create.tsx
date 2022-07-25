@@ -1,5 +1,4 @@
-import { Button, Modal, Spin } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { AddLocation, UpdateLocation } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
@@ -7,20 +6,6 @@ import { JsonForm } from "../../../common/json-form";
 
 import Location = assistmodel.Location;
 import { assistmodel } from "../../../../wailsjs/go/models";
-
-export const AddButton = (props: any) => {
-  const { showModal } = props;
-
-  return (
-    <Button
-      type="primary"
-      onClick={() => showModal({} as Location)}
-      style={{ margin: "5px", float: "right" }}
-    >
-      <PlusOutlined /> Add
-    </Button>
-  );
-};
 
 export const CreateEditModal = (props: any) => {
   const {

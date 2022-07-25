@@ -1,9 +1,9 @@
-import { Button, Popconfirm, Space, Spin } from "antd";
+import { Spin } from "antd";
 import { useState } from "react";
-import { DeleteOutlined } from "@ant-design/icons";
 import { main } from "../../../../wailsjs/go/models";
 import { LocationFactory } from "../factory";
 import RbTable from "../../../common/rb-table";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 export const LocationsTable = (props: any) => {
   let { locations, isFetching, tableSchema, connUUID, refreshList } = props;
@@ -27,11 +27,7 @@ export const LocationsTable = (props: any) => {
 
   return (
     <div>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
