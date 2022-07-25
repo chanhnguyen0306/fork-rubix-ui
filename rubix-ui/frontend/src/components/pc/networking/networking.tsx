@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Spin } from "antd";
 import {
   GetPcGetNetworks,
   GetPcGetNetworksSchema,
-  Scanner,
 } from "../../../../wailsjs/go/main/App";
-import { Button, Spin } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
 import RbTable from "../../../common/rb-table";
+import { RbRefreshButton } from "../../../common/rb-table-actions";
 
 export const PcNetworking = () => {
   const [data, setData] = useState([] as []);
@@ -39,13 +38,7 @@ export const PcNetworking = () => {
   return (
     <>
       <h1>Rubix Scanner</h1>
-      <Button
-        type="primary"
-        onClick={refreshList}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <RedoOutlined /> Refresh
-      </Button>
+      <RbRefreshButton refreshList={refreshList} />
       <ScannerTable data={data} schema={schema} isFetching={isFetching} />
     </>
   );
