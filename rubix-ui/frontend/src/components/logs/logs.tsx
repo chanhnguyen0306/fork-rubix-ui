@@ -17,8 +17,6 @@ export const Logs = () => {
   }, []);
 
   const fetch = async () => {
-    console.log(4534);
-
     try {
       let res = await logFactory.GetAll();
       setLogs(res);
