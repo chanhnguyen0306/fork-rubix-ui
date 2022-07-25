@@ -7,6 +7,7 @@ import (
 	assistStore "github.com/NubeIO/rubix-assist/service/store"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/backend/store"
+	log "github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -42,7 +43,6 @@ func (app *App) assistUploadApp(connUUID, appName, version string) (*assistStore
 	if err != nil {
 		return nil, err
 	}
-
 	name, path, match, err := appStore.GetAppZipName(appName, version)
 	if err != nil {
 		return nil, err
@@ -52,6 +52,7 @@ func (app *App) assistUploadApp(connUUID, appName, version string) (*assistStore
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("error open file:%s err:%s", fileAndPath, err.Error()))
 	}
+	log.Errorln("assistUploadApp() ADD IN MATCH CHECK FOR APP INSTALLER")
 	pprint.PrintJOSN(match)
 	if err != nil {
 		return nil, err
@@ -75,12 +76,13 @@ func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 	return app.DB.GetReleaseByVersion(version)
 }
 
+//gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
 func (app *App) gitGetRelease(token, path string) (*store.Release, error) {
 	inst := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
-		Arch:    "armv7",
+		Arch:    "",
 	}
 	appStore, err := store.New(inst)
 	if err != nil {

@@ -46,7 +46,6 @@ func (app *App) resetFlow(ip string, port int) {
 		Ip:   ip,
 		Port: port,
 	})
-
 }
 
 // startup is called when the app starts. The context is saved
