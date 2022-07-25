@@ -9,10 +9,10 @@ export const LocationsTable = (props: any) => {
   let { locations, isFetching, tableSchema, connUUID, refreshList } = props;
   if (!locations) return <></>;
 
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+
   let factory = new LocationFactory();
   factory.connectionUUID = connUUID as string;
-
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);
