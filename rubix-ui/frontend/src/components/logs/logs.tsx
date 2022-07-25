@@ -1,11 +1,10 @@
-import {main, storage} from "../../../wailsjs/go/models";
-import React, { useEffect, useState } from "react";
+import { storage } from "../../../wailsjs/go/models";
+import { useEffect, useState } from "react";
 import { LogFactory } from "./factory";
 import { LogsTable } from "./views/table";
+import { RbRefreshButton } from "../../common/rb-table-actions";
 
 import VieLogs = storage.RubixConnection;
-import {Button, Popconfirm} from "antd";
-import {DeleteOutlined, RedoOutlined} from "@ant-design/icons";
 
 export const Logs = () => {
   const [logs, setLogs] = useState([] as VieLogs[]);
@@ -13,12 +12,13 @@ export const Logs = () => {
 
   let logFactory = new LogFactory();
 
-
   useEffect(() => {
     fetch();
   }, []);
 
   const fetch = async () => {
+    console.log(4534);
+
     try {
       let res = await logFactory.GetAll();
       setLogs(res);
@@ -31,21 +31,14 @@ export const Logs = () => {
   };
 
   return (
-      <>
-        <Button
-            type="primary"
-            onClick={fetch}
-            style={{margin: "5px", float: "right"}}
-        >
-          <RedoOutlined/> Refresh
-        </Button>
-        <LogsTable
-            logs={logs}
-            isFetching={isFetching}
-            setIsFetching={setIsFetching}
-            fetch={fetch}
-        />
-      </>
-
+    <>
+      <RbRefreshButton refreshList={fetch} />
+      <LogsTable
+        logs={logs}
+        isFetching={isFetching}
+        setIsFetching={setIsFetching}
+        fetch={fetch}
+      />
+    </>
   );
 };
