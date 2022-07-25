@@ -1,15 +1,15 @@
-import { storage } from "../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
-import { isObjectEmpty } from "../../utils/utils";
-import { ConnectionsTable } from "./views/table";
-import { AddButton, CreateEditModal } from "./views/create";
-import { ConnectionFactory } from "./factory";
-import { Button, Tabs } from "antd";
+import { Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
+import { storage } from "../../../wailsjs/go/models";
+import { isObjectEmpty } from "../../utils/utils";
+import { ConnectionFactory } from "./factory";
+import { ConnectionsTable } from "./views/table";
+import { CreateEditModal } from "./views/create";
 import { PcScanner } from "../pc/scanner/table";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
-import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
 export const Connections = () => {
   const { TabPane } = Tabs;
