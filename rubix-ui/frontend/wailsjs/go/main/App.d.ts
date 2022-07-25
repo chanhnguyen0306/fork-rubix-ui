@@ -3,129 +3,83 @@
 import {storage} from '../models';
 import {model} from '../models';
 import {assistmodel} from '../models';
-import {assitcli} from '../models';
 import {main} from '../models';
-import {datelib} from '../models';
+import {assitcli} from '../models';
 import {edge} from '../models';
 import {networking} from '../models';
+import {datelib} from '../models';
 
-export function GetBackupsNoData():Promise<Array<storage.Backup>>;
+export function AddConnection(arg1:storage.RubixConnection):Promise<storage.RubixConnection>;
 
-export function GetProducerClones(arg1:string,arg2:string):Promise<Array<model.Producer>>;
+export function AddConsumer(arg1:string,arg2:string,arg3:model.Consumer):Promise<model.Consumer>;
 
-export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage.Backup>;
+export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
+
+export function AddFlowNetwork(arg1:string,arg2:string,arg3:model.FlowNetwork):Promise<model.FlowNetwork>;
+
+export function AddHost(arg1:string,arg2:assistmodel.Host):Promise<assistmodel.Host>;
+
+export function AddHostNetwork(arg1:string,arg2:assistmodel.Network):Promise<assistmodel.Network>;
 
 export function AddLocation(arg1:string,arg2:assistmodel.Location):Promise<assistmodel.Location>;
 
-export function EditPoint(arg1:string,arg2:string,arg3:string,arg4:model.Point):Promise<model.Point>;
-
-export function GetBacnetDevicePoints(arg1:string,arg2:string,arg3:string,arg4:boolean,arg5:boolean):Promise<Array<model.Point>>;
-
-export function GetFlowDeviceSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
-
 export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<model.Network>;
 
-export function DeleteHostNetwork(arg1:string,arg2:string):Promise<assitcli.Response>;
+export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
 
-export function DeleteNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise<model.Producer>;
 
-export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
+export function AddStream(arg1:string,arg2:string,arg3:model.Stream):Promise<model.Stream>;
+
+export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
+
+export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
+
+export function DeleteBackup(arg1:string):Promise<string>;
+
+export function DeleteBackupBulk(arg1:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteConnection(arg1:string):Promise<string>;
+
+export function DeleteConnectionBulk(arg1:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteConsumer(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteConsumerBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteDevice(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteDeviceBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteFlowNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteFlowNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteFlowNetworkClone(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function DeleteFlowNetworkCloneBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
 export function DeleteHost(arg1:string,arg2:string):Promise<assitcli.Response>;
 
-export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
+export function DeleteHostBulk(arg1:string,arg2:Array<main.UUIDs>):Promise<any>;
 
-export function EditHost(arg1:string,arg2:string,arg3:assistmodel.Host):Promise<assistmodel.Host>;
+export function DeleteHostNetwork(arg1:string,arg2:string):Promise<assitcli.Response>;
 
-export function EditProducer(arg1:string,arg2:string,arg3:string,arg4:model.Producer):Promise<model.Producer>;
-
-export function GetHostActiveNetworks(arg1:string,arg2:string):Promise<any>;
-
-export function GetNetworkByPluginName(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Network>;
-
-export function DeleteLogBulk(arg1:Array<main.UUIDs>):Promise<any>;
-
-export function GetBackup(arg1:string):Promise<storage.Backup>;
-
-export function GetConsumerClones(arg1:string,arg2:string):Promise<Array<model.Consumer>>;
-
-export function GetLogsWithData():Promise<any>;
-
-export function AddConnection(arg1:storage.RubixConnection):Promise<storage.RubixConnection>;
-
-export function DeleteConnection(arg1:string):Promise<string>;
-
-export function DeleteDeviceBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
-
-export function GetFlowNetworkClone(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.FlowNetworkClone>;
-
-export function AddConsumer(arg1:string,arg2:string,arg3:model.Consumer):Promise<model.Consumer>;
-
-export function DeleteDevice(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetPluginsNames(arg1:string,arg2:string):Promise<Array<main.PluginName>>;
-
-export function GetConsumer(arg1:string,arg2:string,arg3:string):Promise<model.Consumer>;
-
-export function GetLocationTableSchema(arg1:string):Promise<any>;
-
-export function GetLogsByConnection(arg1:string):Promise<any>;
-
-export function GetNetworks(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Network>>;
-
-export function GetPcGetNetworksSchema():Promise<any>;
-
-export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>;
-
-export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise<model.Producer>;
-
-export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
-
-export function DeleteFlowNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+export function DeleteHostNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
 export function DeleteLocation(arg1:string,arg2:string):Promise<assitcli.Response>;
 
-export function GetPoints(arg1:string,arg2:string):Promise<Array<model.Point>>;
+export function DeleteLocationBulk(arg1:string,arg2:Array<main.UUIDs>):Promise<any>;
 
-export function DeleteFlowNetworkClone(arg1:string,arg2:string,arg3:string):Promise<any>;
+export function DeleteLogBulk(arg1:Array<main.UUIDs>):Promise<any>;
 
-export function EditDevice(arg1:string,arg2:string,arg3:string,arg4:model.Device):Promise<model.Device>;
+export function DeleteNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function GetDevices(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Device>>;
-
-export function GetPcTime():Promise<datelib.Time>;
-
-export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
-
-export function DeleteBackupBulk(arg1:Array<main.UUIDs>):Promise<any>;
-
-export function GetHosts(arg1:string):Promise<Array<assistmodel.Host>>;
-
-export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
-
-export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
-
-export function GetPointsForDevice(arg1:string,arg2:string,arg3:string):Promise<Array<model.Point>>;
-
-export function GetFlowNetworkSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetLocations(arg1:string):Promise<Array<assistmodel.Location>>;
-
-export function GetNetwork(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Network>;
-
-export function GetPlugins(arg1:string,arg2:string):Promise<Array<model.PluginConf>>;
-
-export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<model.Network>;
+export function DeleteNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
 export function DeletePoint(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function GetDevice(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Device>;
-
-export function GetPlugin(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf>;
+export function DeletePointBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
 export function DeleteProducer(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -133,118 +87,172 @@ export function DeleteProducerBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs
 
 export function DeleteStream(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function EditFlowNetwork(arg1:string,arg2:string,arg3:string,arg4:model.FlowNetwork):Promise<model.FlowNetwork>;
-
-export function GetProducers(arg1:string,arg2:string):Promise<Array<model.Producer>>;
-
-export function OpenURL(arg1:string):void;
-
-export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
-
-export function GetConnection(arg1:string):Promise<storage.RubixConnection>;
-
-export function GetHostTime(arg1:string,arg2:string):Promise<any>;
-
-export function GetNetworkDevices(arg1:string,arg2:string,arg3:string):Promise<Array<model.Device>>;
-
-export function DeleteBackup(arg1:string):Promise<string>;
-
-export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
-
-export function AddHostNetwork(arg1:string,arg2:assistmodel.Network):Promise<assistmodel.Network>;
-
-export function GetConnectionSchema():Promise<main.ConnectionSchema>;
-
-export function DeleteConsumer(arg1:string,arg2:string,arg3:string):Promise<any>;
+export function DeleteStreamBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
 export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
-
-export function GetNetworkSchema(arg1:string):Promise<any>;
-
-export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.StreamClone>>;
-
-export function AddFlowNetwork(arg1:string,arg2:string,arg3:model.FlowNetwork):Promise<model.FlowNetwork>;
-
-export function AddStream(arg1:string,arg2:string,arg3:model.Stream):Promise<model.Stream>;
-
-export function GetHost(arg1:string,arg2:string):Promise<assistmodel.Host>;
-
-export function GetPcGetNetworks():Promise<any>;
-
-export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
-
-export function GetBackupsByApplication(arg1:string,arg2:boolean):Promise<Array<storage.Backup>>;
-
-export function GetFlowNetworks(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.FlowNetwork>>;
-
-export function DeleteStreamBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
-
-export function GetFlowNetwork(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.FlowNetwork>;
-
-export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Network>;
-
-export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
-
-export function GetServerTime(arg1:string):Promise<any>;
-
-export function PingRubixAssist(arg1:string):Promise<boolean>;
-
-export function DeleteConsumerBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
-
-export function GetFlowNetworkClones(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.FlowNetworkClone>>;
-
-export function GetHostInterfaces(arg1:string,arg2:string):Promise<edge.InterfaceNames>;
-
-export function GetPluginByName(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf|Error>;
-
-export function GetPcInterfaces():Promise<networking.InterfaceNames>;
-
-export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
-
-export function DeleteNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetHostInternetIP(arg1:string,arg2:string):Promise<edge.InternetIP>;
-
-export function GetLogs():Promise<any>;
-
-export function DeletePointBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
-
-export function GetServerNetworking(arg1:string):Promise<any>;
-
-export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
-
-export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
-
-export function GetBackups():Promise<Array<storage.Backup>>;
-
-export function GetLocationSchema(arg1:string):Promise<any>;
-
-export function GetProducer(arg1:string,arg2:string,arg3:string):Promise<model.Producer>;
-
-export function AddHost(arg1:string,arg2:assistmodel.Host):Promise<assistmodel.Host>;
-
-export function PingHost(arg1:string,arg2:string):Promise<boolean>;
-
-export function GetStream(arg1:string,arg2:string,arg3:string):Promise<model.Stream>;
-
 export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
+
+export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
+
+export function EditDevice(arg1:string,arg2:string,arg3:string,arg4:model.Device):Promise<model.Device>;
+
+export function EditFlowNetwork(arg1:string,arg2:string,arg3:string,arg4:model.FlowNetwork):Promise<model.FlowNetwork>;
+
+export function EditHost(arg1:string,arg2:string,arg3:assistmodel.Host):Promise<assistmodel.Host>;
 
 export function EditHostNetwork(arg1:string,arg2:string,arg3:assistmodel.Network):Promise<assistmodel.Network>;
 
 export function EditNetwork(arg1:string,arg2:string,arg3:string,arg4:model.Network):Promise<model.Network>;
 
+export function EditPoint(arg1:string,arg2:string,arg3:string,arg4:model.Point):Promise<model.Point>;
+
+export function EditProducer(arg1:string,arg2:string,arg3:string,arg4:model.Producer):Promise<model.Producer>;
+
+export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
+
+export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
+
+export function GetBackup(arg1:string):Promise<storage.Backup>;
+
+export function GetBackups():Promise<Array<storage.Backup>>;
+
+export function GetBackupsByApplication(arg1:string,arg2:boolean):Promise<Array<storage.Backup>>;
+
+export function GetBackupsNoData():Promise<Array<storage.Backup>>;
+
+export function GetBacnetDevicePoints(arg1:string,arg2:string,arg3:string,arg4:boolean,arg5:boolean):Promise<Array<model.Point>>;
+
+export function GetConnection(arg1:string):Promise<storage.RubixConnection>;
+
+export function GetConnectionSchema():Promise<main.ConnectionSchema>;
+
 export function GetConnections():Promise<Array<storage.RubixConnection>>;
 
-export function DeleteFlowNetwork(arg1:string,arg2:string,arg3:string):Promise<any>;
+export function GetConsumer(arg1:string,arg2:string,arg3:string):Promise<model.Consumer>;
 
-export function GetFlowPointSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
-
-export function GetHostSchema(arg1:string):Promise<any>;
+export function GetConsumerClones(arg1:string,arg2:string):Promise<Array<model.Consumer>>;
 
 export function GetConsumers(arg1:string,arg2:string):Promise<Array<model.Consumer>>;
 
+export function GetDevice(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Device>;
+
+export function GetDevices(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Device>>;
+
+export function GetFlowDeviceSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetFlowNetwork(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.FlowNetwork>;
+
+export function GetFlowNetworkClone(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.FlowNetworkClone>;
+
+export function GetFlowNetworkClones(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.FlowNetworkClone>>;
+
+export function GetFlowNetworkSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetFlowNetworks(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.FlowNetwork>>;
+
+export function GetFlowPointSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function GetHost(arg1:string,arg2:string):Promise<assistmodel.Host>;
+
+export function GetHostActiveNetworks(arg1:string,arg2:string):Promise<any>;
+
+export function GetHostInterfaces(arg1:string,arg2:string):Promise<edge.InterfaceNames>;
+
+export function GetHostInternetIP(arg1:string,arg2:string):Promise<edge.InternetIP>;
+
+export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Network>;
+
+export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
+
+export function GetHostSchema(arg1:string):Promise<any>;
+
+export function GetHostTime(arg1:string,arg2:string):Promise<any>;
+
+export function GetHosts(arg1:string):Promise<Array<assistmodel.Host>>;
+
+export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
+
+export function GetLocationSchema(arg1:string):Promise<any>;
+
+export function GetLocationTableSchema(arg1:string):Promise<any>;
+
+export function GetLocations(arg1:string):Promise<Array<assistmodel.Location>>;
+
+export function GetLogs():Promise<any>;
+
+export function GetLogsByConnection(arg1:string):Promise<any>;
+
+export function GetLogsWithData():Promise<any>;
+
+export function GetNetwork(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Network>;
+
+export function GetNetworkByPluginName(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<model.Network>;
+
+export function GetNetworkDevices(arg1:string,arg2:string,arg3:string):Promise<Array<model.Device>>;
+
+export function GetNetworkSchema(arg1:string):Promise<any>;
+
+export function GetNetworks(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Network>>;
+
+export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<model.Network>;
+
+export function GetPcGetNetworks():Promise<any>;
+
+export function GetPcGetNetworksSchema():Promise<any>;
+
+export function GetPcInterfaces():Promise<networking.InterfaceNames>;
+
+export function GetPcTime():Promise<datelib.Time>;
+
+export function GetPlugin(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf>;
+
+export function GetPluginByName(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf>;
+
+export function GetPlugins(arg1:string,arg2:string):Promise<Array<model.PluginConf>>;
+
+export function GetPluginsNames(arg1:string,arg2:string):Promise<Array<main.PluginName>>;
+
 export function GetPoint(arg1:string,arg2:string,arg3:string):Promise<model.Point>;
 
+export function GetPoints(arg1:string,arg2:string):Promise<Array<model.Point>>;
+
+export function GetPointsForDevice(arg1:string,arg2:string,arg3:string):Promise<Array<model.Point>>;
+
+export function GetProducer(arg1:string,arg2:string,arg3:string):Promise<model.Producer>;
+
+export function GetProducerClones(arg1:string,arg2:string):Promise<Array<model.Producer>>;
+
+export function GetProducers(arg1:string,arg2:string):Promise<Array<model.Producer>>;
+
 export function GetScannerSchema():Promise<any>;
+
+export function GetServerNetworking(arg1:string):Promise<any>;
+
+export function GetServerTime(arg1:string):Promise<any>;
+
+export function GetStream(arg1:string,arg2:string,arg3:string):Promise<model.Stream>;
+
+export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.StreamClone>>;
+
+export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>;
+
+export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
+
+export function OpenURL(arg1:string):void;
+
+export function PingHost(arg1:string,arg2:string):Promise<boolean>;
+
+export function PingRubixAssist(arg1:string):Promise<boolean>;
+
+export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
+
+export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
+
+export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
+
+export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage.Backup>;
+
+export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
