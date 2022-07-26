@@ -1,5 +1,5 @@
 import { Button, Tabs } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { RedoOutlined } from "@ant-design/icons";
 import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
@@ -9,18 +9,25 @@ import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 
 import Devices = model.Device;
-import {openNotificationWithIcon} from "../../../../../utils/utils";
+import { openNotificationWithIcon } from "../../../../../utils/utils";
 
 export const FlowDevices = () => {
   const [data, setDevices] = useState([] as Devices[]);
   const [isFetching, setIsFetching] = useState(true);
   const [whoIs, setWhois] = useState([] as model.Device[]);
   let flowDeviceFactory = new FlowDeviceFactory();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
-  const hostUUID = location.state.hostUUID ?? "";
-  const networkUUID = location.state.networkUUID ?? "";
-  const pluginName = location.state.pluginName ?? "";
+  const {
+    connUUID = "",
+    hostUUID = "",
+    networkUUID = "",
+    pluginName = "",
+  } = useParams();
+  // const location = useLocation() as any;
+
+  // const connUUID = location.state.connUUID ?? "";
+  // const hostUUID = location.state.hostUUID ?? "";
+  // const networkUUID = location.state.networkUUID ?? "";
+  // const pluginName = location.state.pluginName ?? "";
 
   const { TabPane } = Tabs;
   const onChange = (key: string) => {

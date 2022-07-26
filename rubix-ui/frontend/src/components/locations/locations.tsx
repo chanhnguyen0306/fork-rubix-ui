@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { LocationFactory } from "./factory";
 import {
   DeleteLocation,
@@ -14,6 +14,7 @@ import { AddButton, CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
 
 import Location = assistmodel.Location;
+import { ROUTES } from "../../constants/routes";
 
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
@@ -120,15 +121,14 @@ export const Locations = () => {
           key: "actions",
           render: (_: any, location: Location) => (
             <Space size="middle">
-              <a
-                onClick={() =>
-                  navigate(`/networks/${location.uuid}`, {
-                    state: { connUUID: connUUID },
-                  })
-                }
+              <Link
+                to={ROUTES.LOCATION_NETWORKS.replace(
+                  ":connUUID",
+                  connUUID || ""
+                ).replace(":locUUID", location.uuid)}
               >
                 View
-              </a>
+              </Link>
               <a
                 onClick={() => {
                   showModal(location);

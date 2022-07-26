@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { MenuProps, Spin, Switch } from "antd";
 import { Layout, Menu } from "antd";
@@ -8,7 +8,7 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { assistmodel } from "../wailsjs/go/models";
-import { EventsOn } from "../wailsjs/runtime";
+import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
 import { ThemeProvider } from "./themes/theme-provider";
 import { useTheme } from "./themes/use-theme";
@@ -17,27 +17,31 @@ import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
 import "./App.css";
 
-
 import Location = assistmodel.Location;
 import Network = assistmodel.Network;
+import SearchableTree from "./components/searchable-tree/searchable-tree";
+import { ROUTES } from "./constants/routes";
 
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
-  { name: "Connections", icon: ApartmentOutlined, link: "/" },
-  { name: "Backups", icon: HistoryOutlined, link: "/backups" },
-  { name: "Logs", icon: HistoryOutlined, link: "/logs" },
-  { name: "Networking", icon: LinkOutlined, link: "/networking" },
-  { name: "Docs hardware", icon: LinkOutlined, link: "/docs" },
-  { name: "Docs software", icon: LinkOutlined, link: "/software" },
-  { name: "Docs dips", icon: LinkOutlined, link: "switch" },
+  { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
+  { name: "Backups", icon: HistoryOutlined, link: ROUTES.BACKUPS },
+  { name: "Logs", icon: HistoryOutlined, link: ROUTES.LOGS },
+  { name: "Networking", icon: LinkOutlined, link: ROUTES.NETWORKING },
+  { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
+  { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
+  { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
 ];
 
-let loadCount = 0;
+const OK_EVENT = "on";
+const ERR_EVENT = "err";
 
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
+  const location = useLocation();
+
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
@@ -50,6 +54,7 @@ const AppContainer = (props: any) => {
               theme="dark"
               items={menuItems}
               selectedKeys={[location.pathname]}
+              activeKey={location.pathname}
             />
             <Switch
               className="menu-toggle"
@@ -77,22 +82,9 @@ const AppContainer = (props: any) => {
 };
 
 const App: React.FC = () => {
+  let [isRegistered, updateIsRegistered] = useState(false);
   let locationFactory = new LocationFactory();
   let connectionFactory = new ConnectionFactory();
-
-  if (loadCount == 0) {
-    // main app loads a few time, I don't know why Aidan
-    EventsOn("ok", (val) => {
-      console.log(val, "networks");
-      openNotificationWithIcon("success", val);
-    });
-
-    EventsOn("err", (val) => {
-      console.log(val, "networks");
-      openNotificationWithIcon("error", val);
-    });
-  }
-  loadCount++;
 
   let navigate = useNavigate();
 
@@ -101,7 +93,28 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchConnections();
+    registerNotification();
+
+    return () => {
+      EventsOff(OK_EVENT);
+      EventsOff(ERR_EVENT);
+    };
   }, []);
+
+  const registerNotification = () => {
+    if (isRegistered) {
+      return;
+    }
+
+    updateIsRegistered(true);
+    EventsOn(OK_EVENT, (val) => {
+      openNotificationWithIcon("success", val);
+    });
+
+    EventsOn(ERR_EVENT, (val) => {
+      openNotificationWithIcon("error", val);
+    });
+  };
 
   const fetchConnections = async () => {
     try {
@@ -115,7 +128,6 @@ const App: React.FC = () => {
       }
       setConnections(connections);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsFetching(false);
     }
@@ -137,77 +149,69 @@ const App: React.FC = () => {
     navigate(link, state);
   };
 
-  const getSubMenuConnections = () => {
-    return connections.length === 0
-      ? null
-      : connections.map((c: any) => {
-          return {
-            key: c.uuid,
-            label: (
-              <div onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
-                {c.name}
-              </div>
-            ),
-            children: getSubMenuLocations(c.locations, c.uuid),
-          };
-        });
-  };
+  // const getSubMenuConnections = () => {
+  //   return connections.length === 0
+  //     ? null
+  //     : connections.map((c: any) => {
+  //         return {
+  //           key: c.uuid,
+  //           label: (
+  //             <div onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
+  //               {c.name}
+  //             </div>
+  //           ),
+  //           // children: getSubMenuLocations(c.locations, c.uuid),
+  //         };
+  //       });
+  // };
 
-  const getSubMenuLocations = (locations: any, connUUID: string) => {
-    return !locations || locations.length === 0
-      ? null
-      : locations.map((location: Location) => {
-          return {
-            key: location.uuid,
-            label: (
-              <div
-                onClick={(e) =>
-                  onClickMenu(e, `/networks/${location.uuid}`, {
-                    state: { connUUID: connUUID },
-                  })
-                }
-              >
-                {location.name}
-              </div>
-            ),
-            children:
-              location.networks.length === 0
-                ? null
-                : location.networks.map((network: Network) => {
-                    return {
-                      key: network.uuid,
-                      label: (
-                        <div
-                          onClick={(e) =>
-                            onClickMenu(e, `/hosts/${network.uuid}`, {
-                              state: { connUUID: connUUID },
-                            })
-                          }
-                        >
-                          {network.name}
-                        </div>
-                      ),
-                    };
-                  }),
-          };
-        });
-  };
+  // const getSubMenuLocations = (locations: any, connUUID: string) => {
+  //   return !locations || locations.length === 0
+  //     ? null
+  //     : locations.map((location: Location) => {
+  //         return {
+  //           key: location.uuid,
+  //           label: (
+  //             <div
+  //               onClick={(e) =>
+  //                 onClickMenu(e, `/networks/${location.uuid}`, {
+  //                   state: { connUUID: connUUID },
+  //                 })
+  //               }
+  //             >
+  //               {location.name}
+  //             </div>
+  //           ),
+  //           children:
+  //             location.networks.length === 0
+  //               ? null
+  //               : location.networks.map((network: Network) => {
+  //                   return {
+  //                     key: network.uuid,
+  //                     label: (
+  //                       <div
+  //                         onClick={(e) =>
+  //                           onClickMenu(e, `/hosts/${network.uuid}`, {
+  //                             state: { connUUID: connUUID },
+  //                           })
+  //                         }
+  //                       >
+  //                         {network.name}
+  //                       </div>
+  //                     ),
+  //                   };
+  //                 }),
+  //         };
+  //       });
+  // };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon, link } = item;
-    if (name === "Connections") {
-      return {
-        key: link,
-        icon: React.createElement(icon),
-        label: <div onClick={(e) => onClickMenu(e, link)}>{name}</div>,
-        children: getSubMenuConnections(),
-      };
-    }
 
     return {
       key: link,
       icon: React.createElement(icon),
-      label: <div onClick={(e) => onClickMenu(e, link)}>{name}</div>,
+      label: <NavLink to={link}>{name}</NavLink>,
     };
   });
 

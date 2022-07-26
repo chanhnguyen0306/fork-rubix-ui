@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Space, Spin, Image, PaginationProps, Select, Input } from "antd";
 import {
   MenuFoldOutlined,
@@ -18,9 +18,10 @@ import "./style.css";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import { SidePanel } from "./sideBar";
+import { ROUTES } from "../../../constants/routes";
 
 export const HostsTable = (props: any) => {
-  const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
+  const { hosts, networks, showModal, isFetching, connUUID, locUUID, netUUID, refreshList } =
     props;
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
@@ -97,15 +98,14 @@ export const HostsTable = (props: any) => {
       key: "actions",
       render: (_: any, host: Host) => (
         <Space size="middle">
-          <a
-            onClick={() =>
-              navigate(`/host/${host.uuid}`, {
-                state: { connUUID: connUUID, hostUUID: host.uuid },
-              })
-            }
+          <Link
+            to={ROUTES.HOST.replace(":connUUID", connUUID)
+              .replace(":locUUID", locUUID)
+              .replace(":netUUID", netUUID)
+              .replace(":hostUUID", host.uuid)}
           >
             View-Device
-          </a>
+          </Link>
           <a
             onClick={() => {
               showModal(host);

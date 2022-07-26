@@ -4,9 +4,12 @@ import { isObjectEmpty } from "../../utils/utils";
 import { ConnectionsTable } from "./views/table";
 import { AddButton, CreateEditModal } from "./views/create";
 import { ConnectionFactory } from "./factory";
-import { Button, Tabs } from "antd";
+import { Button, Tabs, Typography } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+
+const { Title } = Typography;
 
 import RubixConnection = storage.RubixConnection;
 
@@ -69,7 +72,8 @@ export const Connections = () => {
 
   return (
     <>
-      <h1>Connections</h1>
+      <Title level={2}>Connections</Title>
+      <RbxBreadcrumb />
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={

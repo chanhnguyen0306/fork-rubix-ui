@@ -20,9 +20,9 @@ export const Networks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  let { locUUID } = useParams();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
+  let { locUUID, connUUID = "" } = useParams();
+  // const location = useLocation() as any;
+  // const connUUID = location.state.connUUID || c;
 
   useEffect(() => {
     if (locations.length === 0) {
@@ -32,7 +32,7 @@ export const Networks = () => {
 
   useEffect(() => {
     fetchList();
-  }, [locUUID]);
+  }, [locUUID, connUUID]);
 
   const fetchList = async () => {
     try {
@@ -99,6 +99,7 @@ export const Networks = () => {
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
         connUUID={connUUID}
+        locUUID={locUUID}
         onCloseModal={onCloseModal}
         refreshList={refreshList}
       />
@@ -109,6 +110,7 @@ export const Networks = () => {
         showModal={showModal}
         refreshList={refreshList}
         connUUID={connUUID}
+        locUUID={locUUID}
       />
     </>
   );

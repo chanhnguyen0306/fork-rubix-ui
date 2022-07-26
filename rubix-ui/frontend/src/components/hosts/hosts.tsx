@@ -15,9 +15,9 @@ import { assistmodel } from "../../../wailsjs/go/models";
 
 export const Hosts = () => {
   const { TabPane } = Tabs;
-  let { netUUID } = useParams();
+  let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
+  // const connUUID = location.state.connUUID || c;
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
   const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
@@ -40,11 +40,13 @@ export const Hosts = () => {
     try {
       setIsFetching(true);
       const res = (await GetHosts(connUUID))
-        .filter((h) => h.network_uuid === netUUID)
+      .filter((h) => h.network_uuid === netUUID)
         .map((h) => {
+          console.log(h);
           h.enable = !h.enable ? false : h.enable;
           return h;
         });
+        console.log(res);
       setHosts(res);
     } catch (error) {
       console.log(error);
@@ -118,7 +120,6 @@ export const Hosts = () => {
             refreshList={refreshList}
             onCloseModal={onCloseModal}
           />
-
           <HostsTable
             hosts={hosts}
             networks={networks}
@@ -126,6 +127,8 @@ export const Hosts = () => {
             refreshList={refreshList}
             showModal={showModal}
             connUUID={connUUID}
+            netUUID={netUUID}
+            locUUID={locUUID}
           />
         </TabPane>
         <TabPane

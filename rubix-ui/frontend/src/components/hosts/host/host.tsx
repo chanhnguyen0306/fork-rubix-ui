@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Button, Tabs } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { assistmodel, model } from "../../../../wailsjs/go/models";
@@ -14,9 +14,7 @@ let networksKey = "NETWORKS";
 let pluginsKey = "PLUGINS";
 
 export const Host = () => {
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
-  const hostUUID = location.state.hostUUID ?? "";
+  let { connUUID = "", hostUUID = "" } = useParams();
 
   const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);

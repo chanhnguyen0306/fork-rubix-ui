@@ -5,18 +5,19 @@ import { FlowPointFactory } from "./factory";
 import Points = model.Point;
 import { Button } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { FlowPointsTable } from "./views/table";
 
 export const FlowPoints = () => {
   const [data, setDevices] = useState([] as Points[]);
   const [isFetching, setIsFetching] = useState(true);
   let flowPointFactory = new FlowPointFactory();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
-  const hostUUID = location.state.hostUUID ?? "";
-  const deviceUUID = location.state.deviceUUID ?? "";
-  const pluginName = location.state.pluginName ?? "";
+  const {
+    connUUID = "",
+    hostUUID = "",
+    deviceUUID = "",
+    pluginName = "",
+  } = useParams();
 
   useEffect(() => {
     fetch();
