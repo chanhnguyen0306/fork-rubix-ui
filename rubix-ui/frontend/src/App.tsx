@@ -1,5 +1,4 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
