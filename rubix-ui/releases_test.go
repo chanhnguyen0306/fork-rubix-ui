@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/git/pkg/git"
-	"github.com/NubeIO/rubix-assist/service/store"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
@@ -46,22 +45,9 @@ func TestApp_assistListStore(t *testing.T) { // list all apps on assist
 	pprint.PrintJOSN(store)
 }
 
-func TestApp_assistAdd(t *testing.T) { // add an app to assist
+func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
 	app := NewApp()
-	store, err := app.assistAddApp(connection, &store.App{
-		Name:    appName,
-		Version: appVersion,
-	})
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	pprint.PrintJOSN(store)
-}
-
-func TestApp_assistUpload(t *testing.T) { // upload an app to assist
-	app := NewApp()
-	store, err := app.assistUploadApp(connection, appName, appVersion)
+	store, err := app.assistAddUploadApp(connection, appName, appVersion)
 	fmt.Println(err)
 	if err != nil {
 		return

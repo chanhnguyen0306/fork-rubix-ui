@@ -4,6 +4,76 @@
   "repo": "flow-framework",
   "release": "v0.6.0",
   "port": 1660,
+  "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+  "apps": [
+    {
+      "name": "bacnet-server-driver",
+      "repo": "bacnet-server-c",
+      "description": "a bacnet server",
+      "products": [
+        "all"
+      ],
+      "version":"v0.0.2",
+      "max_version": "v0.0.9",
+      "flow_dependency": true,
+      "plugin_dependency": "bacnetserver"
+    },
+    {
+      "name": "rubix-io-driver",
+      "repo": "nubeio-rubix-app-pi-gpio-go",
+      "description": "rubix compute io service",
+      "port": 5001,
+      "products": [
+        "rubix-compute-io"
+      ],
+      "version":"v0.0.9",
+      "max_version": "v0.0.9",
+      "flow_dependency": true,
+      "plugin_dependency": "rubixio",
+      "service_dependency": [""]
+    },
+    {
+      "name": "lora-driver",
+      "repo": "nubeio-rubix-app-lora-serial-py",
+      "description": "rubix compute io service",
+      "products": [
+        "rubix-compute-5",
+        "rubix-compute-io"
+      ],
+      "version":"v0.0.1",
+      "max_version": "v0.0.9",
+      "flow_dependency": true,
+      "plugin_dependency": "lora",
+      "service_dependency": [""]
+    },
+    {
+      "name": "edge-28-driver",
+      "repo": "bbb-py-rest",
+      "description": "edge-28 service",
+      "products": [
+        "edge-28"
+      ],
+      "version":"v0.0.2",
+      "max_version": "v0.0.9",
+      "flow_dependency": true,
+      "plugin_dependency": "edge28",
+      "service_dependency": [""]
+    },
+    {
+      "name": "rubix-wires",
+      "repo": "wires-builds",
+      "description": "flow based programming engine",
+      "products": [
+        "all"
+      ],
+      "version":"v2.7.4",
+      "max_version": "v2.9.9",
+      "flow_dependency": false,
+      "plugin_dependency": "",
+      "service_dependency": ["nodejs"],
+      "custom_service_exec_start": "npm run prod:start --prod --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env"
+    }
+  ],
   "plugins": [
     {
       "name": "system",
@@ -60,61 +130,6 @@
       "app_dependency": [""],
       "plugin_dependency": [""],
       "service_dependency": ["chripstack", "mqtt"]
-    }
-  ],
-  "apps": [
-    {
-      "name": "bacnet-server-driver",
-      "repo": "bacnet-server-c",
-      "description": "a bacnet server",
-      "products": [
-        "all"
-      ],
-      "version":"v0.0.2",
-      "flow_dependency": true,
-      "plugin_dependency": "bacnetserver"
-    },
-    {
-      "name": "rubix-io-driver",
-      "repo": "nubeio-rubix-app-pi-gpio-go",
-      "description": "rubix compute io service",
-      "port": 5001,
-      "products": [
-        "rubix-compute-io"
-      ],
-      "version":"v0.0.9",
-      "flow_dependency": true,
-      "plugin_dependency": "rubixio",
-      "service_dependency": [""]
-    },
-    {
-      "name": "lora-driver",
-      "repo": "nubeio-rubix-app-lora-serial-py",
-      "description": "rubix compute io service",
-      "products": [
-        "rubix-compute-5",
-        "rubix-compute-io"
-      ],
-      "versions": [
-        "v0.0.1"
-      ],
-      "flow_dependency": true,
-      "plugin_dependency": "lora",
-      "service_dependency": [""]
-    },
-    {
-      "name": "edge-28-driver",
-      "repo": "bbb-py-rest",
-      "description": "edge-28 service",
-      "products": [
-        "edge-28"
-      ],
-      "versions": [
-        "v0.0.2"
-      ],
-      "flow_dependency": true,
-      "plugin_dependency": "edge28",
-      "service_dependency": [""]
     }
   ],
   "services": [
