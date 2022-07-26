@@ -1,21 +1,22 @@
 :root {
-    --error: "#FF174";
-    --black: "#000000";
-    --white: "#FFFFFF";
-    --export-color: "#009688";
-    --download-color: "#339999";
-    --json-color: "#13ce66";
-    --light-grey: "#dfdfdf";
-    --nube-aqua: "#339999";
-    --nube-green: "#8cd0ab";
-    --nube-yellow: "#fbb93e";
-    --nube-light-grey: "#666666";
-    --nube-dark-grey: "#333333";
-    --nube-light: "#eee";
+    --error: #FF1744;
+    --black: #000000;
+    --white: #FFFFFF;
+    --export-color: #009688;
+    --download-color: #339999;
+    --json-color: #13ce66;
+    --light-grey: #dfdfdf;
+    --nube-aqua: #339999;
+    --nube-green: #8cd0ab;
+    --nube-yellow: #fbb93e;
+    --nube-light-grey: #666666;
+    --nube-dark-grey: #333333;
+    --nube-light: #eee;
 }
 
 /* -----------for text----------- */
-.error--text {
+.error--text,
+.danger--text {
     color: var(--error) !important;
 }
 
@@ -67,59 +68,161 @@
     color: var(--nube-dark-grey) !important;
 }
 
-.nube-light--text {
-    color: var(--nube-light) !important;
+/* -----------for background----------- */
+.error,
+.danger {
+    background-color: var(--error) !important;
+    color: var(--white);
 }
 
-/* -----------for background----------- */
-.error {
-    background-color: var(--error) !important;
+.error,
+.danger.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--error);
+    border-color: var(--error);
+    background-color: var(--white) !important;
 }
 
 .black {
     background-color: var(--black) !important;
+    color: var(--white);
+}
+
+.black.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--black);
+    border-color: var(--black);
+    background-color: var(--white) !important;
 }
 
 .white {
     background-color: var(--white) !important;
+    color: var(--black);
+}
+
+.white.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--black);
+    border-color: var(--black);
+    background-color: var(--while) !important;
 }
 
 .export-color {
     background-color: var(--export-color) !important;
+    color: var(--white);
 }
+
+.export-color.ant-btn:hover,
+.ant-color-btn:focus,
+.ant-color-btn:active {
+    color: var(--export-color);
+    border-color: var(--export-color);
+    background-color: var(--white) !important;
+}
+
 
 .download-color {
     background-color: var(--download-color) !important;
+    color: var(--white);
+}
+
+.download-color.ant-btn:hover,
+.ant-color-btn:focus,
+.ant-color-btn:active {
+    color: var(--download-color);
+    border-color: var(--download-color);
+    background-color: var(--white) !important;
 }
 
 .json-color {
     background-color: var(--json-color) !important;
+    color: var(--white);
+}
+
+.json-color.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--json-color);
+    border-color: var(--json-color);
+    background-color: var(--white) !important;
 }
 
 .light-grey {
     background-color: var(--light-grey) !important;
+    color: var(--black);
+}
+
+.light-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: grey;
+    border-color: grey;
+    background-color: var(--white) !important;
 }
 
 .nube-aqua {
     background-color: var(--nube-aqua) !important;
+    color: var(--white);
+}
+
+.nube-aqua.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-aqua);
+    border-color: var(--nube-aqua);
+    background-color: var(--white) !important;
 }
 
 .nube-green {
     background-color: var(--nube-green) !important;
+    color: var(--white);
+}
+
+.nube-green.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-green);
+    border-color: var(--nube-green);
+    background-color: var(--white) !important;
 }
 
 .nube-yellow {
     background-color: var(--nube-yellow) !important;
 }
 
+.nube-yellow.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-yellow);
+    border-color: var(--nube-yellow);
+    background-color: var(--white) !important;
+}
+
 .nube-light-grey {
     background-color: var(--nube-light-grey) !important;
+    color: var(--white);
+}
+
+.nube-light-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-light-grey);
+    border-color: var(--nube-light-grey);
+    background-color: var(--white) !important;
 }
 
 .nube-dark-grey {
     background-color: var(--nube-dark-grey) !important;
+    color: var(--white);
 }
 
-.nube-light {
-    background-color: var(--nube-light) !important;
+.nube-dark-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-dark-grey);
+    border-color: var(--nube-dark-grey);
+    background-color: var(--white) !important;
 }
