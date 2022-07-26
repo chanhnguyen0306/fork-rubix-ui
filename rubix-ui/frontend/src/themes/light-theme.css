@@ -72,14 +72,13 @@
 .error,
 .danger {
     background-color: var(--error);
-    color: var(--white);
 }
 
 .error,
 .danger.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--error);
+    color: var(--error) !important;
     border-color: var(--error);
     background-color: var(--white) !important;
 }
@@ -92,7 +91,7 @@
 .black.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--black);
+    color: var(--black) !important;
     border-color: var(--black);
     background-color: var(--white) !important;
 }
@@ -105,20 +104,19 @@
 .white.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--black);
+    color: var(--black) !important;
     border-color: var(--black);
     background-color: var(--while) !important;
 }
 
 .export-color {
     background-color: var(--export-color);
-    color: var(--white);
 }
 
 .export-color.ant-btn:hover,
-.ant-color-btn:focus,
-.ant-color-btn:active {
-    color: var(--export-color);
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--export-color) !important;
     border-color: var(--export-color);
     background-color: var(--white) !important;
 }
@@ -126,65 +124,60 @@
 
 .download-color {
     background-color: var(--download-color);
-    color: var(--white);
 }
 
 .download-color.ant-btn:hover,
-.ant-color-btn:focus,
-.ant-color-btn:active {
-    color: var(--download-color);
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--download-color) !important;
     border-color: var(--download-color);
     background-color: var(--white) !important;
 }
 
 .json-color {
     background-color: var(--json-color);
-    color: var(--white);
 }
 
 .json-color.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--json-color);
+    color: var(--json-color) !important;
     border-color: var(--json-color);
     background-color: var(--white) !important;
 }
 
 .light-grey {
     background-color: var(--light-grey);
-    color: var(--black);
 }
 
 .light-grey.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: grey;
+    color: grey !important;
     border-color: grey;
     background-color: var(--white) !important;
 }
 
 .nube-aqua {
     background-color: var(--nube-aqua);
-    color: var(--white);
 }
 
 .nube-aqua.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--nube-aqua);
+    color: var(--nube-aqua) !important;
     border-color: var(--nube-aqua);
     background-color: var(--white) !important;
 }
 
 .nube-green {
     background-color: var(--nube-green);
-    color: var(--white);
 }
 
 .nube-green.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--nube-green);
+    color: var(--nube-green) !important;
     border-color: var(--nube-green);
     background-color: var(--white) !important;
 }
@@ -196,33 +189,31 @@
 .nube-yellow.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--nube-yellow);
+    color: var(--nube-yellow) !important;
     border-color: var(--nube-yellow);
     background-color: var(--white) !important;
 }
 
 .nube-light-grey {
     background-color: var(--nube-light-grey);
-    color: var(--white);
 }
 
 .nube-light-grey.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--nube-light-grey);
+    color: var(--nube-light-grey) !important;
     border-color: var(--nube-light-grey);
     background-color: var(--white) !important;
 }
 
 .nube-dark-grey {
     background-color: var(--nube-dark-grey);
-    color: var(--white);
 }
 
 .nube-dark-grey.ant-btn:hover,
 .ant-btn:focus,
 .ant-btn:active {
-    color: var(--nube-dark-grey);
+    color: var(--nube-dark-grey) !important;
     border-color: var(--nube-dark-grey);
     background-color: var(--white) !important;
 }
