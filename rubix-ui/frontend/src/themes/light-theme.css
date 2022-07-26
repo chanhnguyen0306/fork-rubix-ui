@@ -1,13 +1,125 @@
-/* error: "#FF174",
-        black: "#000000",
-        white: "#FFFFFF",
-        nubeAqua: "#339999",
-        nubeGreen: '#8cd0ab',
-        nubeYellow: '#fbb93e',
-        nubeLightGrey:"#666666",
-        nubeDarkGrey: "#333333",
-        exportColor: '#009688',
-        downloadColor: '#339999',
-        jsonGreen: "#13ce66",
-        nubeLightBackground: "#eee",
-        lightGrey: "#dfdfdf", */
+:root {
+    --error: "#FF174";
+    --black: "#000000";
+    --white: "#FFFFFF";
+    --export-color: "#009688";
+    --download-color: "#339999";
+    --json-color: "#13ce66";
+    --light-grey: "#dfdfdf";
+    --nube-aqua: "#339999";
+    --nube-green: "#8cd0ab";
+    --nube-yellow: "#fbb93e";
+    --nube-light-grey: "#666666";
+    --nube-dark-grey: "#333333";
+    --nube-light: "#eee";
+}
+
+/* -----------for text----------- */
+.error--text {
+    color: var(--error) !important;
+}
+
+.black--text {
+    color: var(--black) !important;
+}
+
+.white--text {
+    color: var(--white) !important;
+}
+
+.export-color--text {
+    color: var(--export-color) !important;
+}
+
+.download-color--text {
+    color: var(--download-color) !important;
+}
+
+.json-color--text {
+    color: var(--json-color) !important;
+}
+
+.error--text {
+    color: var(--error) !important;
+}
+
+.light-grey--text {
+    color: var(--light-grey) !important;
+}
+
+.nube-aqua--text {
+    color: var(--nube-aqua) !important;
+}
+
+.nube-green--text {
+    color: var(--nube-green) !important;
+}
+
+.nube-yellow--text {
+    color: var(--nube-yellow) !important;
+}
+
+.nube-light-grey--text {
+    color: var(--nube-light-grey) !important;
+}
+
+.nube-dark-grey--text {
+    color: var(--nube-dark-grey) !important;
+}
+
+.nube-light--text {
+    color: var(--nube-light) !important;
+}
+
+/* -----------for background----------- */
+.error {
+    background-color: var(--error) !important;
+}
+
+.black {
+    background-color: var(--black) !important;
+}
+
+.white {
+    background-color: var(--white) !important;
+}
+
+.export-color {
+    background-color: var(--export-color) !important;
+}
+
+.download-color {
+    background-color: var(--download-color) !important;
+}
+
+.json-color {
+    background-color: var(--json-color) !important;
+}
+
+.light-grey {
+    background-color: var(--light-grey) !important;
+}
+
+.nube-aqua {
+    background-color: var(--nube-aqua) !important;
+}
+
+.nube-green {
+    background-color: var(--nube-green) !important;
+}
+
+.nube-yellow {
+    background-color: var(--nube-yellow) !important;
+}
+
+.nube-light-grey {
+    background-color: var(--nube-light-grey) !important;
+}
+
+.nube-dark-grey {
+    background-color: var(--nube-dark-grey) !important;
+}
+
+.nube-light {
+    background-color: var(--nube-light) !important;
+}
