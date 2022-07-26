@@ -1,13 +1,14 @@
-/* 
-error: "#D50000",
-black: "#000000",
-white: "#FFFFFF",
-nubeAqua: "#339999",
-nubeGreen: '#8cd0ab',
-nubeYellow: '#fbb93e',
-nubeLightGrey:"#666666",
-nubeDarkGrey: "#333333",
-exportColor: '#009688',
-downloadColor: '#339999',
-jsonGreen: "#13ce66",
-lightGrey: "#dfdfdf", */
+:root {
+    --error: "#D50000";
+    --black: "#000000";
+    --white: "#FFFFFF";
+    --export-color: "#009688";
+    --download-color: "#339999";
+    --json-color: "#13ce66";
+    --light-grey: "#dfdfdf";
+    --nube-aqua: "#339999";
+    --nube-green: "#8cd0ab";
+    --nube-yellow: "#fbb93e";
+    --nube-light-grey: "#666666";
+    --nube-dark-grey: "#333333";
+}
