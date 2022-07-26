@@ -1,20 +1,21 @@
 :root {
-    --error: "#D50000";
-    --black: "#000000";
-    --white: "#FFFFFF";
-    --export-color: "#009688";
-    --download-color: "#339999";
-    --json-color: "#13ce66";
-    --light-grey: "#dfdfdf";
-    --nube-aqua: "#339999";
-    --nube-green: "#8cd0ab";
-    --nube-yellow: "#fbb93e";
-    --nube-light-grey: "#666666";
-    --nube-dark-grey: "#333333";
+    --error: #D50000;
+    --black: #000000;
+    --white: #FFFFFF;
+    --export-color: #009688;
+    --download-color: #339999;
+    --json-color: #13ce66;
+    --light-grey: #dfdfdf;
+    --nube-aqua: #339999;
+    --nube-green: #8cd0ab;
+    --nube-yellow: #fbb93e;
+    --nube-light-grey: #666666;
+    --nube-dark-grey: #333333;
 }
 
 /* -----------for text----------- */
-.error--text {
+.error--text,
+.danger--text {
     color: var(--error) !important;
 }
 
@@ -67,50 +68,152 @@
 }
 
 /* -----------for background----------- */
-.error {
+.error,
+.danger {
     background-color: var(--error) !important;
+}
+
+.error,
+.danger.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--error);
+    border-color: var(--error);
+    background-color: var(--black) !important;
 }
 
 .black {
     background-color: var(--black) !important;
+    color: var(--white);
+}
+
+.black.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--black);
+    border-color: var(--black);
+    background-color: var(--white) !important;
 }
 
 .white {
     background-color: var(--white) !important;
+    color: var(--black);
+}
+
+.white.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--white);
+    border-color: var(--white);
+    background-color: var(--black) !important;
 }
 
 .export-color {
     background-color: var(--export-color) !important;
 }
 
+.export-color.ant-btn:hover,
+.ant-color-btn:focus,
+.ant-color-btn:active {
+    color: var(--export-color);
+    border-color: var(--export-color);
+    background-color: var(--black) !important;
+}
+
+
 .download-color {
     background-color: var(--download-color) !important;
+}
+
+.download-color.ant-btn:hover,
+.ant-color-btn:focus,
+.ant-color-btn:active {
+    color: var(--download-color);
+    border-color: var(--download-color);
+    background-color: var(--black) !important;
 }
 
 .json-color {
     background-color: var(--json-color) !important;
 }
 
+.json-color.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--json-color);
+    border-color: var(--json-color);
+    background-color: var(--black) !important;
+}
+
 .light-grey {
     background-color: var(--light-grey) !important;
+    color: var(--black);
+}
+
+.light-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--light-grey);
+    border-color: var(--light-grey);
+    background-color: var(--black) !important;
 }
 
 .nube-aqua {
     background-color: var(--nube-aqua) !important;
 }
 
+.nube-aqua.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-aqua);
+    border-color: var(--nube-aqua);
+    background-color: var(--black) !important;
+}
+
 .nube-green {
     background-color: var(--nube-green) !important;
+}
+
+.nube-green.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-green);
+    border-color: var(--nube-green);
+    background-color: var(--black) !important;
 }
 
 .nube-yellow {
     background-color: var(--nube-yellow) !important;
 }
 
+.nube-yellow.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-yellow);
+    border-color: var(--nube-yellow);
+    background-color: var(--black) !important;
+}
+
 .nube-light-grey {
     background-color: var(--nube-light-grey) !important;
 }
 
+.nube-light-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-light-grey);
+    border-color: var(--nube-light-grey);
+    background-color: var(--black) !important;
+}
+
 .nube-dark-grey {
     background-color: var(--nube-dark-grey) !important;
+}
+
+.nube-dark-grey.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+    color: var(--nube-dark-grey);
+    border-color: var(--nube-dark-grey);
+    background-color: var(--black) !important;
 }
