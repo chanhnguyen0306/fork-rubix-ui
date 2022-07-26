@@ -66,6 +66,10 @@ export function DeleteConnection(arg1) {
   return window['go']['main']['App']['DeleteConnection'](arg1);
 }
 
+export function DeleteConnectionBulk(arg1) {
+  return window['go']['main']['App']['DeleteConnectionBulk'](arg1);
+}
+
 export function DeleteConsumer(arg1, arg2, arg3) {
   return window['go']['main']['App']['DeleteConsumer'](arg1, arg2, arg3);
 }
@@ -102,12 +106,24 @@ export function DeleteHost(arg1, arg2) {
   return window['go']['main']['App']['DeleteHost'](arg1, arg2);
 }
 
+export function DeleteHostBulk(arg1, arg2) {
+  return window['go']['main']['App']['DeleteHostBulk'](arg1, arg2);
+}
+
 export function DeleteHostNetwork(arg1, arg2) {
   return window['go']['main']['App']['DeleteHostNetwork'](arg1, arg2);
 }
 
+export function DeleteHostNetworkBulk(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DeleteHostNetworkBulk'](arg1, arg2, arg3);
+}
+
 export function DeleteLocation(arg1, arg2) {
   return window['go']['main']['App']['DeleteLocation'](arg1, arg2);
+}
+
+export function DeleteLocationBulk(arg1, arg2) {
+  return window['go']['main']['App']['DeleteLocationBulk'](arg1, arg2);
 }
 
 export function DeleteLogBulk(arg1) {

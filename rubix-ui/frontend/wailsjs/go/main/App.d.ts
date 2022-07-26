@@ -41,6 +41,8 @@ export function DeleteBackupBulk(arg1:Array<main.UUIDs>):Promise<any>;
 
 export function DeleteConnection(arg1:string):Promise<string>;
 
+export function DeleteConnectionBulk(arg1:Array<main.UUIDs>):Promise<any>;
+
 export function DeleteConsumer(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function DeleteConsumerBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
@@ -59,9 +61,15 @@ export function DeleteFlowNetworkCloneBulk(arg1:string,arg2:string,arg3:Array<ma
 
 export function DeleteHost(arg1:string,arg2:string):Promise<assitcli.Response>;
 
+export function DeleteHostBulk(arg1:string,arg2:Array<main.UUIDs>):Promise<any>;
+
 export function DeleteHostNetwork(arg1:string,arg2:string):Promise<assitcli.Response>;
 
+export function DeleteHostNetworkBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
 export function DeleteLocation(arg1:string,arg2:string):Promise<assitcli.Response>;
+
+export function DeleteLocationBulk(arg1:string,arg2:Array<main.UUIDs>):Promise<any>;
 
 export function DeleteLogBulk(arg1:Array<main.UUIDs>):Promise<any>;
 
