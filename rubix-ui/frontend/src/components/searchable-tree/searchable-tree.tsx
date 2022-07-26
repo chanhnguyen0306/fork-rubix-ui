@@ -44,7 +44,6 @@ const SearchableTree: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const navigate = useNavigate();
 
   const onExpand = (newExpandedKeys: any) => {
     setExpandedKeys(newExpandedKeys);
@@ -70,10 +69,6 @@ const SearchableTree: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    generateList(data);
-  }, [data]);
-
   const generateList = (data: TDataNode[]) => {
     const dataList: DataNodeListItem[] = [];
 
@@ -90,6 +85,7 @@ const SearchableTree: React.FC = () => {
     helperFn(data);
 
     updateDataList(dataList);
+    return dataList;
   };
 
   const getLocations = async (connUUID: string) => {
@@ -117,6 +113,18 @@ const SearchableTree: React.FC = () => {
     setAutoExpandParent(true);
   };
 
+  useEffect(() => {
+    fetchConnections();
+  }, []);
+
+  useEffect(() => {
+    const dataList = generateList(data);
+    const newExpandedKeys: any = dataList
+      .map((item) => getParentKey(item.key, data))
+      .filter((val) => val);
+    setExpandedKeys(newExpandedKeys);
+  }, [data]);
+
   const treeData = useMemo(() => {
     const loop = (data: TDataNode[]): TDataNode[] =>
       data.map((item: any) => {
@@ -125,8 +133,6 @@ const SearchableTree: React.FC = () => {
         const index = strTitle.indexOf(searchValue);
         const beforeStr = strTitle.substring(0, index);
         const afterStr = strTitle.slice(index + searchValue.length);
-        // console.log('item', item)
-        console.log("here", index);
 
         const title =
           index > -1 ? (
@@ -162,15 +168,6 @@ const SearchableTree: React.FC = () => {
 
     return loop(data);
   }, [searchValue, data]);
-
-  const onSelectNode = (selectedKeys: any, e: any) => {
-    console.log(e);
-    // navigate(e.node.next);
-  };
-
-  useEffect(() => {
-    fetchConnections();
-  }, []);
 
   return (
     <div>

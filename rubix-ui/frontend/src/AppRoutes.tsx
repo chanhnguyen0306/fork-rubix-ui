@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import { Logs } from "./components/logs/logs";
 import { Hosts } from "./components/hosts/hosts";
@@ -14,27 +14,8 @@ import { Connections } from "./components/connections/connections";
 import { PcNetworking } from "./components/pc/networking/networking";
 import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
 import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
-
+import ConnectionPage from "./components/connections/connection-page";
 import { ROUTES as routes } from "./constants/routes";
-import SearchableTree from "./components/searchable-tree/searchable-tree";
-import { Col, Row, Typography } from "antd";
-
-
-function ConnectionPage() {
-  const location = useLocation();
-  return (
-    <div>
-      <Row gutter={[8, 8]}>
-        <Col span={4}>
-          <SearchableTree />
-        </Col>
-        <Col span={20}>
-          <Outlet />
-        </Col>
-      </Row>
-    </div>
-  );
-}
 
 function AppRoutes() {
   return (
@@ -57,13 +38,37 @@ function AppRoutes() {
       <Route path={routes.DOCS_DIPS} element={<DipSwitch />} />
       <Route path={routes.NETWORKING} element={<PcNetworking />} />
       <Route path={routes.CONNECTIONS} element={<ConnectionPage />}>
-        <Route path={routes.CONNECTIONS} element={<Connections />} />
-        <Route path={routes.LOCATIONS} element={<Locations />} />
-        <Route path={routes.LOCATION_NETWORKS} element={<Networks />} />
-        <Route path={routes.LOCATION_NETWORK_HOSTS} element={<Hosts />} />
-        <Route path={routes.HOST} element={<Host />} />
-        <Route path={routes.DEVICES} element={<FlowDevices />} />
-        <Route path={routes.POINTS} element={<FlowPoints />} />
+        <Route
+          key={routes.CONNECTIONS}
+          path={routes.CONNECTIONS}
+          element={<Connections />}
+        />
+        <Route
+          key={routes.LOCATIONS}
+          path={routes.LOCATIONS}
+          element={<Locations />}
+        />
+        <Route
+          key={routes.LOCATION_NETWORKS}
+          path={routes.LOCATION_NETWORKS}
+          element={<Networks />}
+        />
+        <Route
+          key={routes.LOCATION_NETWORK_HOSTS}
+          path={routes.LOCATION_NETWORK_HOSTS}
+          element={<Hosts />}
+        />
+        <Route key={routes.HOST} path={routes.HOST} element={<Host />} />
+        <Route
+          key={routes.DEVICES}
+          path={routes.DEVICES}
+          element={<FlowDevices />}
+        />
+        <Route
+          key={routes.POINTS}
+          path={routes.POINTS}
+          element={<FlowPoints />}
+        />
       </Route>
     </Routes>
   );

@@ -4,7 +4,7 @@ import { isObjectEmpty } from "../../utils/utils";
 import { ConnectionsTable } from "./views/table";
 import { AddButton, CreateEditModal } from "./views/create";
 import { ConnectionFactory } from "./factory";
-import { Button, Tabs, Typography } from "antd";
+import { Button, Card, Tabs, Typography } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { PcScanner } from "../pc/scanner/table";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
@@ -72,55 +72,58 @@ export const Connections = () => {
 
   return (
     <>
-      <Title level={2}>Connections</Title>
-      <RbxBreadcrumb />
-      <Tabs defaultActiveKey="1">
-        <TabPane
-          tab={
-            <span>
-              <ApartmentOutlined />
-              Connections
-            </span>
-          }
-          key="1"
-        >
-          <Button
-            type="primary"
-            onClick={refreshList}
-            style={{ margin: "5px", float: "right" }}
+      <Title level={3} style={{ textAlign: "left" }}>
+        Connections
+      </Title>
+      <Card bordered={false}>
+        <Tabs defaultActiveKey="1">
+          <TabPane
+            tab={
+              <span>
+                <ApartmentOutlined />
+                Connections
+              </span>
+            }
+            key="1"
           >
-            <RedoOutlined /> Refresh
-          </Button>
-          <AddButton showModal={showModal} />
+            <Button
+              type="primary"
+              onClick={refreshList}
+              style={{ margin: "5px", float: "right" }}
+            >
+              <RedoOutlined /> Refresh
+            </Button>
+            <AddButton showModal={showModal} />
 
-          <CreateEditModal
-            connections={connections}
-            currentConnection={currentConnection}
-            connectionSchema={connectionSchema}
-            isModalVisible={isModalVisible}
-            isLoadingForm={isLoadingForm}
-            refreshList={refreshList}
-            onCloseModal={onCloseModal}
-          />
-          <ConnectionsTable
-            connections={connections}
-            isFetching={isFetching}
-            showModal={showModal}
-            refreshList={refreshList}
-          />
-        </TabPane>
-        <TabPane
-          tab={
-            <span>
-              <RedoOutlined />
-              Discover
-            </span>
-          }
-          key="2"
-        >
-          <PcScanner />
-        </TabPane>
-      </Tabs>
+            <CreateEditModal
+              connections={connections}
+              currentConnection={currentConnection}
+              connectionSchema={connectionSchema}
+              isModalVisible={isModalVisible}
+              isLoadingForm={isLoadingForm}
+              refreshList={refreshList}
+              onCloseModal={onCloseModal}
+            />
+            <ConnectionsTable
+              connections={connections}
+              isFetching={isFetching}
+              showModal={showModal}
+              refreshList={refreshList}
+            />
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                <RedoOutlined />
+                Discover
+              </span>
+            }
+            key="2"
+          >
+            <PcScanner />
+          </TabPane>
+        </Tabs>
+      </Card>
     </>
   );
 };
