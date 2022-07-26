@@ -1,11 +1,14 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { MenuProps, Spin, Switch } from "antd";
+import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
 import { Layout, Menu } from "antd";
 import {
-  LinkOutlined,
-  HistoryOutlined,
   ApartmentOutlined,
+  FileSearchOutlined,
+  ToolOutlined,
+  HistoryOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
 import { assistmodel } from "../wailsjs/go/models";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
@@ -15,11 +18,10 @@ import { useTheme } from "./themes/use-theme";
 import { openNotificationWithIcon } from "./utils/utils";
 import { ConnectionFactory } from "./components/connections/factory";
 import { LocationFactory } from "./components/locations/factory";
+import logo from "./assets/images/nube-frog-green.png";
 import "./App.css";
 
 import Location = assistmodel.Location;
-import Network = assistmodel.Network;
-import SearchableTree from "./components/searchable-tree/searchable-tree";
 import { ROUTES } from "./constants/routes";
 
 const { Content, Sider } = Layout;
@@ -32,6 +34,8 @@ const sidebarItems = [
   { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
   { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
   { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
+  { name: "Tools", icon: ToolOutlined, link: "" },
+  { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
 
 const OK_EVENT = "on";
@@ -49,13 +53,21 @@ const AppContainer = (props: any) => {
           <Spin />
         ) : (
           <>
+            <Row className="logo">
+              <Image width={36} src={logo} preview={false} />
+              <h4 className="title">Rubix Platform</h4>
+            </Row>
+            <Divider
+              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
+            />
             <Menu
               mode="inline"
               theme="dark"
               items={menuItems}
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
-            />
+            ></Menu>
+            <Menu mode="inline" theme="dark" items={menuItems} />
             <Switch
               className="menu-toggle"
               checkedChildren="🌙"
@@ -87,6 +99,7 @@ const App: React.FC = () => {
   let connectionFactory = new ConnectionFactory();
 
   let navigate = useNavigate();
+  const location = useLocation() as any;
 
   const [connections, setConnections] = useState([] as any[]);
   const [isFetching, setIsFetching] = useState(false);
@@ -114,6 +127,11 @@ const App: React.FC = () => {
     EventsOn(ERR_EVENT, (val) => {
       openNotificationWithIcon("error", val);
     });
+  };
+
+  const onClickMenu = (e: any, link: string, state?: any) => {
+    e.stopPropagation();
+    navigate(link, state);
   };
 
   const fetchConnections = async () => {
@@ -144,69 +162,105 @@ const App: React.FC = () => {
     return res;
   };
 
-  const onClickMenu = (e: any, link: string, state?: any) => {
-    e.stopPropagation();
-    navigate(link, state);
+
+  const getActiveClass = (link: string) => {
+    return location.pathname === link ? "active" : "";
   };
-
-  // const getSubMenuConnections = () => {
-  //   return connections.length === 0
-  //     ? null
-  //     : connections.map((c: any) => {
-  //         return {
-  //           key: c.uuid,
-  //           label: (
-  //             <div onClick={(e) => onClickMenu(e, `/locations/${c.uuid}`)}>
-  //               {c.name}
-  //             </div>
-  //           ),
-  //           // children: getSubMenuLocations(c.locations, c.uuid),
-  //         };
-  //       });
-  // };
-
-  // const getSubMenuLocations = (locations: any, connUUID: string) => {
-  //   return !locations || locations.length === 0
-  //     ? null
-  //     : locations.map((location: Location) => {
-  //         return {
-  //           key: location.uuid,
-  //           label: (
-  //             <div
-  //               onClick={(e) =>
-  //                 onClickMenu(e, `/networks/${location.uuid}`, {
-  //                   state: { connUUID: connUUID },
-  //                 })
-  //               }
-  //             >
-  //               {location.name}
-  //             </div>
-  //           ),
-  //           children:
-  //             location.networks.length === 0
-  //               ? null
-  //               : location.networks.map((network: Network) => {
-  //                   return {
-  //                     key: network.uuid,
-  //                     label: (
-  //                       <div
-  //                         onClick={(e) =>
-  //                           onClickMenu(e, `/hosts/${network.uuid}`, {
-  //                             state: { connUUID: connUUID },
-  //                           })
-  //                         }
-  //                       >
-  //                         {network.name}
-  //                       </div>
-  //                     ),
-  //                   };
-  //                 }),
-  //         };
-  //       });
-  // };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon, link } = item;
+
+    if (name === "Tools") {
+      return {
+        key: name,
+        icon: React.createElement(icon),
+        label: <div>{name}</div>,
+        children: [
+          {
+            key: "Networking",
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/networking")}
+                className={getActiveClass("/networking")}
+              >
+                Networking
+              </div>
+            ),
+          },
+          {
+            key: "Utils",
+            label: <div>Utils</div>,
+            children: [
+              {
+                key: "Logs",
+                label: (
+                  <div
+                    onClick={(e) => onClickMenu(e, "/logs")}
+                    className={getActiveClass("/logs")}
+                  >
+                    Logs
+                  </div>
+                ),
+              },
+              {
+                key: "Backups",
+                label: (
+                  <div
+                    onClick={(e) => onClickMenu(e, "/backups")}
+                    className={getActiveClass("/backups")}
+                  >
+                    Backups
+                  </div>
+                ),
+              },
+            ],
+          },
+        ],
+      };
+    }
+
+    if (name === "Documentation") {
+      return {
+        key: name,
+        icon: React.createElement(icon),
+        label: <div>{name}</div>,
+        children: [
+          {
+            key: "Hardware",
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/docs")}
+                className={getActiveClass("/docs")}
+              >
+                Hardware
+              </div>
+            ),
+          },
+          {
+            key: "Software",
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/software")}
+                className={getActiveClass("/software")}
+              >
+                Software
+              </div>
+            ),
+          },
+          {
+            key: "Dips",
+            label: (
+              <div
+                onClick={(e) => onClickMenu(e, "/switch")}
+                className={getActiveClass("/switch")}
+              >
+                Dips
+              </div>
+            ),
+          },
+        ],
+      };
+    }
 
     return {
       key: link,

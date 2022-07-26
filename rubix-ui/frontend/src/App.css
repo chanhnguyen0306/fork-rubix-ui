@@ -84,3 +84,22 @@
 .menu-toggle > .ant-switch-inner{
     font-size: larger;
 }
+
+.logo {
+    padding-left: 24px;
+    margin-top: 24px;
+}
+
+.logo > .ant-image{
+    margin-right: 15px;
+}
+
+.logo > .title{
+    margin: auto 0;
+    color: #fff;
+}
+
+.active {
+    font-weight: bolder;
+    color: #fff;
+}
