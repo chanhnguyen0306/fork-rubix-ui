@@ -6,9 +6,10 @@ import {
   GetNetworkSchema,
 } from "../../../wailsjs/go/main/App";
 import { isObjectEmpty } from "../../utils/utils";
-import { AddButton, CreateEditModal } from "./views/create";
+import { CreateEditModal } from "./views/create";
 import { NetworksTable } from "./views/table";
 import { assistmodel } from "../../../wailsjs/go/models";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
 export const Networks = () => {
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
@@ -90,8 +91,16 @@ export const Networks = () => {
   return (
     <>
       <h1>Networks</h1>
-
-      <AddButton showModal={showModal} />
+      <RbRefreshButton refreshList={refreshList} />
+      <RbAddButton showModal={() => showModal({} as assistmodel.Network)} />
+      <NetworksTable
+        networks={networks}
+        locations={locations}
+        isFetching={isFetching}
+        showModal={showModal}
+        refreshList={refreshList}
+        connUUID={connUUID}
+      />
       <CreateEditModal
         networks={networks}
         currentNetwork={currentNetwork}
@@ -101,14 +110,6 @@ export const Networks = () => {
         connUUID={connUUID}
         onCloseModal={onCloseModal}
         refreshList={refreshList}
-      />
-      <NetworksTable
-        networks={networks}
-        locations={locations}
-        isFetching={isFetching}
-        showModal={showModal}
-        refreshList={refreshList}
-        connUUID={connUUID}
       />
     </>
   );

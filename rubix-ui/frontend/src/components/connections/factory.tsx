@@ -2,6 +2,7 @@ import { Helpers } from "../../helpers/checks";
 import { main, storage } from "../../../wailsjs/go/models";
 import {
   AddConnection,
+  DeleteConnectionBulk,
   GetConnection,
   GetConnections,
   GetConnectionSchema,
@@ -132,5 +133,17 @@ export class ConnectionFactory {
         return undefined;
       });
     return one;
+  }
+
+  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+    let out: Promise<any> = {} as Promise<any>;
+    await DeleteConnectionBulk(uuids)
+      .then((res) => {
+        out = res as Promise<any>;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return out;
   }
 }

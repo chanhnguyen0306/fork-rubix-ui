@@ -1804,4 +1804,3 @@ export namespace assistmodel {
 	
 
 }
-

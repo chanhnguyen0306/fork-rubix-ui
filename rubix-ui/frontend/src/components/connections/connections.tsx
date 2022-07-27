@@ -1,12 +1,13 @@
-import { storage } from "../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
-import { isObjectEmpty } from "../../utils/utils";
-import { ConnectionsTable } from "./views/table";
-import { AddButton, CreateEditModal } from "./views/create";
-import { ConnectionFactory } from "./factory";
-import { Button, Tabs } from "antd";
+import { Tabs } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
+import { storage } from "../../../wailsjs/go/models";
+import { isObjectEmpty } from "../../utils/utils";
+import { ConnectionFactory } from "./factory";
+import { ConnectionsTable } from "./views/table";
+import { CreateEditModal } from "./views/create";
 import { PcScanner } from "../pc/scanner/table";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
 
@@ -80,15 +81,14 @@ export const Connections = () => {
           }
           key="1"
         >
-          <Button
-            type="primary"
-            onClick={refreshList}
-            style={{ margin: "5px", float: "right" }}
-          >
-            <RedoOutlined /> Refresh
-          </Button>
-          <AddButton showModal={showModal} />
-
+          <RbRefreshButton refreshList={refreshList} />
+          <RbAddButton showModal={() => showModal({} as RubixConnection)} />
+          <ConnectionsTable
+            connections={connections}
+            isFetching={isFetching}
+            showModal={showModal}
+            refreshList={refreshList}
+          />
           <CreateEditModal
             connections={connections}
             currentConnection={currentConnection}
@@ -97,12 +97,6 @@ export const Connections = () => {
             isLoadingForm={isLoadingForm}
             refreshList={refreshList}
             onCloseModal={onCloseModal}
-          />
-          <ConnectionsTable
-            connections={connections}
-            isFetching={isFetching}
-            showModal={showModal}
-            refreshList={refreshList}
           />
         </TabPane>
         <TabPane

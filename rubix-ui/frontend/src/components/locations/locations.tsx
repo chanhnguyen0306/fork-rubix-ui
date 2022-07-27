@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Space } from "antd";
 import { LocationFactory } from "./factory";
 import {
   DeleteLocation,
   GetConnection,
   GetLocations,
 } from "../../../wailsjs/go/main/App";
-import { isObjectEmpty } from "../../utils/utils";
-import { Space } from "antd";
 import { assistmodel, storage } from "../../../wailsjs/go/models";
-import RubixConnection = storage.RubixConnection;
-import { AddButton, CreateEditModal } from "./views/create";
+import { isObjectEmpty } from "../../utils/utils";
+import { CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
+import RubixConnection = storage.RubixConnection;
 import Location = assistmodel.Location;
 
 export const Locations = () => {
@@ -154,7 +155,15 @@ export const Locations = () => {
   return (
     <>
       <h2>Locations</h2>
-      <AddButton showModal={showModal} />
+      <RbRefreshButton refreshList={refreshList} />
+      <RbAddButton showModal={() => showModal({} as Location)} />
+      <LocationsTable
+        locations={locations}
+        isFetching={isFetching}
+        tableSchema={tableSchema}
+        connUUID={connUUID}
+        refreshList={refreshList}
+      />
       <CreateEditModal
         locations={locations}
         currentLocation={currentLocation}
@@ -165,11 +174,6 @@ export const Locations = () => {
         refreshList={refreshList}
         onCloseModal={onCloseModal}
         setIsFetching={setIsFetching}
-      />
-      <LocationsTable
-        locations={locations}
-        isFetching={isFetching}
-        tableSchema={tableSchema}
       />
     </>
   );

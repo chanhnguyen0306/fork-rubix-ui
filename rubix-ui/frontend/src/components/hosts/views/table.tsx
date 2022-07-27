@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Space, Spin, Image, PaginationProps, Select, Input } from "antd";
+import { Space, Spin, Image, PaginationProps } from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { DeleteHost } from "../../../../wailsjs/go/main/App";
-import { assistmodel, storage } from "../../../../wailsjs/go/models";
+import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
+import { isObjectEmpty } from "../../../utils/utils";
+import { HostsFactory } from "../factory";
 import { BackupFactory } from "../../backups/factory";
 import RbTable from "../../../common/rb-table";
+import { CreateEditModal } from "./create";
+import { SidePanel } from "./side-panel";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
 import imageEdge28 from "../../../assets/images/Edge-iO-28.png";
@@ -17,19 +20,30 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import { SidePanel } from "./side-panel";
+import {
+  RbAddButton,
+  RbDeleteButton,
+  RbRefreshButton,
+} from "../../../common/rb-table-actions";
 
 export const HostsTable = (props: any) => {
-  const { hosts, networks, showModal, isFetching, connUUID, refreshList } =
-    props;
+  const { hosts, networks, isFetching, connUUID, netUUID, refreshList } = props;
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const navigate = useNavigate();
   const [backups, setBackups] = useState([] as Array<storage.Backup>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
+  const [hostSchema, setHostSchema] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+
+  const navigate = useNavigate();
   let backupFactory = new BackupFactory();
+  let factory = new HostsFactory();
+  factory.connectionUUID = connUUID as string;
 
   const columns = [
     {
@@ -158,8 +172,32 @@ export const HostsTable = (props: any) => {
     }
   };
 
+  const getSchema = async () => {
+    setIsLoadingForm(true);
+    const res = await factory.Schema();
+    res.properties = {
+      ...res.properties,
+      network_uuid: {
+        title: "network",
+        type: "string",
+        anyOf: networks.map((n: assistmodel.Network) => {
+          return { type: "string", enum: [n.uuid], title: n.name };
+        }),
+        default: netUUID,
+      },
+    };
+    setHostSchema(res);
+    setIsLoadingForm(false);
+  };
+
   const deleteHost = async (uuid: string) => {
-    await DeleteHost(connUUID, uuid);
+    factory.uuid = uuid;
+    await factory.Delete();
+    refreshList();
+  };
+
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
     refreshList();
   };
 
@@ -183,23 +221,60 @@ export const HostsTable = (props: any) => {
     }
   };
 
+  const showModal = (host: assistmodel.Host) => {
+    setCurrentHost(host);
+    setIsModalVisible(true);
+    if (isObjectEmpty(hostSchema)) {
+      getSchema();
+    }
+  };
+
+  const onCloseModal = () => {
+    setIsModalVisible(false);
+    setCurrentHost({} as assistmodel.Host);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
   return (
-    <div className="hosts-table">
-      <RbTable
-        rowKey="uuid"
-        dataSource={hosts}
-        columns={columns}
-        loading={{ indicator: <Spin />, spinning: isFetching }}
-        className={collapsed ? "full-width" : "uncollapsed-style"}
-        onChange={onChange}
-      />
-      <SidePanel
-        collapsed={collapsed}
-        selectedHost={selectedHost}
+    <div>
+      <div className="hosts-table-actions">
+        <RbDeleteButton bulkDelete={bulkDelete} />
+        <RbAddButton showModal={() => showModal({} as assistmodel.Host)} />
+        <RbRefreshButton refreshList={refreshList} />
+      </div>
+      <div className="hosts-table">
+        <RbTable
+          rowKey="uuid"
+          rowSelection={rowSelection}
+          dataSource={hosts}
+          columns={columns}
+          loading={{ indicator: <Spin />, spinning: isFetching }}
+          className={collapsed ? "full-width" : "uncollapsed-style"}
+          onChange={onChange}
+        />
+        <SidePanel
+          collapsed={collapsed}
+          selectedHost={selectedHost}
+          connUUID={connUUID}
+          sidePanelHeight={sidePanelHeight}
+          backups={backups}
+          fetchBackups={fetchBackups}
+        />
+      </div>
+      <CreateEditModal
+        hosts={hosts}
+        currentHost={currentHost}
+        hostSchema={hostSchema}
+        isModalVisible={isModalVisible}
+        isLoadingForm={isLoadingForm}
         connUUID={connUUID}
-        sidePanelHeight={sidePanelHeight}
-        backups={backups}
-        fetchBackups={fetchBackups}
+        refreshList={refreshList}
+        onCloseModal={onCloseModal}
       />
     </div>
   );
