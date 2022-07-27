@@ -11,7 +11,7 @@ import (
 func (app *App) GetReleases() []store.Release {
 	out, err := app.getReleases()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get relases:%s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error get releases:%s", err.Error()))
 		return []store.Release{}
 	}
 	return out
@@ -24,7 +24,7 @@ func (app *App) getReleases() ([]store.Release, error) {
 func (app *App) GetRelease(uuid string) *store.Release {
 	out, err := app.getRelease(uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get relase:%s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error get release:%s", err.Error()))
 		return nil
 	}
 	return out
@@ -37,7 +37,7 @@ func (app *App) getRelease(uuid string) (*store.Release, error) {
 func (app *App) GetReleaseByVersion(version string) *store.Release {
 	out, err := app.getReleaseByVersion(version)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get relase by version:%s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error get release by version:%s", err.Error()))
 		return nil
 	}
 	return out
@@ -50,7 +50,7 @@ func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 func (app *App) AddRelease(token, version string) *store.Release {
 	out, err := app.addRelease(token, version)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error add relase:%s", err.Error()))
+		app.crudMessage(false, fmt.Sprintf("error add release:%s", err.Error()))
 		return nil
 	}
 	return out
