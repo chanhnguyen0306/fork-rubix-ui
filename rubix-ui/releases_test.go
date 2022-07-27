@@ -14,6 +14,17 @@ var appVersion = "v0.6.1"
 var product = "Server"
 var arch = "amd64"
 
+func TestApp_ListReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
+	token := git.DecodeToken(token)
+	fmt.Printf("%q\n", token)
+	app := NewApp()
+	release, err := app.gitListReleases(token)
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(release)
+}
+
 func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)

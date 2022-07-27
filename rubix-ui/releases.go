@@ -20,8 +20,23 @@ func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 	return app.DB.GetReleaseByVersion(version)
 }
 
+//gitListReleases gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
+func (app *App) gitListReleases(token string) ([]store.ReleaseList, error) {
+	inst := &store.Store{
+		App:     &installer.App{},
+		Version: "latest",
+		Repo:    "releases",
+		Arch:    "",
+	}
+	appStore, err := store.New(inst)
+	if err != nil {
+		return nil, err
+	}
+	return appStore.GitListReleases(token)
+}
+
 //gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (app *App) gitGetRelease(token, path string) (*store.Release, error) {
+func (app *App) gitDownloadRelease(token, path string) (*store.Release, error) {
 	inst := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
@@ -36,7 +51,7 @@ func (app *App) gitGetRelease(token, path string) (*store.Release, error) {
 }
 
 func (app *App) addRelease(token, path string) (*store.Release, error) {
-	release, err := app.gitGetRelease(token, path)
+	release, err := app.gitDownloadRelease(token, path)
 	if err != nil {
 		return nil, err
 	}

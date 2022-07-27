@@ -60,7 +60,7 @@ func TestStore_Git(t *testing.T) {
 	token := decodeToken("Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA==")
 	fmt.Printf("%q\n", token)
 
-	releases, err := appStore.Releases(token)
+	releases, err := appStore.GitListReleases(token)
 	if err != nil {
 		return
 	}
