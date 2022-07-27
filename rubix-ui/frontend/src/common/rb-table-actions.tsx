@@ -31,3 +31,21 @@ export const RbDeleteButton = (props: any) => {
     </Popconfirm>
   );
 };
+
+export const RbImportButton = (props: any) => {
+  const { showModal } = props;
+  return (
+    <Button type="primary" onClick={showModal} style={btn}>
+      <RedoOutlined /> Import
+    </Button>
+  );
+};
+
+export const RbExportButton = (props: any) => {
+  const { showModal } = props;
+  return (
+    <Button type="primary" onClick={showModal} style={btn}>
+      <RedoOutlined /> Export
+    </Button>
+  );
+};
