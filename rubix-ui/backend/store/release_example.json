@@ -4,6 +4,13 @@
   "repo": "flow-framework",
   "release": "v0.6.0",
   "port": 1660,
+  "products": [
+    "all"
+  ],
+  "arch": [
+    "amd64",
+    "armv7"
+  ],
   "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
   "apps": [
     {
@@ -13,7 +20,11 @@
       "products": [
         "all"
       ],
-      "version":"v0.0.2",
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "version": "v0.0.2",
       "max_version": "v0.0.9",
       "flow_dependency": true,
       "plugin_dependency": "bacnetserver"
@@ -26,11 +37,16 @@
       "products": [
         "rubix-compute-io"
       ],
-      "version":"v0.0.9",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.9",
       "max_version": "v0.0.9",
       "flow_dependency": true,
       "plugin_dependency": "rubixio",
-      "service_dependency": [""]
+      "service_dependency": [
+        "pigpi"
+      ]
     },
     {
       "name": "lora-driver",
@@ -40,24 +56,34 @@
         "rubix-compute-5",
         "rubix-compute-io"
       ],
-      "version":"v0.0.1",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.1",
       "max_version": "v0.0.9",
       "flow_dependency": true,
       "plugin_dependency": "lora",
-      "service_dependency": [""]
+      "service_dependency": [
+        "socat"
+      ]
     },
     {
       "name": "edge-28-driver",
-      "repo": "bbb-py-rest",
+      "repo": "bbb-rest-py",
       "description": "edge-28 service",
       "products": [
         "edge-28"
       ],
-      "version":"v0.0.2",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.2",
       "max_version": "v0.0.9",
       "flow_dependency": true,
       "plugin_dependency": "edge28",
-      "service_dependency": [""]
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "rubix-wires",
@@ -66,11 +92,17 @@
       "products": [
         "all"
       ],
-      "version":"v2.7.4",
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "version": "v2.7.4",
       "max_version": "v2.9.9",
       "flow_dependency": false,
       "plugin_dependency": "",
-      "service_dependency": ["nodejs"],
+      "service_dependency": [
+        "nodejs"
+      ],
       "custom_service_exec_start": "npm run prod:start --prod --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env"
     }
   ],
@@ -79,57 +111,141 @@
       "name": "system",
       "plugin": "system",
       "description": "system plugin is used for scheduling and a generic network, device and points",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        ""
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "postgres",
       "plugin": "postgres",
       "description": "",
-      "app_dependency": [""],
-      "plugin_dependency": ["history"],
-      "service_dependency": [""]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        ""
+      ],
+      "plugin_dependency": [
+        "history"
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "bacnet-master",
       "plugin": "postgres",
       "description": "a bacnet master plugin",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "app_dependency": [
+        ""
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "bacnet-server",
       "plugin": "postgres",
       "description": "nube bacnet server",
-      "app_dependency": ["bacnet-server-c"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        "bacnet-server-c"
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "lora",
-      "plugin": "postgres",
+      "plugin": "lora",
       "description": "nube lora protocol",
-      "app_dependency": ["loraserial"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "products": [
+        "rubix-compute-5",
+        "rubix-compute-io"
+      ],
+      "arch": [
+        "armv7"
+      ],
+      "app_dependency": [
+        "loraserial"
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "edge-28",
       "plugin": "edge28",
       "description": "nube edge-28 protocol",
-      "app_dependency": ["nubeio-rubix-app-bbb-rest-py"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "products": [
+        "edge-28"
+      ],
+      "arch": [
+        "armv7"
+      ],
+      "app_dependency": [
+        "nubeio-rubix-app-bbb-rest-py"
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        ""
+      ]
     },
     {
       "name": "lorawan",
       "plugin": "lorawan",
       "description": "nube lorawan",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": ["chripstack", "mqtt"]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        ""
+      ],
+      "plugin_dependency": [
+        ""
+      ],
+      "service_dependency": [
+        "chripstack",
+        "mqtt"
+      ]
     }
   ],
   "services": [
@@ -140,6 +256,10 @@
       "port": 1883,
       "products": [
         "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
       ]
     }
   ]

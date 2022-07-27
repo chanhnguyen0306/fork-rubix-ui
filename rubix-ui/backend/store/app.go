@@ -3,7 +3,6 @@ package store
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -66,15 +65,6 @@ func (inst *Store) ListStore() ([]App, error) {
 		return nil, err
 	}
 	return files, nil
-}
-
-func (inst *Store) GetAppZipName(appName, version string) (fileName string, path string, match *installer.MatchBuild, err error) {
-	path = inst.getAppPathAndVersion(appName, version)
-	check, err := inst.App.BuildCheck(appName, version, path)
-	if err != nil {
-		return "", path, nil, err
-	}
-	return filePath(check.BuildZipName), path, check, err
 }
 
 //makeUserPath  => /hom/user/rubix

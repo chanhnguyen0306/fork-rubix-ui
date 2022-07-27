@@ -11,6 +11,8 @@ var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
 var appName = "flow-framework"
 var appVersion = "v0.6.1"
+var product = "Server"
+var arch = "amd64"
 
 func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
@@ -21,14 +23,14 @@ func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in lo
 	if err != nil {
 		return
 	}
-	fmt.Println(release)
+	pprint.PrintJOSN(release)
 }
 
 func TestApp_downloadAll(t *testing.T) { // will save all apps from the version
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
 	app := NewApp()
-	_, err := app.downloadAll(token, "v0.6.1", "")
+	_, err := app.downloadAll(token, "v0.6.1", false)
 	fmt.Println(err)
 	if err != nil {
 		return
@@ -47,7 +49,7 @@ func TestApp_assistListStore(t *testing.T) { // list all apps on assist
 
 func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
 	app := NewApp()
-	store, err := app.assistAddUploadApp(connection, appName, appVersion)
+	store, err := app.assistAddUploadApp(connection, appName, appVersion, product, arch)
 	fmt.Println(err)
 	if err != nil {
 		return
