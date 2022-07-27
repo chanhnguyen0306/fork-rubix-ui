@@ -12,7 +12,7 @@ func (app *App) GetReleases() []store.Release {
 	out, err := app.getReleases()
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error get releases:%s", err.Error()))
-		return []store.Release{}
+		return nil
 	}
 	return out
 }
