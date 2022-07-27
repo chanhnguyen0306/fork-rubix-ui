@@ -43,6 +43,15 @@ func matchBackupUUID(uuid string) bool {
 	return false
 }
 
+func matchReleaseUUID(uuid string) bool {
+	if len(uuid) == 16 {
+		if uuid[0:4] == "rel_" {
+			return true
+		}
+	}
+	return false
+}
+
 func matchLogUUID(uuid string) bool {
 	if len(uuid) == 16 {
 		if uuid[0:4] == "log_" {
