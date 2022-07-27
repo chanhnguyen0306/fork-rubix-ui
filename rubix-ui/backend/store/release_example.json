@@ -2,8 +2,10 @@
   "uuid": "",
   "name": "flow-framework",
   "repo": "flow-framework",
+  "min_version": "v0.6.0",
   "release": "v0.6.0",
   "port": 1660,
+  "transport": "http",
   "products": [
     "all"
   ],
@@ -17,6 +19,8 @@
       "name": "bacnet-server-driver",
       "repo": "bacnet-server-c",
       "description": "a bacnet server",
+      "port": 47808,
+      "transport": "udp",
       "products": [
         "all"
       ],
@@ -25,15 +29,22 @@
         "armv7"
       ],
       "version": "v0.0.2",
-      "max_version": "v0.0.9",
+      "min_version": "v0.0.2",
+      "max_version": "v0.0.2",
       "flow_dependency": true,
-      "plugin_dependency": "bacnetserver"
+      "plugin_dependency": [
+        "bacnetserver"
+      ],
+      "service_dependency": [
+        "socat"
+      ]
     },
     {
       "name": "rubix-io-driver",
       "repo": "nubeio-rubix-app-pi-gpio-go",
       "description": "rubix compute io service",
       "port": 5001,
+      "transport": "http",
       "products": [
         "rubix-compute-io"
       ],
@@ -41,9 +52,12 @@
         "armv7"
       ],
       "version": "v0.0.9",
+      "min_version": "v0.0.9",
       "max_version": "v0.0.9",
       "flow_dependency": true,
-      "plugin_dependency": "rubixio",
+      "plugin_dependency": [
+        "rubixio"
+      ],
       "service_dependency": [
         "pigpi"
       ]
@@ -52,6 +66,7 @@
       "name": "lora-driver",
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
+      "transport": "serial",
       "products": [
         "rubix-compute-5",
         "rubix-compute-io"
@@ -60,9 +75,12 @@
         "armv7"
       ],
       "version": "v0.0.1",
-      "max_version": "v0.0.9",
+      "min_version": "v0.0.1",
+      "max_version": "v0.0.1",
       "flow_dependency": true,
-      "plugin_dependency": "lora",
+      "plugin_dependency": [
+        "lora"
+      ],
       "service_dependency": [
         "socat"
       ]
@@ -71,6 +89,8 @@
       "name": "edge-28-driver",
       "repo": "bbb-rest-py",
       "description": "edge-28 service",
+      "port": 5000,
+      "transport": "http",
       "products": [
         "edge-28"
       ],
@@ -80,15 +100,18 @@
       "version": "v0.0.2",
       "max_version": "v0.0.9",
       "flow_dependency": true,
-      "plugin_dependency": "edge28",
+      "plugin_dependency": [
+        "edge28"
+      ],
       "service_dependency": [
-        ""
       ]
     },
     {
       "name": "rubix-wires",
       "repo": "wires-builds",
       "description": "flow based programming engine",
+      "port": 1313,
+      "transport": "http",
       "products": [
         "all"
       ],
@@ -99,7 +122,8 @@
       "version": "v2.7.4",
       "max_version": "v2.9.9",
       "flow_dependency": false,
-      "plugin_dependency": "",
+      "plugin_dependency": [
+      ],
       "service_dependency": [
         "nodejs"
       ],
@@ -119,18 +143,17 @@
         "armv7"
       ],
       "app_dependency": [
-        ""
       ],
       "plugin_dependency": [
-        ""
       ],
       "service_dependency": [
-        ""
       ]
     },
     {
       "name": "postgres",
       "plugin": "postgres",
+      "port": 5432,
+      "transport": "tcp",
       "description": "",
       "products": [
         "all"
@@ -140,33 +163,19 @@
         "armv7"
       ],
       "app_dependency": [
-        ""
       ],
       "plugin_dependency": [
         "history"
       ],
       "service_dependency": [
-        ""
       ]
     },
     {
       "name": "bacnet-master",
-      "plugin": "postgres",
+      "plugin": "bacnetmaster",
       "description": "a bacnet master plugin",
-      "app_dependency": [
-        ""
-      ],
-      "plugin_dependency": [
-        ""
-      ],
-      "service_dependency": [
-        ""
-      ]
-    },
-    {
-      "name": "bacnet-server",
-      "plugin": "postgres",
-      "description": "nube bacnet server",
+      "port": 47808,
+      "transport": "udp",
       "products": [
         "all"
       ],
@@ -175,19 +184,38 @@
         "armv7"
       ],
       "app_dependency": [
-        "bacnet-server-c"
       ],
       "plugin_dependency": [
-        ""
       ],
       "service_dependency": [
-        ""
+      ]
+    },
+    {
+      "name": "bacnet-server",
+      "plugin": "bacnet-server",
+      "description": "nube bacnet server",
+      "port": 47809,
+      "transport": "udp",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        "bacnet-server-driver"
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
       ]
     },
     {
       "name": "lora",
       "plugin": "lora",
       "description": "nube lora protocol",
+      "transport": "serial",
       "products": [
         "rubix-compute-5",
         "rubix-compute-io"
@@ -196,19 +224,19 @@
         "armv7"
       ],
       "app_dependency": [
-        "loraserial"
+        "lora-driver"
       ],
       "plugin_dependency": [
-        ""
       ],
       "service_dependency": [
-        ""
       ]
     },
     {
       "name": "edge-28",
       "plugin": "edge28",
       "description": "nube edge-28 protocol",
+      "port": 5000,
+      "transport": "http",
       "products": [
         "edge-28"
       ],
@@ -216,19 +244,19 @@
         "armv7"
       ],
       "app_dependency": [
-        "nubeio-rubix-app-bbb-rest-py"
+        "edge-28-driver"
       ],
       "plugin_dependency": [
-        ""
       ],
       "service_dependency": [
-        ""
       ]
     },
     {
       "name": "lorawan",
       "plugin": "lorawan",
       "description": "nube lorawan",
+      "port": 1883,
+      "transport": "mqtt",
       "products": [
         "all"
       ],
@@ -237,10 +265,8 @@
         "armv7"
       ],
       "app_dependency": [
-        ""
       ],
       "plugin_dependency": [
-        ""
       ],
       "service_dependency": [
         "chripstack",
@@ -254,6 +280,7 @@
       "service_name": "mosquitto",
       "description": "a local mqtt broker",
       "port": 1883,
+      "transport": "mqtt",
       "products": [
         "all"
       ],
