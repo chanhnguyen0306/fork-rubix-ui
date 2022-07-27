@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *Store) GitDownload(repo, version, arch, destination, token string) (*git.DownloadResponse, error) {
+func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git.DownloadOptions) (*git.DownloadResponse, error) {
 	if token == "" {
 		return nil, errors.New("git token can not be empty")
 	}
@@ -20,7 +20,7 @@ func (inst *Store) GitDownload(repo, version, arch, destination, token string) (
 	}
 	ctx := context.Background()
 	gitClient = git.NewClient(token, opts, ctx)
-	download, err := gitClient.Download(destination)
+	download, err := gitClient.Download(gitOptions)
 	if err != nil {
 		return nil, err
 	}

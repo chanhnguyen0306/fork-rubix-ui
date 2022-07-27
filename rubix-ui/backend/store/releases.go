@@ -9,37 +9,45 @@ import (
 )
 
 type Release struct {
-	UUID    string `json:"uuid"`
-	Name    string `json:"name"`
-	Repo    string `json:"repo"`
-	Release string `json:"release"`
-	Port    int    `json:"port"`
+	Uuid                string   `json:"uuid"`
+	Name                string   `json:"name"`
+	Repo                string   `json:"repo"`
+	Release             string   `json:"release"`
+	Port                int      `json:"port"`
+	Products            []string `json:"products"`
+	Arch                []string `json:"arch"`
+	AppSpecficExecStart string   `json:"app_specfic_exec_start"`
+	Apps                []struct {
+		Name                   string   `json:"name"`
+		Repo                   string   `json:"repo"`
+		Description            string   `json:"description"`
+		Products               []string `json:"products"`
+		Arch                   []string `json:"arch"`
+		Version                string   `json:"version"`
+		MaxVersion             string   `json:"max_version"`
+		FlowDependency         bool     `json:"flow_dependency"`
+		PluginDependency       string   `json:"plugin_dependency"`
+		Port                   int      `json:"port,omitempty"`
+		ServiceDependency      []string `json:"service_dependency,omitempty"`
+		CustomServiceExecStart string   `json:"custom_service_exec_start,omitempty"`
+	} `json:"apps"`
 	Plugins []struct {
 		Name              string   `json:"name"`
 		Plugin            string   `json:"plugin"`
 		Description       string   `json:"description"`
+		Products          []string `json:"products,omitempty"`
+		Arch              []string `json:"arch,omitempty"`
 		AppDependency     []string `json:"app_dependency"`
 		PluginDependency  []string `json:"plugin_dependency"`
 		ServiceDependency []string `json:"service_dependency"`
 	} `json:"plugins"`
-	Apps []struct {
-		Name              string   `json:"name"`
-		Repo              string   `json:"repo"`
-		Description       string   `json:"description"`
-		Products          []string `json:"products"`
-		Version           string   `json:"version,omitempty"`
-		FlowDependency    bool     `json:"flow_dependency"`
-		PluginDependency  string   `json:"plugin_dependency"`
-		Port              int      `json:"port,omitempty"`
-		ServiceDependency []string `json:"service_dependency,omitempty"`
-		Versions          []string `json:"versions,omitempty"`
-	} `json:"apps"`
 	Services []struct {
 		Name        string   `json:"name"`
 		ServiceName string   `json:"service_name"`
 		Description string   `json:"description"`
 		Port        int      `json:"port"`
 		Products    []string `json:"products"`
+		Arch        []string `json:"arch"`
 	} `json:"services"`
 }
 

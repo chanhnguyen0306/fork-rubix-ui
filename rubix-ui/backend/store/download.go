@@ -2,43 +2,67 @@ package store
 
 import (
 	"errors"
+	"github.com/NubeIO/git/pkg/git"
 )
 
 const flow = "flow-framework"
+const rubixWires = "rubix-wires"
+const wiresBuilds = "wires-builds"
 
 // DownloadAll make all the app store dirs
-func (inst *Store) DownloadAll(token, arch string, release *Release) ([]App, error) {
+func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
 	var out []App
-	app, err := inst.DownloadApp(token, flow, arch, release)
-	if err != nil {
-		return nil, err
-	}
-	out = append(out, *app)
-	for _, app := range release.Apps {
-		app, err := inst.DownloadApp(token, app.Name, arch, release)
+	var archTypes = []string{"amd64", "armv7"}
+	for _, archType := range archTypes { //download both arch types of FF
+		app, err := inst.downloadApp(token, flow, release.Release, flow, archType, cleanDownload, git.DownloadOptions{
+			AssetName: flow,
+			MatchName: true,
+			MatchArch: true,
+		})
 		if err != nil {
 			return nil, err
 		}
 		out = append(out, *app)
 	}
-	return out, err
+	for _, app := range release.Apps {
+		if app.Name == rubixWires {
+			app, err := inst.downloadApp(token, rubixWires, app.Version, wiresBuilds, "", cleanDownload, git.DownloadOptions{
+				AssetName:     rubixWires,
+				DownloadFirst: true,
+			})
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, *app)
+		} else if len(app.Arch) > 0 {
+			for _, arch := range app.Arch { // download both version of each app
+				app, err := inst.downloadApp(token, app.Name, app.Version, app.Repo, arch, cleanDownload, git.DownloadOptions{
+					AssetName: app.Repo,
+					MatchName: true,
+					MatchArch: true,
+				})
+				if err != nil {
+					return nil, err
+				}
+				out = append(out, *app)
+			}
+		}
+	}
+	return out, nil
 }
 
 // DownloadApp download an app
-func (inst *Store) DownloadApp(token, appName, arch string, release *Release) (*App, error) {
-	newApp := &App{}
-	for _, app := range release.Apps {
-		if appName == flow {
-			newApp.Name = release.Name
-			newApp.Version = release.Release
-			newApp.Repo = release.Repo
-		} else {
-			if app.Name == appName {
-				newApp.Name = app.Name
-				newApp.Version = app.Version
-				newApp.Repo = app.Repo
-			}
-		}
+func (inst *Store) DownloadApp(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	return inst.downloadApp(token, appName, version, repo, arch, cleanDownload, gitOptions)
+}
+
+// DownloadApp download an app
+func (inst *Store) downloadApp(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	newApp := &App{
+		Name:    appName,
+		Version: version,
+		Repo:    repo,
+		Arch:    arch,
 	}
 	if newApp.Name == "" {
 		return nil, errors.New("downloadApp: app name can not be empty")
@@ -53,10 +77,43 @@ func (inst *Store) DownloadApp(token, appName, arch string, release *Release) (*
 	if err != nil {
 		return nil, err
 	}
-	path := inst.getAppPathAndVersion(newApp.Name, newApp.Version)
-	_, err = inst.GitDownload(newApp.Repo, newApp.Version, arch, path, token)
-	if err != nil {
-		return nil, err
+	gitOptions.DownloadDestination = inst.getAppPathAndVersion(newApp.Name, newApp.Version)
+	var runDownload bool
+	var buildNameMatch bool
+	var buildArchMatch bool
+	if cleanDownload {
+		runDownload = true
+	} else {
+		path := inst.getAppPathAndVersion(appName, version)
+		buildDetails, err := inst.App.GetBuildZipNameByArch(path, arch)
+		if err != nil {
+			return nil, err
+		}
+		if buildDetails != nil {
+			buildName := buildDetails.MatchedName
+			buildArch := buildDetails.MatchedArch
+			if buildName == gitOptions.AssetName {
+				buildNameMatch = true
+			}
+			if buildArch == arch {
+				buildArchMatch = true
+			}
+			if buildNameMatch && buildArchMatch {
+				runDownload = false
+			} else {
+				runDownload = true
+			}
+		} else {
+			runDownload = true
+		}
+	}
+	if runDownload {
+		_, err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		if err != nil {
+			return nil, err
+		}
+		return app, nil
 	}
 	return app, nil
+
 }
