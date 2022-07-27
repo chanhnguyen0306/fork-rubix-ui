@@ -12,31 +12,22 @@ const wiresBuilds = "wires-builds"
 // DownloadAll make all the app store dirs
 func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
 	var out []App
-	var archTypes = []string{"amd64", "armv7"}
-	for _, archType := range archTypes { //download both arch types of FF
-		app, err := inst.downloadApp(token, flow, release.Release, flow, archType, cleanDownload, git.DownloadOptions{
-			AssetName: flow,
-			MatchName: true,
-			MatchArch: true,
-		})
+	framework, err := inst.DownloadFlowFramework(token, release.Release, cleanDownload)
+	if err != nil {
+		return nil, err
+	}
+	for _, app := range framework {
+		out = append(out, app)
+	}
+	for _, app := range release.Apps {
+		wires, err := inst.DownloadWires(token, release.Release, cleanDownload)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, *app)
-	}
-	for _, app := range release.Apps {
-		if app.Name == rubixWires {
-			app, err := inst.downloadApp(token, rubixWires, app.Version, wiresBuilds, "", cleanDownload, git.DownloadOptions{
-				AssetName:     rubixWires,
-				DownloadFirst: true,
-			})
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, *app)
-		} else if len(app.Arch) > 0 {
+		out = append(out, *wires)
+		if len(app.Arch) > 0 {
 			for _, arch := range app.Arch { // download both version of each app
-				app, err := inst.downloadApp(token, app.Name, app.Version, app.Repo, arch, cleanDownload, git.DownloadOptions{
+				app, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, cleanDownload, git.DownloadOptions{
 					AssetName: app.Repo,
 					MatchName: true,
 					MatchArch: true,
@@ -51,13 +42,69 @@ func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Releas
 	return out, nil
 }
 
-// DownloadApp download an app
-func (inst *Store) DownloadApp(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
-	return inst.downloadApp(token, appName, version, repo, arch, cleanDownload, gitOptions)
+// DownloadAllArchTypes all arch types
+func (inst *Store) DownloadAllArchTypes(token, appName, version, repo, assetName string, cleanDownload bool) ([]App, error) {
+	var out []App
+	var archTypes = []string{"amd64", "armv7"}
+	for _, archType := range archTypes { //download both arch types of FF
+		app, err := inst.gitDownloadAsset(token, appName, version, repo, archType, cleanDownload, git.DownloadOptions{
+			AssetName: assetName,
+			MatchName: true,
+			MatchArch: true,
+		})
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, *app)
+	}
+	return out, nil
 }
 
-// DownloadApp download an app
-func (inst *Store) downloadApp(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+// DownloadFlowFramework download ff
+func (inst *Store) DownloadFlowFramework(token, version string, cleanDownload bool) ([]App, error) {
+	var out []App
+	framework, err := inst.DownloadAllArchTypes(token, flow, version, flow, flow, cleanDownload)
+	if err != nil {
+		return nil, err
+	}
+	for _, app := range framework {
+		out = append(out, app)
+	}
+	return out, nil
+}
+
+// DownloadFlowPlugin download ff
+func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch string, cleanDownload bool) (*App, error) {
+	app, err := inst.gitDownloadAsset(token, flow, version, flow, arch, cleanDownload, git.DownloadOptions{
+		AssetName: pluginName,
+		MatchName: true,
+		MatchArch: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return app, nil
+}
+
+// DownloadWires download rubix-wires
+func (inst *Store) DownloadWires(token, version string, cleanDownload bool) (*App, error) {
+	app, err := inst.gitDownloadAsset(token, rubixWires, version, wiresBuilds, "", cleanDownload, git.DownloadOptions{
+		AssetName:     rubixWires,
+		DownloadFirst: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return app, nil
+}
+
+// GitDownloadAsset download an app
+func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	return inst.gitDownloadAsset(token, appName, version, repo, arch, cleanDownload, gitOptions)
+}
+
+// gitDownloadAsset download an app
+func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
 	newApp := &App{
 		Name:    appName,
 		Version: version,

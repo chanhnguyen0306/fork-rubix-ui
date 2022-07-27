@@ -117,7 +117,7 @@ func (app *App) downloadApp(token, appName, version, repo, arch string) (*store.
 	if err != nil {
 		return nil, err
 	}
-	downloaded, err := appStore.DownloadApp(token, appName, version, repo, arch, false, git.DownloadOptions{})
+	downloaded, err := appStore.GitDownloadAsset(token, appName, version, repo, arch, false, git.DownloadOptions{})
 	if err != nil {
 		return nil, err
 	}
