@@ -72,8 +72,8 @@ github.com/NubeDev/modbus v0.0.2/go.mod h1:EiDujV5KTuh1/HSSiwX/+SW6rZBW0wec8Rcdk
 github.com/NubeIO/configor v0.0.3/go.mod h1:HGAnJTAwAntKAi5EGMQUQHWE4o4fMYKyByWXXqFJUTA=
 github.com/NubeIO/flow-framework v0.5.6 h1:p+mOyh50hWVEh8Ptw/nEIMut4tyQ8WTYE9kBHyHnpM0=
 github.com/NubeIO/flow-framework v0.5.6/go.mod h1:ICpnIfGY0A5yOpIgkOLFGsqfyyLNC1TH/mnPc7ekDYg=
-github.com/NubeIO/git v0.0.4 h1:KfhFQl1GMw6np1akoSBwLRl9m7f9HxmC6XJURA/9hAU=
-github.com/NubeIO/git v0.0.4/go.mod h1:riHPLfUVWVBztSaswEInzpIw16fEtyFlRa0RONZlk7M=
+github.com/NubeIO/git v0.0.5 h1:WLoMa2WCxQPAWk+VMFWmVxXXPR0eFvnx0GxuR/+AXHE=
+github.com/NubeIO/git v0.0.5/go.mod h1:8erfDdg8tLbz5In0xrOV9E1qGkQiWaZgxGyHuv0VXgQ=
 github.com/NubeIO/lib-command v0.0.2 h1:jTg8YRSffIBsPAbU9X1Dn+L4bQ8e7PY2p7zJEcrTjrY=
 github.com/NubeIO/lib-command v0.0.2/go.mod h1:Qjl490ti7E47AhftOOvUfhAsM6NhZpBAeZlNfmy6Cd0=
 github.com/NubeIO/lib-date v0.0.1/go.mod h1:VvpSwdwcVCaOgTN+Ad96nHBkFDWTt3VekG933QCtGtc=
@@ -85,8 +85,8 @@ github.com/NubeIO/lib-dirs v0.0.2/go.mod h1:PCDWQm82Nezp9oyhkpqyfVH6w6+1lzfDwfRd
 github.com/NubeIO/lib-networking v0.0.4/go.mod h1:wO04Ul6Wdr5w/7s8UMZzV1/HMXuVSVFzqq7h5A3Vl6k=
 github.com/NubeIO/lib-networking v0.0.6 h1:f7MsAtsqHuLrlXcrdKSFkBwi3Sp7v7cdpw8lKv+uuf0=
 github.com/NubeIO/lib-networking v0.0.6/go.mod h1:wO04Ul6Wdr5w/7s8UMZzV1/HMXuVSVFzqq7h5A3Vl6k=
-github.com/NubeIO/lib-rubix-installer v0.0.2 h1:8XFBEHF7xaiHdG6HuQt3a4Uzn6H2s9gdou30sKpqMpQ=
-github.com/NubeIO/lib-rubix-installer v0.0.2/go.mod h1:3+ljNXcX6czFSXwJ+bOXb/eYn/7o9XqHi1oaQUfMTFs=
+github.com/NubeIO/lib-rubix-installer v0.0.3 h1:46dPLPAa+0aMa0+sCTieUxxQmE6m1XohOIRRemTNM2g=
+github.com/NubeIO/lib-rubix-installer v0.0.3/go.mod h1:jFMW/CAQ4/crLJABdonRfe67AYO6bdR9t8MAciwk0q8=
 github.com/NubeIO/lib-schema v0.0.3/go.mod h1:+XEsOqjtJ/NlVo13p+5nZQK4LDRKkJTB3SxPi6u8vhM=
 github.com/NubeIO/lib-schema v0.0.6 h1:bSLYq5aP1W4UW0uWko59TAmaUUoVVFoKrjuOQUY77uQ=
 github.com/NubeIO/lib-schema v0.0.6/go.mod h1:+XEsOqjtJ/NlVo13p+5nZQK4LDRKkJTB3SxPi6u8vhM=
@@ -103,8 +103,8 @@ github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0 h1:8dGLH9FnYFdpufF8VLXr9G2r7
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
 github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.6/go.mod h1:lRsVVVKF9T3b2l5tL39jpeF6NaqLELYuM4qiof9MShc=
 github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8/go.mod h1:MU13rBQBD1xc/n2aRvNyCr8HZ5NNTsPhiZSUFhIgrT4=
-github.com/NubeIO/rubix-assist v0.2.0 h1:Kn36lRDHWaJMs6wh7jC1xTVlGbLn/MqsqydObjy7VKs=
-github.com/NubeIO/rubix-assist v0.2.0/go.mod h1:eUJBM0H8bBgTpwi2EqTTcXY4vKGMWQJjZAqwp+GlVLg=
+github.com/NubeIO/rubix-assist v0.2.1 h1:SBm6hi62Hp8OykLjTdRgFZUHKOLZZU/Hd38uoFSYAJ0=
+github.com/NubeIO/rubix-assist v0.2.1/go.mod h1:7kur2+aaPazvFyHqSay3cLo6MJVacy1S2Uw0nzioVdI=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PaesslerAG/gval v1.1.1/go.mod h1:Fa8gfkCmUsELXgayr8sfL/sw+VzCVoa03dcOcR/if2w=
 github.com/PaesslerAG/jsonpath v0.1.0/go.mod h1:4BzmtoM/PI8fPO4aQGIusjGxGir2BzcV0grWtFzq1Y8=
@@ -396,6 +396,7 @@ github.com/hashicorp/mdns v1.0.4/go.mod h1:mtBihi+LeNXGtG8L9dX59gAEa12BDtBQSp4v/
 github.com/hashicorp/memberlist v0.3.0/go.mod h1:MS2lj3INKhZjWNqd3N0m3J+Jxf3DAOnAH9VT3Sh9MUE=
 github.com/hashicorp/serf v0.9.6/go.mod h1:TXZNMjZQijwlDvp+r0b63xZ45H7JmCmgg4gpTwn9UV4=
 github.com/hashicorp/serf v0.9.7/go.mod h1:TXZNMjZQijwlDvp+r0b63xZ45H7JmCmgg4gpTwn9UV4=
+github.com/hbollon/go-edlib v1.6.0/go.mod h1:wnt6o6EIVEzUfgbUZY7BerzQ2uvzp354qmS2xaLkrhM=
 github.com/helloyi/go-sshclient v1.1.0/go.mod h1:NrhRWsYJDjoQXTDWZ4YtVk84wZ4LK3NSM9jD2TZDAm8=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/iancoleman/strcase v0.2.0 h1:05I4QRnGpI0m37iZQRuskXh+w77mr6Z41lwQzuHLwW0=
@@ -1057,6 +1058,7 @@ golang.org/x/sys v0.0.0-20220412211240-33da011f77ad/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20220502124256-b6088ccd6cba/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 h1:0A+M6Uqn+Eje4kHMK80dtF3JCXC4ykBgQG4Fe06QRhQ=
 golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=

@@ -12,11 +12,11 @@ import (
 func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 	rel, _ := inst.GetReleaseByVersion(body.Release)
 	if rel != nil {
-		err := inst.DeleteRelease(rel.UUID)
+		err := inst.DeleteRelease(rel.Uuid)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(rel.UUID)
+		fmt.Println(rel.Uuid)
 		fmt.Println(rel.Release)
 	}
 
@@ -25,14 +25,14 @@ func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 }
 
 func (inst *db) addRelease(body *store.Release) (*store.Release, error) {
-	body.UUID = uuid.ShortUUID("rel")
+	body.Uuid = uuid.ShortUUID("rel")
 	data, err := json.Marshal(body)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 		return nil, err
 	}
 	err = inst.DB.Update(func(tx *buntdb.Tx) error {
-		_, _, err := tx.Set(body.UUID, string(data), nil)
+		_, _, err := tx.Set(body.Uuid, string(data), nil)
 		return err
 	})
 	if err != nil {
@@ -103,7 +103,7 @@ func (inst *db) GetReleases() ([]store.Release, error) {
 			if err != nil {
 				return false
 			}
-			if matchReleaseUUID(data.UUID) {
+			if matchReleaseUUID(data.Uuid) {
 				resp = append(resp, data)
 				//fmt.Printf("key: %s, value: %s\n", key, value)
 			}
