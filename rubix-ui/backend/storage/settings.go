@@ -15,7 +15,14 @@ type Settings struct {
 	GitToken string `json:"git_token"`
 }
 
-func (inst *db) Settings(body *Settings) (*Settings, error) {
+func (inst *db) AddSettings(body *Settings) (*Settings, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return nil, err
+	}
+	if len(settings) > 0 {
+		return nil, errors.New("settings can only be added once")
+	}
 	body.UUID = uuid.ShortUUID("set")
 	if body.GitToken != "" {
 		body.GitToken = encodeToken(body.GitToken)
@@ -37,6 +44,9 @@ func (inst *db) Settings(body *Settings) (*Settings, error) {
 }
 
 func (inst *db) UpdateSettings(uuid string, body *Settings) (*Settings, error) {
+	if body.GitToken != "" {
+		body.GitToken = encodeToken(body.GitToken)
+	}
 	j, err := json.Marshal(body)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
@@ -65,11 +75,19 @@ func (inst *db) DeleteSettings(uuid string) error {
 	return nil
 }
 
-func (inst *db) GetGitToken(uuid string) (string, error) {
-	if matchSettingsUUID(uuid) {
+func (inst *db) GetGitToken() (string, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return "", err
+	}
+	if len(settings) == 0 {
+		return "", errors.New("no settings have been added")
+	}
+	uuid_ := settings[0].UUID
+	if matchSettingsUUID(uuid_) {
 		var data *Settings
 		err := inst.DB.View(func(tx *buntdb.Tx) error {
-			val, err := tx.Get(uuid)
+			val, err := tx.Get(uuid_)
 			if err != nil {
 				return err
 			}
@@ -92,7 +110,31 @@ func (inst *db) GetGitToken(uuid string) (string, error) {
 	}
 }
 
-func (inst *db) GetSettings(uuid string) (*Settings, error) {
+func (inst *db) GetSettings() ([]Settings, error) {
+	var resp []Settings
+	var data Settings
+	err := inst.DB.View(func(tx *buntdb.Tx) error {
+		err := tx.Ascend("", func(key, value string) bool {
+			err := json.Unmarshal([]byte(value), &data)
+			if err != nil {
+				return false
+			}
+			if matchSettingsUUID(data.UUID) {
+				resp = append(resp, data)
+				//fmt.Printf("key: %s, value: %s\n", key, value)
+			}
+			return true
+		})
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return []Settings{}, err
+	}
+	return resp, nil
+}
+
+func (inst *db) GetSetting(uuid string) (*Settings, error) {
 	if matchSettingsUUID(uuid) {
 		var data *Settings
 		err := inst.DB.View(func(tx *buntdb.Tx) error {

@@ -8,54 +8,69 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/store"
 )
 
+func (app *App) GetReleases() []store.Release {
+	out, err := app.getReleases()
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error get relases:%s", err.Error()))
+		return []store.Release{}
+	}
+	return out
+}
+
 func (app *App) getReleases() ([]store.Release, error) {
 	return app.DB.GetReleases()
+}
+
+func (app *App) GetRelease(uuid string) *store.Release {
+	out, err := app.getRelease(uuid)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error get relase:%s", err.Error()))
+		return nil
+	}
+	return out
 }
 
 func (app *App) getRelease(uuid string) (*store.Release, error) {
 	return app.DB.GetRelease(uuid)
 }
 
+func (app *App) GetReleaseByVersion(version string) *store.Release {
+	out, err := app.getReleaseByVersion(version)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error get relase by version:%s", err.Error()))
+		return nil
+	}
+	return out
+}
+
 func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 	return app.DB.GetReleaseByVersion(version)
 }
 
-//gitListReleases gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (app *App) gitListReleases(token string) ([]store.ReleaseList, error) {
-	inst := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    "",
-	}
-	appStore, err := store.New(inst)
+func (app *App) AddRelease(token, version string) *store.Release {
+	out, err := app.addRelease(token, version)
 	if err != nil {
-		return nil, err
+		app.crudMessage(false, fmt.Sprintf("error add relase:%s", err.Error()))
+		return nil
 	}
-	return appStore.GitListReleases(token)
+	return out
 }
 
-//gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (app *App) gitDownloadRelease(token, path string) (*store.Release, error) {
-	inst := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    "",
-	}
-	appStore, err := store.New(inst)
-	if err != nil {
-		return nil, err
-	}
-	return appStore.DownLoadReleases(token, path)
-}
-
-func (app *App) addRelease(token, path string) (*store.Release, error) {
-	release, err := app.gitDownloadRelease(token, path)
+func (app *App) addRelease(token, version string) (*store.Release, error) {
+	release, err := app.gitDownloadRelease(token, version)
 	if err != nil {
 		return nil, err
 	}
 	return app.DB.AddRelease(release)
+}
+
+func (app *App) StoreDownloadAll(token, release string, cleanDownload bool) []store.App {
+	out, err := app.downloadAll(token, release, cleanDownload)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error download apps:%s", err.Error()))
+		return []store.App{}
+	}
+	return out
 }
 
 func (app *App) downloadAll(token, release string, cleanDownload bool) ([]store.App, error) {
@@ -80,6 +95,15 @@ func (app *App) downloadAll(token, release string, cleanDownload bool) ([]store.
 		return nil, err
 	}
 	return downloaded, err
+}
+
+func (app *App) StoreDownloadApp(token, appName, version, repo, arch string) *store.App {
+	out, err := app.downloadApp(token, appName, version, repo, arch)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error download app:%s", err.Error()))
+		return nil
+	}
+	return out
 }
 
 func (app *App) downloadApp(token, appName, version, repo, arch string) (*store.App, error) {
