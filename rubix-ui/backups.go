@@ -4,7 +4,19 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
+	"time"
 )
+
+func (app *App) ImportBackup(body *storage.Backup) string {
+	body.BackupInfo = fmt.Sprintf("was imported from host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+	_, err := app.addBackup(body)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return ""
+	}
+	return "imported backup ok"
+
+}
 
 func (app *App) addBackup(back *storage.Backup) (*storage.Backup, error) {
 	if back.ConnectionName == "" {

@@ -1,10 +1,11 @@
 import {main, storage} from "../../../wailsjs/go/models";
 import {
-    DeleteBackup, DeleteBackupBulk, DeleteLogBulk,
+    DeleteBackupBulk,
     GetBackup,
     GetBackups,
-    GetBackupsByApplication,
-    GetConnection, WiresBackup, WiresBackupRestore
+    GetBackupsByApplication, ImportBackup,
+    WiresBackup,
+    WiresBackupRestore
 } from "../../../wailsjs/go/main/App";
 import {Helpers} from "../../helpers/checks";
 
@@ -25,7 +26,7 @@ export class BackupFactory {
         await GetBackups().then(res => {
             all = res as unknown as Promise<Array<storage.Backup>>
         }).catch(err => {
-            return undefined
+            return all
         })
         return all
     }
@@ -40,9 +41,21 @@ export class BackupFactory {
         await GetBackupsByApplication(this.application, withData).then(res => {
             all = res as unknown as Promise<Array<storage.Backup>>
         }).catch(err => {
-            return undefined
+            return all
         })
         return all
+    }
+
+    async Import(body: storage.Backup): Promise<string> {
+        let one = ""
+        await ImportBackup(body)
+            .then((res) => {
+                one = res as string;
+            })
+            .catch((err) => {
+                return one;
+            });
+        return one;
     }
 
     async GetOne(): Promise<storage.Backup> {
@@ -54,7 +67,7 @@ export class BackupFactory {
                 this._this = one;
             })
             .catch((err) => {
-                return undefined;
+                return one;
             });
         return one;
     }
@@ -64,12 +77,12 @@ export class BackupFactory {
         await GetBackupsByApplication("RubixWires", false).then(res => {
             all = res as unknown as Promise<Array<storage.Backup>>
         }).catch(err => {
-            return undefined
+            return all
         })
         return all
     }
 
-    async WiresBackup(userComment:string): Promise<storage.Backup>{
+    async WiresBackup(userComment: string): Promise<storage.Backup> {
         let one: storage.Backup = {} as storage.Backup;
         await WiresBackup(this.connectionUUID, this.hostUUID, userComment)
             .then((res) => {
@@ -77,7 +90,7 @@ export class BackupFactory {
                 this._this = one;
             })
             .catch((err) => {
-                return undefined;
+                return one;
             });
         return one;
     }
@@ -89,7 +102,7 @@ export class BackupFactory {
                 out = res
             })
             .catch((err) => {
-                return undefined;
+                return out;
             });
         return out;
     }
@@ -99,7 +112,7 @@ export class BackupFactory {
         await DeleteBackupBulk(uuids).then(res => {
             out = res as Promise<any>
         }).catch(err => {
-            return undefined
+            return out
         })
         return out
     }

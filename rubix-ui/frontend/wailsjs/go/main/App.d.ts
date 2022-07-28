@@ -258,6 +258,8 @@ export function GitListReleases(arg1:string):Promise<Array<store.ReleaseList>>;
 
 export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
 
+export function ImportBackup(arg1:storage.Backup):Promise<string>;
+
 export function OpenURL(arg1:string):void;
 
 export function PingHost(arg1:string,arg2:string):Promise<boolean>;

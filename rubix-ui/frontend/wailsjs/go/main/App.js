@@ -498,6 +498,10 @@ export function HostRubixScan(arg1, arg2) {
   return window['go']['main']['App']['HostRubixScan'](arg1, arg2);
 }
 
+export function ImportBackup(arg1) {
+  return window['go']['main']['App']['ImportBackup'](arg1);
+}
+
 export function OpenURL(arg1) {
   return window['go']['main']['App']['OpenURL'](arg1);
 }
