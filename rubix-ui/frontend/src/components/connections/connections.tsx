@@ -12,6 +12,7 @@ import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 const { Title } = Typography;
 
 import RubixConnection = storage.RubixConnection;
+import { ROUTES } from "../../constants/routes";
 
 export const Connections = () => {
   const { TabPane } = Tabs;
@@ -75,7 +76,11 @@ export const Connections = () => {
       <Title level={3} style={{ textAlign: "left" }}>
         Connections
       </Title>
+
       <Card bordered={false}>
+        <RbxBreadcrumb
+          routes={[{ path: ROUTES.CONNECTIONS, breadcrumbName: "Connections" }]}
+        ></RbxBreadcrumb>
         <Tabs defaultActiveKey="1">
           <TabPane
             tab={

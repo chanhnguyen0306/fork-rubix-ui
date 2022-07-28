@@ -7,7 +7,7 @@ import {
   GetLocations,
 } from "../../../wailsjs/go/main/App";
 import { isObjectEmpty } from "../../utils/utils";
-import { Space } from "antd";
+import { Space, Typography, Card } from "antd";
 import { assistmodel, storage } from "../../../wailsjs/go/models";
 import RubixConnection = storage.RubixConnection;
 import { AddButton, CreateEditModal } from "./views/create";
@@ -15,6 +15,9 @@ import { LocationsTable } from "./views/table";
 
 import Location = assistmodel.Location;
 import { ROUTES } from "../../constants/routes";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+
+const { Title } = Typography;
 
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
@@ -151,26 +154,42 @@ export const Locations = () => {
     } catch (error) {}
   };
 
+  const routes = [
+    {
+      path: ROUTES.CONNECTIONS,
+      breadcrumbName: "Connections",
+    },
+    {
+      path: ROUTES.LOCATIONS.replace(":connUUID", (connUUID || "")),
+      breadcrumbName: "Location",
+    },
+  ];
+
   return (
     <>
-      <h2>Locations</h2>
-      <AddButton showModal={showModal} />
-      <CreateEditModal
-        locations={locations}
-        currentLocation={currentLocation}
-        locationSchema={locationSchema}
-        isModalVisible={isModalVisible}
-        isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        refreshList={refreshList}
-        onCloseModal={onCloseModal}
-        setIsFetching={setIsFetching}
-      />
-      <LocationsTable
-        locations={locations}
-        isFetching={isFetching}
-        tableSchema={tableSchema}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Locations
+      </Title>
+      <Card bordered={false}>
+        <RbxBreadcrumb routes={routes}/>
+        <AddButton showModal={showModal} />
+        <CreateEditModal
+          locations={locations}
+          currentLocation={currentLocation}
+          locationSchema={locationSchema}
+          isModalVisible={isModalVisible}
+          isLoadingForm={isLoadingForm}
+          connUUID={connUUID}
+          refreshList={refreshList}
+          onCloseModal={onCloseModal}
+          setIsFetching={setIsFetching}
+        />
+        <LocationsTable
+          locations={locations}
+          isFetching={isFetching}
+          tableSchema={tableSchema}
+        />
+      </Card>
     </>
   );
 };

@@ -99,7 +99,7 @@
     color: #fff;
 }
 
-.active {
+aside .active {
     font-weight: bolder;
-    color: #333;
+    color: #fff;
 }

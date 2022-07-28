@@ -55,15 +55,6 @@ export const NetworksTable = (props: any) => {
       key: "actions",
       render: (_: any, network: assistmodel.Network) => (
         <Space size="middle">
-          <a
-            onClick={() =>
-              navigate(`/hosts/${network.uuid}`, {
-                state: { connUUID: connUUID },
-              })
-            }
-          >
-            View OLD
-          </a>
           <Link
             to={ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID)
               .replace(":locUUID", locUUID)

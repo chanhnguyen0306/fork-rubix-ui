@@ -79,6 +79,7 @@ function getTreeObject(item: any, next: string) {
   return {
     name: item.name,
     title: <NavLink to={next}><span>{item.name}</span></NavLink>,
+    label: <NavLink to={next}><span>{item.name}</span></NavLink>,
     uuid: item.uuid,
     key: item.uuid,
   };

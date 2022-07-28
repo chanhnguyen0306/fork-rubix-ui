@@ -8,16 +8,9 @@ function ConnectionPage() {
   const location = useLocation();
 
   return (
-    <div>
-      <Row gutter={[8, 8]}>
-        <Col span={4}>
-          <SearchableTree />
-        </Col>
-        <Col span={20}>
-          <Outlet key={location.pathname} />
-        </Col>
-      </Row>
-    </div>
+    <>
+      <Outlet key={location.pathname} />
+    </>
   );
 }
 

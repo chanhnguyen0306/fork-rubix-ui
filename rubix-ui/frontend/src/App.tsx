@@ -1,6 +1,6 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import { MenuProps, Spin, Switch, Image, Row, Divider } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+import { MenuProps, Spin, Switch, Image, Row, Divider, Input } from "antd";
 import { Layout, Menu } from "antd";
 import {
   ApartmentOutlined,
@@ -9,30 +9,28 @@ import {
   HistoryOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
-import { assistmodel } from "../wailsjs/go/models";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
 import { ThemeProvider } from "./themes/theme-provider";
 import { useTheme } from "./themes/use-theme";
 import { openNotificationWithIcon } from "./utils/utils";
-import { ConnectionFactory } from "./components/connections/factory";
-import { LocationFactory } from "./components/locations/factory";
 import logo from "./assets/images/nube-frog-green.png";
 import "./App.css";
 
-import Location = assistmodel.Location;
 import { ROUTES } from "./constants/routes";
+import { useConnections } from "./hooks/useConnection";
+const { Search } = Input;
 
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
-  { name: "Backups", icon: HistoryOutlined, link: ROUTES.BACKUPS },
-  { name: "Logs", icon: HistoryOutlined, link: ROUTES.LOGS },
-  { name: "Networking", icon: LinkOutlined, link: ROUTES.NETWORKING },
-  { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
-  { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
-  { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
+  // { name: "Backups", icon: HistoryOutlined, link: ROUTES.BACKUPS },
+  // { name: "Logs", icon: HistoryOutlined, link: ROUTES.LOGS },
+  // { name: "Networking", icon: LinkOutlined, link: ROUTES.NETWORKING },
+  // { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
+  // { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
+  // { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
   { name: "Tools", icon: ToolOutlined, link: "" },
   { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
@@ -40,10 +38,26 @@ const sidebarItems = [
 const OK_EVENT = "on";
 const ERR_EVENT = "err";
 
+const getParentKey = (key: React.Key, tree: any): React.Key => {
+  let parentKey: React.Key;
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some((item: any) => item.key === key)) {
+        parentKey = node.key;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  return parentKey!;
+};
+
 const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
+
 
   return (
     <Layout>
@@ -56,6 +70,7 @@ const AppContainer = (props: any) => {
               <Image width={36} src={logo} preview={false} />
               <h4 className="title">Rubix Platform</h4>
             </Row>
+
             <Divider
               style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
             />
@@ -66,7 +81,6 @@ const AppContainer = (props: any) => {
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
             ></Menu>
-            <Menu mode="inline" theme="dark" items={menuItems} />
             <Switch
               className="menu-toggle"
               checkedChildren="🌙"
@@ -94,17 +108,11 @@ const AppContainer = (props: any) => {
 
 const App: React.FC = () => {
   let [isRegistered, updateIsRegistered] = useState(false);
-  let locationFactory = new LocationFactory();
-  let connectionFactory = new ConnectionFactory();
 
   let navigate = useNavigate();
-  const location = useLocation() as any;
-
-  const [connections, setConnections] = useState([] as any[]);
-  const [isFetching, setIsFetching] = useState(false);
+  const { routeData, isFetching } = useConnections();
 
   useEffect(() => {
-    fetchConnections();
     registerNotification();
 
     return () => {
@@ -133,84 +141,39 @@ const App: React.FC = () => {
     navigate(link, state);
   };
 
-  const fetchConnections = async () => {
-    try {
-      setIsFetching(true);
-      let connections = (await connectionFactory.GetAll()) as any;
-      if (!connections) return setConnections([]);
-      for (const c of connections) {
-        let locations = [];
-        locations = await getLocations(c.uuid);
-        c.locations = locations;
-      }
-      setConnections(connections);
-    } catch (error) {
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  const getLocations = async (connUUID: string) => {
-    let res = [] as Location[];
-    try {
-      locationFactory.connectionUUID = connUUID;
-      res = await locationFactory.GetAll();
-    } catch (error) {
-      res = [];
-    }
-    return res;
-  };
-
-
-  const getActiveClass = (link: string) => {
-    return location.pathname === link ? "active" : "";
-  };
-
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
-    const { name, icon, link } = item;
+    const { name, icon: Icon, link } = item;
+
+    if (name === "Connections") {
+      return { ...routeData[0], icon: <Icon /> } as any;
+    }
 
     if (name === "Tools") {
       return {
         key: name,
-        icon: React.createElement(icon),
+        icon: <Icon />,
         label: <div>{name}</div>,
+        name: name,
         children: [
           {
             key: "Networking",
-            label: (
-              <div
-                onClick={(e) => onClickMenu(e, "/networking")}
-                className={getActiveClass("/networking")}
-              >
-                Networking
-              </div>
-            ),
+            name: "networking",
+            label: <NavLink to="/networking">Networking</NavLink>,
           },
           {
             key: "Utils",
+            name: "utils",
             label: <div>Utils</div>,
             children: [
               {
                 key: "Logs",
-                label: (
-                  <div
-                    onClick={(e) => onClickMenu(e, "/logs")}
-                    className={getActiveClass("/logs")}
-                  >
-                    Logs
-                  </div>
-                ),
+                name: "logs",
+                label: <NavLink to="/logs">Logs</NavLink>,
               },
               {
                 key: "Backups",
-                label: (
-                  <div
-                    onClick={(e) => onClickMenu(e, "/backups")}
-                    className={getActiveClass("/backups")}
-                  >
-                    Backups
-                  </div>
-                ),
+                name: "backups",
+                label: <NavLink to="/backups">Backups</NavLink>,
               },
             ],
           },
@@ -221,52 +184,38 @@ const App: React.FC = () => {
     if (name === "Documentation") {
       return {
         key: name,
-        icon: React.createElement(icon),
+        name: name,
+        icon: <Icon />,
         label: <div>{name}</div>,
         children: [
           {
             key: "Hardware",
-            label: (
-              <div
-                onClick={(e) => onClickMenu(e, "/docs")}
-                className={getActiveClass("/docs")}
-              >
-                Hardware
-              </div>
-            ),
+            name: "hardware",
+            label: <NavLink to="/docs">Hardware</NavLink>,
           },
           {
             key: "Software",
-            label: (
-              <div
-                onClick={(e) => onClickMenu(e, "/software")}
-                className={getActiveClass("/software")}
-              >
-                Software
-              </div>
-            ),
+            name: "software",
+            label: <NavLink to="/software">Software</NavLink>,
           },
           {
             key: "Dips",
-            label: (
-              <div
-                onClick={(e) => onClickMenu(e, "/switch")}
-                className={getActiveClass("/switch")}
-              >
-                Dips
-              </div>
-            ),
+            name: "dips",
+            label: <NavLink to="/switch">Dips</NavLink>,
           },
         ],
       };
     }
 
     return {
+      name: name,
       key: link,
-      icon: React.createElement(icon),
+      icon: <Icon />,
       label: <NavLink to={link}>{name}</NavLink>,
     };
   });
+
+  console.log("menuItems", menuItems);
 
   return (
     <ThemeProvider>
