@@ -1,13 +1,19 @@
 import { Button, Popconfirm } from "antd";
-import { PlusOutlined, RedoOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  RedoOutlined,
+  DeleteOutlined,
+  ImportOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
 
 export const RbAddButton = (props: any) => {
   const { showModal } = props;
   return (
-    <Button type="primary" onClick={showModal} style={btn}>
-      <PlusOutlined /> Add
+    <Button className="nube-green white--text" onClick={showModal} style={btn}>
+      <PlusOutlined /> Create
     </Button>
   );
 };
@@ -15,7 +21,11 @@ export const RbAddButton = (props: any) => {
 export const RbRefreshButton = (props: any) => {
   const { refreshList } = props;
   return (
-    <Button type="primary" onClick={refreshList} style={btn}>
+    <Button
+      className="nube-primary white--text"
+      onClick={refreshList}
+      style={btn}
+    >
       <RedoOutlined /> Refresh
     </Button>
   );
@@ -35,8 +45,12 @@ export const RbDeleteButton = (props: any) => {
 export const RbImportButton = (props: any) => {
   const { showModal } = props;
   return (
-    <Button type="primary" onClick={showModal} style={btn}>
-      <RedoOutlined /> Import
+    <Button
+      className="nube-primary white--text"
+      onClick={showModal}
+      style={btn}
+    >
+      <ImportOutlined /> Import
     </Button>
   );
 };
@@ -44,8 +58,12 @@ export const RbImportButton = (props: any) => {
 export const RbExportButton = (props: any) => {
   const { showModal } = props;
   return (
-    <Button type="primary" onClick={showModal} style={btn}>
-      <RedoOutlined /> Export
+    <Button
+      className="export-color white--text"
+      onClick={showModal}
+      style={btn}
+    >
+      <ExportOutlined /> Export
     </Button>
   );
 };

@@ -6,7 +6,7 @@ import {
   EditHostNetwork,
 } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import { JsonForm } from "../../../common/json-form";
+import { JsonForm } from "../../../common/json-schema-form";
 
 export const CreateEditModal = (props: any) => {
   const {

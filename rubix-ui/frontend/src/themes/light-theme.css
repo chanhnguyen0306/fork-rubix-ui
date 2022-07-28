@@ -12,60 +12,61 @@
     --nube-light-grey: #666666;
     --nube-dark-grey: #333333;
     --nube-light: #eee;
+    --nube-primary: #2196f3;
 }
 
 /* -----------for text----------- */
 .error--text,
 .danger--text {
-    color: var(--error);
+    color: var(--error) !important;
 }
 
 .black--text {
-    color: var(--black);
+    color: var(--black) !important;
 }
 
 .white--text {
-    color: var(--white);
+    color: var(--white) !important;
 }
 
 .export-color--text {
-    color: var(--export-color);
+    color: var(--export-color) !important;
 }
 
 .download-color--text {
-    color: var(--download-color);
+    color: var(--download-color) !important;
 }
 
 .json-color--text {
-    color: var(--json-color);
+    color: var(--json-color) !important;
 }
 
 .error--text {
-    color: var(--error);
+    color: var(--error) !important;
 }
 
 .light-grey--text {
-    color: var(--light-grey);
+    color: var(--light-grey) !important;
 }
 
 .nube-aqua--text {
-    color: var(--nube-aqua);
+    color: var(--nube-aqua) !important;
 }
 
 .nube-green--text {
-    color: var(--nube-green);
+    color: var(--nube-green) !important;
 }
 
 .nube-yellow--text {
-    color: var(--nube-yellow);
+    color: var(--nube-yellow) !important;
 }
 
 .nube-light-grey--text {
-    color: var(--nube-light-grey);
+    color: var(--nube-light-grey) !important;
 }
 
 .nube-dark-grey--text {
-    color: var(--nube-dark-grey);
+    color: var(--nube-dark-grey) !important;
 }
 
 /* -----------for background----------- */
@@ -74,13 +75,16 @@
     background-color: var(--error);
 }
 
-.error,
+.error.ant-btn:hover,
+.error.ant-btn:focus,
+.error.ant-btn:active,
 .danger.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--error) !important;
+.danger.ant-btn:focus,
+.danger.ant-btn:active {
+    color: unset;
     border-color: var(--error);
-    background-color: var(--white) !important;
+    background-color: var(--error);
+
 }
 
 .black {
@@ -89,11 +93,11 @@
 }
 
 .black.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--black) !important;
+.black.ant-btn:focus,
+.black.ant-btn:active {
+    color: var(--white);
     border-color: var(--black);
-    background-color: var(--white) !important;
+    background-color: var(--black);
 }
 
 .white {
@@ -102,11 +106,11 @@
 }
 
 .white.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--black) !important;
-    border-color: var(--black);
-    background-color: var(--while) !important;
+.white.ant-btn:focus,
+.white.ant-btn:active {
+    color: var(--black);
+    border-color: var(--white);
+    background-color: var(--white);
 }
 
 .export-color {
@@ -114,11 +118,11 @@
 }
 
 .export-color.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--export-color) !important;
+.export-color.ant-btn:focus,
+.export-color.ant-btn:active {
+    color: unset;
     border-color: var(--export-color);
-    background-color: var(--white) !important;
+    background-color: var(--export-color);
 }
 
 
@@ -127,11 +131,11 @@
 }
 
 .download-color.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--download-color) !important;
+.download-color.ant-btn:focus,
+.download-color.ant-btn:active {
+    color: unset;
     border-color: var(--download-color);
-    background-color: var(--white) !important;
+    background-color: var(--download-color);
 }
 
 .json-color {
@@ -139,11 +143,11 @@
 }
 
 .json-color.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--json-color) !important;
+.json-color.ant-btn:focus,
+.json-color.ant-btn:active {
+    color: unset;
     border-color: var(--json-color);
-    background-color: var(--white) !important;
+    background-color: var(--json-color);
 }
 
 .light-grey {
@@ -151,11 +155,11 @@
 }
 
 .light-grey.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: grey !important;
-    border-color: grey;
-    background-color: var(--white) !important;
+.light-grey.ant-btn:focus,
+.light-grey.ant-btn:active {
+    color: var(--nube-dark-grey);
+    border-color: var(--light-grey);
+    background-color: var(--light-grey);
 }
 
 .nube-aqua {
@@ -163,11 +167,11 @@
 }
 
 .nube-aqua.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--nube-aqua) !important;
+.nube-aqua.ant-btn:focus,
+.nube-aqua.ant-btn:active {
+    color: unset;
     border-color: var(--nube-aqua);
-    background-color: var(--white) !important;
+    background-color: var(--nube-aqua);
 }
 
 .nube-green {
@@ -175,11 +179,11 @@
 }
 
 .nube-green.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--nube-green) !important;
+.nube-green.ant-btn:focus,
+.nube-green.ant-btn:active {
+    color: unset;
     border-color: var(--nube-green);
-    background-color: var(--white) !important;
+    background-color: var(--nube-green);
 }
 
 .nube-yellow {
@@ -187,11 +191,11 @@
 }
 
 .nube-yellow.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--nube-yellow) !important;
+.nube-yellow.ant-btn:focus,
+.nube-yellow.ant-btn:active {
+    color: unset;
     border-color: var(--nube-yellow);
-    background-color: var(--white) !important;
+    background-color: var(--nube-yellow);
 }
 
 .nube-light-grey {
@@ -199,11 +203,11 @@
 }
 
 .nube-light-grey.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--nube-light-grey) !important;
+.nube-light-grey.ant-btn:focus,
+.nube-light-grey.ant-btn:active {
+    color: unset;
     border-color: var(--nube-light-grey);
-    background-color: var(--white) !important;
+    background-color: var(--nube-light-grey);
 }
 
 .nube-dark-grey {
@@ -211,9 +215,21 @@
 }
 
 .nube-dark-grey.ant-btn:hover,
-.ant-btn:focus,
-.ant-btn:active {
-    color: var(--nube-dark-grey) !important;
+.nube-dark-grey.ant-btn:focus,
+.nube-dark-grey.ant-btn:active {
+    color: unset;
     border-color: var(--nube-dark-grey);
-    background-color: var(--white) !important;
+    background-color: var(--nube-dark-grey);
+}
+
+.nube-primary {
+    background-color: var(--nube-primary);
+}
+
+.nube-primary.ant-btn:hover,
+.nube-primary.ant-btn:focus,
+.nube-primary.ant-btn:active {
+    color: unset;
+    border-color: var(--nube-primary);
+    background-color: var(--nube-primary);
 }

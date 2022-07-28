@@ -58,7 +58,6 @@ const AppContainer = (props: any) => {
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
 
-
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
@@ -214,8 +213,6 @@ const App: React.FC = () => {
       label: <NavLink to={link}>{name}</NavLink>,
     };
   });
-
-  console.log("menuItems", menuItems);
 
   return (
     <ThemeProvider>

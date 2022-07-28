@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { storage } from "../../../wailsjs/go/models";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
-import { RbRefreshButton } from "../../common/rb-table-actions";
+import {
+  RbExportButton,
+  RbImportButton,
+  RbRefreshButton,
+} from "../../common/rb-table-actions";
 
 export const Backups = () => {
   const [backups, setBackups] = useState([] as storage.Backup[]);
@@ -28,6 +32,8 @@ export const Backups = () => {
   return (
     <>
       <RbRefreshButton refreshList={fetch} />
+      <RbExportButton showModal={fetch} />
+      <RbImportButton showModal={fetch} />
       <BackupsTable
         data={backups}
         isFetching={isFetching}

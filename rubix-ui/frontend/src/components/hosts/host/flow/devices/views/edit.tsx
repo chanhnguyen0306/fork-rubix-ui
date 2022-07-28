@@ -1,7 +1,7 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { FlowDeviceFactory } from "../factory";
-import { JsonForm } from "../../../../../../common/json-form";
+import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
 
 import Device = model.Device;
