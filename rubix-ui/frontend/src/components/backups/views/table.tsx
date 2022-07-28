@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Spin } from "antd";
 import { main } from "../../../../wailsjs/go/models";
+import { copyToClipboard } from "../../../utils/utils";
 import { BackupFactory } from "../factory";
 import {
   RbDeleteButton,
   RbExportButton,
 } from "../../../common/rb-table-actions";
 import RbTable from "../../../common/rb-table";
-import { copyToClipboard } from "../../../utils/utils";
 
 export const BackupsTable = (props: any) => {
   const { data, isFetching, fetch } = props;

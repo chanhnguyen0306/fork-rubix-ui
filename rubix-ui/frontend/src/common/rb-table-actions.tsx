@@ -10,20 +10,26 @@ import {
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
 
 export const RbAddButton = (props: any) => {
-  const { showModal } = props;
+  const { showModal, disabled } = props;
   return (
-    <Button className="nube-green white--text" onClick={showModal} style={btn}>
+    <Button
+      className="nube-green white--text"
+      onClick={showModal}
+      disabled={disabled}
+      style={btn}
+    >
       <PlusOutlined /> Create
     </Button>
   );
 };
 
 export const RbRefreshButton = (props: any) => {
-  const { refreshList } = props;
+  const { refreshList, disabled } = props;
   return (
     <Button
       className="nube-primary white--text"
       onClick={refreshList}
+      disabled={disabled}
       style={btn}
     >
       <RedoOutlined /> Refresh
@@ -32,10 +38,10 @@ export const RbRefreshButton = (props: any) => {
 };
 
 export const RbDeleteButton = (props: any) => {
-  const { bulkDelete } = props;
+  const { bulkDelete, disabled } = props;
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
-      <Button className="danger white--text" style={btn}>
+      <Button className="danger white--text" disabled={disabled} style={btn}>
         <DeleteOutlined /> Delete
       </Button>
     </Popconfirm>
@@ -43,11 +49,12 @@ export const RbDeleteButton = (props: any) => {
 };
 
 export const RbImportButton = (props: any) => {
-  const { showModal } = props;
+  const { showModal, disabled } = props;
   return (
     <Button
       className="nube-primary white--text"
       onClick={showModal}
+      disabled={disabled}
       style={btn}
     >
       <ImportOutlined /> Import
@@ -61,8 +68,8 @@ export const RbExportButton = (props: any) => {
     <Button
       className="export-color white--text"
       onClick={handleExport}
-      style={btn}
       disabled={disabled}
+      style={btn}
     >
       <ExportOutlined /> Export
     </Button>
