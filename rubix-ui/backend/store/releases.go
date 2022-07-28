@@ -13,6 +13,7 @@ type Apps struct {
 	Description            string   `json:"description"`
 	Port                   int      `json:"port,omitempty"`
 	Transport              string   `json:"transport"`
+	AppSpecficExecStart    string   `json:"app_specfic_exec_start"`
 	Products               []string `json:"products"`
 	Arch                   []string `json:"arch"`
 	Version                string   `json:"version"`
@@ -48,19 +49,11 @@ type Services struct {
 }
 
 type Release struct {
-	Uuid                string     `json:"uuid"`
-	Name                string     `json:"name"`
-	Repo                string     `json:"repo"`
-	MinVersion          string     `json:"min_version"`
-	Release             string     `json:"release"`
-	Port                int        `json:"port"`
-	Transport           string     `json:"transport"`
-	Products            []string   `json:"products"`
-	Arch                []string   `json:"arch"`
-	AppSpecficExecStart string     `json:"app_specfic_exec_start"`
-	Apps                []Apps     `json:"apps"`
-	Plugins             []Plugins  `json:"plugins"`
-	Services            []Services `json:"services"`
+	Uuid     string     `json:"uuid"`
+	Release  string     `json:"release"`
+	Apps     []Apps     `json:"apps"`
+	Plugins  []Plugins  `json:"plugins"`
+	Services []Services `json:"services"`
 }
 
 type Releases struct {

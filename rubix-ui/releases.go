@@ -73,7 +73,7 @@ func (app *App) StoreDownloadAll(token, release string, cleanDownload bool) []st
 	return out
 }
 
-func (app *App) downloadAll(token, release string, cleanDownload bool) ([]store.App, error) {
+func (app *App) downloadAll(token, releaseVersion string, cleanDownload bool) ([]store.App, error) {
 	inst := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
@@ -83,12 +83,12 @@ func (app *App) downloadAll(token, release string, cleanDownload bool) ([]store.
 	if err != nil {
 		return nil, err
 	}
-	getRelease, err := app.getReleaseByVersion(release)
+	getRelease, err := app.getReleaseByVersion(releaseVersion)
 	if err != nil {
 		return nil, err
 	}
 	if getRelease == nil {
-		return nil, errors.New(fmt.Sprintf("failed to find release by version: %s", release))
+		return nil, errors.New(fmt.Sprintf("failed to find release by version: %s", releaseVersion))
 	}
 	downloaded, err := appStore.DownloadAll(token, cleanDownload, getRelease)
 	if err != nil {
@@ -97,14 +97,17 @@ func (app *App) downloadAll(token, release string, cleanDownload bool) ([]store.
 	return downloaded, err
 }
 
-func (app *App) StoreDownloadApp(token, appName, version, repo, arch string) *store.App {
-	out, err := app.downloadApp(token, appName, version, repo, arch)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error download app:%s", err.Error()))
-		return nil
-	}
-	return out
-}
+//func (app *App) storeDownloadApp(token, appName, releaseVersion, repo, arch string) (*store.App, error) {
+//
+//	getRelease, err := app.getReleaseByVersion(releaseVersion)
+//	if err != nil {
+//		return nil, err
+//	}
+//	if getRelease == nil {
+//		return nil, errors.New(fmt.Sprintf("failed to find release by version: %s", releaseVersion))
+//	}
+//
+//}
 
 func (app *App) downloadApp(token, appName, version, repo, arch string) (*store.App, error) {
 	inst := &store.Store{
