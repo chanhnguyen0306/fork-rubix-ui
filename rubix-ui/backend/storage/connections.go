@@ -115,7 +115,6 @@ func (inst *db) Select(uuid string) (*RubixConnection, error) {
 		}
 		return data, nil
 	}
-
 }
 
 func (inst *db) SelectByName(name string) (*RubixConnection, error) {

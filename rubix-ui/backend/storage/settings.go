@@ -1,0 +1,168 @@
+package storage
+
+import (
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
+	"github.com/tidwall/buntdb"
+)
+
+type Settings struct {
+	UUID     string
+	Theme    string `json:"theme"` // light, dark
+	GitToken string `json:"git_token"`
+}
+
+func (inst *db) AddSettings(body *Settings) (*Settings, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return nil, err
+	}
+	if len(settings) > 0 {
+		return nil, errors.New("settings can only be added once")
+	}
+	body.UUID = uuid.ShortUUID("set")
+	if body.GitToken != "" {
+		body.GitToken = encodeToken(body.GitToken)
+	}
+	data, err := json.Marshal(body)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return nil, err
+	}
+	err = inst.DB.Update(func(tx *buntdb.Tx) error {
+		_, _, err := tx.Set(body.UUID, string(data), nil)
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return nil, err
+	}
+	return body, nil
+}
+
+func (inst *db) UpdateSettings(uuid string, body *Settings) (*Settings, error) {
+	if body.GitToken != "" {
+		body.GitToken = encodeToken(body.GitToken)
+	}
+	j, err := json.Marshal(body)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return nil, err
+	}
+	err = inst.DB.Update(func(tx *buntdb.Tx) error {
+		_, _, err := tx.Set(uuid, string(j), nil)
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return nil, err
+	}
+	return body, nil
+}
+
+func (inst *db) DeleteSettings(uuid string) error {
+	err := inst.DB.Update(func(tx *buntdb.Tx) error {
+		_, err := tx.Delete(uuid)
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error delete: %s", err)
+		return err
+	}
+	return nil
+}
+
+func (inst *db) GetGitToken() (string, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return "", err
+	}
+	if len(settings) == 0 {
+		return "", errors.New("no settings have been added")
+	}
+	uuid_ := settings[0].UUID
+	if matchSettingsUUID(uuid_) {
+		var data *Settings
+		err := inst.DB.View(func(tx *buntdb.Tx) error {
+			val, err := tx.Get(uuid_)
+			if err != nil {
+				return err
+			}
+			err = json.Unmarshal([]byte(val), &data)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+		if err != nil {
+			fmt.Printf("Error: %s", err)
+			return "", err
+		}
+		if data.GitToken != "" {
+			data.GitToken = decodeToken(data.GitToken)
+		}
+		return data.GitToken, nil
+	} else {
+		return "", errors.New("incorrect settings uuid")
+	}
+}
+
+func (inst *db) GetSettings() ([]Settings, error) {
+	var resp []Settings
+	var data Settings
+	err := inst.DB.View(func(tx *buntdb.Tx) error {
+		err := tx.Ascend("", func(key, value string) bool {
+			err := json.Unmarshal([]byte(value), &data)
+			if err != nil {
+				return false
+			}
+			if matchSettingsUUID(data.UUID) {
+				resp = append(resp, data)
+				//fmt.Printf("key: %s, value: %s\n", key, value)
+			}
+			return true
+		})
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return []Settings{}, err
+	}
+	return resp, nil
+}
+
+func (inst *db) GetSetting(uuid string) (*Settings, error) {
+	if matchSettingsUUID(uuid) {
+		var data *Settings
+		err := inst.DB.View(func(tx *buntdb.Tx) error {
+			val, err := tx.Get(uuid)
+			if err != nil {
+				return err
+			}
+			err = json.Unmarshal([]byte(val), &data)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+		if err != nil {
+			fmt.Printf("Error: %s", err)
+			return nil, err
+		}
+		return data, nil
+	} else {
+		return nil, errors.New("incorrect settings uuid")
+	}
+}
+
+func encodeToken(token string) string {
+	return base64.StdEncoding.EncodeToString([]byte(token))
+}
+
+func decodeToken(token string) string {
+	data, _ := base64.StdEncoding.DecodeString(token)
+	return string(data)
+}

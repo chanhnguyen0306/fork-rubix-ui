@@ -24,4 +24,10 @@ type Storage interface {
 	GetReleaseByVersion(version string) (*store.Release, error)
 	GetRelease(uuid string) (*store.Release, error)
 	GetReleases() ([]store.Release, error)
+	AddSettings(body *Settings) (*Settings, error)
+	UpdateSettings(uuid string, body *Settings) (*Settings, error)
+	DeleteSettings(uuid string) error
+	GetGitToken() (string, error)
+	GetSettings() ([]Settings, error)
+	GetSetting(uuid string) (*Settings, error)
 }
