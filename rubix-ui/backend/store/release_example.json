@@ -1,26 +1,37 @@
 {
   "uuid": "",
-  "name": "flow-framework",
-  "repo": "flow-framework",
-  "min_version": "v0.6.0",
-  "release": "v0.6.0",
-  "port": 1660,
-  "transport": "http",
-  "products": [
-    "all"
-  ],
-  "arch": [
-    "amd64",
-    "armv7"
-  ],
-  "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+  "release": "v0.6.1",
   "apps": [
+    {
+      "name": "flow-framework",
+      "repo": "flow-framework",
+      "description": "flow-framework",
+      "port": 1660,
+      "transport": "http",
+      "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "version": "v0.6.1",
+      "min_version": "v0.6.1",
+      "max_version": "v0.6.1",
+      "flow_dependency": false,
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
+    },
     {
       "name": "bacnet-server-driver",
       "repo": "bacnet-server-c",
       "description": "a bacnet server",
       "port": 47808,
       "transport": "udp",
+      "app_specfic_exec_start": "",
       "products": [
         "all"
       ],
@@ -45,6 +56,7 @@
       "description": "rubix compute io service",
       "port": 5001,
       "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "rubix-compute-io"
       ],
@@ -67,6 +79,7 @@
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
       "transport": "serial",
+      "app_specfic_exec_start": "",
       "products": [
         "rubix-compute-5",
         "rubix-compute-io"
@@ -91,6 +104,7 @@
       "description": "edge-28 service",
       "port": 5000,
       "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "edge-28"
       ],
@@ -112,12 +126,9 @@
       "description": "flow based programming engine",
       "port": 1313,
       "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "all"
-      ],
-      "arch": [
-        "amd64",
-        "armv7"
       ],
       "version": "v2.7.4",
       "max_version": "v2.9.9",

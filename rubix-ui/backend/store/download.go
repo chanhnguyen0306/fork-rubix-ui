@@ -12,20 +12,14 @@ const wiresBuilds = "wires-builds"
 // DownloadAll make all the app store dirs
 func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
 	var out []App
-	framework, err := inst.DownloadFlowFramework(token, release.Release, cleanDownload)
-	if err != nil {
-		return nil, err
-	}
-	for _, app := range framework {
-		out = append(out, app)
-	}
-	for _, app := range release.Apps {
-		wires, err := inst.DownloadWires(token, release.Release, cleanDownload)
-		if err != nil {
-			return nil, err
-		}
-		out = append(out, *wires)
-		if len(app.Arch) > 0 {
+	for _, app := range release.Apps { // download all others apps
+		if app.Name == rubixWires {
+			wires, err := inst.DownloadWires(token, app.Version, cleanDownload)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, *wires)
+		} else if len(app.Arch) > 0 {
 			for _, arch := range app.Arch { // download both version of each app
 				app, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, cleanDownload, git.DownloadOptions{
 					AssetName: app.Repo,
@@ -56,19 +50,6 @@ func (inst *Store) DownloadAllArchTypes(token, appName, version, repo, assetName
 			return nil, err
 		}
 		out = append(out, *app)
-	}
-	return out, nil
-}
-
-// DownloadFlowFramework download ff
-func (inst *Store) DownloadFlowFramework(token, version string, cleanDownload bool) ([]App, error) {
-	var out []App
-	framework, err := inst.DownloadAllArchTypes(token, flow, version, flow, flow, cleanDownload)
-	if err != nil {
-		return nil, err
-	}
-	for _, app := range framework {
-		out = append(out, app)
 	}
 	return out, nil
 }
