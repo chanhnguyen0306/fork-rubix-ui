@@ -56,12 +56,13 @@ export const RbImportButton = (props: any) => {
 };
 
 export const RbExportButton = (props: any) => {
-  const { showModal } = props;
+  const { handleExport, disabled } = props;
   return (
     <Button
       className="export-color white--text"
-      onClick={showModal}
+      onClick={handleExport}
       style={btn}
+      disabled={disabled}
     >
       <ExportOutlined /> Export
     </Button>

@@ -47,7 +47,6 @@ export const Backups = () => {
   return (
     <>
       <RbRefreshButton refreshList={fetch} />
-      <RbExportButton showModal={fetch} />
       <RbImportButton showModal={() => setIsModalVisible(true)} />
       <BackupsTable
         data={backups}

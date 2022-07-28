@@ -1,24 +1,18 @@
-import { Spin } from "antd";
-import RbTable from "../../../common/rb-table";
 import { useState } from "react";
+import { Spin } from "antd";
 import { main } from "../../../../wailsjs/go/models";
 import { BackupFactory } from "../factory";
-import { RbDeleteButton } from "../../../common/rb-table-actions";
+import {
+  RbDeleteButton,
+  RbExportButton,
+} from "../../../common/rb-table-actions";
+import RbTable from "../../../common/rb-table";
+import { copyToClipboard } from "../../../utils/utils";
+
 export const BackupsTable = (props: any) => {
   const { data, isFetching, fetch } = props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   let backupFactory = new BackupFactory();
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
-
-  const bulkDelete = async () => {
-    await backupFactory.BulkDelete(selectedUUIDs);
-    fetch();
-  };
 
   const columns = [
     {
@@ -68,8 +62,32 @@ export const BackupsTable = (props: any) => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  const bulkDelete = async () => {
+    await backupFactory.BulkDelete(selectedUUIDs);
+    fetch();
+  };
+
+  const handleExport = async () => {
+    try {
+      const backup = selectedUUIDs[0];
+      copyToClipboard(JSON.stringify(backup));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
+      <RbExportButton
+        handleExport={handleExport}
+        disabled={selectedUUIDs.length !== 1}
+      />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
