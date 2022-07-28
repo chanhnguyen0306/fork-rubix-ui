@@ -25,7 +25,7 @@ export class ReleasesFactory {
 
     // download the selected version by the user from GitHub
     async GitDownloadRelease(token: string, version:string): Promise<store.Release> {
-        let out = store.Release;
+        let out: any = store.Release;
         await GitDownloadRelease(token, version)
             .then((res) => {
                 out = res as store.Release;
@@ -50,7 +50,7 @@ export class ReleasesFactory {
     }
 
     async GetOne(uuid: string): Promise<store.Release> {
-        let out = store.Release;
+        let out: any = store.Release;
         await GetRelease(uuid)
             .then((res) => {
                 out = res as store.Release;
@@ -63,7 +63,7 @@ export class ReleasesFactory {
 
     // token, appName, releaseVersion, arch string, cleanDownload bool
     async StoreDownload(token: string, appName: string, releaseVersion: string, arch: string, cleanDownload: boolean): Promise<any> {
-        let out;
+        let out: any;
         await StoreDownloadApp(token, appName, releaseVersion, arch, cleanDownload)
             .then((res) => {
                 out = res as store.Release;
