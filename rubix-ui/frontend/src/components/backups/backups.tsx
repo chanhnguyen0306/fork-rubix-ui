@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { storage } from "../../../wailsjs/go/models";
+import { openNotificationWithIcon } from "../../utils/utils";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
 import {
@@ -31,18 +32,16 @@ export const Backups = () => {
     }
   };
 
-  const handleImport = async (backup: any) => {
-    console.log("backup", backup);
-
-    // try {
-    //   let res = await factory.Import(backup);
-    //   console.log(res);
-    //   fetch();
-    // } catch (error) {
-    //   console.log(error);
-    // } finally {
-    //   setIsModalVisible(false);
-    // }
+  const handleImport = async (body: any) => {
+    try {
+      const backup = JSON.parse(body);
+      await factory.Import(backup);
+      fetch();
+      setIsModalVisible(false);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", "Invalid JSON");
+    }
   };
 
   return (
@@ -59,7 +58,7 @@ export const Backups = () => {
       <ImportModal
         isModalVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onConfirm={handleImport}
+        onOk={handleImport}
       />
     </>
   );
