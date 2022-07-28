@@ -138,10 +138,10 @@ export class ConnectionFactory {
   async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
     let out: Promise<any> = {} as Promise<any>;
     await DeleteConnectionBulk(uuids)
-      .then((res) => {
+      .then((res: any) => {
         out = res as Promise<any>;
       })
-      .catch((err) => {
+      .catch((err: any) => {
         return out;
       });
     return out;
