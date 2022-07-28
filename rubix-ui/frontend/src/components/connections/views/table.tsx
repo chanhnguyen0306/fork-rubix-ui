@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Space, Spin } from "antd";
 import {
@@ -12,6 +12,7 @@ import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
+import { ROUTES } from "../../../constants/routes";
 
 export const ConnectionsTable = (props: any) => {
   const { connections, refreshList, showModal, isFetching } = props;
@@ -59,7 +60,9 @@ export const ConnectionsTable = (props: any) => {
       key: "actions",
       render: (_: any, conn: RubixConnection) => (
         <Space size="middle">
-          <a onClick={() => navigate(`locations/${conn.uuid}`)}>View</a>
+          <Link to={ROUTES.LOCATIONS.replace(":connUUID", conn.uuid)}>
+            View
+          </Link>
           <a // edit
             onClick={() => {
               showModal(conn);

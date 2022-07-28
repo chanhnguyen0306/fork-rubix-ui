@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Space } from "antd";
-import { LocationFactory } from "./factory";
+import { Space, Typography, Card } from "antd";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 import {
   DeleteLocation,
   GetConnection,
   GetLocations,
 } from "../../../wailsjs/go/main/App";
-import { assistmodel, storage } from "../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../utils/utils";
-import { CreateEditModal } from "./views/create";
+import { LocationFactory } from "./factory";
 import { LocationsTable } from "./views/table";
+import { ROUTES } from "../../constants/routes";
+import { CreateEditModal } from "./views/create";
+import { isObjectEmpty } from "../../utils/utils";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import { assistmodel, storage } from "../../../wailsjs/go/models";
 import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
-import RubixConnection = storage.RubixConnection;
+
 import Location = assistmodel.Location;
+import RubixConnection = storage.RubixConnection;
+
+const { Title } = Typography;
 
 export const Locations = () => {
   const [locations, setLocations] = useState([] as Location[]);
@@ -121,15 +127,14 @@ export const Locations = () => {
           key: "actions",
           render: (_: any, location: Location) => (
             <Space size="middle">
-              <a
-                onClick={() =>
-                  navigate(`/networks/${location.uuid}`, {
-                    state: { connUUID: connUUID },
-                  })
-                }
+              <Link
+                to={ROUTES.LOCATION_NETWORKS.replace(
+                  ":connUUID",
+                  connUUID || ""
+                ).replace(":locUUID", location.uuid)}
               >
                 View
-              </a>
+              </Link>
               <a
                 onClick={() => {
                   showModal(location);
@@ -152,29 +157,45 @@ export const Locations = () => {
     } catch (error) {}
   };
 
+  const routes = [
+    {
+      path: ROUTES.CONNECTIONS,
+      breadcrumbName: "Connections",
+    },
+    {
+      path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
+      breadcrumbName: "Location",
+    },
+  ];
+
   return (
     <>
-      <h2>Locations</h2>
-      <RbRefreshButton refreshList={refreshList} />
-      <RbAddButton showModal={() => showModal({} as Location)} />
-      <LocationsTable
-        locations={locations}
-        isFetching={isFetching}
-        tableSchema={tableSchema}
-        connUUID={connUUID}
-        refreshList={refreshList}
-      />
-      <CreateEditModal
-        locations={locations}
-        currentLocation={currentLocation}
-        locationSchema={locationSchema}
-        isModalVisible={isModalVisible}
-        isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        refreshList={refreshList}
-        onCloseModal={onCloseModal}
-        setIsFetching={setIsFetching}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Locations
+      </Title>
+      <Card bordered={false}>
+        <RbxBreadcrumb routes={routes} />
+        <RbRefreshButton refreshList={refreshList} />
+        <RbAddButton showModal={() => showModal({} as Location)} />
+        <LocationsTable
+          locations={locations}
+          isFetching={isFetching}
+          tableSchema={tableSchema}
+          connUUID={connUUID}
+          refreshList={refreshList}
+        />
+        <CreateEditModal
+          locations={locations}
+          currentLocation={currentLocation}
+          locationSchema={locationSchema}
+          isModalVisible={isModalVisible}
+          isLoadingForm={isLoadingForm}
+          connUUID={connUUID}
+          refreshList={refreshList}
+          onCloseModal={onCloseModal}
+          setIsFetching={setIsFetching}
+        />
+      </Card>
     </>
   );
 };

@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   GetHostNetworks,
   GetLocations,
   GetNetworkSchema,
 } from "../../../wailsjs/go/main/App";
+import { Card, Typography } from "antd";
 import { isObjectEmpty } from "../../utils/utils";
 import { CreateEditModal } from "./views/create";
 import { NetworksTable } from "./views/table";
 import { assistmodel } from "../../../wailsjs/go/models";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
+import { ROUTES } from "../../constants/routes";
+
+const { Title } = Typography;
 
 export const Networks = () => {
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
@@ -21,9 +26,7 @@ export const Networks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  let { locUUID } = useParams();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
+  let { locUUID, connUUID = "" } = useParams();
 
   useEffect(() => {
     if (locations.length === 0) {
@@ -33,7 +36,7 @@ export const Networks = () => {
 
   useEffect(() => {
     fetchList();
-  }, [locUUID]);
+  }, [locUUID, connUUID]);
 
   const fetchList = async () => {
     try {
@@ -88,29 +91,59 @@ export const Networks = () => {
     setCurrentNetwork({} as assistmodel.Network);
   };
 
+  const routes = [
+    {
+      path: ROUTES.CONNECTIONS,
+      breadcrumbName: "Connections",
+    },
+    {
+      path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
+      breadcrumbName: "Location",
+    },
+    {
+      path: ROUTES.LOCATION_NETWORKS.replace(
+        ":connUUID",
+        connUUID || ""
+      ).replace(":locUUID", locUUID || ""),
+      breadcrumbName: 'Location Network'
+    },
+  ];
+
   return (
     <>
-      <h1>Networks</h1>
-      <RbRefreshButton refreshList={refreshList} />
-      <RbAddButton showModal={() => showModal({} as assistmodel.Network)} />
-      <NetworksTable
-        networks={networks}
-        locations={locations}
-        isFetching={isFetching}
-        showModal={showModal}
-        refreshList={refreshList}
-        connUUID={connUUID}
-      />
-      <CreateEditModal
-        networks={networks}
-        currentNetwork={currentNetwork}
-        networkSchema={networkSchema}
-        isModalVisible={isModalVisible}
-        isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        onCloseModal={onCloseModal}
-        refreshList={refreshList}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Networks
+      </Title>
+      <Card bordered={false}>
+        <RbxBreadcrumb routes={routes} />
+        <RbRefreshButton refreshList={refreshList} />
+        <RbAddButton showModal={() => showModal({} as assistmodel.Network)} />
+        <CreateEditModal
+          networks={networks}
+          currentNetwork={currentNetwork}
+          networkSchema={networkSchema}
+          isModalVisible={isModalVisible}
+          isLoadingForm={isLoadingForm}
+          connUUID={connUUID}
+          locUUID={locUUID}
+          onCloseModal={onCloseModal}
+          refreshList={refreshList}
+        />
+        <NetworksTable
+          networks={networks}
+          locations={locations}
+          isFetching={isFetching}
+          showModal={showModal}
+          refreshList={refreshList}
+          connUUID={connUUID}
+          locUUID={locUUID}
+          currentNetwork={currentNetwork}
+          networkSchema={networkSchema}
+          isModalVisible={isModalVisible}
+          isLoadingForm={isLoadingForm}
+          onCloseModal={onCloseModal}
+        />
+      </Card>
     </>
   );
 };

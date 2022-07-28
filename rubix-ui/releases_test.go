@@ -37,6 +37,14 @@ func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in lo
 	pprint.PrintJOSN(release)
 }
 
+func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the version
+	token := git.DecodeToken(token)
+	fmt.Printf("%q\n", token)
+	app := NewApp()
+	downloaded := app.StoreDownloadApp(token, "edge-28-driver", "v0.6.1", "armv7", false)
+	pprint.PrintJOSN(downloaded)
+}
+
 func TestApp_downloadAll(t *testing.T) { // will save all apps from the version
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)

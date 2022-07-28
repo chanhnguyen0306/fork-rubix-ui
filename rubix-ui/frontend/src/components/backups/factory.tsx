@@ -1,12 +1,10 @@
 import { main, storage } from "../../../wailsjs/go/models";
 import {
-  DeleteBackup,
   DeleteBackupBulk,
-  DeleteLogBulk,
   GetBackup,
   GetBackups,
   GetBackupsByApplication,
-  GetConnection,
+  ImportBackup,
   WiresBackup,
   WiresBackupRestore,
 } from "../../../wailsjs/go/main/App";
@@ -33,7 +31,7 @@ export class BackupFactory {
         all = res as unknown as Promise<Array<storage.Backup>>;
       })
       .catch((err) => {
-        return undefined;
+        return all;
       });
     return all;
   }
@@ -52,9 +50,21 @@ export class BackupFactory {
         all = res as unknown as Promise<Array<storage.Backup>>;
       })
       .catch((err) => {
-        return undefined;
+        return all;
       });
     return all;
+  }
+
+  async Import(body: storage.Backup): Promise<string> {
+    let one = "";
+    await ImportBackup(body)
+      .then((res) => {
+        one = res as string;
+      })
+      .catch((err) => {
+        return one;
+      });
+    return one;
   }
 
   async GetOne(): Promise<storage.Backup> {
@@ -66,7 +76,7 @@ export class BackupFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -80,7 +90,7 @@ export class BackupFactory {
         all = res as unknown as Promise<Array<storage.Backup>>;
       })
       .catch((err) => {
-        return undefined;
+        return all;
       });
     return all;
   }
@@ -93,7 +103,7 @@ export class BackupFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -105,7 +115,7 @@ export class BackupFactory {
         out = res;
       })
       .catch((err) => {
-        return undefined;
+        return out;
       });
     return out;
   }
@@ -117,7 +127,7 @@ export class BackupFactory {
         out = res as Promise<any>;
       })
       .catch((err) => {
-        return undefined;
+        return out;
       });
     return out;
   }
