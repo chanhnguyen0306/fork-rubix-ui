@@ -53,20 +53,3 @@ func (app *App) gitDownloadRelease(token, path string) (*store.Release, error) {
 	}
 	return appStore.DownLoadReleases(token, path)
 }
-
-func (app *App) GetGitToken() string {
-	out, err := app.getGitToken()
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get git token:%s", err.Error()))
-		return ""
-	}
-	return out
-}
-
-func (app *App) getGitToken() (string, error) {
-	out, err := app.DB.GetGitToken()
-	if err != nil {
-		return "", err
-	}
-	return out, nil
-}

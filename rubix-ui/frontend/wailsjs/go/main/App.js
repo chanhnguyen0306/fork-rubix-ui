@@ -470,6 +470,10 @@ export function GetServerTime(arg1) {
   return window['go']['main']['App']['GetServerTime'](arg1);
 }
 
+export function GetSetting() {
+  return window['go']['main']['App']['GetSetting']();
+}
+
 export function GetStream(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetStream'](arg1, arg2, arg3);
 }
@@ -524,6 +528,10 @@ export function UpdateConnection(arg1, arg2) {
 
 export function UpdateLocation(arg1, arg2, arg3) {
   return window['go']['main']['App']['UpdateLocation'](arg1, arg2, arg3);
+}
+
+export function UpdateSettings(arg1) {
+  return window['go']['main']['App']['UpdateSettings'](arg1);
 }
 
 export function WiresBackup(arg1, arg2, arg3) {
