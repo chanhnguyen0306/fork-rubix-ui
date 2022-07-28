@@ -66,7 +66,7 @@ export class ReleasesFactory {
         let out: any;
         await StoreDownloadApp(token, appName, releaseVersion, arch, cleanDownload)
             .then((res) => {
-                out = res as store.Release;
+                out = res as any;
             })
             .catch((err) => {
                 return out;
