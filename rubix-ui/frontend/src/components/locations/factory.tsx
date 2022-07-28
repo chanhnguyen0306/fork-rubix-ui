@@ -69,7 +69,7 @@ export class LocationFactory {
   async GetFist(): Promise<assistmodel.Location> {
     let one: assistmodel.Location = {} as assistmodel.Location;
     await this.GetAll()
-      .then((res) => {
+      .then((res: any) => {
         one = res.at(0) as assistmodel.Location;
         this._this = one;
       })
@@ -138,10 +138,10 @@ export class LocationFactory {
     hasUUID(this.connectionUUID);
     let out: Promise<any> = {} as Promise<any>;
     await DeleteLocationBulk(this.connectionUUID, uuids)
-      .then((res) => {
+      .then((res: any) => {
         out = res as Promise<any>;
       })
-      .catch((err) => {
+      .catch((err: any) => {
         return undefined;
       });
     return out;

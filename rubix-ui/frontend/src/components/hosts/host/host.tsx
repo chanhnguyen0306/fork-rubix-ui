@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Button, Tabs } from "antd";
+import { useLocation, useParams } from "react-router-dom";
+import { Button, Tabs, Card, Typography } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { assistmodel, model } from "../../../../wailsjs/go/models";
 import { HostsFactory } from "../factory";
@@ -9,14 +9,21 @@ import { FlowNetworkFactory } from "./flow/networks/factory";
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { ROUTES } from "../../../constants/routes";
+import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
 
 let networksKey = "NETWORKS";
 let pluginsKey = "PLUGINS";
 
+const { Title } = Typography;
+
 export const Host = () => {
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
-  const hostUUID = location.state.hostUUID ?? "";
+  let {
+    connUUID = "",
+    hostUUID = "",
+    locUUID = "",
+    netUUID = "",
+  } = useParams();
 
   const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);
@@ -81,44 +88,81 @@ export const Host = () => {
     }
   };
 
+  const routes = [
+    {
+      path: ROUTES.CONNECTIONS,
+      breadcrumbName: "Connections",
+    },
+    {
+      path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
+      breadcrumbName: "Location",
+    },
+    {
+      path: ROUTES.LOCATION_NETWORKS.replace(
+        ":connUUID",
+        connUUID || ""
+      ).replace(":locUUID", locUUID || ""),
+      breadcrumbName: "Location Network",
+    },
+    {
+      path: ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID || "")
+        .replace(":locUUID", locUUID || "")
+        .replace(":netUUID", netUUID),
+      breadcrumbName: "Hosts",
+    },
+    {
+      path: ROUTES.HOST.replace(":connUUID", connUUID || "")
+        .replace(":locUUID", locUUID || "")
+        .replace(":netUUID", netUUID || "")
+        .replace(":hostUUID", hostUUID || ""),
+      breadcrumbName: "Flow Networks",
+    },
+  ];
+
   return (
     <>
-      <Tabs defaultActiveKey={networksKey} onChange={onChange}>
-        <TabPane tab={networksKey} key={networksKey}>
-          <Button
-            type="primary"
-            onClick={fetchNetworks}
-            style={{ margin: "5px", float: "right" }}
-          >
-            <RedoOutlined /> Refresh
-          </Button>
-          <FlowNetworkTable
-            data={networks}
-            isFetching={isFetching}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
-            setIsFetching={setIsFetching}
-            fetchNetworks={fetchNetworks}
-          />
-        </TabPane>
-        <TabPane tab={pluginsKey} key={pluginsKey}>
-          <FlowPluginsTable
-            data={plugins}
-            isFetching={isFetching}
-            connUUID={connUUID}
-            hostUUID={hostUUID}
-            setIsFetching={setIsFetching}
-            fetchPlugins={fetchPlugins}
-          />
-        </TabPane>
-        <TabPane tab="INFO" key="INFO">
-          <HostTable
-            data={host}
-            isFetching={isFetching}
-            setIsFetching={setIsFetching}
-          />
-        </TabPane>
-      </Tabs>
+      <Title level={3} style={{ textAlign: "left" }}>
+        Flow Networks
+      </Title>
+      <Card bordered={false}>
+        <RbxBreadcrumb routes={routes} />
+        <Tabs defaultActiveKey={networksKey} onChange={onChange}>
+          <TabPane tab={networksKey} key={networksKey}>
+            <Button
+              type="primary"
+              onClick={fetchNetworks}
+              style={{ margin: "5px", float: "right" }}
+            >
+              <RedoOutlined /> Refresh
+            </Button>
+            <FlowNetworkTable
+              data={networks}
+              isFetching={isFetching}
+              connUUID={connUUID}
+              hostUUID={hostUUID}
+              setIsFetching={setIsFetching}
+              fetchNetworks={fetchNetworks}
+            />
+          </TabPane>
+          <TabPane tab={pluginsKey} key={pluginsKey}>
+            <FlowPluginsTable
+              data={plugins}
+              isFetching={isFetching}
+              connUUID={connUUID}
+              hostUUID={hostUUID}
+              setIsFetching={setIsFetching}
+              fetchPlugins={fetchPlugins}
+            />
+          </TabPane>
+          <TabPane tab="INFO" key="INFO">
+            <HostTable
+              data={host}
+              isFetching={isFetching}
+              setIsFetching={setIsFetching}
+            />
+          </TabPane>
+        </Tabs>
+      </Card>
     </>
   );
 };

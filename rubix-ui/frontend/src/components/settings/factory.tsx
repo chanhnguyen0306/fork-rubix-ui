@@ -23,10 +23,10 @@ export class SettingsFactory {
   async Get(): Promise<storage.Settings> {
     let out: any = storage.Settings;
     await GetSetting()
-        .then((res) => {
+        .then((res:any) => {
           out = res as storage.Settings;
         })
-        .catch((err) => {
+        .catch((err: any) => {
           return out;
         });
     return out;
@@ -35,10 +35,10 @@ export class SettingsFactory {
   async Update(body: storage.Settings): Promise<storage.Settings> {
     let one: storage.Settings = {} as storage.Settings;
     await UpdateSettings(body)
-      .then((res) => {
+      .then((res: any) => {
         one = res as storage.Settings;
       })
-      .catch((err) => {
+      .catch((err: any) => {
         return one;
       });
     return one;

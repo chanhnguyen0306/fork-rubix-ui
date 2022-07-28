@@ -63,7 +63,7 @@ export class HostsFactory {
   async GetFist(): Promise<assistmodel.Host> {
     let one: assistmodel.Host = {} as assistmodel.Host;
     await this.GetAll()
-      .then((res) => {
+      .then((res: any) => {
         one = res.at(0) as assistmodel.Host;
         this._this = one;
       })
@@ -153,10 +153,10 @@ export class HostsFactory {
     hasUUID(this.connectionUUID);
     let out: Promise<any> = {} as Promise<any>;
     await DeleteHostBulk(this.connectionUUID, uuids)
-      .then((res) => {
+      .then((res: any) => {
         out = res as Promise<any>;
       })
-      .catch((err) => {
+      .catch((err: any) => {
         return undefined;
       });
     return out;

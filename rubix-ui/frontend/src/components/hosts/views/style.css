@@ -11,10 +11,10 @@
     width: 0 !important;
 }
 
-.hosts-table > .ant-menu {
+/* .hosts-table > .ant-menu {
     width: 200px;
     box-shadow: 0 0 0 0, -12px 0 8px -4px rgba(31, 73, 125, 0.8) !important;
-}
+} */
 
 .hosts-table > .uncollapsed-style {
     opacity: 0.9;

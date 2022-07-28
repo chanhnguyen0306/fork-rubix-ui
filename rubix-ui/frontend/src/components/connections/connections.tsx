@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-import { Tabs } from "antd";
-import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
-import { storage } from "../../../wailsjs/go/models";
 import { isObjectEmpty } from "../../utils/utils";
-import { ConnectionFactory } from "./factory";
 import { ConnectionsTable } from "./views/table";
 import { CreateEditModal } from "./views/create";
+import { ConnectionFactory } from "./factory";
+import { Button, Card, Tabs, Typography } from "antd";
+import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
+import { storage } from "../../../wailsjs/go/models";
 import { PcScanner } from "../pc/scanner/table";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
+const { Title } = Typography;
+
 import RubixConnection = storage.RubixConnection;
+import { ROUTES } from "../../constants/routes";
 
 export const Connections = () => {
   const { TabPane } = Tabs;
@@ -70,47 +74,55 @@ export const Connections = () => {
 
   return (
     <>
-      <h1>Connections</h1>
-      <Tabs defaultActiveKey="1">
-        <TabPane
-          tab={
-            <span>
-              <ApartmentOutlined />
-              Connections
-            </span>
-          }
-          key="1"
-        >
-          <RbRefreshButton refreshList={refreshList} />
-          <RbAddButton showModal={() => showModal({} as RubixConnection)} />
-          <ConnectionsTable
-            connections={connections}
-            isFetching={isFetching}
-            showModal={showModal}
-            refreshList={refreshList}
-          />
-          <CreateEditModal
-            connections={connections}
-            currentConnection={currentConnection}
-            connectionSchema={connectionSchema}
-            isModalVisible={isModalVisible}
-            isLoadingForm={isLoadingForm}
-            refreshList={refreshList}
-            onCloseModal={onCloseModal}
-          />
-        </TabPane>
-        <TabPane
-          tab={
-            <span>
-              <RedoOutlined />
-              Discover
-            </span>
-          }
-          key="2"
-        >
-          <PcScanner />
-        </TabPane>
-      </Tabs>
+      <Title level={3} style={{ textAlign: "left" }}>
+        Connections
+      </Title>
+
+      <Card bordered={false}>
+        <RbxBreadcrumb
+          routes={[{ path: ROUTES.CONNECTIONS, breadcrumbName: "Connections" }]}
+        ></RbxBreadcrumb>
+        <Tabs defaultActiveKey="1">
+          <TabPane
+            tab={
+              <span>
+                <ApartmentOutlined />
+                Connections
+              </span>
+            }
+            key="1"
+          >
+            <RbRefreshButton refreshList={refreshList} />
+            <RbAddButton showModal={() => showModal({} as RubixConnection)} />
+            <ConnectionsTable
+              connections={connections}
+              isFetching={isFetching}
+              showModal={showModal}
+              refreshList={refreshList}
+            />
+            <CreateEditModal
+              connections={connections}
+              currentConnection={currentConnection}
+              connectionSchema={connectionSchema}
+              isModalVisible={isModalVisible}
+              isLoadingForm={isLoadingForm}
+              refreshList={refreshList}
+              onCloseModal={onCloseModal}
+            />
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                <RedoOutlined />
+                Discover
+              </span>
+            }
+            key="2"
+          >
+            <PcScanner />
+          </TabPane>
+        </Tabs>
+      </Card>
     </>
   );
 };

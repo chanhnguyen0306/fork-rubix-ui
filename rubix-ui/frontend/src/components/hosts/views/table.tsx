@@ -1,33 +1,38 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Space, Spin, Image, PaginationProps } from "antd";
 import {
   MenuFoldOutlined,
   PlayCircleOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../utils/utils";
-import { HostsFactory } from "../factory";
-import { BackupFactory } from "../../backups/factory";
-import RbTable from "../../../common/rb-table";
-import { CreateEditModal } from "./create";
+
 import { SidePanel } from "./side-panel";
+import { HostsFactory } from "../factory";
+import { CreateEditModal } from "./create";
+import RbTable from "../../../common/rb-table";
+import { ROUTES } from "../../../constants/routes";
+import { isObjectEmpty } from "../../../utils/utils";
+import { BackupFactory } from "../../backups/factory";
 import imageRC5 from "../../../assets/images/RC5.png";
 import imageRCIO from "../../../assets/images/RC-IO.png";
 import imageEdge28 from "../../../assets/images/Edge-iO-28.png";
-import "./style.css";
+import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
 
-import Host = assistmodel.Host;
-import Location = assistmodel.Location;
 import {
   RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../common/rb-table-actions";
 
+import "./style.css";
+
+import Host = assistmodel.Host;
+import Location = assistmodel.Location;
+
 export const HostsTable = (props: any) => {
-  const { hosts, networks, isFetching, connUUID, netUUID, refreshList } = props;
+  const { hosts, networks, isFetching, connUUID, netUUID, refreshList, locUUID } = props;
+
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
@@ -40,7 +45,6 @@ export const HostsTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
-  const navigate = useNavigate();
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
   factory.connectionUUID = connUUID as string;
@@ -111,15 +115,14 @@ export const HostsTable = (props: any) => {
       key: "actions",
       render: (_: any, host: Host) => (
         <Space size="middle">
-          <a
-            onClick={() =>
-              navigate(`/host/${host.uuid}`, {
-                state: { connUUID: connUUID, hostUUID: host.uuid },
-              })
-            }
+          <Link
+            to={ROUTES.HOST.replace(":connUUID", connUUID)
+              .replace(":locUUID", locUUID)
+              .replace(":netUUID", netUUID)
+              .replace(":hostUUID", host.uuid)}
           >
             View-Device
-          </a>
+          </Link>
           <a
             onClick={() => {
               showModal(host);

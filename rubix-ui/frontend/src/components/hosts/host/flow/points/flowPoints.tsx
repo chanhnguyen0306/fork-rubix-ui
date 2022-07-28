@@ -1,21 +1,31 @@
+import {  Typography, Card } from "antd";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { model } from "../../../../../../wailsjs/go/models";
+import { useParams } from "react-router-dom";
+
 import { FlowPointFactory } from "./factory";
 import { FlowPointsTable } from "./views/table";
+import { ROUTES } from "../../../../../constants/routes";
+import { model } from "../../../../../../wailsjs/go/models";
+import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Points = model.Point;
+
+const { Title } = Typography;
 
 export const FlowPoints = () => {
   const [data, setDevices] = useState([] as Points[]);
   const [isFetching, setIsFetching] = useState(true);
   let flowPointFactory = new FlowPointFactory();
-  const location = useLocation() as any;
-  const connUUID = location.state.connUUID ?? "";
-  const hostUUID = location.state.hostUUID ?? "";
-  const deviceUUID = location.state.deviceUUID ?? "";
-  const pluginName = location.state.pluginName ?? "";
+  const {
+    locUUID = "",
+    netUUID = "",
+    connUUID = "",
+    hostUUID = "",
+    deviceUUID = "",
+    pluginName = "",
+    networkUUID = "",
+  } = useParams();
 
   useEffect(() => {
     fetch();
@@ -33,20 +43,70 @@ export const FlowPoints = () => {
       setIsFetching(false);
     }
   };
+
+  const routes = [
+    {
+      path: ROUTES.CONNECTIONS,
+      breadcrumbName: "Connections",
+    },
+    {
+      path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
+      breadcrumbName: "Location",
+    },
+    {
+      path: ROUTES.LOCATION_NETWORKS.replace(
+        ":connUUID",
+        connUUID || ""
+      ).replace(":locUUID", locUUID || ""),
+      breadcrumbName: "Location Network",
+    },
+    {
+      path: ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID || "")
+        .replace(":locUUID", locUUID || "")
+        .replace(":netUUID", netUUID),
+      breadcrumbName: "Hosts",
+    },
+    {
+      path: ROUTES.HOST.replace(":connUUID", connUUID || "")
+        .replace(":locUUID", locUUID || "")
+        .replace(":netUUID", netUUID || "")
+        .replace(":hostUUID", hostUUID || ""),
+      breadcrumbName: "Flow Networks",
+    },
+    {
+      path: ROUTES.DEVICES.replace(":connUUID", connUUID || "")
+        .replace(":locUUID", locUUID || "")
+        .replace(":netUUID", netUUID || "")
+        .replace(":hostUUID", hostUUID || "")
+        .replace(":pluginName", pluginName || "")
+        .replace(":networkUUID", networkUUID || ""),
+      breadcrumbName: "Flow Devices",
+    },
+    {
+      path: "",
+      breadcrumbName: "Flow Point",
+    },
+  ];
+
   return (
     <>
-      <h3>Points</h3>
-      <RbRefreshButton refreshList={fetch} />
-      <FlowPointsTable
-        data={data}
-        isFetching={isFetching}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
-        deviceUUID={deviceUUID}
-        setIsFetching={setIsFetching}
-        refreshList={fetch}
-        pluginName={pluginName}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Flow Points
+      </Title>
+      <Card bordered={false}>
+        <RbxBreadcrumb routes={routes}></RbxBreadcrumb>
+        <RbRefreshButton refreshList={fetch} />
+        <FlowPointsTable
+          data={data}
+          isFetching={isFetching}
+          connUUID={connUUID}
+          hostUUID={hostUUID}
+          deviceUUID={deviceUUID}
+          setIsFetching={setIsFetching}
+          refreshList={fetch}
+          pluginName={pluginName}
+        />
+      </Card>
     </>
   );
 };

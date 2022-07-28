@@ -1,20 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Space, Spin } from "antd";
+import { Link } from "react-router-dom";
+
 import { NetworksFactory } from "../factory";
-import { assistmodel, main } from "../../../../wailsjs/go/models";
-import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
 import RbTable from "../../../common/rb-table";
+import { ROUTES } from "../../../constants/routes";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
+import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
+import { assistmodel, main } from "../../../../wailsjs/go/models";
 
 export const NetworksTable = (props: any) => {
-  const { networks, locations, refreshList, showModal, isFetching, connUUID } =
-    props;
+  const {
+    networks,
+    locations,
+    refreshList,
+    showModal,
+    isFetching,
+    connUUID,
+    locUUID,
+  } = props;
   if (!networks) return <></>;
 
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
-  const navigate = useNavigate();
   let factory = new NetworksFactory();
   factory.connectionUUID = connUUID;
 
@@ -54,15 +62,13 @@ export const NetworksTable = (props: any) => {
       key: "actions",
       render: (_: any, network: assistmodel.Network) => (
         <Space size="middle">
-          <a
-            onClick={() =>
-              navigate(`/hosts/${network.uuid}`, {
-                state: { connUUID: connUUID },
-              })
-            }
+          <Link
+            to={ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID)
+              .replace(":locUUID", locUUID)
+              .replace(":netUUID", network.uuid)}
           >
             View
-          </a>
+          </Link>
           <a
             onClick={() => {
               showModal(network);
@@ -108,6 +114,7 @@ export const NetworksTable = (props: any) => {
   return (
     <div>
       <RbDeleteButton bulkDelete={bulkDelete} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
