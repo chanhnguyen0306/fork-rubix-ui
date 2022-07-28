@@ -13,7 +13,7 @@ import (
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-//go:embed frontend/dist
+////go:embed frontend/dist
 var assets embed.FS
 
 func main() {

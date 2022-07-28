@@ -266,7 +266,7 @@ export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):
 
 export function StoreDownloadAll(arg1:string,arg2:string,arg3:boolean):Promise<Array<store.App>>;
 
-export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<store.App>;
+export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<main.InstallAppAndPlugins>;
 
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 

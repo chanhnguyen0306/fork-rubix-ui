@@ -2,6 +2,7 @@ package store
 
 import (
 	"errors"
+	"fmt"
 	"github.com/NubeIO/git/pkg/git"
 )
 
@@ -21,7 +22,7 @@ func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Releas
 			out = append(out, *wires)
 		} else if len(app.Arch) > 0 {
 			for _, arch := range app.Arch { // download both version of each app
-				app, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, cleanDownload, git.DownloadOptions{
+				app, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, "", cleanDownload, false, git.DownloadOptions{
 					AssetName: app.Repo,
 					MatchName: true,
 					MatchArch: true,
@@ -36,27 +37,9 @@ func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Releas
 	return out, nil
 }
 
-// DownloadAllArchTypes all arch types
-func (inst *Store) DownloadAllArchTypes(token, appName, version, repo, assetName string, cleanDownload bool) ([]App, error) {
-	var out []App
-	var archTypes = []string{"amd64", "armv7"}
-	for _, archType := range archTypes { //download both arch types of FF
-		app, err := inst.gitDownloadAsset(token, appName, version, repo, archType, cleanDownload, git.DownloadOptions{
-			AssetName: assetName,
-			MatchName: true,
-			MatchArch: true,
-		})
-		if err != nil {
-			return nil, err
-		}
-		out = append(out, *app)
-	}
-	return out, nil
-}
-
 // DownloadFlowPlugin download ff
-func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch string, cleanDownload bool) (*App, error) {
-	app, err := inst.gitDownloadAsset(token, flow, version, flow, arch, cleanDownload, git.DownloadOptions{
+func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, realseVersion string, cleanDownload bool) (*App, error) {
+	app, err := inst.gitDownloadAsset(token, flow, version, flow, arch, realseVersion, cleanDownload, true, git.DownloadOptions{
 		AssetName: pluginName,
 		MatchName: true,
 		MatchArch: true,
@@ -69,7 +52,7 @@ func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch string, c
 
 // DownloadWires download rubix-wires
 func (inst *Store) DownloadWires(token, version string, cleanDownload bool) (*App, error) {
-	app, err := inst.gitDownloadAsset(token, rubixWires, version, wiresBuilds, "", cleanDownload, git.DownloadOptions{
+	app, err := inst.gitDownloadAsset(token, rubixWires, version, wiresBuilds, "", "", cleanDownload, false, git.DownloadOptions{
 		AssetName:     rubixWires,
 		DownloadFirst: true,
 	})
@@ -80,17 +63,18 @@ func (inst *Store) DownloadWires(token, version string, cleanDownload bool) (*Ap
 }
 
 // GitDownloadAsset download an app
-func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
-	return inst.gitDownloadAsset(token, appName, version, repo, arch, cleanDownload, gitOptions)
+func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch, realseVersion string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	return inst.gitDownloadAsset(token, appName, version, repo, arch, realseVersion, cleanDownload, false, gitOptions)
 }
 
 // gitDownloadAsset download an app
-func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseVersion string, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
 	newApp := &App{
-		Name:    appName,
-		Version: version,
-		Repo:    repo,
-		Arch:    arch,
+		Name:          appName,
+		Version:       version,
+		Repo:          repo,
+		Arch:          arch,
+		RealseVersion: realseVersion,
 	}
 	if newApp.Name == "" {
 		return nil, errors.New("downloadApp: app name can not be empty")
@@ -106,6 +90,13 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch string, 
 		return nil, err
 	}
 	gitOptions.DownloadDestination = inst.getAppPathAndVersion(newApp.Name, newApp.Version)
+	if isPlugin {
+		if arch == "amd64" {
+			gitOptions.DownloadDestination = fmt.Sprintf("%s/plugins/amd64", inst.getAppPathAndVersion(newApp.Name, newApp.Version))
+		} else {
+			gitOptions.DownloadDestination = fmt.Sprintf("%s/plugins/armv7", inst.getAppPathAndVersion(newApp.Name, newApp.Version))
+		}
+	}
 	var runDownload bool
 	var buildNameMatch bool
 	var buildArchMatch bool
