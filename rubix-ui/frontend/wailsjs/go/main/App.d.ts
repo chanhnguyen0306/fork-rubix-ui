@@ -244,6 +244,8 @@ export function GetServerNetworking(arg1:string):Promise<any>;
 
 export function GetServerTime(arg1:string):Promise<any>;
 
+export function GetSetting():Promise<storage.Settings>;
+
 export function GetStream(arg1:string,arg2:string,arg3:string):Promise<model.Stream>;
 
 export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.StreamClone>>;
@@ -271,6 +273,8 @@ export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 
 export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
+
+export function UpdateSettings(arg1:storage.Settings):Promise<storage.Settings>;
 
 export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage.Backup>;
 

@@ -40,7 +40,7 @@ export class ConnectionFactory {
         out = res as boolean;
       })
       .catch((err) => {
-        return undefined;
+        return out;
       });
     return out;
   }
@@ -53,7 +53,7 @@ export class ConnectionFactory {
         out = res;
       })
       .catch((err) => {
-        return undefined;
+        return out;
       });
     return out;
   }
@@ -67,7 +67,7 @@ export class ConnectionFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -89,7 +89,7 @@ export class ConnectionFactory {
         all = res as Array<storage.RubixConnection>;
       })
       .catch((err) => {
-        return undefined;
+        return all;
       });
     return all;
   }
@@ -103,7 +103,7 @@ export class ConnectionFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -116,7 +116,7 @@ export class ConnectionFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -130,7 +130,7 @@ export class ConnectionFactory {
         this._this = one;
       })
       .catch((err) => {
-        return undefined;
+        return one;
       });
     return one;
   }
@@ -142,7 +142,7 @@ export class ConnectionFactory {
         out = res as Promise<any>;
       })
       .catch((err) => {
-        return undefined;
+        return out;
       });
     return out;
   }

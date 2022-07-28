@@ -43,7 +43,15 @@ func (inst *db) AddSettings(body *Settings) (*Settings, error) {
 	return body, nil
 }
 
-func (inst *db) UpdateSettings(uuid string, body *Settings) (*Settings, error) {
+func (inst *db) UpdateSettings(body *Settings) (*Settings, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return nil, err
+	}
+	if len(settings) == 0 {
+		return nil, errors.New("no settings have been added")
+	}
+	uuid_ := settings[0].UUID
 	if body.GitToken != "" {
 		body.GitToken = encodeToken(body.GitToken)
 	}
@@ -53,7 +61,7 @@ func (inst *db) UpdateSettings(uuid string, body *Settings) (*Settings, error) {
 		return nil, err
 	}
 	err = inst.DB.Update(func(tx *buntdb.Tx) error {
-		_, _, err := tx.Set(uuid, string(j), nil)
+		_, _, err := tx.Set(uuid_, string(j), nil)
 		return err
 	})
 	if err != nil {
@@ -63,9 +71,17 @@ func (inst *db) UpdateSettings(uuid string, body *Settings) (*Settings, error) {
 	return body, nil
 }
 
-func (inst *db) DeleteSettings(uuid string) error {
-	err := inst.DB.Update(func(tx *buntdb.Tx) error {
-		_, err := tx.Delete(uuid)
+func (inst *db) DeleteSettings() error {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return err
+	}
+	if len(settings) == 0 {
+		return errors.New("no settings have been added")
+	}
+	uuid_ := settings[0].UUID
+	err = inst.DB.Update(func(tx *buntdb.Tx) error {
+		_, err := tx.Delete(uuid_)
 		return err
 	})
 	if err != nil {
@@ -134,11 +150,19 @@ func (inst *db) GetSettings() ([]Settings, error) {
 	return resp, nil
 }
 
-func (inst *db) GetSetting(uuid string) (*Settings, error) {
-	if matchSettingsUUID(uuid) {
+func (inst *db) GetSetting() (*Settings, error) {
+	settings, err := inst.GetSettings()
+	if err != nil {
+		return nil, err
+	}
+	if len(settings) == 0 {
+		return nil, errors.New("no settings have been added")
+	}
+	uuid_ := settings[0].UUID
+	if matchSettingsUUID(uuid_) {
 		var data *Settings
 		err := inst.DB.View(func(tx *buntdb.Tx) error {
-			val, err := tx.Get(uuid)
+			val, err := tx.Get(uuid_)
 			if err != nil {
 				return err
 			}
