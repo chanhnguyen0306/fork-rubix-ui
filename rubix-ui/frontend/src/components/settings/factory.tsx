@@ -20,28 +20,28 @@ export class SettingsFactory {
   }
 
 
-  // async Get(): Promise<storage.Settings> {
-  //   let out = storage.Settings;
-  //   await GetSetting()
-  //       .then((res) => {
-  //         out = res as storage.Settings;
-  //       })
-  //       .catch((err) => {
-  //         return out;
-  //       });
-  //   return out;
-  // }
-  //
-  // async Update(body: storage.Settings): Promise<storage.Settings> {
-  //   let one: storage.Settings = {} as storage.Settings;
-  //   await UpdateSettings(body)
-  //     .then((res) => {
-  //       one = res as storage.Settings;
-  //     })
-  //     .catch((err) => {
-  //       return one;
-  //     });
-  //   return one;
-  // }
+  async Get(): Promise<storage.Settings> {
+    let out: any = storage.Settings;
+    await GetSetting()
+        .then((res) => {
+          out = res as storage.Settings;
+        })
+        .catch((err) => {
+          return out;
+        });
+    return out;
+  }
+
+  async Update(body: storage.Settings): Promise<storage.Settings> {
+    let one: storage.Settings = {} as storage.Settings;
+    await UpdateSettings(body)
+      .then((res) => {
+        one = res as storage.Settings;
+      })
+      .catch((err) => {
+        return one;
+      });
+    return one;
+  }
 
 }
