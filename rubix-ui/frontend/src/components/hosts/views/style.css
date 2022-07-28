@@ -1,3 +1,8 @@
+.hosts-table-actions{
+    display: flex;
+    justify-content: end;
+}
+
 .hosts-table {
     display: flex;
 }

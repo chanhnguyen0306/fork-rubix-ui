@@ -1,9 +1,12 @@
-import { assistmodel } from "../../../wailsjs/go/models";
+import { assistmodel, assitcli, main } from "../../../wailsjs/go/models";
 import {
   AddHost,
+  DeleteHost,
+  DeleteHostBulk,
   EditHost,
   GetHost,
   GetHosts,
+  GetHostSchema,
   PingHost,
 } from "../../../wailsjs/go/main/App";
 import { Helpers } from "../../helpers/checks";
@@ -28,6 +31,18 @@ export class HostsFactory {
 
   public GetTotalCount(): number {
     return this.count;
+  }
+
+  async Schema(): Promise<any> {
+    let all: Promise<any> = {} as Promise<any>;
+    await GetHostSchema(this.connectionUUID)
+      .then((res) => {
+        all = res as Promise<any>;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return all;
   }
 
   // will try and ping the remote server
@@ -119,5 +134,31 @@ export class HostsFactory {
         return undefined;
       });
     return one;
+  }
+
+  async Delete(): Promise<assitcli.Response> {
+    hasUUID(this.uuid);
+    let one: assitcli.Response = {} as assitcli.Response;
+    await DeleteHost(this.connectionUUID, this.uuid)
+      .then((res) => {
+        one = res as assitcli.Response;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return one;
+  }
+
+  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+    hasUUID(this.connectionUUID);
+    let out: Promise<any> = {} as Promise<any>;
+    await DeleteHostBulk(this.connectionUUID, uuids)
+      .then((res) => {
+        out = res as Promise<any>;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return out;
   }
 }

@@ -1,76 +1,143 @@
 {
   "uuid": "",
-  "name": "flow-framework",
-  "repo": "flow-framework",
-  "release": "v0.6.0",
-  "port": 1660,
-  "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+  "release": "v0.6.1",
   "apps": [
+    {
+      "name": "flow-framework",
+      "repo": "flow-framework",
+      "description": "flow-framework",
+      "port": 1660,
+      "transport": "http",
+      "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "version": "v0.6.1",
+      "min_version": "v0.6.1",
+      "max_version": "v0.6.1",
+      "flow_dependency": false,
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
+    },
     {
       "name": "bacnet-server-driver",
       "repo": "bacnet-server-c",
       "description": "a bacnet server",
+      "port": 47808,
+      "transport": "udp",
+      "app_specfic_exec_start": "",
       "products": [
         "all"
       ],
-      "version":"v0.0.2",
-      "max_version": "v0.0.9",
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "version": "v0.0.2",
+      "min_version": "v0.0.2",
+      "max_version": "v0.0.2",
       "flow_dependency": true,
-      "plugin_dependency": "bacnetserver"
+      "plugin_dependency": [
+        "bacnetserver"
+      ],
+      "service_dependency": [
+        "socat"
+      ]
     },
     {
       "name": "rubix-io-driver",
       "repo": "nubeio-rubix-app-pi-gpio-go",
       "description": "rubix compute io service",
       "port": 5001,
+      "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "rubix-compute-io"
       ],
-      "version":"v0.0.9",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.9",
+      "min_version": "v0.0.9",
       "max_version": "v0.0.9",
       "flow_dependency": true,
-      "plugin_dependency": "rubixio",
-      "service_dependency": [""]
+      "plugin_dependency": [
+        "rubixio"
+      ],
+      "service_dependency": [
+        "pigpi"
+      ]
     },
     {
       "name": "lora-driver",
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
+      "transport": "serial",
+      "app_specfic_exec_start": "",
       "products": [
         "rubix-compute-5",
         "rubix-compute-io"
       ],
-      "version":"v0.0.1",
-      "max_version": "v0.0.9",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.1",
+      "min_version": "v0.0.1",
+      "max_version": "v0.0.1",
       "flow_dependency": true,
-      "plugin_dependency": "lora",
-      "service_dependency": [""]
+      "plugin_dependency": [
+        "lora"
+      ],
+      "service_dependency": [
+        "socat"
+      ]
     },
     {
       "name": "edge-28-driver",
-      "repo": "bbb-py-rest",
+      "repo": "bbb-rest-py",
       "description": "edge-28 service",
+      "port": 5000,
+      "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "edge-28"
       ],
-      "version":"v0.0.2",
+      "arch": [
+        "armv7"
+      ],
+      "version": "v0.0.2",
       "max_version": "v0.0.9",
       "flow_dependency": true,
-      "plugin_dependency": "edge28",
-      "service_dependency": [""]
+      "plugin_dependency": [
+        "edge28"
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "rubix-wires",
       "repo": "wires-builds",
       "description": "flow based programming engine",
+      "port": 1313,
+      "transport": "http",
+      "app_specfic_exec_start": "",
       "products": [
         "all"
       ],
-      "version":"v2.7.4",
+      "version": "v2.7.4",
       "max_version": "v2.9.9",
       "flow_dependency": false,
-      "plugin_dependency": "",
-      "service_dependency": ["nodejs"],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+        "nodejs"
+      ],
       "custom_service_exec_start": "npm run prod:start --prod --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env"
     }
   ],
@@ -79,57 +146,143 @@
       "name": "system",
       "plugin": "system",
       "description": "system plugin is used for scheduling and a generic network, device and points",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "postgres",
       "plugin": "postgres",
+      "port": 5432,
+      "transport": "tcp",
       "description": "",
-      "app_dependency": [""],
-      "plugin_dependency": ["history"],
-      "service_dependency": [""]
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+      ],
+      "plugin_dependency": [
+        "history"
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "bacnet-master",
-      "plugin": "postgres",
+      "plugin": "bacnetmaster",
       "description": "a bacnet master plugin",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "port": 47808,
+      "transport": "udp",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "bacnet-server",
-      "plugin": "postgres",
+      "plugin": "bacnet-server",
       "description": "nube bacnet server",
-      "app_dependency": ["bacnet-server-c"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "port": 47809,
+      "transport": "udp",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+        "bacnet-server-driver"
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "lora",
-      "plugin": "postgres",
+      "plugin": "lora",
       "description": "nube lora protocol",
-      "app_dependency": ["loraserial"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "transport": "serial",
+      "products": [
+        "rubix-compute-5",
+        "rubix-compute-io"
+      ],
+      "arch": [
+        "armv7"
+      ],
+      "app_dependency": [
+        "lora-driver"
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "edge-28",
       "plugin": "edge28",
       "description": "nube edge-28 protocol",
-      "app_dependency": ["nubeio-rubix-app-bbb-rest-py"],
-      "plugin_dependency": [""],
-      "service_dependency": [""]
+      "port": 5000,
+      "transport": "http",
+      "products": [
+        "edge-28"
+      ],
+      "arch": [
+        "armv7"
+      ],
+      "app_dependency": [
+        "edge-28-driver"
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+      ]
     },
     {
       "name": "lorawan",
       "plugin": "lorawan",
       "description": "nube lorawan",
-      "app_dependency": [""],
-      "plugin_dependency": [""],
-      "service_dependency": ["chripstack", "mqtt"]
+      "port": 1883,
+      "transport": "mqtt",
+      "products": [
+        "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+      ],
+      "plugin_dependency": [
+      ],
+      "service_dependency": [
+        "chripstack",
+        "mqtt"
+      ]
     }
   ],
   "services": [
@@ -138,8 +291,13 @@
       "service_name": "mosquitto",
       "description": "a local mqtt broker",
       "port": 1883,
+      "transport": "mqtt",
       "products": [
         "all"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
       ]
     }
   ]

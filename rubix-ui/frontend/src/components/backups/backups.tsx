@@ -1,11 +1,8 @@
+import { useEffect, useState } from "react";
 import { storage } from "../../../wailsjs/go/models";
-import React, { useEffect, useState } from "react";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
-
-
-import {Button} from "antd";
-import {RedoOutlined} from "@ant-design/icons";
+import { RbRefreshButton } from "../../common/rb-table-actions";
 
 export const Backups = () => {
   const [backups, setBackups] = useState([] as storage.Backup[]);
@@ -19,31 +16,24 @@ export const Backups = () => {
   const fetch = async () => {
     try {
       let res = await factory.GetAll();
-        setBackups(res);
+      setBackups(res);
     } catch (error) {
       console.log(error);
-        setBackups([]);
+      setBackups([]);
     } finally {
       setIsFetching(false);
     }
   };
 
   return (
-      <>
-        <Button
-            type="primary"
-            onClick={fetch}
-            style={{margin: "5px", float: "right"}}
-        >
-          <RedoOutlined/> Refresh
-        </Button>
-        <BackupsTable
-            data={backups}
-            isFetching={isFetching}
-            setIsFetching={setIsFetching}
-            fetch={fetch}
-        />
-      </>
-
+    <>
+      <RbRefreshButton refreshList={fetch} />
+      <BackupsTable
+        data={backups}
+        isFetching={isFetching}
+        setIsFetching={setIsFetching}
+        fetch={fetch}
+      />
+    </>
   );
 };

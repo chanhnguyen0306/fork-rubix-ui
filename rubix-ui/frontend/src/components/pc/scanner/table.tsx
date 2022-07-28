@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Spin } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
-import { AddButton, CreateModal } from "./create";
+import { Spin } from "antd";
+import { CreateModal } from "./create";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import {Scanner} from "../../../../wailsjs/go/main/App";
+import { Scanner } from "../../../../wailsjs/go/main/App";
 import RbTable from "../../../common/rb-table";
+import { RbAddButton, RbRefreshButton } from "../../../common/rb-table-actions";
 
 const ScannerTable = (props: any) => {
   let { data, isFetching, setSelectedIpPorts } = props;
@@ -64,7 +64,6 @@ export const PcScanner = () => {
     } else {
       setIsFetching(false);
     }
-
   };
 
   const refreshList = () => {
@@ -80,14 +79,8 @@ export const PcScanner = () => {
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={refreshList}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <RedoOutlined /> Refresh
-      </Button>
-      <AddButton showModal={showModal} />
+      <RbRefreshButton refreshList={refreshList} />
+      <RbAddButton showModal={showModal} />
       <ScannerTable
         data={data}
         isFetching={isFetching}

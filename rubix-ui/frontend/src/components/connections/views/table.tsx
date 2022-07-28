@@ -1,18 +1,27 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Space, Spin } from "antd";
 import {
   DeleteConnection,
   PingRubixAssist,
 } from "../../../../wailsjs/go/main/App";
-import { storage } from "../../../../wailsjs/go/models";
+import { ConnectionFactory } from "../factory";
+import { main, storage } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import RubixConnection = storage.RubixConnection;
 import RbTable from "../../../common/rb-table";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
+
+import RubixConnection = storage.RubixConnection;
 import { ROUTES } from "../../../constants/routes";
 
 export const ConnectionsTable = (props: any) => {
   const { connections, refreshList, showModal, isFetching } = props;
   if (!connections) return <></>;
+
+  const navigate = useNavigate();
+  let factory = new ConnectionFactory();
+
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
   const columns = [
     {
@@ -85,19 +94,14 @@ export const ConnectionsTable = (props: any) => {
     refreshList();
   };
 
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
+
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
-    onSelect: (record: any, selected: any, selectedRows: any) => {
-      console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-      console.log(selected, selectedRows, changeRows);
+      setSelectedUUIDs(selectedRows);
     },
   };
 
@@ -116,6 +120,7 @@ export const ConnectionsTable = (props: any) => {
 
   return (
     <div>
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
         dataSource={connections}

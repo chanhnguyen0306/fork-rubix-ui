@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
+import { Space, Typography, Card } from "antd";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { LocationFactory } from "./factory";
+
 import {
   DeleteLocation,
   GetConnection,
   GetLocations,
 } from "../../../wailsjs/go/main/App";
-import { isObjectEmpty } from "../../utils/utils";
-import { Space, Typography, Card } from "antd";
-import { assistmodel, storage } from "../../../wailsjs/go/models";
-import RubixConnection = storage.RubixConnection;
-import { AddButton, CreateEditModal } from "./views/create";
+import { LocationFactory } from "./factory";
 import { LocationsTable } from "./views/table";
+import { ROUTES } from "../../constants/routes";
+import { CreateEditModal } from "./views/create";
+import { isObjectEmpty } from "../../utils/utils";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import { assistmodel, storage } from "../../../wailsjs/go/models";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
+
 
 import Location = assistmodel.Location;
-import { ROUTES } from "../../constants/routes";
-import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import RubixConnection = storage.RubixConnection;
 
 const { Title } = Typography;
 
@@ -160,7 +163,7 @@ export const Locations = () => {
       breadcrumbName: "Connections",
     },
     {
-      path: ROUTES.LOCATIONS.replace(":connUUID", (connUUID || "")),
+      path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
       breadcrumbName: "Location",
     },
   ];
@@ -171,8 +174,16 @@ export const Locations = () => {
         Locations
       </Title>
       <Card bordered={false}>
-        <RbxBreadcrumb routes={routes}/>
-        <AddButton showModal={showModal} />
+        <RbxBreadcrumb routes={routes} />
+        <RbRefreshButton refreshList={refreshList} />
+        <RbAddButton showModal={() => showModal({} as Location)} />
+        <LocationsTable
+          locations={locations}
+          isFetching={isFetching}
+          tableSchema={tableSchema}
+          connUUID={connUUID}
+          refreshList={refreshList}
+        />
         <CreateEditModal
           locations={locations}
           currentLocation={currentLocation}
@@ -183,11 +194,6 @@ export const Locations = () => {
           refreshList={refreshList}
           onCloseModal={onCloseModal}
           setIsFetching={setIsFetching}
-        />
-        <LocationsTable
-          locations={locations}
-          isFetching={isFetching}
-          tableSchema={tableSchema}
         />
       </Card>
     </>

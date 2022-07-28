@@ -1,14 +1,15 @@
-import { model } from "../../../../../../wailsjs/go/models";
-import React, { useEffect, useState } from "react";
+import {  Typography, Card } from "antd";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import { FlowPointFactory } from "./factory";
+import { FlowPointsTable } from "./views/table";
+import { ROUTES } from "../../../../../constants/routes";
+import { model } from "../../../../../../wailsjs/go/models";
+import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Points = model.Point;
-import { Button, Typography, Card } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
-import { FlowPointsTable } from "./views/table";
-import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
-import { ROUTES } from "../../../../../constants/routes";
 
 const { Title } = Typography;
 
@@ -94,23 +95,16 @@ export const FlowPoints = () => {
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes}></RbxBreadcrumb>
-
-        <Button
-          type="primary"
-          onClick={fetch}
-          style={{ margin: "5px", float: "right" }}
-        >
-          <RedoOutlined /> Refresh
-        </Button>
+        <RbRefreshButton refreshList={fetch} />
         <FlowPointsTable
           data={data}
+          isFetching={isFetching}
           connUUID={connUUID}
           hostUUID={hostUUID}
+          deviceUUID={deviceUUID}
+          setIsFetching={setIsFetching}
           refreshList={fetch}
           pluginName={pluginName}
-          deviceUUID={deviceUUID}
-          isFetching={isFetching}
-          setIsFetching={setIsFetching}
         />
       </Card>
     </>

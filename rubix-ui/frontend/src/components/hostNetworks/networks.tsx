@@ -7,10 +7,11 @@ import {
 } from "../../../wailsjs/go/main/App";
 import { Card, Typography } from "antd";
 import { isObjectEmpty } from "../../utils/utils";
-import { AddButton, CreateEditModal } from "./views/create";
+import { CreateEditModal } from "./views/create";
 import { NetworksTable } from "./views/table";
 import { assistmodel } from "../../../wailsjs/go/models";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 import { ROUTES } from "../../constants/routes";
 
 const { Title } = Typography;
@@ -115,7 +116,8 @@ export const Networks = () => {
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
-        <AddButton showModal={showModal} />
+        <RbRefreshButton refreshList={refreshList} />
+        <RbAddButton showModal={() => showModal({} as assistmodel.Network)} />
         <CreateEditModal
           networks={networks}
           currentNetwork={currentNetwork}
@@ -135,6 +137,11 @@ export const Networks = () => {
           refreshList={refreshList}
           connUUID={connUUID}
           locUUID={locUUID}
+          currentNetwork={currentNetwork}
+          networkSchema={networkSchema}
+          isModalVisible={isModalVisible}
+          isLoadingForm={isLoadingForm}
+          onCloseModal={onCloseModal}
         />
       </Card>
     </>

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { openNotificationWithIcon } from "../../../utils/utils";
-import { Button, Modal, Spin } from "antd";
-import { JsonForm } from "../../../common/json-form";
+import { Modal, Spin } from "antd";
 import { storage } from "../../../../wailsjs/go/models";
-import RubixConnection = storage.RubixConnection;
-import { PlusOutlined } from "@ant-design/icons";
+import { openNotificationWithIcon } from "../../../utils/utils";
 import { ConnectionFactory } from "../factory";
+import { JsonForm } from "../../../common/json-form";
+import { RbAddButton } from "../../../common/rb-table-actions";
+
+import RubixConnection = storage.RubixConnection;
 
 export const CreateEditModal = (props: any) => {
   const {
@@ -73,8 +74,7 @@ export const CreateEditModal = (props: any) => {
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}
       okText="Save"
-      okButtonProps={{
-      }}
+      okButtonProps={{}}
       onCancel={handleClose}
       confirmLoading={confirmLoading}
       maskClosable={false} // prevent modal from closing on click outside
@@ -89,19 +89,5 @@ export const CreateEditModal = (props: any) => {
         />
       </Spin>
     </Modal>
-  );
-};
-
-export const AddButton = (props: any) => {
-  const { showModal } = props;
-
-  return (
-    <Button
-      type="primary"
-      onClick={() => showModal({} as RubixConnection)}
-      style={{ margin: "5px", float: "right" }}
-    >
-      <PlusOutlined /> Add
-    </Button>
   );
 };

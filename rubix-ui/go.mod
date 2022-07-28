@@ -6,16 +6,16 @@ go 1.17
 //replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
 require (
-	github.com/NubeIO/git v0.0.4
+	github.com/NubeIO/git v0.0.5
 	github.com/NubeIO/lib-date v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.2
 	github.com/NubeIO/lib-networking v0.0.6
-	github.com/NubeIO/lib-rubix-installer v0.0.2
+	github.com/NubeIO/lib-rubix-installer v0.0.3
 	github.com/NubeIO/lib-schema v0.0.6
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0
-	github.com/NubeIO/rubix-assist v0.2.0
+	github.com/NubeIO/rubix-assist v0.2.1
 	github.com/google/go-github/v32 v32.1.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
@@ -26,7 +26,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.12.1
-	github.com/wailsapp/wails/v2 v2.0.0-beta.37
+	github.com/wailsapp/wails/v2 v2.0.0-beta.42
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 )

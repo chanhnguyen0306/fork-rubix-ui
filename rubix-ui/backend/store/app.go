@@ -3,7 +3,6 @@ package store
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -11,10 +10,11 @@ import (
 )
 
 type App struct {
-	Name    string `json:"name"`    // rubix-wires
-	Version string `json:"version"` // v1.1.1
-	Repo    string `json:"repo"`    // wires-builds
-	Arch    string `json:"arch"`
+	Name          string `json:"name"`    // rubix-wires
+	Version       string `json:"version"` // v1.1.1
+	Repo          string `json:"repo"`    // wires-builds
+	Arch          string `json:"arch"`
+	RealseVersion string `json:"realse_version"`
 }
 
 // AddApp make all the app store dirs
@@ -38,6 +38,14 @@ func (inst *Store) AddApp(app *App) (*App, error) {
 	}
 	if err := inst.makeAppVersionDir(appName, version); err != nil {
 		return nil, err
+	}
+	if appName == flow {
+		if version == "" {
+			return nil, errors.New("app realse version can not be empty when adding a plugin")
+		}
+		if err := inst.makePluginDirs(flow, app.RealseVersion); err != nil {
+			return nil, err
+		}
 	}
 	return app, nil
 }
@@ -66,15 +74,6 @@ func (inst *Store) ListStore() ([]App, error) {
 		return nil, err
 	}
 	return files, nil
-}
-
-func (inst *Store) GetAppZipName(appName, version string) (fileName string, path string, match *installer.MatchBuild, err error) {
-	path = inst.getAppPathAndVersion(appName, version)
-	check, err := inst.App.BuildCheck(appName, version, path)
-	if err != nil {
-		return "", path, nil, err
-	}
-	return filePath(check.BuildZipName), path, check, err
 }
 
 //makeUserPath  => /hom/user/rubix
@@ -106,4 +105,25 @@ func (inst *Store) makeAppVersionDir(appName, version string) error {
 	}
 	path := fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appName, version)
 	return inst.App.MakeDirectoryIfNotExists(path, os.FileMode(FilePerm))
+}
+
+//MakeAppVersionDir  => /user/rubix/store/apps/flow-framework/v1.1.1
+func (inst *Store) makePluginDirs(appName, realseVersion string) error {
+	if err := emptyPath(appName); err != nil {
+		return err
+	}
+	if err := checkVersion(realseVersion); err != nil {
+		return err
+	}
+	path := fmt.Sprintf("%s/%s/%s/plugins/amd64", inst.getUserStorePathApps(), appName, realseVersion)
+	err := inst.App.MakeDirectoryIfNotExists(path, os.FileMode(FilePerm))
+	if err != nil {
+		return err
+	}
+	path = fmt.Sprintf("%s/%s/%s/plugins/armv7", inst.getUserStorePathApps(), appName, realseVersion)
+	err = inst.App.MakeDirectoryIfNotExists(path, os.FileMode(FilePerm))
+	if err != nil {
+		return err
+	}
+	return nil
 }

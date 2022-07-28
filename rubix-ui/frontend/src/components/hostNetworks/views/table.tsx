@@ -1,9 +1,13 @@
-import { assistmodel } from "../../../../wailsjs/go/models";
+import { useState } from "react";
 import { Space, Spin } from "antd";
-import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { NetworksFactory } from "../factory";
 import RbTable from "../../../common/rb-table";
 import { ROUTES } from "../../../constants/routes";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
+import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
+import { assistmodel, main } from "../../../../wailsjs/go/models";
 
 export const NetworksTable = (props: any) => {
   const {
@@ -17,7 +21,10 @@ export const NetworksTable = (props: any) => {
   } = props;
   if (!networks) return <></>;
 
-  const navigate = useNavigate();
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+
+  let factory = new NetworksFactory();
+  factory.connectionUUID = connUUID;
 
   const columns = [
     {
@@ -86,6 +93,17 @@ export const NetworksTable = (props: any) => {
     refreshList();
   };
 
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
   const getLocationNameByUUID = (location_uuid: string) => {
     const location = locations.find(
       (l: assistmodel.Location) => l.uuid === location_uuid
@@ -94,11 +112,16 @@ export const NetworksTable = (props: any) => {
   };
 
   return (
-    <RbTable
-      rowKey="uuid"
-      dataSource={networks}
-      columns={columns}
-      loading={{ indicator: <Spin />, spinning: isFetching }}
-    />
+    <div>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+
+      <RbTable
+        rowKey="uuid"
+        rowSelection={rowSelection}
+        dataSource={networks}
+        columns={columns}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+    </div>
   );
 };

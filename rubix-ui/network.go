@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
@@ -53,7 +54,7 @@ func (app *App) GetHostNetworks(connUUID string) (resp []assistmodel.Network) {
 	return data
 }
 
-func (app *App) DeleteHostNetworkBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+func (app *App) DeleteHostNetworkBulk(connUUID string, uuids []UUIDs) interface{} {
 	for _, item := range uuids {
 		msg, err := app.deleteHostNetwork(connUUID, item.UUID)
 		if err != nil {

@@ -31,8 +31,12 @@ func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 	}
 	body.Time = ttime.New().Now()
 	body.UUID = uuid.ShortUUID("bac")
-	body.UserComment = fmt.Sprintf("%s backup: %s", body.HostName, body.UserComment)
-	body.BackupInfo = fmt.Sprintf("host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+	if body.UserComment == "" {
+		body.UserComment = fmt.Sprintf("%s backup: %s", body.HostName, body.UserComment)
+	}
+	if body.BackupInfo == "" {
+		body.BackupInfo = fmt.Sprintf("host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+	}
 	data, err := json.Marshal(body)
 	if err != nil {
 		fmt.Printf("Error: %s", err)

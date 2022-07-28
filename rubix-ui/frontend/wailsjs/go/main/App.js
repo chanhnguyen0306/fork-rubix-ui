@@ -50,8 +50,12 @@ export function GetPcInterfaces() {
   return window['go']['main']['App']['GetPcInterfaces']();
 }
 
-export function DeletePointBulk(arg1, arg2, arg3) {
-  return window['go']['main']['App']['DeletePointBulk'](arg1, arg2, arg3);
+export function AddRelease(arg1, arg2) {
+  return window['go']['main']['App']['AddRelease'](arg1, arg2);
+}
+
+export function AddStream(arg1, arg2, arg3) {
+  return window['go']['main']['App']['AddStream'](arg1, arg2, arg3);
 }
 
 export function UpdateLocation(arg1, arg2, arg3) {
@@ -98,8 +102,8 @@ export function GetNetworkDevices(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetNetworkDevices'](arg1, arg2, arg3);
 }
 
-export function GetProducers(arg1, arg2) {
-  return window['go']['main']['App']['GetProducers'](arg1, arg2);
+export function DeleteHostNetworkBulk(arg1, arg2) {
+  return window['go']['main']['App']['DeleteHostNetworkBulk'](arg1, arg2);
 }
 
 export function EnablePlugin(arg1, arg2, arg3) {
@@ -398,12 +402,236 @@ export function GetFlowNetwork(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['GetFlowNetwork'](arg1, arg2, arg3, arg4);
 }
 
+export function GetFlowNetworkClone(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['GetFlowNetworkClone'](arg1, arg2, arg3, arg4);
+}
+
+export function GetFlowNetworkClones(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetFlowNetworkClones'](arg1, arg2, arg3);
+}
+
+export function GetFlowNetworkSchema(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetFlowNetworkSchema'](arg1, arg2, arg3);
+}
+
+export function GetFlowNetworks(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetFlowNetworks'](arg1, arg2, arg3);
+}
+
+export function GetFlowPointSchema(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetFlowPointSchema'](arg1, arg2, arg3);
+}
+
+export function GetGitToken() {
+  return window['go']['main']['App']['GetGitToken']();
+}
+
+export function GetHost(arg1, arg2) {
+  return window['go']['main']['App']['GetHost'](arg1, arg2);
+}
+
+export function GetHostActiveNetworks(arg1, arg2) {
+  return window['go']['main']['App']['GetHostActiveNetworks'](arg1, arg2);
+}
+
+export function GetHostInterfaces(arg1, arg2) {
+  return window['go']['main']['App']['GetHostInterfaces'](arg1, arg2);
+}
+
 export function GetHostInternetIP(arg1, arg2) {
   return window['go']['main']['App']['GetHostInternetIP'](arg1, arg2);
 }
 
+export function GetHostNetwork(arg1, arg2) {
+  return window['go']['main']['App']['GetHostNetwork'](arg1, arg2);
+}
+
+export function GetHostNetworks(arg1) {
+  return window['go']['main']['App']['GetHostNetworks'](arg1);
+}
+
+export function GetHostSchema(arg1) {
+  return window['go']['main']['App']['GetHostSchema'](arg1);
+}
+
+export function GetHostTime(arg1, arg2) {
+  return window['go']['main']['App']['GetHostTime'](arg1, arg2);
+}
+
+export function GetHosts(arg1) {
+  return window['go']['main']['App']['GetHosts'](arg1);
+}
+
+export function GetLocation(arg1, arg2) {
+  return window['go']['main']['App']['GetLocation'](arg1, arg2);
+}
+
+export function GetLocationSchema(arg1) {
+  return window['go']['main']['App']['GetLocationSchema'](arg1);
+}
+
+export function GetLocationTableSchema(arg1) {
+  return window['go']['main']['App']['GetLocationTableSchema'](arg1);
+}
+
+export function GetLocations(arg1) {
+  return window['go']['main']['App']['GetLocations'](arg1);
+}
+
+export function GetLogs() {
+  return window['go']['main']['App']['GetLogs']();
+}
+
+export function GetLogsByConnection(arg1) {
+  return window['go']['main']['App']['GetLogsByConnection'](arg1);
+}
+
+export function GetLogsWithData() {
+  return window['go']['main']['App']['GetLogsWithData']();
+}
+
+export function GetNetwork(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['GetNetwork'](arg1, arg2, arg3, arg4);
+}
+
+export function GetNetworkByPluginName(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['GetNetworkByPluginName'](arg1, arg2, arg3, arg4);
+}
+
+export function GetNetworkDevices(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetNetworkDevices'](arg1, arg2, arg3);
+}
+
+export function GetNetworkSchema(arg1) {
+  return window['go']['main']['App']['GetNetworkSchema'](arg1);
+}
+
+export function GetNetworks(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetNetworks'](arg1, arg2, arg3);
+}
+
+export function GetNetworksWithPoints(arg1, arg2) {
+  return window['go']['main']['App']['GetNetworksWithPoints'](arg1, arg2);
+}
+
+export function GetPcGetNetworks() {
+  return window['go']['main']['App']['GetPcGetNetworks']();
+}
+
+export function GetPcGetNetworksSchema() {
+  return window['go']['main']['App']['GetPcGetNetworksSchema']();
+}
+
+export function GetPcInterfaces() {
+  return window['go']['main']['App']['GetPcInterfaces']();
+}
+
+export function GetPcTime() {
+  return window['go']['main']['App']['GetPcTime']();
+}
+
+export function GetPlugin(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetPlugin'](arg1, arg2, arg3);
+}
+
+export function GetPluginByName(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetPluginByName'](arg1, arg2, arg3);
+}
+
+export function GetPlugins(arg1, arg2) {
+  return window['go']['main']['App']['GetPlugins'](arg1, arg2);
+}
+
+export function GetPluginsNames(arg1, arg2) {
+  return window['go']['main']['App']['GetPluginsNames'](arg1, arg2);
+}
+
+export function GetPoint(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetPoint'](arg1, arg2, arg3);
+}
+
+export function GetPoints(arg1, arg2) {
+  return window['go']['main']['App']['GetPoints'](arg1, arg2);
+}
+
+export function GetPointsForDevice(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetPointsForDevice'](arg1, arg2, arg3);
+}
+
+export function GetProducer(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetProducer'](arg1, arg2, arg3);
+}
+
+export function GetProducerClones(arg1, arg2) {
+  return window['go']['main']['App']['GetProducerClones'](arg1, arg2);
+}
+
+export function GetProducers(arg1, arg2) {
+  return window['go']['main']['App']['GetProducers'](arg1, arg2);
+}
+
+export function GetRelease(arg1) {
+  return window['go']['main']['App']['GetRelease'](arg1);
+}
+
+export function GetReleaseByVersion(arg1) {
+  return window['go']['main']['App']['GetReleaseByVersion'](arg1);
+}
+
+export function GetReleases() {
+  return window['go']['main']['App']['GetReleases']();
+}
+
+export function GetScannerSchema() {
+  return window['go']['main']['App']['GetScannerSchema']();
+}
+
+export function GetServerNetworking(arg1) {
+  return window['go']['main']['App']['GetServerNetworking'](arg1);
+}
+
+export function GetServerTime(arg1) {
+  return window['go']['main']['App']['GetServerTime'](arg1);
+}
+
+export function GetSetting() {
+  return window['go']['main']['App']['GetSetting']();
+}
+
 export function GetStream(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetStream'](arg1, arg2, arg3);
+}
+
+export function GetStreamClones(arg1, arg2) {
+  return window['go']['main']['App']['GetStreamClones'](arg1, arg2);
+}
+
+export function GetStreams(arg1, arg2) {
+  return window['go']['main']['App']['GetStreams'](arg1, arg2);
+}
+
+export function GitDownloadRelease(arg1, arg2) {
+  return window['go']['main']['App']['GitDownloadRelease'](arg1, arg2);
+}
+
+export function GitListReleases(arg1) {
+  return window['go']['main']['App']['GitListReleases'](arg1);
+}
+
+export function HostRubixScan(arg1, arg2) {
+  return window['go']['main']['App']['HostRubixScan'](arg1, arg2);
+}
+
+export function ImportBackup(arg1) {
+  return window['go']['main']['App']['ImportBackup'](arg1);
+}
+
+export function OpenURL(arg1) {
+  return window['go']['main']['App']['OpenURL'](arg1);
+}
+
+export function PingHost(arg1, arg2) {
+  return window['go']['main']['App']['PingHost'](arg1, arg2);
 }
 
 export function PingRubixAssist(arg1) {
@@ -414,16 +642,28 @@ export function AddProducer(arg1, arg2, arg3) {
   return window['go']['main']['App']['AddProducer'](arg1, arg2, arg3);
 }
 
-export function GetHostNetworks(arg1) {
-  return window['go']['main']['App']['GetHostNetworks'](arg1);
+export function StoreDownloadAll(arg1, arg2, arg3) {
+  return window['go']['main']['App']['StoreDownloadAll'](arg1, arg2, arg3);
+}
+
+export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function UpdateConnection(arg1, arg2) {
+  return window['go']['main']['App']['UpdateConnection'](arg1, arg2);
 }
 
 export function GetLogsByConnection(arg1) {
   return window['go']['main']['App']['GetLogsByConnection'](arg1);
 }
 
-export function GetStreamClones(arg1, arg2) {
-  return window['go']['main']['App']['GetStreamClones'](arg1, arg2);
+export function UpdateSettings(arg1) {
+  return window['go']['main']['App']['UpdateSettings'](arg1);
+}
+
+export function WiresBackup(arg1, arg2, arg3) {
+  return window['go']['main']['App']['WiresBackup'](arg1, arg2, arg3);
 }
 
 export function GetHostActiveNetworks(arg1, arg2) {

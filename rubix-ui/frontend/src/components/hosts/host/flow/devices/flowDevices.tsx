@@ -1,17 +1,19 @@
-import { Button, Tabs, Card, Typography } from "antd";
-import { useLocation, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { RedoOutlined } from "@ant-design/icons";
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
-import { BacnetFactory } from "../bacnet/factory";
-import { model } from "../../../../../../wailsjs/go/models";
+import React, { useEffect, useState } from "react";
+import { Button, Tabs, Card, Typography } from "antd";
+
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
+import { BacnetFactory } from "../bacnet/factory";
+import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
+import { ROUTES } from "../../../../../constants/routes";
+import { model } from "../../../../../../wailsjs/go/models";
+import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
+import { openNotificationWithIcon } from "../../../../../utils/utils";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
-import { openNotificationWithIcon } from "../../../../../utils/utils";
-import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
-import { ROUTES } from "../../../../../constants/routes";
 
 const { Title } = Typography;
 
@@ -117,13 +119,7 @@ export const FlowDevices = () => {
         <RbxBreadcrumb routes={routes}></RbxBreadcrumb>
         <Tabs defaultActiveKey="1" onChange={onChange}>
           <TabPane tab="DEVICES" key="1">
-            <Button
-              type="primary"
-              onClick={fetch}
-              style={{ margin: "5px", float: "right" }}
-            >
-              <RedoOutlined /> Refresh
-            </Button>
+            <RbRefreshButton refreshList={fetch} />
             <FlowDeviceTable
               data={data}
               isFetching={isFetching}
