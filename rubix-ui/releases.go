@@ -101,14 +101,8 @@ func (app *App) downloadAll(token, releaseVersion string, cleanDownload bool) ([
 	return downloaded, err
 }
 
-type InstallAppAndPlugins struct {
-	AppName    string
-	AppVersion string
-	Plugins    []string
-}
-
-func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *InstallAppAndPlugins {
-	out := &InstallAppAndPlugins{}
+func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *store.InstallResponse {
+	out := &store.InstallResponse{}
 	inst := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",

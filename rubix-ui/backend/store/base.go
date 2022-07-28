@@ -18,6 +18,12 @@ const root = 0777
 var FilePerm = root
 var gitClient *git.Client
 
+type InstallResponse struct {
+	AppName    string
+	AppVersion string
+	Plugins    []string
+}
+
 type Store struct {
 	App               *installer.App
 	Perm              int    `json:"file_perm"`
