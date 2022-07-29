@@ -113,11 +113,15 @@ const AppContainer = (props: any) => {
               items={menuItems}
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
-            ></Menu>
+            />
 
-            <Dropdown overlay={menu} trigger={["click"]}>
+            <Dropdown
+              overlay={menu}
+              trigger={["click"]}
+              overlayClassName="settings-dropdown"
+            >
               <a onClick={(e) => e.preventDefault()}>
-                <Avatar icon={<UserOutlined />} className="avar-dropdown" />
+                <Avatar icon={<UserOutlined />} className="avar" />
               </a>
             </Dropdown>
           </>
