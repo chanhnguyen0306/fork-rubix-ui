@@ -1,5 +1,5 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import React, { useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import {
   MenuProps,
   Spin,
@@ -17,8 +17,6 @@ import {
   FileSearchOutlined,
   ToolOutlined,
   UserOutlined,
-  HistoryOutlined,
-  LinkOutlined,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -37,12 +35,6 @@ const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
-  // { name: "Backups", icon: HistoryOutlined, link: ROUTES.BACKUPS },
-  // { name: "Logs", icon: HistoryOutlined, link: ROUTES.LOGS },
-  // { name: "Networking", icon: LinkOutlined, link: ROUTES.NETWORKING },
-  // { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
-  // { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
-  // { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
   { name: "Tools", icon: ToolOutlined, link: "" },
   { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
