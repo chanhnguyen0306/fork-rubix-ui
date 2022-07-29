@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { Button, Collapse, Modal, Spin } from "antd";
-import { JsonForm } from "../../../common/json-form";
+import { JsonForm } from "../../../common/json-schema-form";
 import { storage } from "../../../../wailsjs/go/models";
 import { PlusOutlined } from "@ant-design/icons";
 import RubixConnection = storage.RubixConnection;

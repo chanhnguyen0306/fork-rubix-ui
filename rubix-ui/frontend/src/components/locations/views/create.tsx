@@ -2,7 +2,7 @@ import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { AddLocation, UpdateLocation } from "../../../../wailsjs/go/main/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import { JsonForm } from "../../../common/json-form";
+import { JsonForm } from "../../../common/json-schema-form";
 
 import Location = assistmodel.Location;
 import { assistmodel } from "../../../../wailsjs/go/models";

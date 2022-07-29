@@ -3,7 +3,7 @@ import { Modal, Spin } from "antd";
 import { storage } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { ConnectionFactory } from "../factory";
-import { JsonForm } from "../../../common/json-form";
+import { JsonForm } from "../../../common/json-schema-form";
 import { RbAddButton } from "../../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;

@@ -1,7 +1,7 @@
 import { Modal, Spin } from "antd";
 import { useState } from "react";
 import { FlowPointFactory } from "../factory";
-import { JsonForm } from "../../../../../../common/json-form";
+import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
 
 import Point = model.Point;

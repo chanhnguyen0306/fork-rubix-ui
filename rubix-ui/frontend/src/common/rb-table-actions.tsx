@@ -1,33 +1,77 @@
 import { Button, Popconfirm } from "antd";
-import { PlusOutlined, RedoOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  RedoOutlined,
+  DeleteOutlined,
+  ImportOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
 
 export const RbAddButton = (props: any) => {
-  const { showModal } = props;
+  const { showModal, disabled } = props;
   return (
-    <Button type="primary" onClick={showModal} style={btn}>
-      <PlusOutlined /> Add
+    <Button
+      className="nube-green white--text"
+      onClick={showModal}
+      disabled={disabled}
+      style={btn}
+    >
+      <PlusOutlined /> Create
     </Button>
   );
 };
 
 export const RbRefreshButton = (props: any) => {
-  const { refreshList } = props;
+  const { refreshList, disabled } = props;
   return (
-    <Button type="primary" onClick={refreshList} style={btn}>
+    <Button
+      className="nube-primary white--text"
+      onClick={refreshList}
+      disabled={disabled}
+      style={btn}
+    >
       <RedoOutlined /> Refresh
     </Button>
   );
 };
 
 export const RbDeleteButton = (props: any) => {
-  const { bulkDelete } = props;
+  const { bulkDelete, disabled } = props;
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
-      <Button className="danger white--text" style={btn}>
+      <Button className="danger white--text" disabled={disabled} style={btn}>
         <DeleteOutlined /> Delete
       </Button>
     </Popconfirm>
+  );
+};
+
+export const RbImportButton = (props: any) => {
+  const { showModal, disabled } = props;
+  return (
+    <Button
+      className="nube-primary white--text"
+      onClick={showModal}
+      disabled={disabled}
+      style={btn}
+    >
+      <ImportOutlined /> Import
+    </Button>
+  );
+};
+
+export const RbExportButton = (props: any) => {
+  const { handleExport, disabled } = props;
+  return (
+    <Button
+      className="export-color white--text"
+      onClick={handleExport}
+      disabled={disabled}
+      style={btn}
+    >
+      <ExportOutlined /> Export
+    </Button>
   );
 };
