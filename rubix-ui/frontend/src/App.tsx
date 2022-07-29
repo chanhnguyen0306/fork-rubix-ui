@@ -1,11 +1,22 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
-import { MenuProps, Spin, Switch, Image, Row, Divider, Input } from "antd";
+import {
+  MenuProps,
+  Spin,
+  Switch,
+  Image,
+  Row,
+  Divider,
+  Input,
+  Avatar,
+  Dropdown,
+} from "antd";
 import { Layout, Menu } from "antd";
 import {
   ApartmentOutlined,
   FileSearchOutlined,
   ToolOutlined,
+  UserOutlined,
   HistoryOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
@@ -58,6 +69,29 @@ const AppContainer = (props: any) => {
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
 
+  const menu = (
+    <Menu
+      items={[
+        {
+          key: "1",
+          label: <a className="my-2">Token Update</a>,
+        },
+        {
+          key: "2",
+          label: (
+            <Switch
+              className="my-2"
+              checkedChildren="🌙"
+              unCheckedChildren="☀"
+              checked={darkMode}
+              onChange={setDarkMode}
+            />
+          ),
+        },
+      ]}
+    />
+  );
+
   return (
     <Layout>
       <Sider width={250} style={{ minHeight: "100vh" }}>
@@ -80,13 +114,12 @@ const AppContainer = (props: any) => {
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
             ></Menu>
-            <Switch
-              className="menu-toggle"
-              checkedChildren="🌙"
-              unCheckedChildren="☀"
-              checked={darkMode}
-              onChange={setDarkMode}
-            />
+
+            <Dropdown overlay={menu} trigger={["click"]}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Avatar icon={<UserOutlined />} className="avar-dropdown" />
+              </a>
+            </Dropdown>
           </>
         )}
       </Sider>
@@ -108,7 +141,6 @@ const AppContainer = (props: any) => {
 const App: React.FC = () => {
   let [isRegistered, updateIsRegistered] = useState(false);
 
-  let navigate = useNavigate();
   const { routeData, isFetching } = useConnections();
 
   useEffect(() => {
@@ -133,11 +165,6 @@ const App: React.FC = () => {
     EventsOn(ERR_EVENT, (val) => {
       openNotificationWithIcon("error", val);
     });
-  };
-
-  const onClickMenu = (e: any, link: string, state?: any) => {
-    e.stopPropagation();
-    navigate(link, state);
   };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {

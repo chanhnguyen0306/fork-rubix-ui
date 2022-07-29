@@ -69,19 +69,12 @@
     display: block;
 }
 
-.ant-layout-sider-children > ul > li > ul{
+.ant-layout-sider-children>ul>li>ul {
     max-height: 75vh;
     overflow-y: auto;
 }
 
-.menu-toggle {
-    padding-left: 5px !important;
-    margin-left: 24px !important;
-    margin-top: 10px !important;
-    display: block !important;
-    text-align: start;
-}
-.menu-toggle > .ant-switch-inner{
+.menu-toggle>.ant-switch-inner {
     font-size: larger;
 }
 
@@ -90,11 +83,11 @@
     margin-top: 24px;
 }
 
-.logo > .ant-image{
+.logo>.ant-image {
     margin-right: 15px;
 }
 
-.logo > .title{
+.logo>.title {
     margin: auto 0;
     color: #fff;
 }
@@ -102,4 +95,12 @@
 aside .active {
     font-weight: bolder;
     color: #fff;
+}
+
+.avar-dropdown {
+    margin-left: 24px !important;
+    margin-top: 10px !important;
+    display: block !important;
+    background-color: var(--nube-green) !important;
+    cursor: pointer;
 }
