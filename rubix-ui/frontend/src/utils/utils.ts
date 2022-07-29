@@ -88,3 +88,13 @@ export const copyToClipboard = (text: string) => {
     );
   }
 };
+
+export const downloadJSON = (fileName: string, data: any) => {
+  const blob = new Blob([data], { type: "text/plain" });
+  const e = document.createEvent("MouseEvents"),
+    a = document.createElement("a");
+  a.download = `${fileName}.json`;
+  a.href = window.URL.createObjectURL(blob);
+  e.initEvent("click", true, false);
+  a.dispatchEvent(e);
+};

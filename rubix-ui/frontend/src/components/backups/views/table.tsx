@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Spin } from "antd";
 import { main } from "../../../../wailsjs/go/models";
-import { copyToClipboard } from "../../../utils/utils";
+import { downloadJSON } from "../../../utils/utils";
 import { BackupFactory } from "../factory";
 import {
   RbDeleteButton,
@@ -75,8 +75,8 @@ export const BackupsTable = (props: any) => {
 
   const handleExport = async () => {
     try {
-      const backup = selectedUUIDs[0];
-      copyToClipboard(JSON.stringify(backup));
+      const backup = selectedUUIDs[0] as any;
+      downloadJSON(backup.host_name, JSON.stringify(backup));
     } catch (error) {
       console.log(error);
     }
