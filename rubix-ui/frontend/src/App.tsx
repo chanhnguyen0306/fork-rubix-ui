@@ -30,6 +30,7 @@ import "./App.css";
 
 import { ROUTES } from "./constants/routes";
 import { useConnections } from "./hooks/useConnection";
+import { TokenModal } from "./components/settings/views/token-modal";
 const { Search } = Input;
 
 const { Content, Sider } = Layout;
@@ -68,13 +69,18 @@ const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const menu = (
     <Menu
       items={[
         {
           key: "1",
-          label: <a className="my-2">Token Update</a>,
+          label: (
+            <a className="my-2" onClick={() => setIsModalVisible(true)}>
+              Token Update
+            </a>
+          ),
         },
         {
           key: "2",
@@ -138,6 +144,10 @@ const AppContainer = (props: any) => {
           {props.children}
         </Content>
       </Layout>
+      <TokenModal
+        isModalVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </Layout>
   );
 };
