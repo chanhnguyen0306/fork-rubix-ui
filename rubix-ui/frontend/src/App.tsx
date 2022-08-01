@@ -1,13 +1,23 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import React, { useEffect, useMemo, useState } from "react";
-import { MenuProps, Spin, Switch, Image, Row, Divider, Input } from "antd";
+import { NavLink, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  MenuProps,
+  Spin,
+  Switch,
+  Image,
+  Row,
+  Divider,
+  Input,
+  Avatar,
+  Dropdown,
+} from "antd";
 import { Layout, Menu } from "antd";
 import {
   ApartmentOutlined,
   FileSearchOutlined,
   ToolOutlined,
-  HistoryOutlined,
-  LinkOutlined,
+  UserOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -19,18 +29,13 @@ import "./App.css";
 
 import { ROUTES } from "./constants/routes";
 import { useConnections } from "./hooks/useConnection";
+import { TokenModal } from "./components/settings/views/token-modal";
 const { Search } = Input;
 
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
-  // { name: "Backups", icon: HistoryOutlined, link: ROUTES.BACKUPS },
-  // { name: "Logs", icon: HistoryOutlined, link: ROUTES.LOGS },
-  // { name: "Networking", icon: LinkOutlined, link: ROUTES.NETWORKING },
-  // { name: "Docs hardware", icon: LinkOutlined, link: ROUTES.DOCS },
-  // { name: "Docs software", icon: LinkOutlined, link: ROUTES.DOCS_SOFTWARE },
-  // { name: "Docs dips", icon: LinkOutlined, link: ROUTES.DOCS_DIPS },
   { name: "Tools", icon: ToolOutlined, link: "" },
   { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
@@ -57,6 +62,34 @@ const AppContainer = (props: any) => {
   const { isFetching, menuItems } = props;
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const menu = (
+    <Menu
+      items={[
+        {
+          key: "1",
+          label: (
+            <a className="my-2" onClick={() => setIsModalVisible(true)}>
+              <KeyOutlined /> Token Update
+            </a>
+          ),
+        },
+        {
+          key: "2",
+          label: (
+            <Switch
+              className="my-2"
+              checkedChildren="🌙"
+              unCheckedChildren="☀"
+              checked={darkMode}
+              onChange={setDarkMode}
+            />
+          ),
+        },
+      ]}
+    />
+  );
 
   return (
     <Layout>
@@ -79,14 +112,17 @@ const AppContainer = (props: any) => {
               items={menuItems}
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
-            ></Menu>
-            <Switch
-              className="menu-toggle"
-              checkedChildren="🌙"
-              unCheckedChildren="☀"
-              checked={darkMode}
-              onChange={setDarkMode}
             />
+
+            <Dropdown
+              overlay={menu}
+              trigger={["click"]}
+              overlayClassName="settings-dropdown"
+            >
+              <a onClick={(e) => e.preventDefault()}>
+                <Avatar icon={<UserOutlined />} className="avar" />
+              </a>
+            </Dropdown>
           </>
         )}
       </Sider>
@@ -101,6 +137,10 @@ const AppContainer = (props: any) => {
           {props.children}
         </Content>
       </Layout>
+      <TokenModal
+        isModalVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </Layout>
   );
 };
@@ -108,7 +148,6 @@ const AppContainer = (props: any) => {
 const App: React.FC = () => {
   let [isRegistered, updateIsRegistered] = useState(false);
 
-  let navigate = useNavigate();
   const { routeData, isFetching } = useConnections();
 
   useEffect(() => {
@@ -133,11 +172,6 @@ const App: React.FC = () => {
     EventsOn(ERR_EVENT, (val) => {
       openNotificationWithIcon("error", val);
     });
-  };
-
-  const onClickMenu = (e: any, link: string, state?: any) => {
-    e.stopPropagation();
-    navigate(link, state);
   };
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
