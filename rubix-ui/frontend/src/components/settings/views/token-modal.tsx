@@ -11,6 +11,8 @@ export const TokenModal = (props: any) => {
   const _darkMode = getDarkMode();
   const factory = new SettingsFactory();
 
+  const uuid = "set_123456789ABC"
+
   useEffect(() => {
     GetSetting();
   }, [isModalVisible]);
@@ -23,9 +25,8 @@ export const TokenModal = (props: any) => {
 
   const GetSetting = async () => {
     try {
-      // const setttings = await factory.Get();
-      const git_token = await factory.GitToken();
-      git_token ? setToken(git_token) : setToken("");
+      const gitToken = await factory.GitToken(uuid);
+      gitToken ? setToken(gitToken) : setToken("");
     } catch (error) {
       console.log(error);
     } finally {
@@ -35,8 +36,8 @@ export const TokenModal = (props: any) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const payload = { theme: _darkMode ? "dark" : "light", git_token: token };
-      await factory.Update(payload);
+      const payload = { uuid: uuid,  theme: _darkMode ? "dark" : "light", git_token: token };
+      await factory.Update(uuid, payload);
       openNotificationWithIcon("success", "Update Token Successful!");
       onClose();
     } catch (error) {

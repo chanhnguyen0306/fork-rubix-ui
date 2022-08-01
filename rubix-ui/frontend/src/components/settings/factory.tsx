@@ -7,9 +7,9 @@ import {
 
 export class SettingsFactory {
 
-  async GitToken(): Promise<string> {
+  async GitToken(uuid:string): Promise<string> {
     let out = "";
-    await GetGitToken()
+    await GetGitToken(uuid, true)
       .then((res) => {
         out = res as string;
       })
@@ -20,9 +20,9 @@ export class SettingsFactory {
   }
 
 
-  async Get(): Promise<storage.Settings> {
+  async Get(uuid:string): Promise<storage.Settings> {
     let out: any = storage.Settings;
-    await GetSetting()
+    await GetSetting(uuid)
         .then((res:any) => {
           out = res as storage.Settings;
         })
@@ -32,9 +32,9 @@ export class SettingsFactory {
     return out;
   }
 
-  async Update(body: storage.Settings): Promise<storage.Settings> {
+  async Update(uuid: string, body: storage.Settings): Promise<storage.Settings> {
     let one: storage.Settings = {} as storage.Settings;
-    await UpdateSettings(body)
+    await UpdateSettings(uuid, body)
       .then((res: any) => {
         one = res as storage.Settings;
       })
