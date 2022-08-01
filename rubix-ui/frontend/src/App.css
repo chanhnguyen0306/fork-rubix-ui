@@ -104,8 +104,14 @@ aside .active {
     left: 24px !important;
 }
 
+.settings-dropdown>ul>li:first-child {
+    min-height: 40px;
+    border-top: unset;
+}
+
 .settings-dropdown>ul>li {
     min-height: 40px;
+    border-top: 1px solid var(--nube-light-grey);
 }
 
 .avar {
