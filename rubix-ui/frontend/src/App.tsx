@@ -17,6 +17,7 @@ import {
   FileSearchOutlined,
   ToolOutlined,
   UserOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -70,7 +71,7 @@ const AppContainer = (props: any) => {
           key: "1",
           label: (
             <a className="my-2" onClick={() => setIsModalVisible(true)}>
-              Token Update
+              <KeyOutlined /> Token Update
             </a>
           ),
         },

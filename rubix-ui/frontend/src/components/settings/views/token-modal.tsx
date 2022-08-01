@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Input, Modal } from "antd";
 import { SettingsFactory } from "../factory";
+import { storage } from "../../../../wailsjs/go/models";
 
 export const TokenModal = (props: any) => {
   const { isModalVisible, onClose } = props;
@@ -22,11 +23,17 @@ export const TokenModal = (props: any) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      //   await factory.Update(body);
-      setConfirmLoading(false);
+      const payload = { theme: "dark", git_token: body };
+      const res = await factory.Update(payload);
+      // const res = await factory.Get();
+      // const res = await factory.GitToken();
+      console.log(res);
+
       onClose();
     } catch (error) {
       console.log(error);
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
