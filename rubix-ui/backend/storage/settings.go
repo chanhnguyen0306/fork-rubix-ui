@@ -48,8 +48,12 @@ func (inst *db) UpdateSettings(body *Settings) (*Settings, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(settings) == 0 {
-		return nil, errors.New("no settings have been added")
+	if len(settings) == 0 { // add settings if not existing
+		addSettings, err := inst.AddSettings(body)
+		if err != nil {
+			return nil, err
+		}
+		return addSettings, err
 	}
 	uuid_ := settings[0].UUID
 	if body.GitToken != "" {
