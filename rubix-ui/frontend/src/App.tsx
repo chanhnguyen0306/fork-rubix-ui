@@ -63,6 +63,10 @@ const getParentKey = (key: React.Key, tree: any): React.Key => {
 
 const DividerLock = (props: any) => {
   const { collapsed, collapseDisabled, setCollapseDisabled } = props;
+  const handleLockSider = (e: Event) => {
+    e.stopPropagation();
+    setCollapseDisabled(!collapseDisabled);
+  };
   return (
     <Divider
       plain
@@ -74,12 +78,12 @@ const DividerLock = (props: any) => {
     >
       {collapseDisabled ? (
         <LockTwoTone
-          onClick={() => setCollapseDisabled(!collapseDisabled)}
+          onClick={(e: any) => handleLockSider(e)}
           style={{ fontSize: "18px" }}
         />
       ) : (
         <LockFilled
-          onClick={() => setCollapseDisabled(!collapseDisabled)}
+          onClick={(e: any) => handleLockSider(e)}
           style={{ fontSize: "18px" }}
         />
       )}
@@ -163,7 +167,7 @@ const AppContainer = (props: any) => {
         style={{ minHeight: "100vh" }}
         collapsed={collapsed}
         onClick={() => {
-          if (collapsed) setCollapsed(false);
+          if (collapsed && !collapseDisabled) setCollapsed(false);
         }}
       >
         {isFetching ? (
