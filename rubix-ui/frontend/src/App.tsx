@@ -18,6 +18,7 @@ import {
   ToolOutlined,
   UserOutlined,
   KeyOutlined,
+  LockFilled,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -102,10 +103,16 @@ const AppContainer = (props: any) => {
               <Image width={36} src={logo} preview={false} />
               <h4 className="title">Rubix Platform</h4>
             </Row>
-
             <Divider
-              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
-            />
+              plain
+              orientation="right"
+              style={{
+                borderColor: "rgba(255, 255, 255, 0.12)",
+                color: "var(--white)",
+              }}
+            >
+              <LockFilled />
+            </Divider>
             <Menu
               mode="inline"
               theme="dark"
