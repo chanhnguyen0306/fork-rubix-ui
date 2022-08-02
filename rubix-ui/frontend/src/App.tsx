@@ -64,7 +64,7 @@ const AppContainer = (props: any) => {
   const [darkMode, setDarkMode] = useTheme();
   const location = useLocation();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [collapsed, setCollapsed] = useState(false);
   const menu = (
     <Menu
       items={[
@@ -94,24 +94,24 @@ const AppContainer = (props: any) => {
 
   return (
     <Layout>
-      <Sider width={250} style={{ minHeight: "100vh" }}>
+      <Sider width={250} style={{ minHeight: "100vh" }} collapsed={collapsed}>
         {isFetching ? (
           <Spin />
         ) : (
           <>
             <Row className="logo">
               <Image width={36} src={logo} preview={false} />
-              <h4 className="title">Rubix Platform</h4>
+              {!collapsed ? <h4 className="title">Rubix Platform</h4> : null}
             </Row>
             <Divider
               plain
-              orientation="right"
+              orientation={collapsed ? "center" : "right"}
               style={{
                 borderColor: "rgba(255, 255, 255, 0.12)",
                 color: "var(--white)",
               }}
             >
-              <LockFilled />
+              <LockFilled onClick={() => setCollapsed(!collapsed)} />
             </Divider>
             <Menu
               mode="inline"
