@@ -90,6 +90,8 @@
 .logo>.title {
     margin: auto 0;
     color: #fff;
+    align-self: center;
+    font-size: 1.7rem;
 }
 
 aside .active {

@@ -19,6 +19,8 @@ import {
   UserOutlined,
   KeyOutlined,
   LockFilled,
+  LeftOutlined,
+  LockTwoTone,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -65,6 +67,7 @@ const AppContainer = (props: any) => {
   const location = useLocation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [collapseDisabled, setCollapseDisabled] = useState(false);
   const menu = (
     <Menu
       items={[
@@ -94,24 +97,51 @@ const AppContainer = (props: any) => {
 
   return (
     <Layout>
-      <Sider width={250} style={{ minHeight: "100vh" }} collapsed={collapsed}>
+      <Sider
+        width={250}
+        style={{ minHeight: "100vh" }}
+        collapsed={collapsed}
+        onClick={() => {
+          if (collapsed) setCollapsed(false);
+        }}
+      >
         {isFetching ? (
           <Spin />
         ) : (
           <>
             <Row className="logo">
               <Image width={36} src={logo} preview={false} />
-              {!collapsed ? <h4 className="title">Rubix Platform</h4> : null}
+              {!collapsed ? (
+                <div className="title">
+                  Rubix Platform{" "}
+                  <LeftOutlined
+                    style={{ marginLeft: "2rem" }}
+                    onClick={() => {
+                      if (!collapseDisabled) setCollapsed(!collapsed);
+                    }}
+                  />
+                </div>
+              ) : null}
             </Row>
             <Divider
               plain
               orientation={collapsed ? "center" : "right"}
+              className="white--text"
               style={{
                 borderColor: "rgba(255, 255, 255, 0.12)",
-                color: "var(--white)",
               }}
             >
-              <LockFilled onClick={() => setCollapsed(!collapsed)} />
+              {collapseDisabled ? (
+                <LockTwoTone
+                  onClick={() => setCollapseDisabled(!collapseDisabled)}
+                  style={{ fontSize: "18px" }}
+                />
+              ) : (
+                <LockFilled
+                  onClick={() => setCollapseDisabled(!collapseDisabled)}
+                  style={{ fontSize: "18px" }}
+                />
+              )}
             </Divider>
             <Menu
               mode="inline"
