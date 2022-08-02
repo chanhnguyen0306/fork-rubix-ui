@@ -61,13 +61,55 @@ const getParentKey = (key: React.Key, tree: any): React.Key => {
   return parentKey!;
 };
 
-const AppContainer = (props: any) => {
-  const { isFetching, menuItems } = props;
+const DividerLock = (props: any) => {
+  const { collapsed, collapseDisabled, setCollapseDisabled } = props;
+  return (
+    <Divider
+      plain
+      orientation={collapsed ? "center" : "right"}
+      className="white--text"
+      style={{
+        borderColor: "rgba(255, 255, 255, 0.12)",
+      }}
+    >
+      {collapseDisabled ? (
+        <LockTwoTone
+          onClick={() => setCollapseDisabled(!collapseDisabled)}
+          style={{ fontSize: "18px" }}
+        />
+      ) : (
+        <LockFilled
+          onClick={() => setCollapseDisabled(!collapseDisabled)}
+          style={{ fontSize: "18px" }}
+        />
+      )}
+    </Divider>
+  );
+};
+
+const HeaderSider = (props: any) => {
+  const { collapsed, collapseDisabled, setCollapsed } = props;
+  return (
+    <Row className="logo">
+      <Image width={36} src={logo} preview={false} />
+      {!collapsed ? (
+        <div className="title">
+          Rubix Platform{" "}
+          <LeftOutlined
+            style={{ marginLeft: "2rem" }}
+            onClick={() => {
+              if (!collapseDisabled) setCollapsed(!collapsed);
+            }}
+          />
+        </div>
+      ) : null}
+    </Row>
+  );
+};
+
+const AvatarDropdown = (props: any) => {
+  const { setIsModalVisible } = props;
   const [darkMode, setDarkMode] = useTheme();
-  const location = useLocation();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const [collapseDisabled, setCollapseDisabled] = useState(false);
   const menu = (
     <Menu
       items={[
@@ -94,6 +136,25 @@ const AppContainer = (props: any) => {
       ]}
     />
   );
+  return (
+    <Dropdown
+      overlay={menu}
+      trigger={["click"]}
+      overlayClassName="settings-dropdown"
+    >
+      <a onClick={(e) => e.preventDefault()}>
+        <Avatar icon={<UserOutlined />} className="avar" />
+      </a>
+    </Dropdown>
+  );
+};
+
+const AppContainer = (props: any) => {
+  const { isFetching, menuItems } = props;
+  const location = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [collapseDisabled, setCollapseDisabled] = useState(false);
 
   return (
     <Layout>
@@ -109,40 +170,16 @@ const AppContainer = (props: any) => {
           <Spin />
         ) : (
           <>
-            <Row className="logo">
-              <Image width={36} src={logo} preview={false} />
-              {!collapsed ? (
-                <div className="title">
-                  Rubix Platform{" "}
-                  <LeftOutlined
-                    style={{ marginLeft: "2rem" }}
-                    onClick={() => {
-                      if (!collapseDisabled) setCollapsed(!collapsed);
-                    }}
-                  />
-                </div>
-              ) : null}
-            </Row>
-            <Divider
-              plain
-              orientation={collapsed ? "center" : "right"}
-              className="white--text"
-              style={{
-                borderColor: "rgba(255, 255, 255, 0.12)",
-              }}
-            >
-              {collapseDisabled ? (
-                <LockTwoTone
-                  onClick={() => setCollapseDisabled(!collapseDisabled)}
-                  style={{ fontSize: "18px" }}
-                />
-              ) : (
-                <LockFilled
-                  onClick={() => setCollapseDisabled(!collapseDisabled)}
-                  style={{ fontSize: "18px" }}
-                />
-              )}
-            </Divider>
+            <HeaderSider
+              collapsed={collapsed}
+              collapseDisabled={collapseDisabled}
+              setCollapsed={setCollapsed}
+            />
+            <DividerLock
+              collapsed={collapsed}
+              collapseDisabled={collapseDisabled}
+              setCollapseDisabled={setCollapseDisabled}
+            />
             <Menu
               mode="inline"
               theme="dark"
@@ -150,16 +187,7 @@ const AppContainer = (props: any) => {
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
             />
-
-            <Dropdown
-              overlay={menu}
-              trigger={["click"]}
-              overlayClassName="settings-dropdown"
-            >
-              <a onClick={(e) => e.preventDefault()}>
-                <Avatar icon={<UserOutlined />} className="avar" />
-              </a>
-            </Dropdown>
+            <AvatarDropdown setIsModalVisible={setIsModalVisible} />
           </>
         )}
       </Sider>
