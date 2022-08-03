@@ -6,7 +6,7 @@ import {
   EditNetwork,
   GetFlowNetworkSchema,
   GetNetwork,
-  GetNetworks
+  GetNetworks, ImportBackup, ImportNetwork
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -42,7 +42,6 @@ export class FlowNetworkFactory {
     })
     return resp
   }
-
 
   async Add(body: model.Network): Promise<model.Network> {
     let resp: model.Network = {} as model.Network
@@ -86,6 +85,20 @@ export class FlowNetworkFactory {
     hasUUID(this.hostUUID)
     await DeleteNetworkBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
       resp = res as Promise<any>
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
+
+
+  // Import  a newImport will create a new network (or if false it will edit the network), and if createAllChild is true it will add all the devices and points
+  async Import(newImport: boolean, createAllChild: boolean, body: model.Network): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await ImportNetwork(this.connectionUUID, this.hostUUID, newImport, createAllChild, body).then(res => {
+      resp = res as model.Network
     }).catch(err => {
       return resp
     })

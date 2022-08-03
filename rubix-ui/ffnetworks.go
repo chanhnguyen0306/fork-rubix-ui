@@ -69,6 +69,58 @@ func (app *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *mode
 	return networks
 }
 
+func (app *App) importNewNetwork(connUUID, hostUUID string, body *model.Network) {
+	devices := body.Devices
+	if devices != nil {
+		for _, device := range devices {
+			device.NetworkUUID = body.UUID
+			app.AddDevice(connUUID, hostUUID, device)
+			points := device.Points
+			for _, point := range points {
+				point.DeviceUUID = device.UUID
+				app.AddPoint(connUUID, hostUUID, point)
+			}
+		}
+	}
+}
+
+func (app *App) importEditNetwork(connUUID, hostUUID string, body *model.Network) {
+	devices := body.Devices
+	if devices != nil {
+		for _, device := range devices {
+			device.NetworkUUID = body.UUID
+			app.EditDevice(connUUID, hostUUID, device.UUID, device)
+			points := device.Points
+			for _, point := range points {
+				point.DeviceUUID = device.UUID
+				app.EditPoint(connUUID, hostUUID, point.UUID, point)
+			}
+		}
+	}
+}
+
+// ImportNetwork to be used when user wants to import and make a new network or edit an existing network
+func (app *App) ImportNetwork(connUUID, hostUUID string, newImport, createAllChild bool, body *model.Network) *model.Network {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	var net *model.Network
+	if newImport {
+		net = app.AddNetwork(connUUID, hostUUID, body)
+		if createAllChild {
+			app.importNewNetwork(connUUID, hostUUID, body)
+		}
+	} else {
+		net = app.EditNetwork(connUUID, hostUUID, body.UUID, body)
+		if createAllChild {
+			app.importEditNetwork(connUUID, hostUUID, body)
+		}
+	}
+	return net
+}
+
 func (app *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
