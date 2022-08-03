@@ -16,16 +16,6 @@ function hasUUID(uuid: string): Error {
 export class FlowPointFactory {
     hostUUID!: string;
     connectionUUID!: string;
-    uuid!: string;
-    _this!: model.Point;
-
-    get this(): model.Point {
-        return this._this;
-    }
-
-    set this(value: model.Point) {
-        this._this = value;
-    }
 
     async GetAll(): Promise<Array<model.Point>> {
         let resp: Promise<Array<model.Point>> = {} as Promise<Array<model.Point>>
@@ -51,20 +41,17 @@ export class FlowPointFactory {
         return resp
     }
 
-    async GetOne(): Promise<model.Point> {
-        hasUUID(this.uuid)
+    async GetOne(uuid:string): Promise<model.Point> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         let resp: model.Point = {} as model.Point
-        await GetPoint(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
+        await GetPoint(this.connectionUUID, this.hostUUID, uuid).then(res => {
             resp = res as model.Point
-            this._this = resp
         }).catch(err => {
             return resp
         })
         return resp
     }
-
 
     async Add(deviceUUID:string, body:model.Point): Promise<model.Point> {
         hasUUID(this.connectionUUID)
@@ -73,7 +60,6 @@ export class FlowPointFactory {
         body.device_uuid = deviceUUID
         await AddPoint(this.connectionUUID, this.hostUUID, body).then(res => {
             resp = res as model.Point
-            this._this = resp
         }).catch(err => {
             return resp
         })
@@ -87,27 +73,23 @@ export class FlowPointFactory {
         let resp: model.Point = {} as model.Point
         await EditPoint(this.connectionUUID, this.hostUUID, uuid, body).then(res => {
             resp = res as model.Point
-            this._this = resp
         }).catch(err => {
             return resp
         })
         return resp
     }
 
-    async Delete(): Promise<model.Point> {
+    async Delete(uuid:string): Promise<model.Point> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         let resp: model.Point = {} as model.Point
-        await DeletePoint(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
+        await DeletePoint(this.connectionUUID, this.hostUUID, uuid).then(res => {
             resp = res as model.Point
-            this._this = resp
         }).catch(err => {
             return resp
         })
         return resp
     }
-
-
 
     async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
         let resp: Promise<any> = {} as Promise<any>
@@ -128,7 +110,6 @@ export class FlowPointFactory {
         await GetFlowPointSchema(connUUID, hostUUID, setPluginName).then(res => {
             res.plugin_name = setPluginName;
             resp = res as unknown as Promise<any>
-
         }).catch(err => {
             return resp
         })
