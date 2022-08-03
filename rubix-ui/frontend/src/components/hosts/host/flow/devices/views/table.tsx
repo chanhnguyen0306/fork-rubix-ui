@@ -10,6 +10,10 @@ import { CreateModal } from "./create";
 import RbTable from "../../../../../../common/rb-table";
 import Device = model.Device;
 import { ROUTES } from "../../../../../../constants/routes";
+import {
+  RbAddButton,
+  RbDeleteButton,
+} from "../../../../../../common/rb-table-actions";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -81,6 +85,7 @@ export const FlowDeviceTable = (props: any) => {
       ),
     },
   ];
+
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await flowDeviceFactory.Schema(
@@ -121,19 +126,8 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
-
-      <Button
-        type="primary"
-        onClick={() => showCreateModal({} as Device)}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <PlusOutlined /> Add
-      </Button>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton showModal={() => showCreateModal({} as Device)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
