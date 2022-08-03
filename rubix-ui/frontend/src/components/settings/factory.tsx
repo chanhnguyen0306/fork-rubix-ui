@@ -7,6 +7,20 @@ import {
 
 export class SettingsFactory {
 
+
+  async GitTokenDecoded(uuid:string): Promise<string> {
+    let out = "";
+    await GetGitToken(uuid, false)
+      .then((res) => {
+        out = res as string;
+      })
+      .catch((err) => {
+        return out;
+      });
+    return out;
+  }
+
+
   async GitToken(uuid:string): Promise<string> {
     let out = "";
     await GetGitToken(uuid, true)
