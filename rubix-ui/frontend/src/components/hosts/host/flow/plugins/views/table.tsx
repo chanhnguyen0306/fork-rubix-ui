@@ -1,4 +1,4 @@
-import {Button, Spin, Tag, Image} from "antd";
+import { Button, Spin, Tag, Image } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -10,7 +10,7 @@ import { FlowNetworkFactory } from "../../networks/factory";
 import { CreateModal } from "./create";
 import { main, model } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
-import {pluginLogo} from "../../../../../../utils/utils";
+import { pluginLogo } from "../../../../../../utils/utils";
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, fetchPlugins } = props;
@@ -57,7 +57,7 @@ export const FlowPluginsTable = (props: any) => {
     setIsLoadingForm(true);
     if (plugins.length > 0) {
       let plg = plugins.at(0) as unknown as model.PluginConf;
-      setPluginName(plg.name)
+      setPluginName(plg.name);
       const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
       const jsonSchema = {
         properties: res,
@@ -77,7 +77,7 @@ export const FlowPluginsTable = (props: any) => {
       key: "name",
       dataIndex: "name",
       render(name: string) {
-        let image = pluginLogo(name)
+        let image = pluginLogo(name);
         return <Image preview={false} width={70} src={image} />;
       },
     },

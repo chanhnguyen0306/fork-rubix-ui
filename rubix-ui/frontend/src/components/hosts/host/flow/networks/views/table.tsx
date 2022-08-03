@@ -1,14 +1,18 @@
-import { Button, Image, Popconfirm, Space, Spin, Tag } from "antd";
-import { useNavigate, useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { FlowNetworkFactory } from "../factory";
-import { isObjectEmpty, pluginLogo } from "../../../../../../utils/utils";
-import { main, model } from "../../../../../../../wailsjs/go/models";
-import { EditModal } from "./edit";
+import { useParams, Link } from "react-router-dom";
+import { Button, Image, Popconfirm, Space, Spin, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import RbTable from "../../../../../../common/rb-table";
-import "./style.css";
+import { FlowNetworkFactory } from "../factory";
+import { main, model } from "../../../../../../../wailsjs/go/models";
+import { isObjectEmpty, pluginLogo } from "../../../../../../utils/utils";
 import { ROUTES } from "../../../../../../constants/routes";
+import RbTable from "../../../../../../common/rb-table";
+import {
+  RbAddButton,
+  RbDeleteButton,
+} from "../../../../../../common/rb-table-actions";
+import "./style.css";
+import { CreateModal, EditModal } from "./create";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -20,63 +24,13 @@ export const FlowNetworkTable = (props: any) => {
   } = useParams();
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
-  const [pluginName, setPluginName] = useState<string>();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let networkFactory = new FlowNetworkFactory();
 
-  const getSchema = async (pluginName: string) => {
-    setIsLoadingForm(true);
-    const res = await networkFactory.Schema(connUUID, hostUUID, pluginName);
-    const jsonSchema = {
-      properties: res,
-    };
-    setNetworkSchema(jsonSchema);
-    setIsLoadingForm(false);
-  };
-
-  const showModal = (item: any) => {
-    setCurrentItem(item);
-    setIsModalVisible(true);
-    setPluginName(item.plugin_name);
-    if (isObjectEmpty(networkSchema)) {
-      getSchema(item.plugin_name);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalVisible(false);
-    setCurrentItem({});
-  };
-
-  const bulkDelete = async () => {
-    networkFactory.connectionUUID = connUUID;
-    networkFactory.hostUUID = hostUUID;
-    await networkFactory.BulkDelete(selectedUUIDs);
-    fetchNetworks();
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
-
-  const getNavigationLink = (
-    networkUUID: string,
-    pluginName: string
-  ): string => {
-    return ROUTES.DEVICES.replace(":connUUID", connUUID)
-      .replace(":locUUID", locUUID)
-      .replace(":netUUID", netUUID)
-      .replace(":hostUUID", hostUUID)
-      .replace(":networkUUID", networkUUID)
-      .replace(":pluginName", pluginName);
-  };
-
-  const navigate = useNavigate();
   const columns = [
     {
       title: "network",
@@ -128,13 +82,57 @@ export const FlowNetworkTable = (props: any) => {
     },
   ];
 
+  const getSchema = async (pluginName: string) => {
+    setIsLoadingForm(true);
+    const res = await networkFactory.Schema(connUUID, hostUUID, pluginName);
+    const jsonSchema = {
+      properties: res,
+    };
+    setNetworkSchema(jsonSchema);
+    setIsLoadingForm(false);
+  };
+
+  const showModal = (item: any) => {
+    setCurrentItem(item);
+    setIsModalVisible(true);
+    getSchema(item.plugin_name);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setCurrentItem({});
+  };
+
+  const bulkDelete = async () => {
+    networkFactory.connectionUUID = connUUID;
+    networkFactory.hostUUID = hostUUID;
+    await networkFactory.BulkDelete(selectedUUIDs);
+    fetchNetworks();
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  const getNavigationLink = (
+    networkUUID: string,
+    pluginName: string
+  ): string => {
+    return ROUTES.DEVICES.replace(":connUUID", connUUID)
+      .replace(":locUUID", locUUID)
+      .replace(":netUUID", netUUID)
+      .replace(":hostUUID", hostUUID)
+      .replace(":networkUUID", networkUUID)
+      .replace(":pluginName", pluginName);
+  };
+
   return (
     <>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
+
       <RbTable
         className="flow-networks"
         rowKey="uuid"
@@ -152,6 +150,13 @@ export const FlowNetworkTable = (props: any) => {
         networkSchema={networkSchema}
         refreshList={fetchNetworks}
         onCloseModal={closeModal}
+      />
+      <CreateModal
+        isModalVisible={isCreateModalVisible}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        onCloseModal={() => setIsCreateModalVisible(false)}
+        refreshList={fetchNetworks}
       />
     </>
   );
