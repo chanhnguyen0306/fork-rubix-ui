@@ -74,7 +74,8 @@ export const EditModal = (props: any) => {
 };
 
 export const CreateModal = (props: any) => {
-  const { isModalVisible, connUUID, hostUUID, onCloseModal } = props;
+  const { isModalVisible, connUUID, hostUUID, onCloseModal, refreshList } =
+    props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Network);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -128,10 +129,17 @@ export const CreateModal = (props: any) => {
   };
 
   const handleSubmit = async (item: Network) => {
-    setConfirmLoading(true);
-    await networkFactory.Import(true, true, item);
-    setConfirmLoading(false);
-    handleClose();
+    try {
+      setConfirmLoading(true);
+      item.plugin_name = selectedPlugin;
+      await networkFactory.Import(true, true, item);
+      refreshList();
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setConfirmLoading(false);
+    }
   };
 
   return (

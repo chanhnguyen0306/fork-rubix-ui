@@ -156,6 +156,7 @@ export const FlowNetworkTable = (props: any) => {
         connUUID={connUUID}
         hostUUID={hostUUID}
         onCloseModal={() => setIsCreateModalVisible(false)}
+        refreshList={fetchNetworks}
       />
     </>
   );
