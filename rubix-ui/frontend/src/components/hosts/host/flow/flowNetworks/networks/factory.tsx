@@ -50,7 +50,7 @@ export class FlowFrameworkNetworkFactory {
         await AddFlowNetwork(this.connectionUUID, this.hostUUID, body).then(res => {
           resp = res as model.FlowNetwork
         }).catch(err => {
-            return out
+            return resp
         })
         return resp
     }
