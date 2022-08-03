@@ -1,9 +1,10 @@
-import { Modal, Select, Spin } from "antd";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Modal, Select, Spin } from "antd";
 import { FlowNetworkFactory } from "../factory";
 import { FlowPluginFactory } from "../../plugins/factory";
-import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
+import { JsonForm } from "../../../../../../common/json-schema-form";
 
 import Network = model.Network;
 import PluginConf = model.PluginConf;
@@ -74,8 +75,7 @@ export const EditModal = (props: any) => {
 };
 
 export const CreateModal = (props: any) => {
-  const { isModalVisible, connUUID, hostUUID, onCloseModal, refreshList } =
-    props;
+  const { isModalVisible, onCloseModal, refreshList } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Network);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -83,8 +83,12 @@ export const CreateModal = (props: any) => {
   const [isFetching, setIsFetching] = useState(true);
   const [plugins, setPlugins] = useState([] as PluginConf[]);
   const [selectedPlugin, setSelectedPlugin] = useState("");
+  const { connUUID = "", hostUUID = "" } = useParams();
 
   let pluginFactory = new FlowPluginFactory();
+  pluginFactory.connectionUUID = connUUID;
+  pluginFactory.hostUUID = hostUUID;
+
   let networkFactory = new FlowNetworkFactory();
   networkFactory.connectionUUID = connUUID;
   networkFactory.hostUUID = hostUUID;
@@ -101,8 +105,6 @@ export const CreateModal = (props: any) => {
 
   const fetchPlugins = async () => {
     try {
-      pluginFactory.connectionUUID = connUUID;
-      pluginFactory.hostUUID = hostUUID;
       const res = (await pluginFactory.GetAll()) || [];
       setPlugins(res);
     } catch (error) {
