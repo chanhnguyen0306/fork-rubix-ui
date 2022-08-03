@@ -17,9 +17,11 @@ function hasUUID(uuid: string): Error {
 export class BackupFactory {
 
   AppRubixWires = "RubixWires"
-  AppFlowFramework = "FlowFramework"
   SubWiresFlow = "WiresFlow"
+  AppFlowFramework = "FlowFramework"
   SubFlowFrameworkNetwork = "FlowFrameworkNetwork"
+  SubFlowFrameworkDevice = "FlowFrameworkDevice"
+  SubFlowFrameworkPoint = "FlowFrameworkPoint"
 
   connectionUUID!: string;
   hostUUID!: string;
