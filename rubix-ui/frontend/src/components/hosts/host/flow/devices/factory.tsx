@@ -27,104 +27,104 @@ export class FlowDeviceFactory {
     }
 
     async GetAll(withPoints:boolean): Promise<Array<model.Device>> {
-        let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
+        let resp: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
         await GetDevices(this.connectionUUID, this.hostUUID, withPoints).then(res => {
-            all = res as unknown as Promise<Array<model.Device>>
+            resp = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return all
+        return resp
     }
 
     async GetOne(withPoints:boolean): Promise<model.Device> {
         hasUUID(this.uuid)
-        let one: model.Device = {} as model.Device
+        let resp: model.Device = {} as model.Device
         await GetDevice(this.connectionUUID, this.hostUUID, this.uuid, withPoints).then(res => {
-            one = res as model.Device
-            this._this = one
+            resp = res as model.Device
+            this._this = resp
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return one
+        return resp
     }
 
     async GetNetworkDevices(networkUUID:string): Promise<Array<model.Device>> {
-        let all: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
+        let resp: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         hasUUID(networkUUID)
         await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID).then(res => {
-            all = res as unknown as Promise<Array<model.Device>>
+            resp = res as unknown as Promise<Array<model.Device>>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return all
+        return resp
     }
 
 
     async Add(networkUUID: string | undefined, body: model.Device): Promise<model.Device> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
-        let one: model.Device = {} as model.Device
+        let resp: model.Device = {} as model.Device
         body.network_uuid = networkUUID
         await AddDevice(this.connectionUUID, this.hostUUID, body).then(res => {
-            one = res as model.Device
-            this._this = one
+            resp = res as model.Device
+            this._this = resp
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return one
+        return resp
     }
 
     async Update(deviceUUID:string, body:model.Device): Promise<model.Device> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
-        let one: model.Device = {} as model.Device
+        let resp: model.Device = {} as model.Device
         await EditDevice(this.connectionUUID, this.hostUUID, deviceUUID, body).then(res => {
-            one = res as model.Device
-            this._this = one
+            resp = res as model.Device
+            this._this = resp
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return one
+        return resp
     }
 
     async Delete(): Promise<model.Device> {
         hasUUID(this.uuid)
-        let one: model.Device = {} as model.Device
+        let resp: model.Device = {} as model.Device
         await DeleteDevice(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
-            one = res as model.Device
-            this._this = one
+            resp = res as model.Device
+            this._this = resp
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return one
+        return resp
     }
 
 
     async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
-        let out: Promise<any> = {} as Promise<any>
+        let resp: Promise<any> = {} as Promise<any>
         await DeleteDeviceBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
-            out = res as Promise<any>
+            resp = res as Promise<any>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return out
+        return resp
     }
 
 
 
     async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
-        let all: Promise<any> = {} as Promise<any>
+        let resp: Promise<any> = {} as Promise<any>
         hasUUID(connUUID)
         hasUUID(hostUUID)
         await GetFlowDeviceSchema(connUUID, hostUUID, setPluginName).then(res => {
             res.plugin_name = setPluginName;
-            all = res as unknown as Promise<any>
+            resp = res as unknown as Promise<any>
 
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return all
+        return resp
     }
 }

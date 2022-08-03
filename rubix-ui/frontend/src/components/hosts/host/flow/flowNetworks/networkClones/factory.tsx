@@ -17,15 +17,15 @@ export class FlowFrameworkNetworkCloneFactory {
     connectionUUID!: string;
 
     async GetAll(withStream: boolean): Promise<Array<model.FlowNetworkClone>> {
-        let all: Promise<Array<model.FlowNetworkClone>> = {} as Promise<Array<model.FlowNetworkClone>>
+        let resp: Promise<Array<model.FlowNetworkClone>> = {} as Promise<Array<model.FlowNetworkClone>>
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         await GetFlowNetworkClones(this.connectionUUID, this.hostUUID, withStream).then(res => {
-            all = res as unknown as Promise<Array<model.FlowNetworkClone>>
+            resp = res as unknown as Promise<Array<model.FlowNetworkClone>>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return all
+        return resp
     }
 
     async GetOne(uuid: string, withStream: boolean): Promise<model.FlowNetworkClone> {
@@ -35,7 +35,7 @@ export class FlowFrameworkNetworkCloneFactory {
         await GetFlowNetworkClone(this.connectionUUID, this.hostUUID, uuid, withStream).then(res => {
             resp = res as model.FlowNetworkClone
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -47,7 +47,7 @@ export class FlowFrameworkNetworkCloneFactory {
         await DeleteFlowNetworkClone(this.connectionUUID, this.hostUUID, uuid).then(res => {
             resp = res as model.FlowNetworkClone
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -55,13 +55,13 @@ export class FlowFrameworkNetworkCloneFactory {
     async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
-        let out: Promise<any> = {} as Promise<any>
+        let resp: Promise<any> = {} as Promise<any>
         await DeleteFlowNetworkCloneBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
-            out = res as Promise<any>
+            resp = res as Promise<any>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return out
+        return resp
     }
 
 
