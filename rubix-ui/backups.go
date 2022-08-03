@@ -17,24 +17,22 @@ func (app *App) ImportBackup(body *storage.Backup) string {
 	return "imported backup ok"
 }
 
-func (app *App) DoBackup(application, subApplication string, back *storage.Backup) (*storage.Backup, error) {
-	if back.ConnectionName == "" {
-		connection := app.GetConnection(back.ConnectionUUID)
-		if connection != nil {
-			back.ConnectionName = connection.Name
-		}
+func (app *App) DoBackup(connUUID, hostUUID, application, subApplication, userComment string, back *storage.Backup) *storage.Backup {
+	if back == nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", "backup interface cant not be empty"))
+		return nil
 	}
-	if back.HostName == "" {
-		host := app.GetHost(back.ConnectionUUID, back.HostUUID)
-		if host != nil {
-			back.HostName = host.Name
-		}
-	}
-	back, err := app.DB.AddBackup(back)
+	back.ConnectionUUID = connUUID
+	back.HostUUID = hostUUID
+	back.Application = application
+	back.SubApplication = subApplication
+	back.UserComment = userComment
+	backup, err := app.addBackup(back)
 	if err != nil {
-		return nil, err
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
 	}
-	return back, nil
+	return backup
 }
 
 func (app *App) addBackup(back *storage.Backup) (*storage.Backup, error) {
