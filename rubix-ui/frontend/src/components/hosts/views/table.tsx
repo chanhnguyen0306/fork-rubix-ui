@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Space, Spin, Image, PaginationProps } from "antd";
 import {
   MenuFoldOutlined,
@@ -31,7 +31,8 @@ import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 
 export const HostsTable = (props: any) => {
-  const { hosts, networks, isFetching, connUUID, netUUID, refreshList, locUUID } = props;
+  const { hosts, networks, isFetching, refreshList } = props;
+  let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
 
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
@@ -121,7 +122,7 @@ export const HostsTable = (props: any) => {
               .replace(":netUUID", netUUID)
               .replace(":hostUUID", host.uuid)}
           >
-            View-Device
+            View Networks
           </Link>
           <a
             onClick={() => {

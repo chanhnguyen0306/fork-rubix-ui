@@ -101,9 +101,6 @@ export const Hosts = () => {
               networks={networks}
               isFetching={isFetching}
               refreshList={refreshList}
-              connUUID={connUUID}
-              netUUID={netUUID}
-              locUUID={locUUID}
             />
           </TabPane>
           <TabPane
