@@ -94,7 +94,9 @@ export class BackupFactory {
 
 
   // DoBackup do an export/backup eg: Flow Networks application=FlowFramework, subApplication=FrameworkNetwork
-  async DoBackup(application, subApplication, userComment: string, body: storage.Backup): Promise<storage.Backup> {
+  async DoBackup(application: string, subApplication: string, userComment: string, body: storage.Backup): Promise<storage.Backup> {
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
     let resp: storage.Backup = {} as storage.Backup;
     await DoBackup(this.connectionUUID, this.hostUUID, application, subApplication, userComment, body)
       .then((res) => {
@@ -107,6 +109,8 @@ export class BackupFactory {
   }
 
   async WiresBackup(userComment: string): Promise<storage.Backup> {
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
     let resp: storage.Backup = {} as storage.Backup;
     await WiresBackup(this.connectionUUID, this.hostUUID, userComment)
       .then((res) => {
@@ -119,6 +123,8 @@ export class BackupFactory {
   }
 
   async WiresRestore(uuid:string): Promise<string> {
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
     let resp = "";
     await WiresBackupRestore(this.connectionUUID, this.hostUUID, uuid)
       .then((res) => {

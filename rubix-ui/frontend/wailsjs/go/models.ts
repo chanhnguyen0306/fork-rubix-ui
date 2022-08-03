@@ -171,109 +171,6 @@ export namespace store {
 
 }
 
-export namespace main {
-	
-	export class UUIDs {
-	    name: string;
-	    uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new UUIDs(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.uuid = source["uuid"];
-	    }
-	}
-	export class PluginUUIDs {
-	    name: string;
-	    uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new PluginUUIDs(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.uuid = source["uuid"];
-	    }
-	}
-	export class ConnectionSchema {
-	    // Go type: schema.UUID
-	    uuid: any;
-	    // Go type: schema.Name
-	    name: any;
-	    // Go type: schema.Description
-	    description: any;
-	    // Go type: schema.IP
-	    ip: any;
-	    // Go type: schema.Port
-	    port: any;
-	    // Go type: schema.HTTPS
-	    https: any;
-	    // Go type: schema.Username
-	    username: any;
-	    // Go type: schema.Password
-	    password: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new ConnectionSchema(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = this.convertValues(source["uuid"], null);
-	        this.name = this.convertValues(source["name"], null);
-	        this.description = this.convertValues(source["description"], null);
-	        this.ip = this.convertValues(source["ip"], null);
-	        this.port = this.convertValues(source["port"], null);
-	        this.https = this.convertValues(source["https"], null);
-	        this.username = this.convertValues(source["username"], null);
-	        this.password = this.convertValues(source["password"], null);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	
-
-}
-
-export namespace networking {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-
-}
-
 export namespace storage {
 	
 	export class RubixConnection {
@@ -498,36 +395,73 @@ export namespace assistmodel {
 		    return a;
 		}
 	}
+	
 
 }
 
-export namespace datelib {
+export namespace main {
 	
-	export class Time {
-	    // Go type: time.Time
-	    date_stamp: any;
-	    time_local: string;
-	    time_utc: string;
-	    current_day: string;
-	    current_day_utc: string;
-	    date_format_local: string;
-	    date_format_utc: string;
-	    system_time_zone: string;
+	
+	export class UUIDs {
+	    name: string;
+	    uuid: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Time(source);
+	        return new UUIDs(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.date_stamp = this.convertValues(source["date_stamp"], null);
-	        this.time_local = source["time_local"];
-	        this.time_utc = source["time_utc"];
-	        this.current_day = source["current_day"];
-	        this.current_day_utc = source["current_day_utc"];
-	        this.date_format_local = source["date_format_local"];
-	        this.date_format_utc = source["date_format_utc"];
-	        this.system_time_zone = source["system_time_zone"];
+	        this.name = source["name"];
+	        this.uuid = source["uuid"];
+	    }
+	}
+	export class PluginUUIDs {
+	    name: string;
+	    uuid: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new PluginUUIDs(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.uuid = source["uuid"];
+	    }
+	}
+	export class ConnectionSchema {
+	    // Go type: schema.UUID
+	    uuid: any;
+	    // Go type: schema.Name
+	    name: any;
+	    // Go type: schema.Description
+	    description: any;
+	    // Go type: schema.IP
+	    ip: any;
+	    // Go type: schema.Port
+	    port: any;
+	    // Go type: schema.HTTPS
+	    https: any;
+	    // Go type: schema.Username
+	    username: any;
+	    // Go type: schema.Password
+	    password: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConnectionSchema(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = this.convertValues(source["uuid"], null);
+	        this.name = this.convertValues(source["name"], null);
+	        this.description = this.convertValues(source["description"], null);
+	        this.ip = this.convertValues(source["ip"], null);
+	        this.port = this.convertValues(source["port"], null);
+	        this.https = this.convertValues(source["https"], null);
+	        this.username = this.convertValues(source["username"], null);
+	        this.password = this.convertValues(source["password"], null);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -551,20 +485,18 @@ export namespace datelib {
 
 }
 
-export namespace assitcli {
+export namespace networking {
 	
-	export class Response {
-	    code: number;
-	    message: any;
+	export class InterfaceNames {
+	    interface_names: string[];
 	
 	    static createFrom(source: any = {}) {
-	        return new Response(source);
+	        return new InterfaceNames(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.code = source["code"];
-	        this.message = source["message"];
+	        this.interface_names = source["interface_names"];
 	    }
 	}
 
@@ -1648,6 +1580,9 @@ export namespace model {
 		}
 	}
 	
+	
+	
+	
 	export class FlowNetworkClone {
 	    uuid: string;
 	    sync_uuid: string;
@@ -1957,14 +1892,42 @@ export namespace model {
 	}
 	
 	
+
+}
+
+export namespace assitcli {
 	
+	export class Response {
+	    code: number;
+	    message: any;
 	
+	    static createFrom(source: any = {}) {
+	        return new Response(source);
+	    }
 	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.code = source["code"];
+	        this.message = source["message"];
+	    }
+	}
 
 }
 
 export namespace edge {
 	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
 	export class InternetIP {
 	    ip_address: string;
 	    ok: boolean;
@@ -1979,17 +1942,55 @@ export namespace edge {
 	        this.ok = source["ok"];
 	    }
 	}
-	export class InterfaceNames {
-	    interface_names: string[];
+
+}
+
+export namespace datelib {
+	
+	export class Time {
+	    // Go type: time.Time
+	    date_stamp: any;
+	    time_local: string;
+	    time_utc: string;
+	    current_day: string;
+	    current_day_utc: string;
+	    date_format_local: string;
+	    date_format_utc: string;
+	    system_time_zone: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
+	        return new Time(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
+	        this.date_stamp = this.convertValues(source["date_stamp"], null);
+	        this.time_local = source["time_local"];
+	        this.time_utc = source["time_utc"];
+	        this.current_day = source["current_day"];
+	        this.current_day_utc = source["current_day_utc"];
+	        this.date_format_local = source["date_format_local"];
+	        this.date_format_utc = source["date_format_utc"];
+	        this.system_time_zone = source["system_time_zone"];
 	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 
 }
