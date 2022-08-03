@@ -79,6 +79,7 @@ func (app *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Bac
 	}
 	backup := &storage.Backup{
 		Application:    logstore.RubixWires.String(),
+		SubApplication: logstore.WiresFlow.String(),
 		ConnectionUUID: connUUID,
 		HostUUID:       hostUUID,
 		Data:           data,
