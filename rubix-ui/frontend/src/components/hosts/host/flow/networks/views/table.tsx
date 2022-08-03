@@ -153,8 +153,6 @@ export const FlowNetworkTable = (props: any) => {
       />
       <CreateModal
         isModalVisible={isCreateModalVisible}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
       />

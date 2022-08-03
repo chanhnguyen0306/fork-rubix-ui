@@ -139,8 +139,6 @@ export const FlowDeviceTable = (props: any) => {
         currentItem={currentItem}
         isModalVisible={isEditModalVisible}
         isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         schema={schema}
         onCloseModal={closeEditModal}
         refreshList={refreshList}

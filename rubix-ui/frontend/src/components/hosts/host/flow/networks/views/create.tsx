@@ -15,14 +15,13 @@ export const EditModal = (props: any) => {
     currentItem,
     isModalVisible,
     isLoadingForm,
-    connUUID,
-    hostUUID,
     networkSchema,
     onCloseModal,
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
+  const { connUUID = "", hostUUID = "" } = useParams();
 
   let flowNetworkFactory = new FlowNetworkFactory();
 
