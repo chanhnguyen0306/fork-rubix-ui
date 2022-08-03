@@ -17,17 +17,17 @@ function hasUUID(uuid: string): Error {
 export class FlowProducerFactory {
     hostUUID!: string;
     connectionUUID!: string;
-    
+
     async GetAll(): Promise<Array<model.Producer>> {
-        let all: Promise<Array<model.Producer>> = {} as Promise<Array<model.Producer>>
+        let resp: Promise<Array<model.Producer>> = {} as Promise<Array<model.Producer>>
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
         await GetProducers(this.connectionUUID, this.hostUUID).then(res => {
-            all = res as unknown as Promise<Array<model.Producer>>
+            resp = res as unknown as Promise<Array<model.Producer>>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return all
+        return resp
     }
 
     async GetOne(uuid:string): Promise<model.Producer> {
@@ -37,7 +37,7 @@ export class FlowProducerFactory {
         await GetProducer(this.connectionUUID, this.hostUUID, uuid).then(res => {
             resp = res as model.Producer
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -50,7 +50,7 @@ export class FlowProducerFactory {
         await AddProducer(this.connectionUUID, this.hostUUID, body).then(res => {
             resp = res as model.Producer
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -62,7 +62,7 @@ export class FlowProducerFactory {
         await EditProducer(this.connectionUUID, this.hostUUID, uuid, body).then(res => {
             resp = res as model.Producer
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -74,7 +74,7 @@ export class FlowProducerFactory {
         await DeleteProducer(this.connectionUUID, this.hostUUID, uuid).then(res => {
             resp = res as model.Producer
         }).catch(err => {
-            return undefined
+            return resp
         })
         return resp
     }
@@ -82,13 +82,13 @@ export class FlowProducerFactory {
     async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
-        let out: Promise<any> = {} as Promise<any>
+        let resp: Promise<any> = {} as Promise<any>
         await DeleteProducerBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
-            out = res as Promise<any>
+            resp = res as Promise<any>
         }).catch(err => {
-            return undefined
+            return resp
         })
-        return out
+        return resp
     }
 
 

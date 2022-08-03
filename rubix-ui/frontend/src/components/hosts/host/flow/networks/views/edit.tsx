@@ -29,8 +29,7 @@ export const EditModal = (props: any) => {
   const edit = async (net: Network) => {
     flowNetworkFactory.connectionUUID = connUUID;
     flowNetworkFactory.hostUUID = hostUUID;
-    flowNetworkFactory.uuid = net.uuid;
-    await flowNetworkFactory.Update(net);
+    await flowNetworkFactory.Update(net.uuid, net);
   };
 
   const handleClose = () => {
