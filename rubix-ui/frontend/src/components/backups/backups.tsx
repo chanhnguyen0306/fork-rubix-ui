@@ -4,7 +4,6 @@ import { openNotificationWithIcon } from "../../utils/utils";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
 import {
-  RbExportButton,
   RbImportButton,
   RbRefreshButton,
 } from "../../common/rb-table-actions";

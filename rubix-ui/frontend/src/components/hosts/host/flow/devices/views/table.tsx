@@ -1,8 +1,7 @@
-import { Button, Popconfirm, Space, Spin } from "antd";
+import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { FlowDeviceFactory } from "../factory";
 import { EditModal } from "./edit";
@@ -10,6 +9,10 @@ import { CreateModal } from "./create";
 import RbTable from "../../../../../../common/rb-table";
 import Device = model.Device;
 import { ROUTES } from "../../../../../../constants/routes";
+import {
+  RbAddButton,
+  RbDeleteButton,
+} from "../../../../../../common/rb-table-actions";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -27,13 +30,14 @@ export const FlowDeviceTable = (props: any) => {
     networkUUID = "",
     pluginName = "",
   } = useParams();
-  const navigate = useNavigate();
+
   let flowDeviceFactory = new FlowDeviceFactory();
 
   const bulkDelete = async () => {
     flowDeviceFactory.connectionUUID = connUUID;
     flowDeviceFactory.hostUUID = hostUUID;
     flowDeviceFactory.BulkDelete(selectedUUIDs);
+    refreshList();
   };
 
   const rowSelection = {
@@ -81,6 +85,7 @@ export const FlowDeviceTable = (props: any) => {
       ),
     },
   ];
+
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await flowDeviceFactory.Schema(
@@ -121,19 +126,8 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
-
-      <Button
-        type="primary"
-        onClick={() => showCreateModal({} as Device)}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <PlusOutlined /> Add
-      </Button>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton showModal={() => showCreateModal({} as Device)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -145,8 +139,6 @@ export const FlowDeviceTable = (props: any) => {
         currentItem={currentItem}
         isModalVisible={isEditModalVisible}
         isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         schema={schema}
         onCloseModal={closeEditModal}
         refreshList={refreshList}
@@ -154,9 +146,6 @@ export const FlowDeviceTable = (props: any) => {
       <CreateModal
         isModalVisible={isCreateModalVisible}
         isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
-        networkUUID={networkUUID}
         schema={schema}
         onCloseModal={closeCreateModal}
         refreshList={refreshList}

@@ -1,18 +1,24 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Image, Popconfirm, Space, Spin, Tag } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Image, Space, Spin, Tag } from "antd";
+import { ROUTES } from "../../../../../../constants/routes";
 import { FlowNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { isObjectEmpty, pluginLogo } from "../../../../../../utils/utils";
-import { ROUTES } from "../../../../../../constants/routes";
+import {
+  downloadJSON,
+  openNotificationWithIcon,
+  pluginLogo,
+} from "../../../../../../utils/utils";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
+  RbExportButton,
+  RbImportButton,
 } from "../../../../../../common/rb-table-actions";
-import "./style.css";
+import { ImportModal } from "../../../../../../common/import-modal";
 import { CreateModal, EditModal } from "./create";
+import "./style.css";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -27,9 +33,12 @@ export const FlowNetworkTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let networkFactory = new FlowNetworkFactory();
+  networkFactory.connectionUUID = connUUID;
+  networkFactory.hostUUID = hostUUID;
 
   const columns = [
     {
@@ -104,10 +113,29 @@ export const FlowNetworkTable = (props: any) => {
   };
 
   const bulkDelete = async () => {
-    networkFactory.connectionUUID = connUUID;
-    networkFactory.hostUUID = hostUUID;
     await networkFactory.BulkDelete(selectedUUIDs);
     fetchNetworks();
+  };
+
+  const handleExport = async () => {
+    try {
+      const item = selectedUUIDs[0] as any;
+      downloadJSON(item.name, JSON.stringify(item));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleImport = async (item: any) => {
+    try {
+      const network = JSON.parse(item);
+      await networkFactory.Import(true, true, network);
+      fetchNetworks();
+      setIsImportModalVisible(false);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", "Invalid JSON");
+    }
   };
 
   const rowSelection = {
@@ -130,8 +158,13 @@ export const FlowNetworkTable = (props: any) => {
 
   return (
     <>
-      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbExportButton
+        handleExport={handleExport}
+        disabled={selectedUUIDs.length !== 1}
+      />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
 
       <RbTable
         className="flow-networks"
@@ -145,18 +178,19 @@ export const FlowNetworkTable = (props: any) => {
         currentItem={currentItem}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         networkSchema={networkSchema}
         refreshList={fetchNetworks}
         onCloseModal={closeModal}
       />
       <CreateModal
         isModalVisible={isCreateModalVisible}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
+        onOk={handleImport}
       />
     </>
   );
