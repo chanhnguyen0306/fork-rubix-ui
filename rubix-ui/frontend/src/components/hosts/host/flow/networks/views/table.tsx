@@ -145,8 +145,6 @@ export const FlowNetworkTable = (props: any) => {
         currentItem={currentItem}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
-        connUUID={connUUID}
-        hostUUID={hostUUID}
         networkSchema={networkSchema}
         refreshList={fetchNetworks}
         onCloseModal={closeModal}
