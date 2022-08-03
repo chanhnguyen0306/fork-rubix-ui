@@ -1,8 +1,7 @@
-import { Button, Popconfirm, Space, Spin } from "antd";
+import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { FlowDeviceFactory } from "../factory";
 import { EditModal } from "./edit";
@@ -31,13 +30,14 @@ export const FlowDeviceTable = (props: any) => {
     networkUUID = "",
     pluginName = "",
   } = useParams();
-  const navigate = useNavigate();
+
   let flowDeviceFactory = new FlowDeviceFactory();
 
   const bulkDelete = async () => {
     flowDeviceFactory.connectionUUID = connUUID;
     flowDeviceFactory.hostUUID = hostUUID;
     flowDeviceFactory.BulkDelete(selectedUUIDs);
+    refreshList();
   };
 
   const rowSelection = {

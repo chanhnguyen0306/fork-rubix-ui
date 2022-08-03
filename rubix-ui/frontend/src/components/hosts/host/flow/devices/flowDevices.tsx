@@ -123,12 +123,7 @@ export const FlowDevices = () => {
             <FlowDeviceTable
               data={data}
               isFetching={isFetching}
-              connUUID={connUUID}
-              hostUUID={hostUUID}
-              networkUUID={networkUUID}
-              setIsFetching={setIsFetching}
               refreshList={fetch}
-              pluginName={pluginName}
             />
           </TabPane>
           <TabPane tab="BACNET" key="3">
