@@ -15,9 +15,7 @@ function hasUUID(uuid: string): Error {
 }
 
 export class BackupFactory {
-  uuid!: string;
-  application!: string;
-  withData!: boolean;
+
   connectionUUID!: string;
   hostUUID!: string;
   private _this!: storage.Backup;
@@ -36,16 +34,12 @@ export class BackupFactory {
     return all;
   }
 
-  async GetBackupsByApplication(): Promise<Array<storage.Backup>> {
-    hasUUID(this.uuid);
-    let withData = false;
-    if (this.withData != undefined) {
-      withData = this.withData;
-    }
+  async GetBackupsByApplication(application:string, withData:boolean): Promise<Array<storage.Backup>> {
+
     let all: Promise<Array<storage.Backup>> = {} as Promise<
       Array<storage.Backup>
     >;
-    await GetBackupsByApplication(this.application, withData)
+    await GetBackupsByApplication(application, withData)
       .then((res) => {
         all = res as unknown as Promise<Array<storage.Backup>>;
       })
@@ -67,10 +61,10 @@ export class BackupFactory {
     return one;
   }
 
-  async GetOne(): Promise<storage.Backup> {
-    hasUUID(this.uuid);
+  async GetOne(uuid:string): Promise<storage.Backup> {
+    hasUUID(uuid);
     let one: storage.Backup = {} as storage.Backup;
-    await GetBackup(this.uuid)
+    await GetBackup(uuid)
       .then((res) => {
         one = res as storage.Backup;
         this._this = one;
@@ -108,9 +102,9 @@ export class BackupFactory {
     return one;
   }
 
-  async WiresRestore(): Promise<string> {
+  async WiresRestore(uuid:string): Promise<string> {
     let out = "";
-    await WiresBackupRestore(this.connectionUUID, this.hostUUID, this.uuid)
+    await WiresBackupRestore(this.connectionUUID, this.hostUUID, uuid)
       .then((res) => {
         out = res;
       })

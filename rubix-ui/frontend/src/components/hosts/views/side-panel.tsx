@@ -61,8 +61,8 @@ export const SidePanel = (props: any) => {
     try {
       backupFactory.connectionUUID = connUUID;
       backupFactory.hostUUID = host.uuid;
-      backupFactory.uuid = backup as unknown as string;
-      await backupFactory.WiresRestore();
+      let uuid = backup as unknown as string;
+      await backupFactory.WiresRestore(uuid);
       openNotificationWithIcon("success", `uploaded backup: ${host.name}`);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
