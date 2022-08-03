@@ -15,7 +15,26 @@ func (app *App) ImportBackup(body *storage.Backup) string {
 		return ""
 	}
 	return "imported backup ok"
+}
 
+func (app *App) DoBackup(application, subApplication string, back *storage.Backup) (*storage.Backup, error) {
+	if back.ConnectionName == "" {
+		connection := app.GetConnection(back.ConnectionUUID)
+		if connection != nil {
+			back.ConnectionName = connection.Name
+		}
+	}
+	if back.HostName == "" {
+		host := app.GetHost(back.ConnectionUUID, back.HostUUID)
+		if host != nil {
+			back.HostName = host.Name
+		}
+	}
+	back, err := app.DB.AddBackup(back)
+	if err != nil {
+		return nil, err
+	}
+	return back, nil
 }
 
 func (app *App) addBackup(back *storage.Backup) (*storage.Backup, error) {

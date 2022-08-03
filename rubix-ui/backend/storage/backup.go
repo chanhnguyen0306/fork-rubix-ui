@@ -13,7 +13,12 @@ import (
 )
 
 func (inst *db) AddBackup(body *Backup) (*Backup, error) {
+
 	err := logstore.CheckApplication(body.Application)
+	if err != nil {
+		return nil, err
+	}
+	err = logstore.CheckSubApplication(body.SubApplication)
 	if err != nil {
 		return nil, err
 	}
