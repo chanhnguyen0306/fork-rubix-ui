@@ -133,7 +133,7 @@ export const CreateModal = (props: any) => {
     try {
       setConfirmLoading(true);
       item.plugin_name = selectedPlugin;
-      await networkFactory.Import(true, true, item);
+      await networkFactory.Add(item);
       refreshList();
       handleClose();
     } catch (error) {
