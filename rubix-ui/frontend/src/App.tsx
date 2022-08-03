@@ -18,6 +18,9 @@ import {
   ToolOutlined,
   UserOutlined,
   KeyOutlined,
+  LockFilled,
+  LeftOutlined,
+  LockTwoTone,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -58,12 +61,59 @@ const getParentKey = (key: React.Key, tree: any): React.Key => {
   return parentKey!;
 };
 
-const AppContainer = (props: any) => {
-  const { isFetching, menuItems } = props;
-  const [darkMode, setDarkMode] = useTheme();
-  const location = useLocation();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const DividerLock = (props: any) => {
+  const { collapsed, collapseDisabled, setCollapseDisabled } = props;
+  const handleLockSider = (e: Event) => {
+    e.stopPropagation();
+    setCollapseDisabled(!collapseDisabled);
+  };
+  return (
+    <Divider
+      plain
+      orientation={collapsed ? "center" : "right"}
+      className="white--text"
+      style={{
+        borderColor: "rgba(255, 255, 255, 0.12)",
+      }}
+    >
+      {collapseDisabled ? (
+        <LockTwoTone
+          onClick={(e: any) => handleLockSider(e)}
+          style={{ fontSize: "18px" }}
+        />
+      ) : (
+        <LockFilled
+          onClick={(e: any) => handleLockSider(e)}
+          style={{ fontSize: "18px" }}
+        />
+      )}
+    </Divider>
+  );
+};
 
+const HeaderSider = (props: any) => {
+  const { collapsed, collapseDisabled, setCollapsed } = props;
+  return (
+    <Row className="logo">
+      <Image width={36} src={logo} preview={false} />
+      {!collapsed ? (
+        <div className="title">
+          Rubix Platform{" "}
+          <LeftOutlined
+            style={{ marginLeft: "2rem" }}
+            onClick={() => {
+              if (!collapseDisabled) setCollapsed(!collapsed);
+            }}
+          />
+        </div>
+      ) : null}
+    </Row>
+  );
+};
+
+const AvatarDropdown = (props: any) => {
+  const { setIsModalVisible } = props;
+  const [darkMode, setDarkMode] = useTheme();
   const menu = (
     <Menu
       items={[
@@ -90,21 +140,49 @@ const AppContainer = (props: any) => {
       ]}
     />
   );
+  return (
+    <Dropdown
+      overlay={menu}
+      trigger={["click"]}
+      overlayClassName="settings-dropdown"
+    >
+      <a onClick={(e) => e.preventDefault()}>
+        <Avatar icon={<UserOutlined />} className="avar" />
+      </a>
+    </Dropdown>
+  );
+};
+
+const AppContainer = (props: any) => {
+  const { isFetching, menuItems } = props;
+  const location = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [collapseDisabled, setCollapseDisabled] = useState(false);
 
   return (
     <Layout>
-      <Sider width={250} style={{ minHeight: "100vh" }}>
+      <Sider
+        width={250}
+        style={{ minHeight: "100vh" }}
+        collapsed={collapsed}
+        onClick={() => {
+          if (collapsed && !collapseDisabled) setCollapsed(false);
+        }}
+      >
         {isFetching ? (
           <Spin />
         ) : (
           <>
-            <Row className="logo">
-              <Image width={36} src={logo} preview={false} />
-              <h4 className="title">Rubix Platform</h4>
-            </Row>
-
-            <Divider
-              style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)" }}
+            <HeaderSider
+              collapsed={collapsed}
+              collapseDisabled={collapseDisabled}
+              setCollapsed={setCollapsed}
+            />
+            <DividerLock
+              collapsed={collapsed}
+              collapseDisabled={collapseDisabled}
+              setCollapseDisabled={setCollapseDisabled}
             />
             <Menu
               mode="inline"
@@ -113,16 +191,7 @@ const AppContainer = (props: any) => {
               selectedKeys={[location.pathname]}
               activeKey={location.pathname}
             />
-
-            <Dropdown
-              overlay={menu}
-              trigger={["click"]}
-              overlayClassName="settings-dropdown"
-            >
-              <a onClick={(e) => e.preventDefault()}>
-                <Avatar icon={<UserOutlined />} className="avar" />
-              </a>
-            </Dropdown>
+            <AvatarDropdown setIsModalVisible={setIsModalVisible} />
           </>
         )}
       </Sider>
