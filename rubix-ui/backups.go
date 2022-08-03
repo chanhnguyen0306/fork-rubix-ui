@@ -90,7 +90,11 @@ func (app *App) DeleteBackupBulk(backUUIDs []UUIDs) interface{} {
 }
 
 // GetBackupsByApplication get all backups as example RubixWires
-func (app *App) GetBackupsByApplication(application string, withData bool) []storage.Backup {
+func (app *App) GetBackupsByApplication(application, subApplication string, withData bool) []storage.Backup {
+	if application == "" {
+		app.crudMessage(false, fmt.Sprintf("error %s", "application cant not be empty"))
+		return nil
+	}
 	back, err := app.getBackups()
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -107,7 +111,14 @@ func (app *App) GetBackupsByApplication(application string, withData bool) []sto
 			backup.Data = nil
 		}
 		if backup.Application == application {
-			out = append(out, backup)
+			if subApplication != "" {
+				if backup.SubApplication == subApplication {
+					out = append(out, backup)
+				}
+			} else {
+				out = append(out, backup)
+			}
+
 		}
 	}
 	return out

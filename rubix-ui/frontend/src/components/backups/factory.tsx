@@ -41,11 +41,11 @@ export class BackupFactory {
     return resp;
   }
 
-  async GetBackupsByApplication(application:string, withData:boolean): Promise<Array<storage.Backup>> {
+  async GetBackupsByApplication(application:string, subApplication:string, withData:boolean): Promise<Array<storage.Backup>> {
     let resp: Promise<Array<storage.Backup>> = {} as Promise<
       Array<storage.Backup>
     >;
-    await GetBackupsByApplication(application, withData)
+    await GetBackupsByApplication(application, subApplication, withData)
       .then((res) => {
         resp = res as unknown as Promise<Array<storage.Backup>>;
       })
@@ -84,7 +84,7 @@ export class BackupFactory {
     let resp: Promise<Array<storage.Backup>> = {} as Promise<
       Array<storage.Backup>
     >;
-    await GetBackupsByApplication("RubixWires", false)
+    await GetBackupsByApplication(this.AppRubixWires, "", false)
       .then((res) => {
         resp = res as unknown as Promise<Array<storage.Backup>>;
       })
