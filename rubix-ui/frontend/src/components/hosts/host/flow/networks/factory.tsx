@@ -1,115 +1,109 @@
 import {main, model} from "../../../../../../wailsjs/go/models";
 import {
-    AddNetwork,
-    DeleteNetwork, DeleteNetworkBulk,
-    EditNetwork,  GetFlowNetworkSchema,
-    GetNetwork,
-    GetNetworks
+  AddNetwork,
+  DeleteNetwork,
+  DeleteNetworkBulk,
+  EditNetwork,
+  GetFlowNetworkSchema,
+  GetNetwork,
+  GetNetworks
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "host or connection uuid") as Error
+  return Helpers.IsUndefined(uuid, "host or connection uuid") as Error
 }
 
 
 export class FlowNetworkFactory {
-    hostUUID!: string;
-    connectionUUID!: string;
-    uuid!: string;
-    _this!: model.Network;
+  hostUUID!: string;
+  connectionUUID!: string;
 
-    get this(): model.Network {
-        return this._this;
-    }
+  async GetAll(withDevice: boolean): Promise<Array<model.Network>> {
+    let resp: Promise<Array<model.Network>> = {} as Promise<Array<model.Network>>
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await GetNetworks(this.connectionUUID, this.hostUUID, withDevice).then(res => {
+      resp = res as unknown as Promise<Array<model.Network>>
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
-    set this(value: model.Network) {
-        this._this = value;
-    }
-
-    async GetAll(withDevice:boolean): Promise<Array<model.Network>> {
-        let all: Promise<Array<model.Network>> = {} as Promise<Array<model.Network>>
-        hasUUID(this.hostUUID)
-        await GetNetworks(this.connectionUUID, this.hostUUID, withDevice).then(res => {
-            all = res as unknown as Promise<Array<model.Network>>
-        }).catch(err => {
-            return undefined
-        })
-        return all
-    }
-
-    async GetOne(withDevice:boolean): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await GetNetwork(this.connectionUUID, this.hostUUID, this.uuid, withDevice).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+  async GetOne(uuid: string, withDevice: boolean): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await GetNetwork(this.connectionUUID, this.hostUUID, uuid, withDevice).then(res => {
+      resp = res as model.Network
+    }).catch(resp => {
+      return resp
+    })
+    return resp
+  }
 
 
-    async Add(body: model.Network): Promise<model.Network> {
-        // hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await AddNetwork(this.connectionUUID, this.hostUUID, body).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+  async Add(body: model.Network): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await AddNetwork(this.connectionUUID, this.hostUUID, body).then(res => {
+      resp = res as model.Network
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
-    async Update(body: model.Network): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await EditNetwork(this.connectionUUID, this.hostUUID, this.uuid, body).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+  async Update(uuid: string, body: model.Network): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await EditNetwork(this.connectionUUID, this.hostUUID, uuid, body).then(res => {
+      resp = res as model.Network
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
-    async Delete(): Promise<model.Network> {
-        hasUUID(this.uuid)
-        let one: model.Network = {} as model.Network
-        await DeleteNetwork(this.connectionUUID, this.hostUUID, this.uuid).then(res => {
-            one = res as model.Network
-            this._this = one
-        }).catch(err => {
-            return undefined
-        })
-        return one
-    }
+  async Delete(uuid: string,): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await DeleteNetwork(this.connectionUUID, this.hostUUID, uuid).then(res => {
+      resp = res as model.Network
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
-    async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
-        let out: Promise<any> = {} as Promise<any>
-        await DeleteNetworkBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
-            out = res as Promise<any>
-        }).catch(err => {
-            return undefined
-        })
-        return out
-    }
+  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+    let resp: Promise<any> = {} as Promise<any>
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await DeleteNetworkBulk(this.connectionUUID, this.hostUUID, uuids).then(res => {
+      resp = res as Promise<any>
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
 
-    async Schema(connUUID:string, hostUUID:string, setPluginName:string):Promise<any> {
-        let all: Promise<any> = {} as Promise<any>
-        hasUUID(connUUID)
-        hasUUID(hostUUID)
-        await GetFlowNetworkSchema(connUUID, hostUUID, setPluginName).then(res => {
-            res.plugin_name = setPluginName;
-            all = res as unknown as Promise<any>
-
-        }).catch(err => {
-            return undefined
-        })
-        return all
-    }
+  async Schema(connUUID: string, hostUUID: string, setPluginName: string): Promise<any> {
+    let resp: Promise<any> = {} as Promise<any>
+    hasUUID(connUUID)
+    hasUUID(hostUUID)
+    await GetFlowNetworkSchema(connUUID, hostUUID, setPluginName).then(res => {
+      res.plugin_name = setPluginName;
+      resp = res as unknown as Promise<any>
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
 }

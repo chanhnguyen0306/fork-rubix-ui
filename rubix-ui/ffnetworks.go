@@ -10,6 +10,20 @@ type UUIDs struct {
 	UUID string `json:"uuid"`
 }
 
+func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	sch, err := app.flow.NetworkSchema(pluginName)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return sch
+}
+
 func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
@@ -25,20 +39,6 @@ func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUID
 		}
 	}
 	return "ok"
-}
-
-func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	sch, err := app.flow.NetworkSchema(pluginName)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return sch
 }
 
 func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
