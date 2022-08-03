@@ -1,8 +1,9 @@
-import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Modal, Spin } from "antd";
 import { FlowDeviceFactory } from "../factory";
-import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
+import { JsonForm } from "../../../../../../common/json-schema-form";
 
 import Device = model.Device;
 
@@ -11,24 +12,23 @@ export const EditModal = (props: any) => {
     currentItem,
     isModalVisible,
     isLoadingForm,
-    connUUID,
-    hostUUID,
     schema,
     onCloseModal,
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
+  const { connUUID = "", hostUUID = "" } = useParams();
 
   let flowDeviceFactory = new FlowDeviceFactory();
+  flowDeviceFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData(currentItem);
   }, [currentItem]);
 
   const edit = async (device: Device) => {
-    flowDeviceFactory.connectionUUID = connUUID;
-    flowDeviceFactory.hostUUID = hostUUID;
     await flowDeviceFactory.Update(device.uuid, device);
   };
 

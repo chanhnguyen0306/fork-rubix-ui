@@ -1,30 +1,24 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
-import { useEffect, useState } from "react";
 import { FlowDeviceFactory } from "../factory";
-import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
+import { JsonForm } from "../../../../../../common/json-schema-form";
 
 import Device = model.Device;
 
 export const CreateModal = (props: any) => {
-  const {
-    isModalVisible,
-    isLoadingForm,
-    connUUID,
-    hostUUID,
-    networkUUID,
-    schema,
-    onCloseModal,
-    refreshList,
-  } = props;
+  const { isModalVisible, isLoadingForm, schema, onCloseModal, refreshList } =
+    props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Device);
+  const { connUUID = "", networkUUID = "", hostUUID = "" } = useParams();
 
   let flowDeviceFactory = new FlowDeviceFactory();
+  flowDeviceFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = hostUUID;
 
   const add = async (device: Device) => {
-    flowDeviceFactory.connectionUUID = connUUID;
-    flowDeviceFactory.hostUUID = hostUUID;
     await flowDeviceFactory.Add(networkUUID, device);
   };
 
