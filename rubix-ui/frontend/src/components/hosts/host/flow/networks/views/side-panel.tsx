@@ -2,7 +2,6 @@ import { Button, Card, Col, Input, Row, Select } from "antd";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, storage } from "../../../../../../../wailsjs/go/models";
-import { RbRefreshButton } from "../../../../../../common/rb-table-actions";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { BackupFactory } from "../../../../../backups/factory";
 import { FlowNetworkFactory } from "../factory";
@@ -33,7 +32,7 @@ export const SidePanel = (props: any) => {
   const saveBackupHandle = async () => {
     setIsSaveBackup(true);
     try {
-      if (comment.length < 2) {
+      if (!comment || comment.length < 2) {
         return openNotificationWithIcon("error", "please enter a comment");
       }
       const network = await flowNetworkFactory.GetOne(selectedItem.uuid, true);
