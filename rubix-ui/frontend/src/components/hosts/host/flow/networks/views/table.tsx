@@ -171,11 +171,11 @@ export const FlowNetworkTable = (props: any) => {
 
   const sidePanelHeightHandle = () => {
     if (currentPage === totalPage) {
-      const height = (data.length % 10) * 59 + 55; //get height of last page
+      const height = (data.length % 10) * 60 + 55; //get height of last page
       setSidePanelHeight(height);
     } else {
       const height =
-        data.length >= 10 ? 10 * 59 + 55 : (data.length % 10) * 59 + 55;
+        data.length >= 10 ? 10 * 60 + 55 : (data.length % 10) * 60 + 55;
       setSidePanelHeight(height);
     }
   };

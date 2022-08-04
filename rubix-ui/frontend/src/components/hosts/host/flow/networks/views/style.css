@@ -3,6 +3,10 @@
     text-overflow: ellipsis;
 }
 
+.flow-networks>.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-container>.ant-table-content>table>tbody>.ant-table-row {
+    height: 60px;
+}
+
 .flow-networks-actions {
     display: flex;
     justify-content: end;
