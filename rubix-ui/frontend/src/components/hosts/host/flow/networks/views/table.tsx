@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button, Image, Space, Spin, Tag } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
@@ -13,6 +13,7 @@ import {
 } from "../../../../../../common/rb-table-actions";
 import { CreateModal, EditModal } from "./create";
 import "./style.css";
+import { SidePanel } from "./side-panel";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -28,6 +29,10 @@ export const FlowNetworkTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [sidePanelHeight, setSidePanelHeight] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [collapsed, setCollapsed] = useState(true);
 
   let networkFactory = new FlowNetworkFactory();
   networkFactory.connectionUUID = connUUID;
@@ -84,6 +89,18 @@ export const FlowNetworkTable = (props: any) => {
     },
   ];
 
+  useEffect(() => {
+    setCollapsed(true);
+    const totalPage = Math.ceil(data.length / 10);
+    setTotalPage(totalPage);
+    sidePanelHeightHandle();
+  }, [data.length]);
+
+  useEffect(() => {
+    setCollapsed(true);
+    sidePanelHeightHandle();
+  }, [currentPage, selectedUUIDs]);
+
   const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);
     const res = await networkFactory.Schema(connUUID, hostUUID, pluginName);
@@ -128,25 +145,53 @@ export const FlowNetworkTable = (props: any) => {
       .replace(":pluginName", pluginName);
   };
 
+  const sidePanelHeightHandle = () => {
+    if (currentPage === totalPage) {
+      const height = (data.length % 10) * 59 + 55; //get height of last page
+      setSidePanelHeight(height);
+    } else {
+      const height =
+        data.length >= 10 ? 10 * 59 + 55 : (data.length % 10) * 59 + 55;
+      setSidePanelHeight(height);
+    }
+  };
+
   return (
     <>
-      <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
-      <Button
-        className="primary white--text"
-        disabled={selectedUUIDs.length !== 1}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <FileSyncOutlined /> Backups
-      </Button>
-      <RbTable
-        className="flow-networks"
-        rowKey="uuid"
-        rowSelection={rowSelection}
-        dataSource={data}
-        columns={columns}
-        loading={{ indicator: <Spin />, spinning: isFetching }}
-      />
+      <div className="flow-networks-actions">
+        <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
+        <RbDeleteButton bulkDelete={bulkDelete} />
+        <Button
+          className="nube-primary white--text"
+          disabled={selectedUUIDs.length !== 1}
+          style={{ margin: "5px", float: "right" }}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          <FileSyncOutlined /> Backups
+        </Button>
+      </div>
+
+      <div className="flow-networks">
+        <RbTable
+          rowKey="uuid"
+          rowSelection={rowSelection}
+          dataSource={data}
+          columns={columns}
+          loading={{ indicator: <Spin />, spinning: isFetching }}
+          className={collapsed ? "full-width " : "uncollapsed-style "}
+        />
+        {selectedUUIDs[0] ? (
+          <SidePanel
+            collapsed={collapsed}
+            selectedItem={selectedUUIDs[0]}
+            connUUID={connUUID}
+            sidePanelHeight={sidePanelHeight}
+            // backups={backups}
+            // fetchBackups={fetchBackups}
+          />
+        ) : null}
+      </div>
+
       <EditModal
         currentItem={currentItem}
         isModalVisible={isModalVisible}

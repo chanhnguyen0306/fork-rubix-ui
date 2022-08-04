@@ -2,3 +2,34 @@
     width: 200px;
     text-overflow: ellipsis;
 }
+
+.flow-networks-actions {
+    display: flex;
+    justify-content: end;
+}
+
+.flow-networks {
+    display: flex;
+}
+
+.flow-networks>.ant-menu-inline-collapsed {
+    width: 0 !important;
+}
+
+.flow-networks>.uncollapsed-style {
+    opacity: 0.9;
+    height: 100%;
+    width: 100%;
+}
+
+.flow-networks>.uncollapsed-style>div>div>div>div>div>table {
+    min-height: 182px;
+}
+
+.flow-networks>.full-width {
+    width: 100%;
+}
+
+.rubix-wires-card>.ant-card-body {
+    padding: 17px 24px;
+}
