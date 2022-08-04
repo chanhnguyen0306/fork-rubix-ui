@@ -125,6 +125,7 @@ export const FlowNetworkTable = (props: any) => {
   const bulkDelete = async () => {
     await networkFactory.BulkDelete(selectedUUIDs);
     fetchNetworks();
+    setSelectedUUIDs([]);
   };
 
   const rowSelection = {
@@ -184,7 +185,6 @@ export const FlowNetworkTable = (props: any) => {
           <SidePanel
             collapsed={collapsed}
             selectedItem={selectedUUIDs[0]}
-            connUUID={connUUID}
             sidePanelHeight={sidePanelHeight}
             // backups={backups}
             // fetchBackups={fetchBackups}

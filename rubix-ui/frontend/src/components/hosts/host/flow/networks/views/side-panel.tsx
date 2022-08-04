@@ -1,49 +1,48 @@
-import { Button, Card, Col, Input, Menu, MenuProps, Row, Select } from "antd";
+import { Button, Card, Col, Input, Row, Select } from "antd";
 import { useState } from "react";
-import { OpenURL } from "../../../../../../../wailsjs/go/main/App";
-import { assistmodel, storage } from "../../../../../../../wailsjs/go/models";
+import { useParams } from "react-router-dom";
+import { assistmodel, model } from "../../../../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { BackupFactory } from "../../../../../backups/factory";
+import { FlowNetworkFactory } from "../factory";
 
 import Host = assistmodel.Host;
+import Network = model.Network;
 
 const actionRow: React.CSSProperties = { margin: "8px 0" };
 const buttonStyle: React.CSSProperties = { width: "90%" };
+const { Option } = Select;
 
 export const SidePanel = (props: any) => {
-  const { collapsed, selectedItem, connUUID, sidePanelHeight } = props;
+  const { collapsed, selectedItem, sidePanelHeight } = props;
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [isSaveBackup, setIsSaveBackup] = useState(false);
   const [isRestoreBackup, setIsRestoreBackup] = useState(false);
-  const [comment, setComment] = useState<any>();
   const [backup, setBackup] = useState();
+  const [comment, setComment] = useState<any>();
+
   let backupFactory = new BackupFactory();
+  const application = backupFactory.AppFlowFramework;
+  const subApplication = backupFactory.SubFlowFrameworkNetwork;
+  let flowNetworkFactory = new FlowNetworkFactory();
+  flowNetworkFactory.connectionUUID = backupFactory.connectionUUID = connUUID;
+  flowNetworkFactory.hostUUID = backupFactory.hostUUID = hostUUID;
 
-  const navigateToNewTab = (host: Host) => {
-    try {
-      const { ip } = host;
-      let source = `http://${ip}:1313/`;
-      if (host.https) {
-        source = `https://${ip}:1313/`;
-      }
-      OpenURL(source);
-    } catch (err: any) {
-      openNotificationWithIcon("error", err.message);
-    }
-  };
-
-  const saveBackupHandle = async (host: Host) => {
+  const saveBackupHandle = async () => {
     setIsSaveBackup(true);
     try {
-      backupFactory.connectionUUID = connUUID;
-      backupFactory.hostUUID = host.uuid;
       if (comment.length < 2) {
-        openNotificationWithIcon("error", "please enter a comment");
-        return;
+        return openNotificationWithIcon("error", "please enter a comment");
       }
-      await backupFactory.WiresBackup(comment as unknown as string);
-      openNotificationWithIcon("success", `saved backup: ${host.name}`);
+      const network = await flowNetworkFactory.GetOne(selectedItem.uuid, true);
+      await backupFactory.DoBackup(
+        application,
+        subApplication,
+        comment,
+        network as any
+      );
     } catch (err: any) {
-      openNotificationWithIcon("error", err.message);
+      console.log(err);
     } finally {
       setIsSaveBackup(false);
     }
@@ -63,7 +62,6 @@ export const SidePanel = (props: any) => {
       setIsRestoreBackup(false);
     }
   };
-  const { Option } = Select;
 
   const onChange = (value: any) => {
     setBackup(value);
@@ -83,17 +81,16 @@ export const SidePanel = (props: any) => {
       }}
     >
       <div
-        className="content"
         style={{
           display: collapsed ? "none" : "block",
         }}
       >
-        <Card title={selectedItem.name} className="rubix-wires-card">
+        <Card title={selectedItem.name}>
           <Row style={actionRow}>
             <Col span={10}>
               <Button
                 type="primary"
-                onClick={() => saveBackupHandle(selectedItem)}
+                onClick={saveBackupHandle}
                 loading={isSaveBackup}
                 style={buttonStyle}
               >
@@ -102,7 +99,7 @@ export const SidePanel = (props: any) => {
             </Col>
             <Col span={14}>
               <Input
-                placeholder="enter a comment"
+                placeholder="enter a comment..."
                 maxLength={150}
                 onChange={onChangeComment}
                 value={comment}
