@@ -1,22 +1,16 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Image, Space, Spin, Tag } from "antd";
+import { Button, Image, Space, Spin, Tag } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
+import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import {
-  downloadJSON,
-  openNotificationWithIcon,
-  pluginLogo,
-} from "../../../../../../utils/utils";
+import { pluginLogo } from "../../../../../../utils/utils";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
-  RbExportButton,
-  RbImportButton,
 } from "../../../../../../common/rb-table-actions";
-import { ImportModal } from "../../../../../../common/import-modal";
 import { CreateModal, EditModal } from "./create";
 import "./style.css";
 
@@ -33,7 +27,6 @@ export const FlowNetworkTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let networkFactory = new FlowNetworkFactory();
@@ -117,27 +110,6 @@ export const FlowNetworkTable = (props: any) => {
     fetchNetworks();
   };
 
-  const handleExport = async () => {
-    try {
-      const item = selectedUUIDs[0] as any;
-      downloadJSON(item.name, JSON.stringify(item));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleImport = async (item: any) => {
-    try {
-      const network = JSON.parse(item);
-      await networkFactory.Import(true, true, network);
-      fetchNetworks();
-      setIsImportModalVisible(false);
-    } catch (error) {
-      console.log(error);
-      openNotificationWithIcon("error", "Invalid JSON");
-    }
-  };
-
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
@@ -158,14 +130,15 @@ export const FlowNetworkTable = (props: any) => {
 
   return (
     <>
-      <RbExportButton
-        handleExport={handleExport}
-        disabled={selectedUUIDs.length !== 1}
-      />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-
+      <Button
+        className="primary white--text"
+        disabled={selectedUUIDs.length !== 1}
+        style={{ margin: "5px", float: "right" }}
+      >
+        <FileSyncOutlined /> Backups
+      </Button>
       <RbTable
         className="flow-networks"
         rowKey="uuid"
@@ -186,11 +159,6 @@ export const FlowNetworkTable = (props: any) => {
         isModalVisible={isCreateModalVisible}
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
-      />
-      <ImportModal
-        isModalVisible={isImportModalVisible}
-        onClose={() => setIsImportModalVisible(false)}
-        onOk={handleImport}
       />
     </>
   );
