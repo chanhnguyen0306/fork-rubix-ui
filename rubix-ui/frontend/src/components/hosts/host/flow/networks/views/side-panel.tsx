@@ -1,12 +1,13 @@
 import { Button, Card, Col, Input, Row, Select } from "antd";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { assistmodel, model } from "../../../../../../../wailsjs/go/models";
+import { model, storage } from "../../../../../../../wailsjs/go/models";
+import { RbRefreshButton } from "../../../../../../common/rb-table-actions";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { BackupFactory } from "../../../../../backups/factory";
 import { FlowNetworkFactory } from "../factory";
 
-import Host = assistmodel.Host;
+import Backup = storage.Backup;
 import Network = model.Network;
 
 const actionRow: React.CSSProperties = { margin: "8px 0" };
@@ -14,7 +15,8 @@ const buttonStyle: React.CSSProperties = { width: "90%" };
 const { Option } = Select;
 
 export const SidePanel = (props: any) => {
-  const { collapsed, selectedItem, sidePanelHeight } = props;
+  const { collapsed, selectedItem, sidePanelHeight, backups, refreshList } =
+    props;
   const { connUUID = "", hostUUID = "" } = useParams();
   const [isSaveBackup, setIsSaveBackup] = useState(false);
   const [isRestoreBackup, setIsRestoreBackup] = useState(false);
@@ -48,14 +50,17 @@ export const SidePanel = (props: any) => {
     }
   };
 
-  const restoreBackupHandle = async (host: Host) => {
+  const restoreBackupHandle = async () => {
     setIsRestoreBackup(true);
     try {
-      backupFactory.connectionUUID = connUUID;
-      backupFactory.hostUUID = host.uuid;
-      let uuid = backup as unknown as string;
-      await backupFactory.WiresRestore(uuid);
-      openNotificationWithIcon("success", `uploaded backup: ${host.name}`);
+      const name = backup as unknown as string;
+      const payload = {
+        plugin_name: selectedItem.plugin_name,
+        name: name,
+      } as Network;
+      const res = await flowNetworkFactory.Import(true, true, payload);
+      refreshList();
+      openNotificationWithIcon("success", `uploaded backup: ${res.name}`);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     } finally {
@@ -63,8 +68,13 @@ export const SidePanel = (props: any) => {
     }
   };
 
-  const onChange = (value: any) => {
-    setBackup(value);
+  //   const onChange = async (uuid: any) => {
+  //     const backup = await backupFactory.GetOne(uuid);
+  //     setBackup(backup);
+  //     console.log(backup);
+  //   };
+  const onChange = async (name: any) => {
+    setBackup(name);
   };
 
   const onChangeComment = (value: any) => {
@@ -110,7 +120,7 @@ export const SidePanel = (props: any) => {
             <Col span={10}>
               <Button
                 type="primary"
-                onClick={() => restoreBackupHandle(selectedItem)}
+                onClick={restoreBackupHandle}
                 loading={isRestoreBackup}
                 style={buttonStyle}
               >
@@ -122,14 +132,14 @@ export const SidePanel = (props: any) => {
                 showSearch
                 placeholder="select a backup"
                 style={{ width: "100%" }}
-                optionFilterProp="children"
                 onChange={onChange}
-                filterOption={(input, option) =>
-                  (option!.children as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-              ></Select>
+              >
+                {backups.map((data: Backup) => (
+                  <Option key={data.uuid} value={data.user_comment}>
+                    {data.user_comment}
+                  </Option>
+                ))}
+              </Select>
             </Col>
           </Row>
         </Card>

@@ -4,7 +4,8 @@ import { Button, Image, Space, Spin, Tag } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
 import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { BackupFactory } from "../../../../../backups/factory";
+import { main, model, storage } from "../../../../../../../wailsjs/go/models";
 import { pluginLogo } from "../../../../../../utils/utils";
 import RbTable from "../../../../../../common/rb-table";
 import {
@@ -33,7 +34,11 @@ export const FlowNetworkTable = (props: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [collapsed, setCollapsed] = useState(true);
+  const [backups, setBackups] = useState([] as storage.Backup[]);
 
+  let backupFactory = new BackupFactory();
+  const application = backupFactory.AppFlowFramework;
+  const subApplication = backupFactory.SubFlowFrameworkNetwork;
   let networkFactory = new FlowNetworkFactory();
   networkFactory.connectionUUID = connUUID;
   networkFactory.hostUUID = hostUUID;
@@ -90,6 +95,10 @@ export const FlowNetworkTable = (props: any) => {
   ];
 
   useEffect(() => {
+    fetchBackups();
+  }, []);
+
+  useEffect(() => {
     setCollapsed(true);
     const totalPage = Math.ceil(data.length / 10);
     setTotalPage(totalPage);
@@ -100,6 +109,20 @@ export const FlowNetworkTable = (props: any) => {
     setCollapsed(true);
     sidePanelHeightHandle();
   }, [currentPage, selectedUUIDs]);
+
+  const fetchBackups = async () => {
+    try {
+      let res =
+        (await backupFactory.GetBackupsByApplication(
+          application,
+          subApplication,
+          true
+        )) || [];
+      setBackups(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);
@@ -186,8 +209,8 @@ export const FlowNetworkTable = (props: any) => {
             collapsed={collapsed}
             selectedItem={selectedUUIDs[0]}
             sidePanelHeight={sidePanelHeight}
-            // backups={backups}
-            // fetchBackups={fetchBackups}
+            backups={backups}
+            refreshList={fetchNetworks}
           />
         ) : null}
       </div>
