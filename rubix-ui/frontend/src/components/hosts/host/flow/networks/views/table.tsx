@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Image, Space, Spin, Tag } from "antd";
+import { Button, Image, PaginationProps, Space, Spin, Tag } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
 import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
@@ -200,6 +200,10 @@ export const FlowNetworkTable = (props: any) => {
     }
   };
 
+  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
+    setCurrentPage(current);
+  };
+
   return (
     <>
       <div className="flow-networks-actions">
@@ -224,6 +228,7 @@ export const FlowNetworkTable = (props: any) => {
           columns={columns}
           loading={{ indicator: <Spin />, spinning: isFetching }}
           className={collapsed ? "full-width " : "uncollapsed-style "}
+          onChange={onChange}
         />
         {selectedUUIDs[0] ? (
           <SidePanel
