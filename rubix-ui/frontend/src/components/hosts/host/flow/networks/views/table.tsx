@@ -6,15 +6,22 @@ import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
 import { BackupFactory } from "../../../../../backups/factory";
 import { main, model, storage } from "../../../../../../../wailsjs/go/models";
-import { pluginLogo } from "../../../../../../utils/utils";
+import {
+  openNotificationWithIcon,
+  pluginLogo,
+} from "../../../../../../utils/utils";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
+  RbImportButton,
 } from "../../../../../../common/rb-table-actions";
+import { ImportModal } from "../../../../../../common/import-modal";
 import { CreateModal, EditModal } from "./create";
-import "./style.css";
 import { SidePanel } from "./side-panel";
+import "./style.css";
+
+import Backup = storage.Backup;
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -34,14 +41,15 @@ export const FlowNetworkTable = (props: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [collapsed, setCollapsed] = useState(true);
-  const [backups, setBackups] = useState([] as storage.Backup[]);
+  const [backups, setBackups] = useState([] as Backup[]);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
   let backupFactory = new BackupFactory();
-  const application = backupFactory.AppFlowFramework;
-  const subApplication = backupFactory.SubFlowFrameworkNetwork;
   let networkFactory = new FlowNetworkFactory();
   networkFactory.connectionUUID = connUUID;
   networkFactory.hostUUID = hostUUID;
+  const application = backupFactory.AppFlowFramework;
+  const subApplication = backupFactory.SubFlowFrameworkNetwork;
 
   const columns = [
     {
@@ -134,6 +142,18 @@ export const FlowNetworkTable = (props: any) => {
     setIsLoadingForm(false);
   };
 
+  const handleImport = async (item: any) => {
+    try {
+      const network = JSON.parse(item);
+      await networkFactory.Import(true, true, network);
+      fetchNetworks();
+      setIsImportModalVisible(false);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", "Invalid JSON");
+    }
+  };
+
   const showModal = (item: any) => {
     setCurrentItem(item);
     setIsModalVisible(true);
@@ -193,6 +213,7 @@ export const FlowNetworkTable = (props: any) => {
         >
           <FileSyncOutlined /> Backups
         </Button>
+        <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       </div>
 
       <div className="flow-networks">
@@ -227,6 +248,11 @@ export const FlowNetworkTable = (props: any) => {
         isModalVisible={isCreateModalVisible}
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
+        onOk={handleImport}
       />
     </>
   );
