@@ -4,6 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { Logs } from "./components/logs/logs";
 import { Hosts } from "./components/hosts/hosts";
 import { Host } from "./components/hosts/host/host";
+import AppStore from './components/release/appStore';
 import { Backups } from "./components/backups/backups";
 import { DocsRubixHardware } from "./components/docs/docs";
 import { DocsSoftware } from "./components/docs/software";
@@ -24,11 +25,7 @@ function AppRoutes() {
         path={routes.ROOT}
         element={<Navigate replace to={routes.CONNECTIONS} />}
       />
-      {/* <Route path={routes.ROOT} element={<Connections />} /> */}
-      {/* <Route path={routes.LOCATION} element={<Locations />} /> */}
-      {/* <Route path={routes.NETWORKS} element={<Networks />} /> */}
-      {/* <Route path={routes.HOSTS} element={<Hosts />} /> */}
-      {/* <Route path={routes.FLOW_NETWORKS} element={<Host />} /> */}
+      <Route path={routes.APP_STORE} element={<AppStore />} />
       <Route path={routes.FLOW_DEVICES} element={<FlowDevices />} />
       <Route path={routes.FLOW_POINTS} element={<FlowPoints />} />
       <Route path={routes.LOGS} element={<Logs />} />
