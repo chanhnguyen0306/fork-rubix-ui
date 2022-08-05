@@ -19,7 +19,7 @@ export const SidePanel = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [isSaveBackup, setIsSaveBackup] = useState(false);
   const [isRestoreBackup, setIsRestoreBackup] = useState(false);
-  const [backup, setBackup] = useState();
+  const [backup, setBackup] = useState<any>();
   const [comment, setComment] = useState<any>();
 
   let backupFactory = new BackupFactory();
@@ -52,14 +52,15 @@ export const SidePanel = (props: any) => {
   const restoreBackupHandle = async () => {
     setIsRestoreBackup(true);
     try {
-      const name = backup as unknown as string;
       const payload = {
+        ...backup,
+        uuid: selectedItem.uuid,
         plugin_name: selectedItem.plugin_name,
-        name: name,
+        name: backup.user_comment,
       } as Network;
-      const res = await flowNetworkFactory.Import(true, true, payload);
+      const res = await flowNetworkFactory.Import(false, true, payload);
       refreshList();
-      openNotificationWithIcon("success", `uploaded backup: ${res.name}`);
+      openNotificationWithIcon("success", `updated backup: ${res.name}`);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     } finally {
@@ -67,13 +68,9 @@ export const SidePanel = (props: any) => {
     }
   };
 
-  //   const onChange = async (uuid: any) => {
-  //     const backup = await backupFactory.GetOne(uuid);
-  //     setBackup(backup);
-  //     console.log(backup);
-  //   };
-  const onChange = async (name: any) => {
-    setBackup(name);
+  const onChange = async (uuid: any) => {
+    const backup = await backupFactory.GetOne(uuid);
+    setBackup(backup);
   };
 
   const onChangeComment = (value: any) => {
@@ -134,7 +131,7 @@ export const SidePanel = (props: any) => {
                 onChange={onChange}
               >
                 {backups.map((data: Backup) => (
-                  <Option key={data.uuid} value={data.user_comment}>
+                  <Option key={data.uuid} value={data.uuid}>
                     {data.user_comment}
                   </Option>
                 ))}
