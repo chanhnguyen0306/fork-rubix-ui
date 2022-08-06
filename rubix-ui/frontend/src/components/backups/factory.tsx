@@ -3,7 +3,7 @@ import {
   DeleteBackupBulk, DoBackup,
   GetBackup,
   GetBackups,
-  GetBackupsByApplication,
+  GetBackupsByApplication, GetNetworkBackupsByPlugin,
   ImportBackup,
   WiresBackup,
   WiresBackupRestore,
@@ -80,6 +80,20 @@ export class BackupFactory {
     return resp;
   }
 
+  async GetNetworkBackupsByPlugin(pluginName:string): Promise<Array<storage.Backup>> {
+    let resp: Promise<Array<storage.Backup>> = {} as Promise<
+      Array<storage.Backup>
+      >;
+    await GetNetworkBackupsByPlugin(this.AppFlowFramework, this.SubFlowFrameworkNetwork, pluginName)
+      .then((res) => {
+        resp = res as unknown as Promise<Array<storage.Backup>>;
+      })
+      .catch((err) => {
+        return resp;
+      });
+    return resp;
+  }
+
   async GetBackupsRubixWires(): Promise<Array<storage.Backup>> {
     let resp: Promise<Array<storage.Backup>> = {} as Promise<
       Array<storage.Backup>
@@ -96,11 +110,11 @@ export class BackupFactory {
 
 
   // DoBackup do an export/backup eg: Flow Networks application=FlowFramework, subApplication=FrameworkNetwork
-  async DoBackup(application: string, subApplication: string, userComment: string, body: storage.Backup): Promise<storage.Backup> {
+  async DoBackup(application: string, subApplication: string, userComment: string, backUpData: any): Promise<storage.Backup> {
     hasUUID(this.connectionUUID)
     hasUUID(this.hostUUID)
     let resp: storage.Backup = {} as storage.Backup;
-    await DoBackup(this.connectionUUID, this.hostUUID, application, subApplication, userComment, body)
+    await DoBackup(this.connectionUUID, this.hostUUID, application, subApplication, userComment, backUpData)
       .then((res) => {
         resp = res as storage.Backup;
       })

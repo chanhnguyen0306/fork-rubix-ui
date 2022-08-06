@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
+	"github.com/NubeIO/rubix-ui/backend/storage"
 )
 
 type UUIDs struct {
@@ -89,12 +91,42 @@ func (app *App) importEditNetwork(connUUID, hostUUID string, body *model.Network
 	if devices != nil {
 		for _, device := range devices {
 			device.NetworkUUID = body.UUID
-			app.EditDevice(connUUID, hostUUID, device.UUID, device)
-			points := device.Points
-			for _, point := range points {
-				point.DeviceUUID = device.UUID
-				app.EditPoint(connUUID, hostUUID, point.UUID, point)
+			dev := app.EditDevice(connUUID, hostUUID, device.UUID, device)
+			if dev == nil { //device was not found so now try and add it
+				dev = app.AddDevice(connUUID, hostUUID, device)
+				if dev == nil { // device must exist with same name (this would happen from an older backup and then device was already remade, so it has a new uuid)
+					network, err := app.getNetwork(connUUID, hostUUID, device.NetworkUUID, true)
+					pprint.PrintJOSN(network)
+					if err == nil {
+						for _, d := range network.Devices {
+							fmt.Println(d.Name, device.Name)
+							if d.Name == device.Name {
+								points := device.Points
+								for _, point := range points {
+									point.DeviceUUID = d.UUID // update the device uuid
+									app.AddPoint(connUUID, hostUUID, point)
+								}
+							}
+						}
+					}
+				} else {
+					points := device.Points
+					for _, point := range points {
+						point.DeviceUUID = device.UUID
+						app.AddPoint(connUUID, hostUUID, point)
+					}
+				}
+			} else { // device did exists
+				points := device.Points
+				for _, point := range points {
+					point.DeviceUUID = device.UUID
+					pnt := app.EditPoint(connUUID, hostUUID, point.UUID, point)
+					if pnt == nil { // point did not exist so now add it
+						app.AddPoint(connUUID, hostUUID, point)
+					}
+				}
 			}
+
 		}
 	}
 }
@@ -174,6 +206,20 @@ func (app *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, w
 	return network
 }
 
+func (app *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *model.Network {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	networks, err := app.flow.GetNetworkWithPoints(networkUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return networks
+}
+
 func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
 	networks, err := app.getNetwork(connUUID, hostUUID, networkUUID, withDevice)
 	if err != nil {
@@ -181,4 +227,34 @@ func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bo
 		return nil
 	}
 	return networks
+}
+
+// GetNetworkBackupsByUUID get all backups for a network
+func (app *App) GetNetworkBackupsByUUID(application, subApplication, networkUUID string) []storage.Backup {
+	data := app.GetBackupsByApplication(application, subApplication, true)
+	var backups []storage.Backup
+	for _, back := range data {
+		network, ok := back.Data.(*model.Network)
+		if ok {
+			if network.UUID == networkUUID {
+				backups = append(backups, back)
+			}
+		}
+	}
+	return backups
+}
+
+// GetNetworkBackupsByPlugin get all backups for a network by its plugin
+func (app *App) GetNetworkBackupsByPlugin(application, subApplication, pluginName string) []storage.Backup {
+	data := app.GetBackupsByApplication(application, subApplication, true)
+	var backups []storage.Backup
+	for _, back := range data {
+		network, ok := back.Data.(*model.Network)
+		if ok {
+			if network.PluginPath == pluginName {
+				backups = append(backups, back)
+			}
+		}
+	}
+	return backups
 }

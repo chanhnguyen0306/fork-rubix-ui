@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Image, Space, Spin, Tag } from "antd";
+import { Button, Image, PaginationProps, Space, Spin, Tag } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
+import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { BackupFactory } from "../../../../../backups/factory";
+import { main, model, storage } from "../../../../../../../wailsjs/go/models";
 import {
-  downloadJSON,
   openNotificationWithIcon,
   pluginLogo,
 } from "../../../../../../utils/utils";
@@ -13,12 +14,14 @@ import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
-  RbExportButton,
   RbImportButton,
 } from "../../../../../../common/rb-table-actions";
 import { ImportModal } from "../../../../../../common/import-modal";
 import { CreateModal, EditModal } from "./create";
+import { SidePanel } from "./side-panel";
 import "./style.css";
+
+import Backup = storage.Backup;
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -33,12 +36,20 @@ export const FlowNetworkTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [sidePanelHeight, setSidePanelHeight] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [collapsed, setCollapsed] = useState(true);
+  const [backups, setBackups] = useState([] as Backup[]);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
+  let backupFactory = new BackupFactory();
   let networkFactory = new FlowNetworkFactory();
   networkFactory.connectionUUID = connUUID;
   networkFactory.hostUUID = hostUUID;
+  const application = backupFactory.AppFlowFramework;
+  const subApplication = backupFactory.SubFlowFrameworkNetwork;
 
   const columns = [
     {
@@ -91,6 +102,36 @@ export const FlowNetworkTable = (props: any) => {
     },
   ];
 
+  useEffect(() => {
+    fetchBackups();
+  }, []);
+
+  useEffect(() => {
+    setCollapsed(true);
+    const totalPage = Math.ceil(data.length / 10);
+    setTotalPage(totalPage);
+    sidePanelHeightHandle();
+  }, [data.length]);
+
+  useEffect(() => {
+    setCollapsed(true);
+    sidePanelHeightHandle();
+  }, [currentPage, selectedUUIDs]);
+
+  const fetchBackups = async () => {
+    try {
+      let res =
+        (await backupFactory.GetBackupsByApplication(
+          application,
+          subApplication,
+          true
+        )) || [];
+      setBackups(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);
     const res = await networkFactory.Schema(connUUID, hostUUID, pluginName);
@@ -99,6 +140,18 @@ export const FlowNetworkTable = (props: any) => {
     };
     setNetworkSchema(jsonSchema);
     setIsLoadingForm(false);
+  };
+
+  const handleImport = async (item: any) => {
+    try {
+      const network = JSON.parse(item);
+      await networkFactory.Import(true, true, network);
+      fetchNetworks();
+      setIsImportModalVisible(false);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", "Invalid JSON");
+    }
   };
 
   const showModal = (item: any) => {
@@ -115,27 +168,7 @@ export const FlowNetworkTable = (props: any) => {
   const bulkDelete = async () => {
     await networkFactory.BulkDelete(selectedUUIDs);
     fetchNetworks();
-  };
-
-  const handleExport = async () => {
-    try {
-      const item = selectedUUIDs[0] as any;
-      downloadJSON(item.name, JSON.stringify(item));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleImport = async (item: any) => {
-    try {
-      const network = JSON.parse(item);
-      await networkFactory.Import(true, true, network);
-      fetchNetworks();
-      setIsImportModalVisible(false);
-    } catch (error) {
-      console.log(error);
-      openNotificationWithIcon("error", "Invalid JSON");
-    }
+    setSelectedUUIDs([]);
   };
 
   const rowSelection = {
@@ -156,24 +189,58 @@ export const FlowNetworkTable = (props: any) => {
       .replace(":pluginName", pluginName);
   };
 
+  const sidePanelHeightHandle = () => {
+    if (currentPage === totalPage) {
+      const height = (data.length % 10) * 60 + 55; //get height of last page
+      setSidePanelHeight(height);
+    } else {
+      const height =
+        data.length >= 10 ? 10 * 60 + 55 : (data.length % 10) * 60 + 55;
+      setSidePanelHeight(height);
+    }
+  };
+
+  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
+    setCurrentPage(current);
+  };
+
   return (
     <>
-      <RbExportButton
-        handleExport={handleExport}
-        disabled={selectedUUIDs.length !== 1}
-      />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
-      <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
+      <div className="flow-networks-actions">
+        <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
+        <RbDeleteButton bulkDelete={bulkDelete} />
+        <Button
+          className="nube-primary white--text"
+          disabled={selectedUUIDs.length !== 1}
+          style={{ margin: "5px", float: "right" }}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          <FileSyncOutlined /> Backups
+        </Button>
+        <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      </div>
 
-      <RbTable
-        className="flow-networks"
-        rowKey="uuid"
-        rowSelection={rowSelection}
-        dataSource={data}
-        columns={columns}
-        loading={{ indicator: <Spin />, spinning: isFetching }}
-      />
+      <div className="flow-networks">
+        <RbTable
+          rowKey="uuid"
+          rowSelection={rowSelection}
+          dataSource={data}
+          columns={columns}
+          loading={{ indicator: <Spin />, spinning: isFetching }}
+          className={collapsed ? "full-width " : "uncollapsed-style "}
+          onChange={onChange}
+        />
+        {selectedUUIDs[0] ? (
+          <SidePanel
+            collapsed={collapsed}
+            selectedItem={selectedUUIDs[0]}
+            sidePanelHeight={sidePanelHeight}
+            backups={backups}
+            refreshList={fetchNetworks}
+          />
+        ) : null}
+      </div>
+
       <EditModal
         currentItem={currentItem}
         isModalVisible={isModalVisible}
