@@ -17,16 +17,14 @@ func (app *App) ImportBackup(body *storage.Backup) string {
 	return "imported backup ok"
 }
 
-func (app *App) DoBackup(connUUID, hostUUID, application, subApplication, userComment string, back *storage.Backup) *storage.Backup {
-	if back == nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", "backup interface cant not be empty"))
-		return nil
-	}
+func (app *App) DoBackup(connUUID, hostUUID, application, subApplication, userComment string, data interface{}) *storage.Backup {
+	back := &storage.Backup{}
 	back.ConnectionUUID = connUUID
 	back.HostUUID = hostUUID
 	back.Application = application
 	back.SubApplication = subApplication
 	back.UserComment = userComment
+	back.Data = data
 	backup, err := app.addBackup(back)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

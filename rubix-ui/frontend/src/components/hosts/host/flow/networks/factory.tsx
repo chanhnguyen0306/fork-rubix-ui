@@ -6,7 +6,7 @@ import {
   EditNetwork,
   GetFlowNetworkSchema,
   GetNetwork,
-  GetNetworks,
+  GetNetworks, GetNetworkWithPoints,
   ImportBackup,
   ImportNetwork,
 } from "../../../../../../wailsjs/go/main/App";
@@ -41,6 +41,20 @@ export class FlowNetworkFactory {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     await GetNetwork(this.connectionUUID, this.hostUUID, uuid, withDevice)
+      .then((res) => {
+        resp = res as model.Network;
+      })
+      .catch((resp) => {
+        return resp;
+      });
+    return resp;
+  }
+
+  async GetNetworkWithPoints(uuid: string): Promise<model.Network> {
+    let resp: model.Network = {} as model.Network;
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    await GetNetworkWithPoints(this.connectionUUID, this.hostUUID, uuid)
       .then((res) => {
         resp = res as model.Network;
       })

@@ -1,13 +1,12 @@
 import { Button, Card, Col, Input, Row, Select } from "antd";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { model, storage } from "../../../../../../../wailsjs/go/models";
+import { storage } from "../../../../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { BackupFactory } from "../../../../../backups/factory";
 import { FlowNetworkFactory } from "../factory";
 
 import Backup = storage.Backup;
-import Network = model.Network;
 
 const actionRow: React.CSSProperties = { margin: "8px 0" };
 const buttonStyle: React.CSSProperties = { width: "90%" };
@@ -35,11 +34,11 @@ export const SidePanel = (props: any) => {
       if (!comment || comment.length < 2) {
         return openNotificationWithIcon("error", "please enter a comment");
       }
-      const network = await flowNetworkFactory.GetOne(selectedItem.uuid, true);
+      const network = await flowNetworkFactory.GetNetworkWithPoints(selectedItem.uuid);
       await backupFactory.DoBackup(
         application,
         subApplication,
-        comment,
+        `plugin:${selectedItem.plugin_name} name:${network.name} comment:${comment}`,
         network as any
       );
     } catch (err: any) {
@@ -52,13 +51,7 @@ export const SidePanel = (props: any) => {
   const restoreBackupHandle = async () => {
     setIsRestoreBackup(true);
     try {
-      const payload = {
-        ...backup,
-        uuid: selectedItem.uuid,
-        plugin_name: selectedItem.plugin_name,
-        name: backup.user_comment,
-      } as Network;
-      const res = await flowNetworkFactory.Import(false, true, payload);
+      const res = await flowNetworkFactory.Import(false, true, backup.data);
       refreshList();
       openNotificationWithIcon("success", `updated backup: ${res.name}`);
     } catch (err: any) {
