@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-ui/backend/storage"
+	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
 
 func (app *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
@@ -42,18 +45,25 @@ func (app *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*mod
 	return device.Points
 }
 
-func (app *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
+func (app *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	points, err := app.flow.AddPoint(body)
+	point, err := app.flow.AddPoint(body)
+	if err != nil {
+		return nil, err
+	}
+	return point, nil
+}
+
+func (app *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
+	point, err := app.addPoint(connUUID, hostUUID, body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	return points
+	return point
 }
 
 func (app *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Point) *model.Point {
@@ -113,4 +123,96 @@ func (app *App) GetPoint(connUUID, hostUUID, pointUUID string) *model.Point {
 		return nil
 	}
 	return points
+}
+
+type BulkAddResponse struct {
+	Message    string `json:"message"`
+	AddedCount int    `json:"added_count"`
+	ErrorCount int    `json:"error_count"`
+}
+
+func (app *App) ImportPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) *BulkAddResponse {
+	resp, err := app.importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) (*BulkAddResponse, error) {
+	if deviceUUID == "" {
+		return nil, errors.New("device uuid cant not be empty")
+	}
+	backup, err := app.getBackup(backupUUID)
+	if err != nil {
+		return nil, err
+	}
+	application := fmt.Sprintf("%s", logstore.FlowFramework)
+	subApplication := fmt.Sprintf("%s", logstore.FlowFrameworkPoint)
+	if backup.Application != application {
+		return nil, errors.New(fmt.Sprintf("no match for application:%s", application))
+	}
+	if backup.SubApplication != subApplication {
+		return nil, errors.New(fmt.Sprintf("no match for subApplication:%s", subApplication))
+	}
+	points, ok := backup.Data.([]model.Point)
+	if !ok {
+		return nil, errors.New("failed to parse points from backup")
+	}
+	bulkAddResponse := &BulkAddResponse{}
+	var addedCount int
+	var errorCount int
+	for _, point := range points {
+		point.DeviceUUID = deviceUUID
+		_, err := app.addPoint(connUUID, hostUUID, &point)
+		if err != nil {
+			errorCount++
+		} else {
+			addedCount++
+		}
+	}
+	return bulkAddResponse, err
+}
+
+func (app *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) *storage.Backup {
+	resp, err := app.exportPointBulk(connUUID, hostUUID, userComment, deviceUUID, pointUUIDs)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) exportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) (*storage.Backup, error) {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		return nil, err
+	}
+	var pointsList []model.Point
+	var count int
+	device, err := app.getDevice(connUUID, hostUUID, deviceUUID, true)
+	if err != nil {
+		return nil, err
+	}
+	for _, uuid := range pointUUIDs {
+		for _, point := range device.Points {
+			if point.UUID == uuid {
+				pointsList = append(pointsList, *point)
+			}
+			count++
+		}
+	}
+	back := &storage.Backup{}
+	back.ConnectionUUID = connUUID
+	back.HostUUID = hostUUID
+	back.Application = fmt.Sprintf("%s", logstore.FlowFramework)
+	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkPoint)
+	back.UserComment = userComment
+	back.Data = pointsList
+	backup, err := app.addBackup(back)
+	if err != nil {
+		return nil, err
+	}
+	return backup, nil
 }

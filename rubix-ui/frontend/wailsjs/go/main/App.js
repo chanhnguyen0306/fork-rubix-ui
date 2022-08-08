@@ -222,6 +222,10 @@ export function EnablePluginBulk(arg1, arg2, arg3) {
   return window['go']['main']['App']['EnablePluginBulk'](arg1, arg2, arg3);
 }
 
+export function ExportPointBulk(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['ExportPointBulk'](arg1, arg2, arg3, arg4, arg5);
+}
+
 export function GetBackup(arg1) {
   return window['go']['main']['App']['GetBackup'](arg1);
 }
@@ -520,6 +524,10 @@ export function ImportBackup(arg1) {
 
 export function ImportNetwork(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['ImportNetwork'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function ImportPointBulk(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['ImportPointBulk'](arg1, arg2, arg3, arg4);
 }
 
 export function OpenURL(arg1) {

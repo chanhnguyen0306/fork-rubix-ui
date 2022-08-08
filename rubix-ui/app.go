@@ -9,16 +9,17 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/flow"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	log "github.com/sirupsen/logrus"
-	"time"
+	"sync"
 )
 
 const flowPort = 1660
 
 // App struct
 type App struct {
-	ctx  context.Context
-	DB   storage.Storage
-	flow *ffclient.FlowClient
+	ctx   context.Context
+	DB    storage.Storage
+	flow  *ffclient.FlowClient
+	mutex sync.RWMutex
 }
 
 // NewApp creates a new App application struct
@@ -35,6 +36,10 @@ func NewApp() *App {
 //resetHost will be used later to cache a host ip, port and token
 func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
 	host, err := app.getHost(connUUID, hostUUID)
+	if err != nil {
+		log.Errorf("resetHost connUUID:%s hostUUID:%s", connUUID, hostUUID)
+		return nil, err
+	}
 	if resetFlow {
 		app.resetFlow(host.IP, flowPort)
 	}
@@ -48,14 +53,13 @@ func (app *App) resetFlow(ip string, port int) {
 	})
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
+// startup is called when the app starts. The context is saved, so we can call the runtime methods
 func (app *App) startup(ctx context.Context) {
 	app.ctx = ctx
 	//app.sendTimeToUI(ctx)
 }
 
-func matchUUID(uuid string) bool {
+func matchConnectionUUID(uuid string) bool {
 	if len(uuid) == 16 {
 		if uuid[0:4] == "con_" {
 			return true
@@ -66,12 +70,14 @@ func matchUUID(uuid string) bool {
 
 //initRest get rest client
 func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
+	app.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
+	defer app.mutex.Unlock()
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
 	var err error
 	connection := &storage.RubixConnection{}
-	if matchUUID(connUUID) {
+	if matchConnectionUUID(connUUID) {
 		connection, err = app.DB.Select(connUUID)
 		if err != nil {
 			return nil, err
@@ -85,7 +91,6 @@ func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
 	if connection == nil {
 		return nil, errors.New("failed to find a connection")
 	}
-	time.Sleep(100 * time.Millisecond)
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
 	return assitcli.New(connection.IP, connection.Port), nil
 }
