@@ -9,7 +9,7 @@ export const ROUTES: ROUTE = {
   DOCS: "/docs",
   DOCS_SOFTWARE: "/software",
   DOCS_DIPS: "/switch",
-
+  APP_STORE: "/app-store",
   NETWORKING: "/networking",
   FLOW_DEVICES: "/flow/networks/:networkUUID",
   FLOW_POINTS: "/flow/devices/:deviceUUID",

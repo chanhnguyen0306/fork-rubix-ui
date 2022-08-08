@@ -10,35 +10,6 @@ export interface Route {
   children?: Omit<Route, "children">[];
 }
 
-const routes: Route[] = [
-  {
-    path: "index",
-    breadcrumbName: "home",
-  },
-  {
-    path: "first",
-    breadcrumbName: "first",
-    children: [
-      {
-        path: "/general",
-        breadcrumbName: "General",
-      },
-      {
-        path: "/layout",
-        breadcrumbName: "Layout",
-      },
-      {
-        path: "/navigation",
-        breadcrumbName: "Navigation",
-      },
-    ],
-  },
-  {
-    path: "second",
-    breadcrumbName: "second",
-  },
-];
-
 function itemRender(route: any, params: any, routes: any, paths: any) {
   const last = routes.indexOf(route) === routes.length - 1;
   return last ? (

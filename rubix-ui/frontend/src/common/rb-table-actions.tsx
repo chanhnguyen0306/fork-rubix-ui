@@ -5,6 +5,7 @@ import {
   DeleteOutlined,
   ImportOutlined,
   ExportOutlined,
+  DownloadOutlined,
 } from "@ant-design/icons";
 
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
@@ -72,6 +73,21 @@ export const RbExportButton = (props: any) => {
       style={btn}
     >
       <ExportOutlined /> Export
+    </Button>
+  );
+};
+
+export const RbDownloadButton = (props: any) => {
+  const { handleClick, disabled } = props;
+
+  return (
+    <Button
+      className="download-color white--text"
+      onClick={handleClick}
+      disabled={disabled}
+      style={btn}
+    >
+      <DownloadOutlined /> Download
     </Button>
   );
 };
