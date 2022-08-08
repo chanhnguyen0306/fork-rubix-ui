@@ -1,14 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Input, Modal, Space, Spin } from "antd";
+import { Space, Spin } from "antd";
 import { FlowPointFactory } from "../factory";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import {
-  isObjectEmpty,
-  openNotificationWithIcon,
-} from "../../../../../../utils/utils";
-
-import Point = model.Point;
+import { isObjectEmpty } from "../../../../../../utils/utils";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -18,6 +13,9 @@ import {
 } from "../../../../../../common/rb-table-actions";
 import { EditModal } from "./edit";
 import { CreateModal } from "./create";
+import { ExportModal, ImportModal } from "./import-export";
+
+import Point = model.Point;
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -34,8 +32,7 @@ export const FlowPointsTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [comment, setComment] = useState<any>();
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
   let flowPointFactory = new FlowPointFactory();
   flowPointFactory.connectionUUID = connUUID;
@@ -120,34 +117,6 @@ export const FlowPointsTable = (props: any) => {
     setIsCreateModalVisible(false);
   };
 
-  const handleExport = async () => {
-    try {
-      if (comment.length < 2) {
-        openNotificationWithIcon("error", "please enter a comment");
-        return;
-      }
-      setConfirmLoading(true);
-      const uuids = selectedUUIDs.map((p) => p.uuid);
-      await flowPointFactory.BulkExport(comment, deviceUUID, uuids);
-      openNotificationWithIcon("success", "export success");
-      handleCloseExportModal();
-    } catch (error: any) {
-      console.log(error);
-      openNotificationWithIcon("error", error.message);
-    } finally {
-      setConfirmLoading(false);
-    }
-  };
-
-  const handleCloseExportModal = () => {
-    setComment("");
-    setIsExportModalVisible(false);
-  };
-
-  const onChangeComment = (value: any) => {
-    setComment(value.target.value);
-  };
-
   return (
     <>
       <RbExportButton
@@ -156,7 +125,7 @@ export const FlowPointsTable = (props: any) => {
       />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showCreateModal({} as Point)} />
-      <RbImportButton showModal={() => showCreateModal({} as Point)} />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -184,19 +153,18 @@ export const FlowPointsTable = (props: any) => {
         onCloseModal={closeCreateModal}
         refreshList={refreshList}
       />
-      <Modal
-        title="Export"
-        visible={isExportModalVisible}
-        onOk={handleExport}
-        onCancel={handleCloseExportModal}
-        confirmLoading={confirmLoading}
-      >
-        <Input
-          value={comment}
-          onChange={onChangeComment}
-          placeholder="please enter a comment"
-        />
-      </Modal>
+
+      <ExportModal
+        isModalVisible={isExportModalVisible}
+        onClose={() => setIsExportModalVisible(false)}
+        selectedItems={selectedUUIDs}
+        refreshList={refreshList}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
+        refreshList={refreshList}
+      />
     </>
   );
 };
