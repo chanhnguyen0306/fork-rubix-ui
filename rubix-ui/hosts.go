@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -87,8 +88,13 @@ func (app *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error)
 	if err != nil {
 		return nil, err
 	}
-	data, _ := client.GetHost(uuid)
-	return data, nil
+	host, resp := client.GetHost(uuid)
+	if resp.StatusCode > 299 {
+		errMsg := fmt.Sprintf("error on get host %s", uuid)
+		log.Errorln(errMsg)
+		return nil, errors.New(errMsg)
+	}
+	return host, nil
 }
 
 func (app *App) GetHost(connUUID string, uuid string) *assistmodel.Host {
