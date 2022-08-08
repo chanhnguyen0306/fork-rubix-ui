@@ -24,7 +24,7 @@ function DownloadForm(props: any) {
     isDownloadModalOpen,
     updateIsDownloadModalOpen,
   } = props;
-  if (!isDownloadModalOpen) {
+  if (!isDownloadModalOpen || !apps) {
     return null;
   }
   const selectedApps = apps.filter((app: any) =>

@@ -87,7 +87,7 @@ function AppTable(props: any) {
         releaseVersion={appDetails.release}
         selectedAppsKeys={selectedRowKeys}
         token={token}
-        apps={appDetails.app}
+        apps={appDetails.apps}
       />
       <RbTable
         rowKey="name"
