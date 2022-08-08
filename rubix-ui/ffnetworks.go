@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 )
 
@@ -96,10 +95,8 @@ func (app *App) importEditNetwork(connUUID, hostUUID string, body *model.Network
 				dev = app.AddDevice(connUUID, hostUUID, device)
 				if dev == nil { // device must exist with same name (this would happen from an older backup and then device was already remade, so it has a new uuid)
 					network, err := app.getNetwork(connUUID, hostUUID, device.NetworkUUID, true)
-					pprint.PrintJOSN(network)
 					if err == nil {
 						for _, d := range network.Devices {
-							fmt.Println(d.Name, device.Name)
 							if d.Name == device.Name {
 								points := device.Points
 								for _, point := range points {
