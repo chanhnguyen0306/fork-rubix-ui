@@ -1,4 +1,4 @@
-import {  Typography, Card } from "antd";
+import { Typography, Card } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -99,9 +99,6 @@ export const FlowPoints = () => {
         <FlowPointsTable
           data={data}
           isFetching={isFetching}
-          connUUID={connUUID}
-          hostUUID={hostUUID}
-          deviceUUID={deviceUUID}
           setIsFetching={setIsFetching}
           refreshList={fetch}
           pluginName={pluginName}

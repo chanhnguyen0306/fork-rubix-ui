@@ -1,42 +1,48 @@
-import { Button, Popconfirm, Space, Spin } from "antd";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { Input, Modal, Space, Spin } from "antd";
 import { FlowPointFactory } from "../factory";
-import { FlowDeviceFactory } from "../../devices/factory";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../../../../utils/utils";
-import { EditModal } from "./edit";
-import { CreateModal } from "./create";
+import {
+  isObjectEmpty,
+  openNotificationWithIcon,
+} from "../../../../../../utils/utils";
+
 import Point = model.Point;
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
+  RbExportButton,
+  RbImportButton,
 } from "../../../../../../common/rb-table-actions";
+import { EditModal } from "./edit";
+import { CreateModal } from "./create";
 
 export const FlowPointsTable = (props: any) => {
+  const { data, isFetching, refreshList } = props;
   const {
-    data,
-    isFetching,
-    connUUID,
-    hostUUID,
-    deviceUUID,
-    refreshList,
-    pluginName,
-  } = props;
+    connUUID = "",
+    hostUUID = "",
+    deviceUUID = "",
+    pluginName = "",
+  } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  // const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [comment, setComment] = useState<any>();
+
   let flowPointFactory = new FlowPointFactory();
+  flowPointFactory.connectionUUID = connUUID;
+  flowPointFactory.hostUUID = hostUUID;
 
   const bulkDelete = async () => {
-    flowPointFactory.connectionUUID = connUUID;
-    flowPointFactory.hostUUID = hostUUID;
-    flowPointFactory.BulkDelete(selectedUUIDs);
+    await flowPointFactory.BulkDelete(selectedUUIDs);
     refreshList();
   };
 
@@ -114,10 +120,43 @@ export const FlowPointsTable = (props: any) => {
     setIsCreateModalVisible(false);
   };
 
+  const handleExport = async () => {
+    try {
+      if (comment.length < 2) {
+        openNotificationWithIcon("error", "please enter a comment");
+        return;
+      }
+      setConfirmLoading(true);
+      const uuids = selectedUUIDs.map((p) => p.uuid);
+      await flowPointFactory.BulkExport(comment, deviceUUID, uuids);
+      openNotificationWithIcon("success", "export success");
+      handleCloseExportModal();
+    } catch (error: any) {
+      console.log(error);
+      openNotificationWithIcon("error", error.message);
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  const handleCloseExportModal = () => {
+    setComment("");
+    setIsExportModalVisible(false);
+  };
+
+  const onChangeComment = (value: any) => {
+    setComment(value.target.value);
+  };
+
   return (
     <>
+      <RbExportButton
+        handleExport={() => setIsExportModalVisible(true)}
+        disabled={selectedUUIDs.length === 0}
+      />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showCreateModal({} as Point)} />
+      <RbImportButton showModal={() => showCreateModal({} as Point)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -145,6 +184,19 @@ export const FlowPointsTable = (props: any) => {
         onCloseModal={closeCreateModal}
         refreshList={refreshList}
       />
+      <Modal
+        title="Export"
+        visible={isExportModalVisible}
+        onOk={handleExport}
+        onCancel={handleCloseExportModal}
+        confirmLoading={confirmLoading}
+      >
+        <Input
+          value={comment}
+          onChange={onChangeComment}
+          placeholder="please enter a comment"
+        />
+      </Modal>
     </>
   );
 };
