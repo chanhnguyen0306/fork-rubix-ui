@@ -9,10 +9,21 @@ import { EditModal } from "./edit";
 import { CreateModal } from "./create";
 import Point = model.Point;
 import RbTable from "../../../../../../common/rb-table";
+import {
+  RbAddButton,
+  RbDeleteButton,
+} from "../../../../../../common/rb-table-actions";
 
 export const FlowPointsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, deviceUUID, refreshList, pluginName } =
-    props;
+  const {
+    data,
+    isFetching,
+    connUUID,
+    hostUUID,
+    deviceUUID,
+    refreshList,
+    pluginName,
+  } = props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
@@ -26,6 +37,7 @@ export const FlowPointsTable = (props: any) => {
     flowPointFactory.connectionUUID = connUUID;
     flowPointFactory.hostUUID = hostUUID;
     flowPointFactory.BulkDelete(selectedUUIDs);
+    refreshList();
   };
 
   const rowSelection = {
@@ -68,13 +80,9 @@ export const FlowPointsTable = (props: any) => {
     },
   ];
 
-  const getSchema = async (pluginName:string) => {
+  const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);
-    const res = await flowPointFactory.Schema(
-      connUUID,
-      hostUUID,
-      pluginName
-    );
+    const res = await flowPointFactory.Schema(connUUID, hostUUID, pluginName);
     const jsonSchema = {
       properties: res,
     };
@@ -108,18 +116,8 @@ export const FlowPointsTable = (props: any) => {
 
   return (
     <>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
-      <Button
-        type="primary"
-        onClick={() => showCreateModal({} as Point)}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <PlusOutlined /> Add
-      </Button>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton showModal={() => showCreateModal({} as Point)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
