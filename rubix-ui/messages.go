@@ -18,9 +18,9 @@ const (
 
 func (app *App) crudMessage(ok bool, data interface{}) {
 	if ok {
+		log.Infof("mesage %s", data)
 		app.msgToUI(app.ctx, string(okMsg), data)
 	} else {
-		fmt.Println("ERROR", data)
 		log.Errorf("error %s", data)
 		app.msgToUI(app.ctx, string(errMsg), data)
 	}
