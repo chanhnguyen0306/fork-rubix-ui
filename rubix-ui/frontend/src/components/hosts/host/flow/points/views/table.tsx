@@ -1,31 +1,46 @@
-import { Button, Popconfirm, Space, Spin } from "antd";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { Space, Spin } from "antd";
 import { FlowPointFactory } from "../factory";
-import { FlowDeviceFactory } from "../../devices/factory";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { main, model } from "../../../../../../../wailsjs/go/models";
 import { isObjectEmpty } from "../../../../../../utils/utils";
+import RbTable from "../../../../../../common/rb-table";
+import {
+  RbAddButton,
+  RbDeleteButton,
+  RbExportButton,
+  RbImportButton,
+} from "../../../../../../common/rb-table-actions";
 import { EditModal } from "./edit";
 import { CreateModal } from "./create";
+import { ExportModal, ImportModal } from "./import-export";
+
 import Point = model.Point;
-import RbTable from "../../../../../../common/rb-table";
 
 export const FlowPointsTable = (props: any) => {
-  const { data, isFetching, connUUID, hostUUID, deviceUUID, refreshList, pluginName } =
-    props;
+  const { data, isFetching, refreshList } = props;
+  const {
+    connUUID = "",
+    hostUUID = "",
+    deviceUUID = "",
+    pluginName = "",
+  } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  // const [pluginName, setPluginName] = useState();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+
   let flowPointFactory = new FlowPointFactory();
+  flowPointFactory.connectionUUID = connUUID;
+  flowPointFactory.hostUUID = hostUUID;
 
   const bulkDelete = async () => {
-    flowPointFactory.connectionUUID = connUUID;
-    flowPointFactory.hostUUID = hostUUID;
-    flowPointFactory.BulkDelete(selectedUUIDs);
+    await flowPointFactory.BulkDelete(selectedUUIDs);
+    refreshList();
   };
 
   const rowSelection = {
@@ -68,13 +83,9 @@ export const FlowPointsTable = (props: any) => {
     },
   ];
 
-  const getSchema = async (pluginName:string) => {
+  const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);
-    const res = await flowPointFactory.Schema(
-      connUUID,
-      hostUUID,
-      pluginName
-    );
+    const res = await flowPointFactory.Schema(connUUID, hostUUID, pluginName);
     const jsonSchema = {
       properties: res,
     };
@@ -108,18 +119,13 @@ export const FlowPointsTable = (props: any) => {
 
   return (
     <>
-      <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-          <DeleteOutlined /> Delete
-        </Button>
-      </Popconfirm>
-      <Button
-        type="primary"
-        onClick={() => showCreateModal({} as Point)}
-        style={{ margin: "5px", float: "right" }}
-      >
-        <PlusOutlined /> Add
-      </Button>
+      <RbExportButton
+        handleExport={() => setIsExportModalVisible(true)}
+        disabled={selectedUUIDs.length === 0}
+      />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton showModal={() => showCreateModal({} as Point)} />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -145,6 +151,18 @@ export const FlowPointsTable = (props: any) => {
         deviceUUID={deviceUUID}
         schema={schema}
         onCloseModal={closeCreateModal}
+        refreshList={refreshList}
+      />
+
+      <ExportModal
+        isModalVisible={isExportModalVisible}
+        onClose={() => setIsExportModalVisible(false)}
+        selectedItems={selectedUUIDs}
+        refreshList={refreshList}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
         refreshList={refreshList}
       />
     </>
