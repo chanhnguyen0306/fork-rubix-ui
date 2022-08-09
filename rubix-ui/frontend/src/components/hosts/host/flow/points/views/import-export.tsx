@@ -12,7 +12,7 @@ import Backup = storage.Backup;
 const { Option } = Select;
 
 export const ExportModal = (props: any) => {
-  const { isModalVisible, selectedItems, onClose, refreshList } = props;
+  const { isModalVisible, selectedItems, onClose } = props;
   const { connUUID = "", hostUUID = "", deviceUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [comment, setComment] = useState<any>();
@@ -31,7 +31,6 @@ export const ExportModal = (props: any) => {
       const uuids = selectedItems.map((p: Point) => p.uuid);
       await flowPointFactory.BulkExport(comment, deviceUUID, uuids);
       openNotificationWithIcon("success", "export success");
-      refreshList();
       handleCloseModal();
     } catch (error: any) {
       console.log(error);
@@ -68,10 +67,10 @@ export const ExportModal = (props: any) => {
 };
 
 export const ImportModal = (props: any) => {
-  const { isModalVisible, onClose, refreshList } = props;
+  const { isModalVisible, onClose } = props;
   const { connUUID = "", hostUUID = "", deviceUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [backupUUID, setBackupUUID] = useState("");
+  const [backupUUID, setBackupUUID] = useState<any>();
   const [backups, setBackups] = useState([] as Backup[]);
 
   let backupFactory = new BackupFactory();
@@ -104,8 +103,7 @@ export const ImportModal = (props: any) => {
       setConfirmLoading(true);
       await flowPointFactory.BulkImport(backupUUID, deviceUUID);
       openNotificationWithIcon("success", `import success`);
-      refreshList();
-      handleClose();
+      window.location.reload();
     } catch (error: any) {
       console.log(error);
       openNotificationWithIcon("error", error.message);
@@ -119,7 +117,7 @@ export const ImportModal = (props: any) => {
   };
 
   const handleClose = () => {
-    setBackupUUID("");
+    setBackupUUID(null);
     onClose();
   };
 
@@ -136,6 +134,7 @@ export const ImportModal = (props: any) => {
         placeholder="select a backup"
         style={{ width: "100%" }}
         onChange={onChange}
+        value={backupUUID}
       >
         {backups.map((data: Backup) => (
           <Option key={data.uuid} value={data.uuid}>
