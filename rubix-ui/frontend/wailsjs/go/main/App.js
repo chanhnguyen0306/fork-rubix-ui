@@ -222,6 +222,10 @@ export function EnablePluginBulk(arg1, arg2, arg3) {
   return window['go']['main']['App']['EnablePluginBulk'](arg1, arg2, arg3);
 }
 
+export function ExportDevicesBulk(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['ExportDevicesBulk'](arg1, arg2, arg3, arg4, arg5);
+}
+
 export function ExportPointBulk(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['ExportPointBulk'](arg1, arg2, arg3, arg4, arg5);
 }
@@ -520,6 +524,10 @@ export function HostRubixScan(arg1, arg2) {
 
 export function ImportBackup(arg1) {
   return window['go']['main']['App']['ImportBackup'](arg1);
+}
+
+export function ImportDevicesBulk(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['ImportDevicesBulk'](arg1, arg2, arg3, arg4);
 }
 
 export function ImportNetwork(arg1, arg2, arg3, arg4, arg5) {

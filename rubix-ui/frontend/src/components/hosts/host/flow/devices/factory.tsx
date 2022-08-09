@@ -1,9 +1,14 @@
-import {main, model} from "../../../../../../wailsjs/go/models";
+import {main, model, storage} from "../../../../../../wailsjs/go/models";
 import {
-    AddDevice,
-    DeleteDevice, DeleteDeviceBulk,
-    EditDevice,
-    GetDevice, GetDevices, GetFlowDeviceSchema, GetNetworkDevices,
+  AddDevice,
+  DeleteDevice,
+  DeleteDeviceBulk,
+  EditDevice, ExportDevicesBulk, ExportPointBulk,
+  GetDevice,
+  GetDevices,
+  GetFlowDeviceSchema,
+  GetNetworkDevices, ImportDevicesBulk,
+  ImportPointBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -127,4 +132,34 @@ export class FlowDeviceFactory {
         })
         return resp
     }
+
+  async BulkImport(
+    backupUUID: string,
+    networkUUID: string
+  ): Promise<main.BulkAddResponse> {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return await ImportDevicesBulk(
+      this.connectionUUID,
+      this.hostUUID,
+      backupUUID,
+      networkUUID
+    );
+  }
+
+  async BulkExport(
+    userComment: string,
+    networkUUID: string,
+    uuids: Array<string>
+  ): Promise<storage.Backup> {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return await ExportDevicesBulk(
+      this.connectionUUID,
+      this.hostUUID,
+      userComment,
+      networkUUID,
+      uuids
+    );
+  }
 }
