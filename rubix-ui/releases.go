@@ -124,7 +124,8 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 		return nil
 	}
 	for _, apps := range getRelease.Apps {
-		if appName == rubixWires { // download wires
+		if appName == rubixWires && apps.Name == rubixWires { // download wires
+			app.crudMessage(true, fmt.Sprintf("try to download app:%s version:%s", appName, apps.Version))
 			asset, err := appStore.DownloadWires(token, apps.Version, cleanDownload)
 			if err != nil {
 				app.crudMessage(false, fmt.Sprintf("download rubix-wires err:%s", err.Error()))
@@ -132,13 +133,14 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 			}
 			out.AppName = asset.Name
 			out.AppVersion = asset.Version
-			app.crudMessage(true, fmt.Sprintf("download rubix-wires ok"))
+			app.crudMessage(true, fmt.Sprintf("download app:%s ok", appName))
 		} else if apps.Name == appName { // download any other as needed
 			opts := git.DownloadOptions{
 				AssetName: apps.Repo,
 				MatchName: true,
 				MatchArch: true,
 			}
+			app.crudMessage(true, fmt.Sprintf("try to download app:%s version:%s", appName, apps.Version))
 			asset, err := appStore.GitDownloadAsset(token, apps.Name, apps.Version, apps.Repo, arch, releaseVersion, cleanDownload, opts)
 			if err != nil {
 				app.crudMessage(false, fmt.Sprintf("download app err:%s", err.Error()))
@@ -149,6 +151,7 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 			app.crudMessage(true, fmt.Sprintf("download app:%s ok", appName))
 			if len(apps.PluginDependency) > 0 { // if required download any plugins
 				for _, plugin := range apps.PluginDependency {
+					app.crudMessage(true, fmt.Sprintf("try to download plugin:%s version:%s", plugin, getRelease.Release))
 					_, err := appStore.DownloadFlowPlugin(token, getRelease.Release, plugin, arch, releaseVersion, cleanDownload)
 					if err != nil {
 						app.crudMessage(false, fmt.Sprintf("download plugin err:%s", err.Error()))
