@@ -120,6 +120,8 @@ export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 
+export function ExportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
+
 export function ExportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
 export function GetBackup(arg1:string):Promise<storage.Backup>;
@@ -269,6 +271,8 @@ export function GitListReleases(arg1:string):Promise<Array<store.ReleaseList>>;
 export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
 
 export function ImportBackup(arg1:storage.Backup):Promise<string>;
+
+export function ImportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string):Promise<main.BulkAddResponse>;
 
 export function ImportNetwork(arg1:string,arg2:string,arg3:boolean,arg4:boolean,arg5:model.Network):Promise<model.Network>;
 
