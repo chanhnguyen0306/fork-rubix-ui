@@ -153,7 +153,6 @@ export const FlowPointsTable = (props: any) => {
         onCloseModal={closeCreateModal}
         refreshList={refreshList}
       />
-
       <ExportModal
         isModalVisible={isExportModalVisible}
         onClose={() => setIsExportModalVisible(false)}

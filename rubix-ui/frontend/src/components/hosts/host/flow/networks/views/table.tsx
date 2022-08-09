@@ -16,7 +16,7 @@ import {
   RbDeleteButton,
   RbImportButton,
 } from "../../../../../../common/rb-table-actions";
-import { ImportModal } from "../../../../../../common/import-modal";
+import { ImportJsonModal } from "../../../../../../common/import-json-modal";
 import { CreateModal, EditModal } from "./create";
 import { SidePanel } from "./side-panel";
 import "./style.css";
@@ -254,7 +254,7 @@ export const FlowNetworkTable = (props: any) => {
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
       />
-      <ImportModal
+      <ImportJsonModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
         onOk={handleImport}

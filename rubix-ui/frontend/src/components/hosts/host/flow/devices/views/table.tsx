@@ -12,16 +12,13 @@ import { ROUTES } from "../../../../../../constants/routes";
 import {
   RbAddButton,
   RbDeleteButton,
+  RbExportButton,
+  RbImportButton,
 } from "../../../../../../common/rb-table-actions";
+import { ExportModal, ImportModal } from "./import-export";
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const [schema, setSchema] = useState({});
-  const [currentItem, setCurrentItem] = useState({});
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   const {
     connUUID = "",
     locUUID = "",
@@ -30,6 +27,14 @@ export const FlowDeviceTable = (props: any) => {
     networkUUID = "",
     pluginName = "",
   } = useParams();
+  const [schema, setSchema] = useState({});
+  const [currentItem, setCurrentItem] = useState({});
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
   let flowDeviceFactory = new FlowDeviceFactory();
 
@@ -126,6 +131,11 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
+      <RbExportButton
+        handleExport={() => setIsExportModalVisible(true)}
+        disabled={selectedUUIDs.length === 0}
+      />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showCreateModal({} as Device)} />
       <RbTable
@@ -148,6 +158,16 @@ export const FlowDeviceTable = (props: any) => {
         isLoadingForm={isLoadingForm}
         schema={schema}
         onCloseModal={closeCreateModal}
+        refreshList={refreshList}
+      />
+      <ExportModal
+        isModalVisible={isExportModalVisible}
+        onClose={() => setIsExportModalVisible(false)}
+        selectedItems={selectedUUIDs}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
         refreshList={refreshList}
       />
     </>
