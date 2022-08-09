@@ -102,12 +102,10 @@ export const ImportModal = (props: any) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      console.log(backupUUID, deviceUUID);
-
-      const res = await flowPointFactory.BulkImport(backupUUID, deviceUUID);
-      console.log(res);
-      // openNotificationWithIcon("success", `import ${res.user_comment} success`);
+      await flowPointFactory.BulkImport(backupUUID, deviceUUID);
+      openNotificationWithIcon("success", `import success`);
       refreshList();
+      handleClose();
     } catch (error: any) {
       console.log(error);
       openNotificationWithIcon("error", error.message);
@@ -120,12 +118,17 @@ export const ImportModal = (props: any) => {
     setBackupUUID(uuid);
   };
 
+  const handleClose = () => {
+    setBackupUUID("");
+    onClose();
+  };
+
   return (
     <Modal
       title="Import"
       visible={isModalVisible}
       onOk={handleOk}
-      onCancel={onClose}
+      onCancel={handleClose}
       confirmLoading={confirmLoading}
     >
       <Select
