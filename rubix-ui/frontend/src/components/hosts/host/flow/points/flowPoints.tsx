@@ -15,7 +15,7 @@ const { Title } = Typography;
 
 export const FlowPoints = () => {
   const [data, setDevices] = useState([] as Points[]);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   let flowPointFactory = new FlowPointFactory();
   const {
     locUUID = "",
@@ -33,6 +33,7 @@ export const FlowPoints = () => {
 
   const fetch = async () => {
     try {
+      setIsFetching(true);
       flowPointFactory.connectionUUID = connUUID;
       flowPointFactory.hostUUID = hostUUID;
       let res = await flowPointFactory.GetPointsForDevice(deviceUUID);
@@ -99,7 +100,6 @@ export const FlowPoints = () => {
         <FlowPointsTable
           data={data}
           isFetching={isFetching}
-          setIsFetching={setIsFetching}
           refreshList={fetch}
           pluginName={pluginName}
         />

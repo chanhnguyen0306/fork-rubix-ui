@@ -123,9 +123,9 @@ export const FlowPointsTable = (props: any) => {
         handleExport={() => setIsExportModalVisible(true)}
         disabled={selectedUUIDs.length === 0}
       />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showCreateModal({} as Point)} />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -158,7 +158,6 @@ export const FlowPointsTable = (props: any) => {
         isModalVisible={isExportModalVisible}
         onClose={() => setIsExportModalVisible(false)}
         selectedItems={selectedUUIDs}
-        refreshList={refreshList}
       />
       <ImportModal
         isModalVisible={isImportModalVisible}
