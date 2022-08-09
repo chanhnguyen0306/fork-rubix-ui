@@ -104,7 +104,7 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseV
 		runDownload = true
 	} else {
 		path := inst.getAppPathAndVersion(appName, version)
-		buildDetails, err := inst.App.GetBuildZipNameByArch(path, arch)
+		buildDetails, err := inst.App.GetBuildZipNameByArch(path, arch, false)
 		if err != nil {
 			return nil, err
 		}

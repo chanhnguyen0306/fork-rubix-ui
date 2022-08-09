@@ -21,7 +21,7 @@ func (app *App) assistListStore(connUUID string) ([]assistStore.App, error) {
 	return *resp, err
 }
 
-func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*assistStore.UploadResponse, error) {
+func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string, addIfExisting bool) (*assistStore.UploadResponse, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
@@ -37,19 +37,25 @@ func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch str
 		return nil, err
 	}
 	path := inst.GetAppPathAndVersion(appName, version)
-	buildDetails, err := appStore.App.GetBuildZipNameByArch(path, arch)
-	//fileName, path, match, err := appStore.App.GetBuildZipNameByArch(appName, version, arch)
+	fmt.Println(path)
+	var dontCheckArch bool
+	if appName == rubixWires {
+		dontCheckArch = true
+	}
+	buildDetails, err := appStore.App.GetBuildZipNameByArch(path, arch, dontCheckArch)
 	if err != nil {
 		return nil, err
 	}
+	//listStore, err := client.ListStore()
+	//if err != nil {
+	//	return nil, err
+	//}
+
 	fileName := buildDetails.ZipName
 	fileAndPath := appStore.FilePath(fmt.Sprintf("%s/%s", path, fileName))
 	reader, err := os.Open(fileAndPath)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("error open file:%s err:%s", fileAndPath, err.Error()))
-	}
-	if err != nil {
-		return nil, err
 	}
 	uploadApp, err := client.AddUploadStoreApp(appName, version, product, arch, fileName, reader)
 	if err != nil {
