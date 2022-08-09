@@ -81,8 +81,10 @@ export const ImportModal = (props: any) => {
   flowPointFactory.hostUUID = backupFactory.hostUUID = hostUUID;
 
   useEffect(() => {
-    fetchBackups();
-  }, []);
+    if (isModalVisible) {
+      fetchBackups();
+    }
+  }, [isModalVisible]);
 
   const fetchBackups = async () => {
     try {
