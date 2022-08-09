@@ -1,4 +1,4 @@
-import {main, model, storage} from "../../../../../../wailsjs/go/models";
+import {main, model, storage, store} from "../../../../../../wailsjs/go/models";
 import {
   AddPoint,
   DeletePoint,
@@ -8,7 +8,7 @@ import {
   GetFlowPointSchema,
   GetPoint,
   GetPoints,
-  GetPointsForDevice,
+  GetPointsForDevice, GetRelease,
   ImportPointBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
@@ -121,28 +121,16 @@ export class FlowPointFactory {
     return resp
   }
 
-  async BulkImport(backupUUID: string, deviceUUID: string): Promise<storage.Backup> {
-    let resp: Promise<any> = {} as Promise<any>
+  async BulkImport(backupUUID: string, deviceUUID: string): Promise<main.BulkAddResponse> {
     hasUUID(this.connectionUUID)
     hasUUID(this.hostUUID)
-    await ImportPointBulk(this.connectionUUID, this.hostUUID, backupUUID, deviceUUID).then(res => {
-      resp = res as Promise<any>
-    }).catch(err => {
-      return resp
-    })
-    return resp
+    return await ImportPointBulk(this.connectionUUID, this.hostUUID, backupUUID, deviceUUID);
   }
 
-  async BulkExport(userComment: string, deviceUUID: string, uuids: Array<string>): Promise<any> {
-    let resp: Promise<any> = {} as Promise<any>
+  async BulkExport(userComment: string, deviceUUID: string, uuids: Array<string>): Promise<storage.Backup> {
     hasUUID(this.connectionUUID)
     hasUUID(this.hostUUID)
-    await ExportPointBulk(this.connectionUUID, this.hostUUID, userComment, deviceUUID, uuids).then(res => {
-      resp = res as Promise<any>
-    }).catch(err => {
-      return resp
-    })
-    return resp
+    return await ExportPointBulk(this.connectionUUID, this.hostUUID, userComment, deviceUUID, uuids);
   }
 
 }
