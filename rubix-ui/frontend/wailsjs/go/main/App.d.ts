@@ -122,6 +122,8 @@ export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginU
 
 export function ExportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
+export function ExportNetworksBulk(arg1:string,arg2:string,arg3:string,arg4:Array<string>):Promise<storage.Backup>;
+
 export function ExportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
 export function GetBackup(arg1:string):Promise<storage.Backup>;
@@ -274,7 +276,7 @@ export function ImportBackup(arg1:storage.Backup):Promise<string>;
 
 export function ImportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string):Promise<main.BulkAddResponse>;
 
-export function ImportNetwork(arg1:string,arg2:string,arg3:boolean,arg4:boolean,arg5:model.Network):Promise<model.Network>;
+export function ImportNetworksBulk(arg1:string,arg2:string,arg3:string):Promise<main.BulkAddResponse>;
 
 export function ImportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string):Promise<main.BulkAddResponse>;
 

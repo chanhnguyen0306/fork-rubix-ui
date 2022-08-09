@@ -51,9 +51,9 @@ export const SidePanel = (props: any) => {
   const restoreBackupHandle = async () => {
     setIsRestoreBackup(true);
     try {
-      const res = await flowNetworkFactory.Import(false, true, backup.data);
+      // const res = await flowNetworkFactory.Import(false, true, backup.data);
       refreshList();
-      openNotificationWithIcon("success", `updated backup: ${res.name}`);
+      // openNotificationWithIcon("success", `updated backup: ${res.name}`);
     } catch (err: any) {
       openNotificationWithIcon("error", err.message);
     } finally {

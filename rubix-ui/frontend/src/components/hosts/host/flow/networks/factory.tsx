@@ -1,14 +1,13 @@
-import { main, model } from "../../../../../../wailsjs/go/models";
+import {main, model, storage} from "../../../../../../wailsjs/go/models";
 import {
   AddNetwork,
   DeleteNetwork,
   DeleteNetworkBulk,
-  EditNetwork,
+  EditNetwork, ExportNetworksBulk,
   GetFlowNetworkSchema,
   GetNetwork,
-  GetNetworks, GetNetworkWithPoints,
-  ImportBackup,
-  ImportNetwork,
+  GetNetworks,GetNetworkWithPoints,
+   ImportNetworksBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -120,30 +119,33 @@ export class FlowNetworkFactory {
     return resp;
   }
 
-  // Import  a newImport will create a new network (or if false it will edit the network), and if createAllChild is true it will add all the devices and points
-  async Import(
-    newImport: boolean,
-    createAllChild: boolean,
-    body: model.Network
-  ): Promise<model.Network> {
-    let resp: model.Network = {} as model.Network;
+
+  async BulkImport(
+    backupUUID: string,
+  ): Promise<main.BulkAddResponse> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await ImportNetwork(
+    return await ImportNetworksBulk(
       this.connectionUUID,
       this.hostUUID,
-      newImport,
-      createAllChild,
-      body
-    )
-      .then((res) => {
-        resp = res as model.Network;
-      })
-      .catch((err) => {
-        return resp;
-      });
-    return resp;
+      backupUUID,
+    );
   }
+
+  async BulkExport(
+    userComment: string,
+    uuids: Array<string>
+  ): Promise<storage.Backup> {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return await ExportNetworksBulk(
+      this.connectionUUID,
+      this.hostUUID,
+      userComment,
+      uuids
+    );
+  }
+
 
   async Schema(
     connUUID: string,

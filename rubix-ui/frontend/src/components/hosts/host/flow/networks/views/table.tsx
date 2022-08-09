@@ -145,7 +145,7 @@ export const FlowNetworkTable = (props: any) => {
   const handleImport = async (item: any) => {
     try {
       const network = JSON.parse(item);
-      await networkFactory.Import(true, true, network);
+      // await networkFactory.Import(true, true, network);
       fetchNetworks();
       setIsImportModalVisible(false);
     } catch (error) {
