@@ -135,7 +135,7 @@ func (app *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints bool
 }
 
 func (app *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) *BulkAddResponse {
-	resp, err := app.importPointBulk(connUUID, hostUUID, backupUUID, networkUUID)
+	resp, err := app.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
