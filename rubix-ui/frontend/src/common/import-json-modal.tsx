@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Input, Modal } from "antd";
 const { TextArea } = Input;
 
-export const ImportModal = (props: any) => {
+export const ImportJsonModal = (props: any) => {
   const { isModalVisible, onClose, onOk } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [body, setBody] = useState("");

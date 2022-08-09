@@ -3,11 +3,8 @@ import { storage } from "../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../utils/utils";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
-import {
-  RbImportButton,
-  RbRefreshButton,
-} from "../../common/rb-table-actions";
-import { ImportModal } from "../../common/import-modal";
+import { RbImportButton, RbRefreshButton } from "../../common/rb-table-actions";
+import { ImportJsonModal } from "../../common/import-json-modal";
 
 export const Backups = () => {
   const [backups, setBackups] = useState([] as storage.Backup[]);
@@ -53,7 +50,7 @@ export const Backups = () => {
         setIsFetching={setIsFetching}
         fetch={fetch}
       />
-      <ImportModal
+      <ImportJsonModal
         isModalVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onOk={handleImport}
