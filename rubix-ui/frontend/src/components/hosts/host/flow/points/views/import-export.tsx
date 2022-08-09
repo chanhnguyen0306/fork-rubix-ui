@@ -104,8 +104,9 @@ export const ImportModal = (props: any) => {
     try {
       setConfirmLoading(true);
       await flowPointFactory.BulkImport(backupUUID, deviceUUID);
-      refreshList();
       openNotificationWithIcon("success", `import success`);
+      refreshList();
+      handleClose();
     } catch (error: any) {
       console.log(error);
       openNotificationWithIcon("error", error.message);
