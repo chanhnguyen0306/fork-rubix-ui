@@ -18,7 +18,7 @@ func TestApp_exportPointBulk(t *testing.T) {
 func TestApp_importPointBulk(t *testing.T) {
 
 	app := NewApp()
-	bulk, err := app.importPointBulk("cloud", "hos_8DD8915845C0", "bac_2C6B38A580B3", "dev_a58dca24bba644b2")
+	bulk, err := app.importPointBulk("cloud", "hos_8DD8915845C0", "bac_2C6B38A580B3", "dev_a982466359a042b9")
 	fmt.Println(err)
 	if err != nil {
 		return
