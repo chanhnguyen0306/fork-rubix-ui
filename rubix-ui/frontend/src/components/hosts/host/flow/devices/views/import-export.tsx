@@ -6,7 +6,7 @@ import { BackupFactory } from "../../../../../backups/factory";
 import { model, storage } from "../../../../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 
-import Point = model.Point;
+import Device = model.Device;
 import Backup = storage.Backup;
 
 const { Option } = Select;
@@ -28,7 +28,7 @@ export const ExportModal = (props: any) => {
         return;
       }
       setConfirmLoading(true);
-      const uuids = selectedItems.map((p: Point) => p.uuid);
+      const uuids = selectedItems.map((p: Device) => p.uuid);
       await flowdeviceFactory.BulkExport(comment, networkUUID, uuids);
       openNotificationWithIcon("success", "export success");
       handleCloseModal();
