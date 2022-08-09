@@ -172,7 +172,7 @@ func (app *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID st
 		newDev, err := app.addDevice(connUUID, hostUUID, &device)
 		if err != nil {
 			log.Errorf(fmt.Sprintf("add device err:%s", err.Error()))
-			message = fmt.Sprintf("last error on add point err:%s", err.Error())
+			message = fmt.Sprintf("last error on add device err:%s", err.Error())
 			errorCount++
 		} else {
 			log.Infof(fmt.Sprintf("add device: %s", newDev.Name))

@@ -226,6 +226,10 @@ export function ExportDevicesBulk(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['ExportDevicesBulk'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function ExportNetworksBulk(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['ExportNetworksBulk'](arg1, arg2, arg3, arg4);
+}
+
 export function ExportPointBulk(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['ExportPointBulk'](arg1, arg2, arg3, arg4, arg5);
 }
@@ -530,8 +534,8 @@ export function ImportDevicesBulk(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['ImportDevicesBulk'](arg1, arg2, arg3, arg4);
 }
 
-export function ImportNetwork(arg1, arg2, arg3, arg4, arg5) {
-  return window['go']['main']['App']['ImportNetwork'](arg1, arg2, arg3, arg4, arg5);
+export function ImportNetworksBulk(arg1, arg2, arg3) {
+  return window['go']['main']['App']['ImportNetworksBulk'](arg1, arg2, arg3);
 }
 
 export function ImportPointBulk(arg1, arg2, arg3, arg4) {
