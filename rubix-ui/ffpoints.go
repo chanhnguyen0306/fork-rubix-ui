@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
+	log "github.com/sirupsen/logrus"
 )
 
 func (app *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
@@ -156,23 +158,31 @@ func (app *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID strin
 	if backup.SubApplication != subApplication {
 		return nil, errors.New(fmt.Sprintf("no match for subApplication:%s", subApplication))
 	}
-	points, ok := backup.Data.([]model.Point)
-	if !ok {
+	b, err := json.Marshal(backup.Data)
+	var points []model.Point
+	if err := json.Unmarshal(b, &points); err != nil {
 		return nil, errors.New("failed to parse points from backup")
 	}
-	bulkAddResponse := &BulkAddResponse{}
+	var message string
 	var addedCount int
 	var errorCount int
 	for _, point := range points {
 		point.DeviceUUID = deviceUUID
-		_, err := app.addPoint(connUUID, hostUUID, &point)
+		newPnt, err := app.addPoint(connUUID, hostUUID, &point)
 		if err != nil {
+			log.Errorf(fmt.Sprintf("add point err:%s", err.Error()))
+			message = fmt.Sprintf("last error on add point err:%s", err.Error())
 			errorCount++
 		} else {
+			log.Infof(fmt.Sprintf("add point: %s", newPnt.Name))
 			addedCount++
 		}
 	}
-	return bulkAddResponse, err
+	return &BulkAddResponse{
+		Message:    message,
+		AddedCount: addedCount,
+		ErrorCount: errorCount,
+	}, err
 }
 
 func (app *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) *storage.Backup {

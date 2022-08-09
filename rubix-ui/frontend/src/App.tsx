@@ -21,6 +21,9 @@ import {
   LockFilled,
   LeftOutlined,
   LockTwoTone,
+  HistoryOutlined,
+  AppstoreOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -39,6 +42,7 @@ const { Content, Sider } = Layout;
 
 const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
+  { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
   { name: "Tools", icon: ToolOutlined, link: "" },
   { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
