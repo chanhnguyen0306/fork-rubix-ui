@@ -6,23 +6,23 @@ import (
 	"testing"
 )
 
-func TestApp_GetNetworks(t *testing.T) {
+func TestApp_exportPointBulk(t *testing.T) {
 
 	app := NewApp()
 	data, err := app.exportPointBulk("cloud", "hos_8DD8915845C0", "points test", "dev_a58dca24bba644b2", []string{"pnt_1b4fc54752f843c9", "pnt_19e1cfcff9784b5e"})
 	fmt.Println(err)
 	pprint.PrintJOSN(data)
-	////back := app.WiresBackup("cloud", "rc")
-	////pprint.PrintJOSN(back)
-	//
-	////backup := app.WiresBackupSave("cloud", "rc")
-	////
-	////pprint.PrintJOSN(backup)
-	//
-	//whois, err := app.BacnetWhois("cloud", "rc")
-	//if err != nil {
-	//	return
-	//}
-	//pprint.PrintJOSN(whois)
+
+}
+
+func TestApp_importPointBulk(t *testing.T) {
+
+	app := NewApp()
+	bulk, err := app.importPointBulk("cloud", "hos_8DD8915845C0", "bac_2C6B38A580B3", "dev_a58dca24bba644b2")
+	fmt.Println(err)
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(bulk)
 
 }
