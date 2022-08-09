@@ -162,6 +162,7 @@ export const FlowPointsTable = (props: any) => {
       <ImportModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
+        refreshList={refreshList}
       />
     </>
   );

@@ -67,7 +67,7 @@ export const ExportModal = (props: any) => {
 };
 
 export const ImportModal = (props: any) => {
-  const { isModalVisible, onClose } = props;
+  const { isModalVisible, onClose, refreshList } = props;
   const { connUUID = "", hostUUID = "", deviceUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [backupUUID, setBackupUUID] = useState<any>();
@@ -104,8 +104,8 @@ export const ImportModal = (props: any) => {
     try {
       setConfirmLoading(true);
       await flowPointFactory.BulkImport(backupUUID, deviceUUID);
+      refreshList();
       openNotificationWithIcon("success", `import success`);
-      window.location.reload();
     } catch (error: any) {
       console.log(error);
       openNotificationWithIcon("error", error.message);
