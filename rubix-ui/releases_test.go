@@ -9,10 +9,10 @@ import (
 
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
-var appName = "flow-framework"
-var appVersion = "v0.6.1"
+var appName = "rubix-wires"
+var appVersion = "v2.7.4"
 var product = "Server"
-var arch = "amd64"
+var arch = "armv7"
 
 func TestApp_ListReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
@@ -68,7 +68,7 @@ func TestApp_assistListStore(t *testing.T) { // list all apps on assist
 
 func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
 	app := NewApp()
-	store, err := app.assistAddUploadApp(connection, appName, appVersion, product, arch)
+	store, err := app.assistAddUploadApp(connection, appName, appVersion, product, arch, false)
 	fmt.Println(err)
 	if err != nil {
 		return

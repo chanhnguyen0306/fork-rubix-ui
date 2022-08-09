@@ -3,7 +3,7 @@ module github.com/NubeIO/rubix-ui
 go 1.17
 
 //replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
-//replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
+replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
 require (
 	github.com/NubeIO/git v0.0.5
@@ -34,7 +34,7 @@ require (
 require (
 	github.com/NubeIO/flow-framework v0.5.6 // indirect
 	github.com/NubeIO/lib-command v0.0.2 // indirect
-	github.com/NubeIO/lib-systemctl-go v0.0.5 // indirect
+	github.com/NubeIO/lib-systemctl-go v0.0.6 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
