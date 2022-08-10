@@ -46,7 +46,6 @@ export const Host = () => {
   useEffect(() => {
     fetchHost();
     fetchNetworks();
-    // runWhois();
   }, []);
 
   const fetchHost = async () => {
@@ -77,6 +76,7 @@ export const Host = () => {
 
   const fetchNetworks = async () => {
     try {
+      setIsFetching(true);
       networkFactory.connectionUUID = connUUID;
       networkFactory.hostUUID = hostUUID;
       let res = (await networkFactory.GetAll(false)) || [];
