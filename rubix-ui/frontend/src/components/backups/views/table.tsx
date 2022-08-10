@@ -76,7 +76,7 @@ export const BackupsTable = (props: any) => {
   const handleExport = async () => {
     try {
       const backup = selectedUUIDs[0] as any;
-      downloadJSON(backup.host_name, JSON.stringify(backup));
+      await backupFactory.Export(backup.uuid)
     } catch (error) {
       console.log(error);
     }

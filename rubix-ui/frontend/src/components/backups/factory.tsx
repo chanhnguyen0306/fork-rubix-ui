@@ -1,9 +1,9 @@
-import { main, storage } from "../../../wailsjs/go/models";
+import {main, storage, store} from "../../../wailsjs/go/models";
 import {
-  DeleteBackupBulk, DoBackup,
+  DeleteBackupBulk, DoBackup, ExportBackup,
   GetBackup,
   GetBackups,
-  GetBackupsByApplication, GetNetworkBackupsByPlugin,
+  GetBackupsByApplication, GetNetworkBackupsByPlugin, GetRelease,
   ImportBackup,
   WiresBackup,
   WiresBackupRestore,
@@ -163,4 +163,9 @@ export class BackupFactory {
       });
     return resp;
   }
+
+  async Export(uuid: string){
+    return ExportBackup(uuid);
+  }
+
 }
