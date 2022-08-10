@@ -115,13 +115,19 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 		return nil
 	}
 	getRelease, err := app.getReleaseByVersion(releaseVersion)
-	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
-		return nil
-	}
-	if getRelease == nil {
-		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
-		return nil
+	if err != nil || getRelease == nil { // if not added already try and it it
+		app.crudMessage(true, fmt.Sprintf("try and download apps release:%s", releaseVersion))
+		path := fmt.Sprintf("flow/%s.json", releaseVersion)
+		getRelease, err = app.addRelease(token, path)
+		if err != nil {
+			app.crudMessage(false, fmt.Sprintf("error download release err:%s", err.Error()))
+			return nil
+		}
+		getRelease, err = app.getReleaseByVersion(releaseVersion)
+		if getRelease == nil {
+			app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
+			return nil
+		}
 	}
 	for _, apps := range getRelease.Apps {
 		if appName == rubixWires && apps.Name == rubixWires { // download wires
