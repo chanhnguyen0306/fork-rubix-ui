@@ -54,7 +54,9 @@ function DownloadForm(props: any) {
           .catch((err) => ({ payload, hasError: true, err: err }))
       )
     )
-      .then((res: any) => {})
+      .then((res: any) => {
+        updateIsDownloadModalOpen(false);
+      })
       .finally(() => {
         updateIsDownloading(false);
       });
@@ -78,22 +80,22 @@ function DownloadForm(props: any) {
 
   return (
     <div>
-      <Spin spinning={isDownloading}>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {(props) => (
-            <RbModal
-              title={
-                <span>
-                  <AppstoreFilled style={{ paddingRight: 5 }} />
-                  Download App
-                </span>
-              }
-              disabled={false}
-              isLoading={false}
-              handleOk={() => handleSubmit(props.values)}
-              isOpen={isDownloadModalOpen}
-              close={() => updateIsDownloadModalOpen(false)}
-            >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {(props) => (
+          <RbModal
+            title={
+              <span>
+                <AppstoreFilled style={{ paddingRight: 5 }} />
+                Download App
+              </span>
+            }
+            disabled={isDownloading}
+            isLoading={isDownloading}
+            handleOk={() => handleSubmit(props.values)}
+            isOpen={isDownloadModalOpen}
+            close={() => updateIsDownloadModalOpen(false)}
+          >
+            <Spin spinning={isDownloading}>
               <Form>
                 {selectedApps.map((selectedApp: any, index: number) => (
                   <Card
@@ -117,10 +119,10 @@ function DownloadForm(props: any) {
                   </Card>
                 ))}
               </Form>
-            </RbModal>
-          )}
-        </Formik>
-      </Spin>
+            </Spin>
+          </RbModal>
+        )}
+      </Formik>
     </div>
   );
 }
