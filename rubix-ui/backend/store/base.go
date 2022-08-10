@@ -35,6 +35,7 @@ type Store struct {
 	Repo              string `json:"repo"`
 	Arch              string `json:"arch"`
 	ServiceFile       string `json:"service_file"`
+	BackupsDir        string `json:"backups_dir"`
 }
 
 func New(store *Store) (*Store, error) {
@@ -71,6 +72,9 @@ func New(store *Store) (*Store, error) {
 	}
 	if store.App.DataDir == "" {
 		store.App.DataDir = "/data"
+	}
+	if store.BackupsDir == "" {
+		store.BackupsDir = filePath(fmt.Sprintf("%s/backups", store.UserPath))
 	}
 	store.App = installer.New(store.App)
 	return store, nil
