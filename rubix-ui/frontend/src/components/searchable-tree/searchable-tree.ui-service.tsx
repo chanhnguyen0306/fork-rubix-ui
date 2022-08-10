@@ -75,11 +75,24 @@ interface RubixObjectI {
   hosts?: any;
 }
 
-function getTreeObject(item: any, next: string) {
+function getTreeObject(item: any, next: string, prependName?: string) {
   return {
     name: item.name,
-    title: <NavLink to={next}><span>{item.name}</span></NavLink>,
-    label: <NavLink to={next}><span>{item.name}</span></NavLink>,
+    title: (
+      <NavLink to={next}>
+        <span>{item.name}</span>
+      </NavLink>
+    ),
+    label: (
+      <NavLink to={next}>
+        <span style={{ padding: "10px 0" }}>
+          <span style={{ fontWeight: 200, fontSize: 12, paddingRight: 5 }}>
+            {prependName}
+          </span>
+          {item.name}
+        </span>
+      </NavLink>
+    ),
     uuid: item.uuid,
     key: item.uuid,
   };
@@ -90,13 +103,15 @@ export function getTreeDataIterative(connections: any) {
     {
       ...getTreeObject(
         { name: "Connections", uuid: "connections" },
-        ROUTES.CONNECTIONS
+        ROUTES.CONNECTIONS,
+        ""
       ),
       next: ROUTES.CONNECTIONS,
       children: connections.map((connection: RubixObjectI) => ({
         ...getTreeObject(
           connection,
-          ObjectTypesToRoutes[ObjectType.CONNECTIONS](connection.uuid)
+          ObjectTypesToRoutes[ObjectType.CONNECTIONS](connection.uuid),
+          "Loc"
         ),
         next: ObjectTypesToRoutes[ObjectType.CONNECTIONS](connection.uuid),
         value: getItemValue(connection, ObjectType.CONNECTIONS),
@@ -107,7 +122,8 @@ export function getTreeDataIterative(connections: any) {
               ObjectTypesToRoutes[ObjectType.LOCATIONS](
                 connection.uuid,
                 location.uuid
-              )
+              ),
+              "Nets"
             ),
             next: ObjectTypesToRoutes[ObjectType.LOCATIONS](
               connection.uuid,
@@ -122,7 +138,8 @@ export function getTreeDataIterative(connections: any) {
                     connection.uuid,
                     location.uuid,
                     network.uuid
-                  )
+                  ),
+                  "Loc Nets"
                 ),
                 next: ObjectTypesToRoutes[ObjectType.NETWORKS](
                   connection.uuid,
@@ -138,7 +155,8 @@ export function getTreeDataIterative(connections: any) {
                       location.uuid,
                       network.uuid,
                       host.uuid
-                    )
+                    ),
+                    "Host"
                   ),
                   next: ObjectTypesToRoutes[ObjectType.HOSTS](
                     connection.uuid,

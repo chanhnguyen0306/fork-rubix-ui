@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, RadioChangeEvent } from "antd";
+import { Card, RadioChangeEvent, Spin } from "antd";
 import { Formik } from "formik";
 import { Form, Radio, Checkbox } from "formik-antd";
 import RbModal from "../../../common/rb-modal";
@@ -27,14 +27,12 @@ function DownloadForm(props: any) {
   if (!isDownloadModalOpen || !apps) {
     return null;
   }
+  const [isDownloading, updateIsDownloading] = useState(false);
   const selectedApps = apps.filter((app: any) =>
     selectedAppsKeys.includes(app.name)
   );
 
-  const [arch, setArch] = useState(archOptions[0].value);
   const handleSubmit = (values: any) => {
-    console.log(values);
-    // onSubmit(values);
     const payloads = Object.keys(values.apps).map((appName) => ({
       token: token,
       appName: appName,
@@ -42,7 +40,7 @@ function DownloadForm(props: any) {
       arch: values.apps[appName].arch,
       cleanDownload: values.apps[appName].cleanDownload,
     }));
-    console.log(payloads);
+    updateIsDownloading(true);
     Promise.all(
       payloads.map((payload) =>
         releaseServices
@@ -55,11 +53,11 @@ function DownloadForm(props: any) {
           )
           .catch((err) => ({ payload, hasError: true, err: err }))
       )
-    ).then((res: any) => {
-      if (res && res.hasError) {
-        console.log("HAS error", res.payload);
-      }
-    });
+    )
+      .then((res: any) => {})
+      .finally(() => {
+        updateIsDownloading(false);
+      });
   };
 
   const initialValues = {
@@ -80,47 +78,49 @@ function DownloadForm(props: any) {
 
   return (
     <div>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {(props) => (
-          <RbModal
-            title={
-              <span>
-                <AppstoreFilled style={{ paddingRight: 5 }} />
-                Download App
-              </span>
-            }
-            disabled={false}
-            isLoading={false}
-            handleOk={() => handleSubmit(props.values)}
-            isOpen={isDownloadModalOpen}
-            close={() => updateIsDownloadModalOpen(false)}
-          >
-            <Form>
-              {selectedApps.map((selectedApp: any, index: number) => (
-                <Card
-                  key={selectedApp.name}
-                  size="small"
-                  style={{ marginBottom: 10 }}
-                  title={selectedApp.name}
-                >
-                  <Form.Item label="Arch" name="layout">
-                    <Radio.Group
-                      name={`apps.${selectedApp.name}.arch`}
-                      options={selectedApp.arch}
-                      optionType="button"
-                      buttonStyle="solid"
-                    />
-                  </Form.Item>
+      <Spin spinning={isDownloading}>
+        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          {(props) => (
+            <RbModal
+              title={
+                <span>
+                  <AppstoreFilled style={{ paddingRight: 5 }} />
+                  Download App
+                </span>
+              }
+              disabled={false}
+              isLoading={false}
+              handleOk={() => handleSubmit(props.values)}
+              isOpen={isDownloadModalOpen}
+              close={() => updateIsDownloadModalOpen(false)}
+            >
+              <Form>
+                {selectedApps.map((selectedApp: any, index: number) => (
+                  <Card
+                    key={selectedApp.name}
+                    size="small"
+                    style={{ marginBottom: 10 }}
+                    title={selectedApp.name}
+                  >
+                    <Form.Item label="Arch" name="layout">
+                      <Radio.Group
+                        name={`apps.${selectedApp.name}.arch`}
+                        options={selectedApp.arch}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                    </Form.Item>
 
-                  <Checkbox name={`apps.${selectedApp.name}.cleanDownload`}>
-                    Clean Download
-                  </Checkbox>
-                </Card>
-              ))}
-            </Form>
-          </RbModal>
-        )}
-      </Formik>
+                    <Checkbox name={`apps.${selectedApp.name}.cleanDownload`}>
+                      Clean Download
+                    </Checkbox>
+                  </Card>
+                ))}
+              </Form>
+            </RbModal>
+          )}
+        </Formik>
+      </Spin>
     </div>
   );
 }
