@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/times/utilstime"
 	log "github.com/sirupsen/logrus"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"time"
 )
 
 type busTopic string
@@ -18,7 +19,7 @@ const (
 
 func (app *App) crudMessage(ok bool, data interface{}) {
 	if ok {
-		log.Infof("mesage %s", data)
+		log.Infof("message %s", data)
 		app.msgToUI(app.ctx, string(okMsg), data)
 	} else {
 		log.Errorf("error %s", data)

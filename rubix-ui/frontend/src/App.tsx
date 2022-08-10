@@ -21,9 +21,7 @@ import {
   LockFilled,
   LeftOutlined,
   LockTwoTone,
-  HistoryOutlined,
   AppstoreOutlined,
-  LinkOutlined,
 } from "@ant-design/icons";
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
@@ -36,7 +34,6 @@ import "./App.css";
 import { ROUTES } from "./constants/routes";
 import { useConnections } from "./hooks/useConnection";
 import { TokenModal } from "./components/settings/views/token-modal";
-const { Search } = Input;
 
 const { Content, Sider } = Layout;
 
@@ -47,7 +44,7 @@ const sidebarItems = [
   { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
 
-const OK_EVENT = "on";
+const OK_EVENT = "ok";
 const ERR_EVENT = "err";
 
 const getParentKey = (key: React.Key, tree: any): React.Key => {
