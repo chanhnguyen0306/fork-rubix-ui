@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -22,7 +23,7 @@ func (inst *Store) SaveBackup(fileName string, data interface{}) error {
 	path := fmt.Sprintf("%s/%s.json", inst.BackupsDir, fileName)
 	saveJson, err := json.Marshal(data)
 	if err != nil {
-		return err
+		return errors.New(fmt.Sprintf("export backup json marshal err:%s", err.Error()))
 	}
 	err = ioutil.WriteFile(path, saveJson, fs.FileMode(inst.Perm))
 	if err != nil {
