@@ -1,13 +1,15 @@
-import {main, model, storage} from "../../../../../../wailsjs/go/models";
+import { main, model, storage } from "../../../../../../wailsjs/go/models";
 import {
   AddNetwork,
   DeleteNetwork,
   DeleteNetworkBulk,
-  EditNetwork, ExportNetworksBulk,
+  EditNetwork,
+  ExportNetworksBulk,
   GetFlowNetworkSchema,
   GetNetwork,
-  GetNetworks,GetNetworkWithPoints,
-   ImportNetworksBulk,
+  GetNetworks,
+  GetNetworkWithPoints,
+  ImportNetworksBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -119,16 +121,13 @@ export class FlowNetworkFactory {
     return resp;
   }
 
-
-  async BulkImport(
-    backupUUID: string,
-  ): Promise<main.BulkAddResponse> {
+  async BulkImport(backupUUID: string): Promise<main.BulkAddResponse> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await ImportNetworksBulk(
       this.connectionUUID,
       this.hostUUID,
-      backupUUID,
+      backupUUID
     );
   }
 
@@ -145,7 +144,6 @@ export class FlowNetworkFactory {
       uuids
     );
   }
-
 
   async Schema(
     connUUID: string,
