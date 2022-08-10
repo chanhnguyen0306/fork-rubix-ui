@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button, Image, PaginationProps, Space, Spin, Tag } from "antd";
-import { ROUTES } from "../../../../../../constants/routes";
 import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
 import { BackupFactory } from "../../../../../backups/factory";
 import { main, model, storage } from "../../../../../../../wailsjs/go/models";
-import {
-  openNotificationWithIcon,
-  pluginLogo,
-} from "../../../../../../utils/utils";
+import { pluginLogo } from "../../../../../../utils/utils";
+import { ROUTES } from "../../../../../../constants/routes";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
+  RbExportButton,
   RbImportButton,
 } from "../../../../../../common/rb-table-actions";
-import { ImportJsonModal } from "../../../../../../common/import-json-modal";
 import { CreateModal, EditModal } from "./create";
 import { SidePanel } from "./side-panel";
 import "./style.css";
 
 import Backup = storage.Backup;
+import { ExportModal, ImportModal } from "./import-export";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -34,14 +32,15 @@ export const FlowNetworkTable = (props: any) => {
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [collapsed, setCollapsed] = useState(true);
   const [backups, setBackups] = useState([] as Backup[]);
+  const [collapsed, setCollapsed] = useState(true);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
   let backupFactory = new BackupFactory();
@@ -142,18 +141,6 @@ export const FlowNetworkTable = (props: any) => {
     setIsLoadingForm(false);
   };
 
-  const handleImport = async (item: any) => {
-    try {
-      const network = JSON.parse(item);
-      // await networkFactory.Import(true, true, network);
-      fetchNetworks();
-      setIsImportModalVisible(false);
-    } catch (error) {
-      console.log(error);
-      openNotificationWithIcon("error", "Invalid JSON");
-    }
-  };
-
   const showModal = (item: any) => {
     setCurrentItem(item);
     setIsModalVisible(true);
@@ -209,6 +196,11 @@ export const FlowNetworkTable = (props: any) => {
       <div className="flow-networks-actions">
         <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
         <RbDeleteButton bulkDelete={bulkDelete} />
+        <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+        <RbExportButton
+          handleExport={() => setIsExportModalVisible(true)}
+          disabled={selectedUUIDs.length === 0}
+        />
         <Button
           className="nube-primary white--text"
           disabled={selectedUUIDs.length !== 1}
@@ -217,7 +209,6 @@ export const FlowNetworkTable = (props: any) => {
         >
           <FileSyncOutlined /> Backups
         </Button>
-        <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       </div>
 
       <div className="flow-networks">
@@ -254,10 +245,20 @@ export const FlowNetworkTable = (props: any) => {
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
       />
-      <ImportJsonModal
+      {/* <ImportJsonModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
         onOk={handleImport}
+      /> */}
+      <ExportModal
+        isModalVisible={isExportModalVisible}
+        onClose={() => setIsExportModalVisible(false)}
+        selectedItems={selectedUUIDs}
+      />
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
+        refreshList={fetchNetworks}
       />
     </>
   );
