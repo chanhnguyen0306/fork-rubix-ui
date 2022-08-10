@@ -116,8 +116,8 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 	}
 	getRelease, err := app.getReleaseByVersion(releaseVersion)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
-		return nil
+		getRelease = app.GitDownloadRelease(token, releaseVersion)
+		app.crudMessage(true, fmt.Sprintf("try and download apps release:%s", releaseVersion))
 	}
 	if getRelease == nil {
 		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
