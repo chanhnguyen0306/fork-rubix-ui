@@ -566,6 +566,14 @@ export function Scanner(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['Scanner'](arg1, arg2, arg3, arg4);
 }
 
+export function StoreCheckAppAndVersionExists(arg1, arg2) {
+  return window['go']['main']['App']['StoreCheckAppAndVersionExists'](arg1, arg2);
+}
+
+export function StoreCheckAppExists(arg1) {
+  return window['go']['main']['App']['StoreCheckAppExists'](arg1);
+}
+
 export function StoreDownloadAll(arg1, arg2, arg3) {
   return window['go']['main']['App']['StoreDownloadAll'](arg1, arg2, arg3);
 }

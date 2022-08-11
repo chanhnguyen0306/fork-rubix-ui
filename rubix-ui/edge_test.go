@@ -19,7 +19,6 @@ func TestApp_edgeProductInfo(t *testing.T) {
 func TestApp_edgeListApps(t *testing.T) {
 	app := NewApp()
 	store, err := app.edgeListApps(connection, "rc")
-	fmt.Println(err)
 	if err != nil {
 		return
 	}
@@ -48,5 +47,6 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 
 func TestApp_appInstallAppOnEdge(t *testing.T) {
 	app := NewApp()
-	app.AppInstallAppOnEdge(connection, "rc", appName, "v0.1.1234", appVersion, arch)
+	resp := app.AppInstallAppOnEdge(connection, "rc", appName, appVersion, arch, appVersion)
+	pprint.PrintJOSN(resp)
 }
