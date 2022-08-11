@@ -82,7 +82,7 @@ func (inst *Store) StoreCheckAppExists(appName string) error {
 		return err
 	}
 	path := fmt.Sprintf("%s/%s", inst.getUserStorePathApps(), appName)
-	found := inst.App.FileExists(path)
+	found := inst.App.DirExists(path)
 	if !found {
 		return errors.New(fmt.Sprintf("failed to find app:%s in app-store", appName))
 	}
@@ -98,7 +98,7 @@ func (inst *Store) StoreCheckAppAndVersionExists(appName, version string) error 
 		return err
 	}
 	path := fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appName, version)
-	found := inst.App.FileExists(path)
+	found := inst.App.DirExists(path)
 	if !found {
 		return errors.New(fmt.Sprintf("failed to find app:%s version:%s in app-store", appName, version))
 	}
