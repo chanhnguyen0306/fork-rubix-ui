@@ -28,61 +28,74 @@ On select of an app/apps to install follow these steps
 
 // GetReleases() let the user select a release of apps that they want to install (assume user has no internet, so we get the release from the DB)
 
-type EdgeAppInstall struct {
-	ReleaseVersion string
-	AppName        string
-	AppVersion     string
-	Arch           string
-}
-
-func (app *App) appInstallAppOnEdge(connUUID, hostUUID string, appInstall *EdgeAppInstall) *installer.InstallResp {
-	var releaseVersion = appInstall.ReleaseVersion
+func (app *App) AppInstallAppOnEdge(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
+	var lastStep = "5"
 	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	var appName = appInstall.AppName
 	if err := emptyString(appName, "appName"); err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	var appVersion = appInstall.AppVersion
 	if err := emptyString(appVersion, "appVersion"); err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	var arch = appInstall.Arch
 	if err := emptyString(arch, "arch"); err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	err := app.StoreCheckAppExists(appName)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	err = app.StoreCheckAppAndVersionExists(appName, appVersion)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	info, err := app.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
 		log.Errorf("install-edge-app get product:%s", err.Error())
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	var product = info.Product
+	app.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type:%s app:%s", lastStep, product, appName))
 	if err = emptyString(product, "product"); err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	_, err = app.assistAddUploadApp(connUUID, appName, appVersion, product, arch, false)
+	assistUpload, err := app.assistAddUploadApp(connUUID, appName, appVersion, product, arch, false)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to rubix-assist app-name:%s err:%s", appName, err.Error())
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	app.crudMessage(true, fmt.Sprintf("(step 2 of %s) upload app to rubix-assist app:%s", lastStep, assistUpload.Name))
 	uploadApp, err := app.edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, product, arch)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to edge app-name:%s err:%s", appName, err.Error())
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
-	} else {
-		log.Infof("uploaded app%s", uploadApp.Name)
 	}
+	app.crudMessage(true, fmt.Sprintf("(step 3 of %s) upload app to rubix-edge app:%s", lastStep, uploadApp.Name))
 	uploadEdgeService, err := app.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
 	if err != nil {
 		log.Errorf("install-edge-app upload linux-service to edge app-name:%s err:%s", appName, err.Error())
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	app.crudMessage(true, fmt.Sprintf("(step 4 of %s) upload linux-service to rubix-edge name:%s", lastStep, uploadEdgeService.UploadedFile))
 	serviceFile := uploadEdgeService.UploadedFile
 	installEdgeService, err := app.installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFile)
 	if err != nil {
 		log.Errorf("install-edge-app install app to edge app-name:%s err:%s", appName, err.Error())
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	app.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge name:%s", lastStep, installEdgeService.Install))
 	return installEdgeService
 }

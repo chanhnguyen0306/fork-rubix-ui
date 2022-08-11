@@ -48,10 +48,5 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 
 func TestApp_appInstallAppOnEdge(t *testing.T) {
 	app := NewApp()
-	app.appInstallAppOnEdge(connection, "rc", &EdgeAppInstall{
-		ReleaseVersion: "v0.6.1",
-		AppName:        appName,
-		AppVersion:     appVersion,
-		Arch:           arch,
-	})
+	app.AppInstallAppOnEdge(connection, "rc", appName, "v0.1.1234", appVersion, arch)
 }

@@ -36,8 +36,15 @@ func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch str
 	if err != nil {
 		return nil, err
 	}
+	err = appStore.StoreCheckAppExists(appName)
+	if err != nil {
+		return nil, err
+	}
+	err = appStore.StoreCheckAppAndVersionExists(appName, version)
+	if err != nil {
+		return nil, err
+	}
 	path := inst.GetAppPathAndVersion(appName, version)
-	fmt.Println(path)
 	var dontCheckArch bool
 	if appName == rubixWires {
 		dontCheckArch = true

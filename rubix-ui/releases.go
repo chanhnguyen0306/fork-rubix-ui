@@ -90,6 +90,32 @@ func (app *App) StoreDownloadAll(token, release string, cleanDownload bool) []st
 	return out
 }
 
+func (app *App) StoreCheckAppExists(appName string) error {
+	inst := &store.Store{
+		App:     &installer.App{},
+		Version: "latest",
+		Repo:    "releases",
+	}
+	appStore, err := store.New(inst)
+	if err != nil {
+		return err
+	}
+	return appStore.StoreCheckAppExists(appName)
+}
+
+func (app *App) StoreCheckAppAndVersionExists(appName, version string) error {
+	inst := &store.Store{
+		App:     &installer.App{},
+		Version: "latest",
+		Repo:    "releases",
+	}
+	appStore, err := store.New(inst)
+	if err != nil {
+		return err
+	}
+	return appStore.StoreCheckAppAndVersionExists(appName, version)
+}
+
 func (app *App) downloadAll(token, releaseVersion string, cleanDownload bool) ([]store.App, error) {
 	inst := &store.Store{
 		App:     &installer.App{},
