@@ -25,7 +25,7 @@ export const ROUTES: ROUTE = {
   POINTS:
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/plugins/:pluginName/rf-networks/:networkUUID/rf-devices/:deviceUUID/rf-points",
   STREAMS:
-    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/flNetworks/:flNetworkUUID/streams",
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks/:flNetworkUUID/streams",
   CONSUMERS:
-    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/flNetworks/:flNetworkUUID/streams/:streamUUID/consumers",
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks/:flNetworkUUID/streams/:streamUUID/consumers",
 };

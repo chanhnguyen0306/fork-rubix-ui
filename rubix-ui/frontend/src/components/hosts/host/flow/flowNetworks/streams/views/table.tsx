@@ -7,28 +7,30 @@ import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORK_HEADERS } from "../../../../../../../constants/headers";
 
 import UUIDs = main.UUIDs;
-import FlowNetwork = model.FlowNetwork;
+import Stream = model.Stream;
+
 import {
   RbAddButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
-import { FlowFrameworkNetworkFactory } from "../factory";
 import { CreateEditModal } from "./create";
+import { FlowStreamFactory } from "../factory";
 
-export const FlowNetworksTable = (props: any) => {
+export const StreamsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
   let {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
     locUUID = "",
+    flNetworkUUID = "",
   } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [schema, setSchema] = useState({});
-  const [currentNetwork, setCurrentNetwork] = useState({} as FlowNetwork);
+  const [currentItem, setCurrentItem] = useState({} as Stream);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  let factory = new FlowFrameworkNetworkFactory();
+  let factory = new FlowStreamFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -38,12 +40,12 @@ export const FlowNetworksTable = (props: any) => {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, network: FlowNetwork) => (
+      render: (_: any, item: Stream) => (
         <Space size="middle">
-          <Link to={getNavigationLink(network.uuid)}>{network.uuid}</Link>
+          <Link to={getNavigationLink(item.uuid)}>View Consumers</Link>
           <a
             onClick={() => {
-              showModal(network);
+              showModal(item);
             }}
           >
             Edit
@@ -76,12 +78,13 @@ export const FlowNetworksTable = (props: any) => {
     setSchema(schema);
   };
 
-  const getNavigationLink = (flNetworkUUID: string): string => {
-    return ROUTES.STREAMS.replace(":connUUID", connUUID)
+  const getNavigationLink = (streamUUID: string): string => {
+    return ROUTES.CONSUMERS.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID)
-      .replace(":flNetworkUUID", flNetworkUUID);
+      .replace(":flNetworkUUID", flNetworkUUID)
+      .replace(":streamUUID", streamUUID);
   };
 
   const rowSelection = {
@@ -90,21 +93,21 @@ export const FlowNetworksTable = (props: any) => {
     },
   };
 
-  const showModal = (network: FlowNetwork) => {
-    setCurrentNetwork(network);
+  const showModal = (item: Stream) => {
+    setCurrentItem(item);
     setIsModalVisible(true);
     getSchema();
   };
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentNetwork({} as FlowNetwork);
+    setCurrentItem({} as Stream);
   };
 
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
-      <RbAddButton showModal={() => showModal({} as FlowNetwork)} />
+      <RbAddButton showModal={() => showModal({} as Stream)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -114,7 +117,7 @@ export const FlowNetworksTable = (props: any) => {
       />
       <CreateEditModal
         schema={schema}
-        currentItem={currentNetwork}
+        currentItem={currentItem}
         isModalVisible={isModalVisible}
         refreshList={refreshList}
         onCloseModal={onCloseModal}

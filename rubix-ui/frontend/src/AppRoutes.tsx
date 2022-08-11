@@ -15,6 +15,7 @@ import { Connections } from "./components/connections/connections";
 import { PcNetworking } from "./components/pc/networking/networking";
 import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
 import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
+import { Streams } from "./components/hosts/host/flow/flowNetworks/streams/streams";
 import ConnectionPage from "./components/connections/connection-page";
 import { ROUTES as routes } from "./constants/routes";
 
@@ -69,7 +70,7 @@ function AppRoutes() {
         <Route
           key={routes.STREAMS}
           path={routes.STREAMS}
-          element={<FlowPoints />}
+          element={<Streams />}
         />
         <Route
           key={routes.CONSUMERS}
