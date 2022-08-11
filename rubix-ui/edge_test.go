@@ -47,5 +47,6 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 
 func TestApp_appInstallAppOnEdge(t *testing.T) {
 	app := NewApp()
-	app.AppInstallAppOnEdge(connection, "rc", appName, appVersion, arch, appVersion)
+	resp := app.AppInstallAppOnEdge(connection, "rc", appName, appVersion, arch, appVersion)
+	pprint.PrintJOSN(resp)
 }
