@@ -51,6 +51,19 @@ func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 	return app.DB.GetReleaseByVersion(version)
 }
 
+func (app *App) getAppFromReleases(version, appName string) (*store.Apps, error) {
+	release, err := app.getReleaseByVersion(version)
+	if err != nil {
+		return nil, err
+	}
+	for _, apps := range release.Apps {
+		if apps.Name == appName {
+			return &apps, err
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("failed to find app by name:%s", appName))
+}
+
 func (app *App) AddRelease(token, version string) *store.Release {
 	out, err := app.addRelease(token, version)
 	if err != nil {
@@ -114,20 +127,17 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 		app.crudMessage(false, fmt.Sprintf("error init store err:%s", err.Error()))
 		return nil
 	}
-	getRelease, err := app.getReleaseByVersion(releaseVersion)
-	if err != nil || getRelease == nil { // if not added already try and it it
-		app.crudMessage(true, fmt.Sprintf("try and download apps release:%s", releaseVersion))
-		path := fmt.Sprintf("flow/%s.json", releaseVersion)
-		getRelease, err = app.addRelease(token, path)
-		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("error download release err:%s", err.Error()))
-			return nil
-		}
-		getRelease, err = app.getReleaseByVersion(releaseVersion)
-		if getRelease == nil {
-			app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
-			return nil
-		}
+	app.crudMessage(true, fmt.Sprintf("try and download apps release:%s", releaseVersion))
+	path := fmt.Sprintf("flow/%s.json", releaseVersion)
+	getRelease, err := app.addRelease(token, path)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error download release err:%s", err.Error()))
+		return nil
+	}
+	getRelease, err = app.getReleaseByVersion(releaseVersion)
+	if getRelease == nil {
+		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
+		return nil
 	}
 	for _, apps := range getRelease.Apps {
 		if appName == rubixWires && apps.Name == rubixWires { // download wires

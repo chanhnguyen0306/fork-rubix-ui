@@ -4,24 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
-	assistStore "github.com/NubeIO/rubix-assist/service/store"
+	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 )
 
-func (app *App) assistListStore(connUUID string) ([]assistStore.App, error) {
+func (app *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.ListStore()
+	resp, err := client.ListAppsWithVersions()
 	if err != nil {
 		return nil, err
 	}
-	return *resp, err
+	return resp, err
 }
 
-func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string, addIfExisting bool) (*assistStore.UploadResponse, error) {
+func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string, addIfExisting bool) (*appstore.UploadResponse, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
