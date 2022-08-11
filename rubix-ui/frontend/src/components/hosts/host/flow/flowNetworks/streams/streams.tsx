@@ -63,7 +63,7 @@ export const Streams = () => {
 
   const fetch = async () => {
     try {
-      setIsFetching(false);
+      setIsFetching(true);
       const res = await factory.GetAll();
       setStreams(res);
     } catch (error) {
