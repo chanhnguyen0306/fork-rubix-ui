@@ -4,7 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { Logs } from "./components/logs/logs";
 import { Hosts } from "./components/hosts/hosts";
 import { Host } from "./components/hosts/host/host";
-import AppStore from './components/release/appStore';
+import AppStore from "./components/release/appStore";
 import { Backups } from "./components/backups/backups";
 import { DocsRubixHardware } from "./components/docs/docs";
 import { DocsSoftware } from "./components/docs/software";
@@ -64,6 +64,16 @@ function AppRoutes() {
         <Route
           key={routes.POINTS}
           path={routes.POINTS}
+          element={<FlowPoints />}
+        />
+        <Route
+          key={routes.STREAMS}
+          path={routes.STREAMS}
+          element={<FlowPoints />}
+        />
+        <Route
+          key={routes.CONSUMERS}
+          path={routes.CONSUMERS}
           element={<FlowPoints />}
         />
       </Route>

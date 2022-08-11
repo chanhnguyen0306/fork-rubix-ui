@@ -16,11 +16,16 @@ export const ROUTES: ROUTE = {
 
   CONNECTIONS: "/connections",
   LOCATIONS: "/connections/:connUUID/locations",
-  LOCATION_NETWORKS:
-    "/connections/:connUUID/locations/:locUUID/networks",
+  LOCATION_NETWORKS: "/connections/:connUUID/locations/:locUUID/networks",
   LOCATION_NETWORK_HOSTS:
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts",
   HOST: "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID",
-  DEVICES: "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/plugins/:pluginName/rf-networks/:networkUUID/rf-devices",
-  POINTS: "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/plugins/:pluginName/rf-networks/:networkUUID/rf-devices/:deviceUUID/rf-points"
+  DEVICES:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/plugins/:pluginName/rf-networks/:networkUUID/rf-devices",
+  POINTS:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/plugins/:pluginName/rf-networks/:networkUUID/rf-devices/:deviceUUID/rf-points",
+  STREAMS:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/flNetworks/:flNetworkUUID/streams",
+  CONSUMERS:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/flNetworks/:flNetworkUUID/streams/:streamUUID/consumers",
 };
