@@ -4,6 +4,7 @@ import {storage} from '../models';
 import {model} from '../models';
 import {assistmodel} from '../models';
 import {store} from '../models';
+import {installer} from '../models';
 import {main} from '../models';
 import {assitcli} from '../models';
 import {edge} from '../models';
@@ -33,6 +34,8 @@ export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise
 export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function AddStream(arg1:string,arg2:string,arg3:model.Stream):Promise<model.Stream>;
+
+export function AppInstallAppOnEdge(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
 

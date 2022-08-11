@@ -22,7 +22,7 @@ func (app *App) crudMessage(ok bool, data interface{}) {
 		log.Infof("message %s", data)
 		app.msgToUI(app.ctx, string(okMsg), data)
 	} else {
-		log.Errorf("error %s", data)
+		log.Errorf("%s", data)
 		app.msgToUI(app.ctx, string(errMsg), data)
 	}
 

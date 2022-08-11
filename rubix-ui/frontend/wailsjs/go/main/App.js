@@ -50,6 +50,10 @@ export function AddStream(arg1, arg2, arg3) {
   return window['go']['main']['App']['AddStream'](arg1, arg2, arg3);
 }
 
+export function AppInstallAppOnEdge(arg1, arg2, arg3, arg4, arg5, arg6) {
+  return window['go']['main']['App']['AppInstallAppOnEdge'](arg1, arg2, arg3, arg4, arg5, arg6);
+}
+
 export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
 }

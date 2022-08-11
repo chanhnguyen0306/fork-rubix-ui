@@ -14,7 +14,6 @@ func TestStore_Git(t *testing.T) {
 	inst := &Store{
 		App: &installer.App{
 			Name:             "",
-			AppBuildName:     "",
 			Version:          "",
 			DataDir:          "",
 			HostDownloadPath: "",

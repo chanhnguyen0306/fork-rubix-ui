@@ -1,5 +1,6 @@
-import { assistmodel, store } from "../../../wailsjs/go/models";
+import {installer, store} from "../../../wailsjs/go/models";
 import {
+  AppInstallAppOnEdge,
   GetRelease,
   GetReleases,
   GitDownloadRelease,
@@ -21,14 +22,6 @@ export class ReleasesFactory {
     return await GitDownloadRelease(token, version);
   }
 
-  // get all the release from the local json DB
-  async GetAll(): Promise<Array<store.Release>> {
-    return await GetReleases();
-  }
-
-  async GetOne(uuid: string): Promise<store.Release> {
-    return await GetRelease(uuid);
-  }
 
   // token, appName, releaseVersion, arch string, cleanDownload bool
   async StoreDownload(
@@ -46,7 +39,26 @@ export class ReleasesFactory {
       cleanDownload
     );
   }
-}
 
-// get new release click
-// let me select the v1
+  /*
+  INSTALL A APP ON THE HOST (via rubix-assist via rubix-edge)
+  */
+
+  // let the user select a release that has been downloaded already on their PC (in local db)
+  async GetReleases(): Promise<Array<store.Release>> {
+    return await GetReleases();
+  }
+
+  async GetRelease(uuid: string): Promise<store.Release> {
+    return await GetRelease(uuid);
+  }
+
+  // install an app on the edge-device (the host)
+  // example if installing flow-framework the user needs to already have this downloaded on the PC via the app-store
+  // appName = flow-framework,  appVersion = v0.6.0, arch = amd64, releaseVersion = v0.6.0
+  // to get the releaseVersion use either GetRelease() or GetReleases()
+  async AppInstallAppOnEdge(connUUID: string, hostUUID: string, appName: string, appVersion: string, arch: string, releaseVersion: string): Promise<installer.InstallResp> {
+    return await AppInstallAppOnEdge(connUUID, hostUUID, appName, appVersion, arch, releaseVersion);
+  }
+
+}

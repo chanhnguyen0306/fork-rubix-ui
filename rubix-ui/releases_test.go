@@ -9,10 +9,11 @@ import (
 
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
-var appName = "rubix-wires"
-var appVersion = "v2.7.4"
+var releaseVersion = "v0.6.1"
+var appName = "flow-framework"
+var appVersion = "v0.6.1"
 var product = "Server"
-var arch = "armv7"
+var arch = "amd64"
 
 func TestApp_ListReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)

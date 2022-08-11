@@ -76,6 +76,35 @@ func (inst *Store) ListStore() ([]App, error) {
 	return files, nil
 }
 
+//StoreCheckAppExists  => /user/rubix/store/apps/flow-framework/
+func (inst *Store) StoreCheckAppExists(appName string) error {
+	if err := emptyPath(appName); err != nil {
+		return err
+	}
+	path := fmt.Sprintf("%s/%s", inst.getUserStorePathApps(), appName)
+	found := inst.App.FileExists(path)
+	if !found {
+		return errors.New(fmt.Sprintf("failed to find app:%s in app-store", appName))
+	}
+	return nil
+}
+
+//StoreCheckAppAndVersionExists  => /user/rubix/store/apps/flow-framework/v1.1.1
+func (inst *Store) StoreCheckAppAndVersionExists(appName, version string) error {
+	if err := emptyPath(appName); err != nil {
+		return err
+	}
+	if err := checkVersion(version); err != nil {
+		return err
+	}
+	path := fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appName, version)
+	found := inst.App.FileExists(path)
+	if !found {
+		return errors.New(fmt.Sprintf("failed to find app:%s version:%s in app-store", appName, version))
+	}
+	return nil
+}
+
 //makeUserPath  => /hom/user/rubix
 func (inst *Store) makeUserPath() error {
 	return inst.App.MakeDirectoryIfNotExists(inst.getUserPath(), os.FileMode(FilePerm))
