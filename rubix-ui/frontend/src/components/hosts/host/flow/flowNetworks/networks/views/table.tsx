@@ -40,7 +40,7 @@ export const FlowNetworksTable = (props: any) => {
       key: "actions",
       render: (_: any, network: FlowNetwork) => (
         <Space size="middle">
-          <Link to={getNavigationLink(network.uuid)}>{network.uuid}</Link>
+          <Link to={getNavigationLink(network.uuid)}>View Streams</Link>
           <a
             onClick={() => {
               showModal(network);

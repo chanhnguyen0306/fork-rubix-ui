@@ -76,7 +76,6 @@ export const Streams = () => {
   return (
     <>
       <RbxBreadcrumb routes={routes} />
-
       <StreamsTable
         data={streams}
         isFetching={isFetching}

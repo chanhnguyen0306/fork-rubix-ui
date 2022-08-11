@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../../common/rb-table";
 import { ROUTES } from "../../../../../../../constants/routes";
-import { FLOW_NETWORK_HEADERS } from "../../../../../../../constants/headers";
+import { STREAM_HEADERS } from "../../../../../../../constants/headers";
 
 import UUIDs = main.UUIDs;
 import Stream = model.Stream;
@@ -35,7 +35,7 @@ export const StreamsTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...FLOW_NETWORK_HEADERS,
+    ...STREAM_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
