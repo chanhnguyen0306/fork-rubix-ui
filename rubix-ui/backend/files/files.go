@@ -45,7 +45,7 @@ func writeDataToFileAsJSON(data interface{}, filedir string) (int, error) {
 }
 
 func (inst *Files) WriteBackupFile(data interface{}, file string) (int, error) {
-	home, err := fileutils.Dir()
+	home, err := fileutils.HomeDir()
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func (inst *Files) WriteBackupFile(data interface{}, file string) (int, error) {
 }
 
 func (inst *Files) GetBackUpFile(file string) (interface{}, error) {
-	home, err := fileutils.Dir()
+	home, err := fileutils.HomeDir()
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (inst *Files) GetBackUpFile(file string) (interface{}, error) {
 }
 
 func (inst *Files) readFiles(path string) ([]string, error) {
-	home, err := fileutils.Dir()
+	home, err := fileutils.HomeDir()
 	if err != nil {
 		return nil, err
 	}

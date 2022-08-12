@@ -1,19 +1,20 @@
 import { Space, Spin } from "antd";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FlowFrameworkNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import RbTable from "../../../../../../../common/rb-table";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORK_HEADERS } from "../../../../../../../constants/headers";
+import {
+  RbAddButton,
+  RbDeleteButton,
+  RbRefreshButton,
+} from "../../../../../../../common/rb-table-actions";
+import RbTable from "../../../../../../../common/rb-table";
+import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
 import FlowNetwork = model.FlowNetwork;
-import {
-  RbAddButton,
-  RbRefreshButton,
-} from "../../../../../../../common/rb-table-actions";
-import { FlowFrameworkNetworkFactory } from "../factory";
-import { CreateEditModal } from "./create";
 
 export const FlowNetworksTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -52,6 +53,11 @@ export const FlowNetworksTable = (props: any) => {
       ),
     },
   ];
+
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
 
   const getSchema = () => {
     const schema = {
@@ -104,6 +110,7 @@ export const FlowNetworksTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showModal({} as FlowNetwork)} />
       <RbTable
         rowKey="uuid"
