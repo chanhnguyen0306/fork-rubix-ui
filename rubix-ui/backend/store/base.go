@@ -39,7 +39,7 @@ type Store struct {
 }
 
 func New(store *Store) (*Store, error) {
-	homeDir, _ := fileutils.Dir()
+	homeDir, _ := fileutils.HomeDir()
 	if store == nil {
 		return nil, errors.New("store can not be empty")
 	}
@@ -129,9 +129,4 @@ func checkVersion(version string) error {
 		return errors.New(fmt.Sprintf("incorrect lenght provided:%s version number try: v1.2.3", version))
 	}
 	return nil
-}
-
-func userHomeDir() string {
-	homeDir, _ := fileutils.Dir()
-	return homeDir
 }
