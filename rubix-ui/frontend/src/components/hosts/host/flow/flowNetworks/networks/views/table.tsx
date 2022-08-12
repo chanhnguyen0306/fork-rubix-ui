@@ -10,6 +10,7 @@ import UUIDs = main.UUIDs;
 import FlowNetwork = model.FlowNetwork;
 import {
   RbAddButton,
+  RbDeleteButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
 import { FlowFrameworkNetworkFactory } from "../factory";
@@ -52,6 +53,11 @@ export const FlowNetworksTable = (props: any) => {
       ),
     },
   ];
+
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
 
   const getSchema = () => {
     const schema = {
@@ -104,6 +110,7 @@ export const FlowNetworksTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showModal({} as FlowNetwork)} />
       <RbTable
         rowKey="uuid"
