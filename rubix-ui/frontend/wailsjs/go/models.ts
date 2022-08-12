@@ -1,30 +1,108 @@
-export namespace datelib {
+export namespace installer {
 	
-	export class Time {
-	    // Go type: time.Time
-	    date_stamp: any;
-	    time_local: string;
-	    time_utc: string;
-	    current_day: string;
-	    current_day_utc: string;
-	    date_format_local: string;
-	    date_format_utc: string;
-	    system_time_zone: string;
+	export class InstallResp {
+	    installed: string;
+	    daemon_reload: string;
+	    enabled: string;
+	    restarted: string;
+	    check_is_running: boolean;
 	
 	    static createFrom(source: any = {}) {
-	        return new Time(source);
+	        return new InstallResp(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.date_stamp = this.convertValues(source["date_stamp"], null);
-	        this.time_local = source["time_local"];
-	        this.time_utc = source["time_utc"];
-	        this.current_day = source["current_day"];
-	        this.current_day_utc = source["current_day_utc"];
-	        this.date_format_local = source["date_format_local"];
-	        this.date_format_utc = source["date_format_utc"];
-	        this.system_time_zone = source["system_time_zone"];
+	        this.installed = source["installed"];
+	        this.daemon_reload = source["daemon_reload"];
+	        this.enabled = source["enabled"];
+	        this.restarted = source["restarted"];
+	        this.check_is_running = source["check_is_running"];
+	    }
+	}
+
+}
+
+export namespace assitcli {
+	
+	export class Response {
+	    code: number;
+	    message: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.code = source["code"];
+	        this.message = source["message"];
+	    }
+	}
+
+}
+
+export namespace storage {
+	
+	export class RubixConnection {
+	    uuid: string;
+	    name: string;
+	    description: string;
+	    customer: string;
+	    username: string;
+	    password: string;
+	    ip: string;
+	    port: number;
+	    https: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new RubixConnection(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.name = source["name"];
+	        this.description = source["description"];
+	        this.customer = source["customer"];
+	        this.username = source["username"];
+	        this.password = source["password"];
+	        this.ip = source["ip"];
+	        this.port = source["port"];
+	        this.https = source["https"];
+	    }
+	}
+	export class Backup {
+	    uuid: string;
+	    connection_uuid: string;
+	    connection_name: string;
+	    user_comment: string;
+	    host_uuid: string;
+	    host_name: string;
+	    backup_info: string;
+	    // Go type: time.Time
+	    time: any;
+	    application: string;
+	    sub_application: string;
+	    data?: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Backup(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.connection_uuid = source["connection_uuid"];
+	        this.connection_name = source["connection_name"];
+	        this.user_comment = source["user_comment"];
+	        this.host_uuid = source["host_uuid"];
+	        this.host_name = source["host_name"];
+	        this.backup_info = source["backup_info"];
+	        this.time = this.convertValues(source["time"], null);
+	        this.application = source["application"];
+	        this.sub_application = source["sub_application"];
+	        this.data = source["data"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -44,68 +122,45 @@ export namespace datelib {
 		    }
 		    return a;
 		}
+	}
+	export class Settings {
+	    uuid: string;
+	    theme: string;
+	    git_token: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.theme = source["theme"];
+	        this.git_token = source["git_token"];
+	    }
+	}
+
+}
+
+export namespace networking {
+	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
 	}
 
 }
 
 export namespace model {
 	
-	export class StreamClone {
-	    uuid: string;
-	    sync_uuid: string;
-	    name: string;
-	    description?: string;
-	    enable?: boolean;
-	    // Go type: time.Time
-	    created_on?: any;
-	    // Go type: time.Time
-	    updated_on?: any;
-	    source_uuid: string;
-	    connection: string;
-	    message: string;
-	    flow_network_clone_uuid: string;
-	    consumers: Consumer[];
-	    tags: Tag[];
-	
-	    static createFrom(source: any = {}) {
-	        return new StreamClone(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.sync_uuid = source["sync_uuid"];
-	        this.name = source["name"];
-	        this.description = source["description"];
-	        this.enable = source["enable"];
-	        this.created_on = this.convertValues(source["created_on"], null);
-	        this.updated_on = this.convertValues(source["updated_on"], null);
-	        this.source_uuid = source["source_uuid"];
-	        this.connection = source["connection"];
-	        this.message = source["message"];
-	        this.flow_network_clone_uuid = source["flow_network_clone_uuid"];
-	        this.consumers = this.convertValues(source["consumers"], Consumer);
-	        this.tags = this.convertValues(source["tags"], Tag);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	export class CommandGroup {
 	    uuid: string;
 	    name: string;
@@ -1125,9 +1180,62 @@ export namespace model {
 		    return a;
 		}
 	}
+	export class StreamClone {
+	    uuid: string;
+	    sync_uuid: string;
+	    name: string;
+	    description?: string;
+	    enable?: boolean;
+	    // Go type: time.Time
+	    created_on?: any;
+	    // Go type: time.Time
+	    updated_on?: any;
+	    source_uuid: string;
+	    connection: string;
+	    message: string;
+	    flow_network_clone_uuid: string;
+	    consumers: Consumer[];
+	    tags: Tag[];
 	
+	    static createFrom(source: any = {}) {
+	        return new StreamClone(source);
+	    }
 	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.sync_uuid = source["sync_uuid"];
+	        this.name = source["name"];
+	        this.description = source["description"];
+	        this.enable = source["enable"];
+	        this.created_on = this.convertValues(source["created_on"], null);
+	        this.updated_on = this.convertValues(source["updated_on"], null);
+	        this.source_uuid = source["source_uuid"];
+	        this.connection = source["connection"];
+	        this.message = source["message"];
+	        this.flow_network_clone_uuid = source["flow_network_clone_uuid"];
+	        this.consumers = this.convertValues(source["consumers"], Consumer);
+	        this.tags = this.convertValues(source["tags"], Tag);
+	    }
 	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class FlowNetworkClone {
 	    uuid: string;
 	    sync_uuid: string;
@@ -1220,6 +1328,12 @@ export namespace model {
 		    return a;
 		}
 	}
+	
+	
+	
+	
+	
+	
 	export class Job {
 	    uuid: string;
 	    name: string;
@@ -1436,8 +1550,6 @@ export namespace model {
 		}
 	}
 	
-	
-	
 
 }
 
@@ -1565,103 +1677,31 @@ export namespace assistmodel {
 		    return a;
 		}
 	}
-	
-
-}
-
-export namespace assitcli {
-	
-	export class Response {
-	    code: number;
-	    message: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Response(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.code = source["code"];
-	        this.message = source["message"];
-	    }
-	}
-
-}
-
-export namespace edge {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-	export class InternetIP {
-	    ip_address: string;
-	    ok: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InternetIP(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ip_address = source["ip_address"];
-	        this.ok = source["ok"];
-	    }
-	}
-
-}
-
-export namespace networking {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-
-}
-
-export namespace installer {
-	
-	export class InstallResp {
-	    installed: string;
-	    daemon_reload: string;
-	    enabled: string;
-	    restarted: string;
-	    check_is_running: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InstallResp(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.installed = source["installed"];
-	        this.daemon_reload = source["daemon_reload"];
-	        this.enabled = source["enabled"];
-	        this.restarted = source["restarted"];
-	        this.check_is_running = source["check_is_running"];
-	    }
-	}
 
 }
 
 export namespace store {
+	
+	export class App {
+	    name: string;
+	    version: string;
+	    repo: string;
+	    arch: string;
+	    realse_version: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new App(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.version = source["version"];
+	        this.repo = source["repo"];
+	        this.arch = source["arch"];
+	        this.realse_version = source["realse_version"];
+	    }
+	}
 	
 	export class Services {
 	    name: string;
@@ -1811,47 +1851,11 @@ export namespace store {
 	        this.url = source["url"];
 	    }
 	}
-	export class App {
-	    name: string;
-	    version: string;
-	    repo: string;
-	    arch: string;
-	    realse_version: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new App(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.version = source["version"];
-	        this.repo = source["repo"];
-	        this.arch = source["arch"];
-	        this.realse_version = source["realse_version"];
-	    }
-	}
 
 }
 
 export namespace main {
 	
-	export class BulkAddResponse {
-	    message: string;
-	    added_count: number;
-	    error_count: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new BulkAddResponse(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.message = source["message"];
-	        this.added_count = source["added_count"];
-	        this.error_count = source["error_count"];
-	    }
-	}
 	
 	export class UUIDs {
 	    name: string;
@@ -1933,70 +1937,84 @@ export namespace main {
 		    return a;
 		}
 	}
+	
+	export class BulkAddResponse {
+	    message: string;
+	    added_count: number;
+	    error_count: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new BulkAddResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.message = source["message"];
+	        this.added_count = source["added_count"];
+	        this.error_count = source["error_count"];
+	    }
+	}
 
 }
 
-export namespace storage {
+export namespace edge {
 	
-	export class RubixConnection {
-	    uuid: string;
-	    name: string;
-	    description: string;
-	    customer: string;
-	    username: string;
-	    password: string;
-	    ip: string;
-	    port: number;
-	    https: boolean;
+	export class InternetIP {
+	    ip_address: string;
+	    ok: boolean;
 	
 	    static createFrom(source: any = {}) {
-	        return new RubixConnection(source);
+	        return new InternetIP(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.name = source["name"];
-	        this.description = source["description"];
-	        this.customer = source["customer"];
-	        this.username = source["username"];
-	        this.password = source["password"];
-	        this.ip = source["ip"];
-	        this.port = source["port"];
-	        this.https = source["https"];
+	        this.ip_address = source["ip_address"];
+	        this.ok = source["ok"];
 	    }
 	}
-	export class Backup {
-	    uuid: string;
-	    connection_uuid: string;
-	    connection_name: string;
-	    user_comment: string;
-	    host_uuid: string;
-	    host_name: string;
-	    backup_info: string;
-	    // Go type: time.Time
-	    time: any;
-	    application: string;
-	    sub_application: string;
-	    data?: any;
+	export class InterfaceNames {
+	    interface_names: string[];
 	
 	    static createFrom(source: any = {}) {
-	        return new Backup(source);
+	        return new InterfaceNames(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.connection_uuid = source["connection_uuid"];
-	        this.connection_name = source["connection_name"];
-	        this.user_comment = source["user_comment"];
-	        this.host_uuid = source["host_uuid"];
-	        this.host_name = source["host_name"];
-	        this.backup_info = source["backup_info"];
-	        this.time = this.convertValues(source["time"], null);
-	        this.application = source["application"];
-	        this.sub_application = source["sub_application"];
-	        this.data = source["data"];
+	        this.interface_names = source["interface_names"];
+	    }
+	}
+
+}
+
+export namespace datelib {
+	
+	export class Time {
+	    // Go type: time.Time
+	    date_stamp: any;
+	    time_local: string;
+	    time_utc: string;
+	    current_day: string;
+	    current_day_utc: string;
+	    date_format_local: string;
+	    date_format_utc: string;
+	    system_time_zone: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Time(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.date_stamp = this.convertValues(source["date_stamp"], null);
+	        this.time_local = source["time_local"];
+	        this.time_utc = source["time_utc"];
+	        this.current_day = source["current_day"];
+	        this.current_day_utc = source["current_day_utc"];
+	        this.date_format_local = source["date_format_local"];
+	        this.date_format_utc = source["date_format_utc"];
+	        this.system_time_zone = source["system_time_zone"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -2016,22 +2034,6 @@ export namespace storage {
 		    }
 		    return a;
 		}
-	}
-	export class Settings {
-	    uuid: string;
-	    theme: string;
-	    git_token: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Settings(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.theme = source["theme"];
-	        this.git_token = source["git_token"];
-	    }
 	}
 
 }

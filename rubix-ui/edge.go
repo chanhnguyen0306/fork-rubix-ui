@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 )
@@ -23,7 +22,6 @@ func (app *App) edgeListApps(connUUID, hostUUID string) ([]installer.Apps, error
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(hostUUID)
 	resp, err := client.EdgeListApps(hostUUID)
 	if err != nil {
 		return nil, err

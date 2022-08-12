@@ -16,6 +16,12 @@ func TestApp_edgeProductInfo(t *testing.T) {
 	pprint.PrintJOSN(store)
 }
 
+func TestApp_EdgeAppsComparedToReleaseVersion(t *testing.T) {
+	app := NewApp()
+	store := app.EdgeAppsInstalledComparedToReleaseVersion(connection, "rc", appVersion)
+	pprint.PrintJOSN(store)
+}
+
 func TestApp_edgeListApps(t *testing.T) {
 	app := NewApp()
 	store, err := app.edgeListApps(connection, "rc")

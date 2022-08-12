@@ -4,29 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
 )
-
-func emptyString(item, name string) error {
-	if item == "" {
-		return errors.New(fmt.Sprintf("%s", name))
-	}
-	return nil
-}
-
-/*
-
-Get product info from the edge
-List apps that are installed on the edge device to the user
-From the product info list the available apps (for now list all apps)
-On select of an app/apps to install follow these steps
-- check if app is already installed on edge device
-- check if app is in user apps store
-- check if app is already uploaded to RA
-- if all is good upload app to assist, then assist to install the app
-*/
-
-// GetReleases() let the user select a release of apps that they want to install (assume user has no internet, so we get the release from the DB)
 
 func (app *App) AppInstallAppOnEdge(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
 	var lastStep = "5"
@@ -98,4 +78,84 @@ func (app *App) AppInstallAppOnEdge(connUUID, hostUUID, appName, appVersion, arc
 	}
 	app.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge name:%s", lastStep, installEdgeService.Install))
 	return installEdgeService
+}
+
+func (app *App) EdgeListAppsAndService(connUUID, hostUUID string) []installer.InstalledServices {
+	service, err := app.edgeListAppsAndService(connUUID, hostUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return service
+}
+
+type InstalledApps struct {
+	AppName             string `json:"app_name,omitempty"`
+	InstalledAppVersion string `json:"app_version,omitempty"`
+	LatestVersion       string `json:"latest_version,omitempty"`
+	IsInstalled         bool   `json:"is_installed"`
+	Message             string `json:"message"`
+	Match               bool   `json:"match,omitempty"`
+	DowngradeRequired   bool   `json:"downgrade_required,omitempty"`
+	UpgradeRequired     bool   `json:"upgrade_required,omitempty"`
+	ReleaseVersion      string `json:"release_version"`
+	EdgeReleaseVersion  string `json:"edge_release_version"`
+}
+
+func (app *App) EdgeAppsInstalledComparedToReleaseVersion(connUUID, hostUUID, releaseVersion string) []InstalledApps {
+	apps, err := app.edgeListApps(connUUID, hostUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	getVersion, err := app.getReleaseByVersion(releaseVersion)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	var installedApps []InstalledApps
+	var installedApp InstalledApps
+	installedApp.ReleaseVersion = releaseVersion
+	for _, installed := range apps {
+		for _, versionApp := range getVersion.Apps {
+			if installed.Name == flowFramework {
+				installedApp.EdgeReleaseVersion = installed.Version
+			}
+			if installed.Name == versionApp.Name {
+				installedAppVersion, err := version.NewVersion(installed.Version)
+				if err != nil {
+					return nil
+				}
+				storeAppVersion, err := version.NewVersion(versionApp.Version)
+				if err != nil {
+					return nil
+				}
+				installedApp.IsInstalled = true
+				installedApp.AppName = installed.Name
+				installedApp.InstalledAppVersion = installed.Version
+				installedApp.LatestVersion = versionApp.Version
+				if installedAppVersion.String() == storeAppVersion.String() {
+					installedApp.Message = fmt.Sprintf("installed version and store version match version:%s", installedAppVersion)
+					installedApp.Match = true
+				} else {
+					if installedAppVersion.LessThan(storeAppVersion) {
+						installedApp.Message = fmt.Sprintf("an upgrade is required to match (installed:%s | store:%s)", installedAppVersion, storeAppVersion)
+						installedApp.UpgradeRequired = true
+					} else {
+						installedApp.Message = fmt.Sprintf("an downgrade is required to match (installed:%s | store:%s)", installedAppVersion, storeAppVersion)
+						installedApp.DowngradeRequired = true
+					}
+				}
+				installedApps = append(installedApps, installedApp)
+			}
+		}
+	}
+	return installedApps
+}
+
+func emptyString(item, name string) error {
+	if item == "" {
+		return errors.New(fmt.Sprintf("%s", name))
+	}
+	return nil
 }
