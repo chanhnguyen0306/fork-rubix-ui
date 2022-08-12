@@ -50,12 +50,27 @@ func (app *App) GetStreams(connUUID, hostUUID string) []model.Stream {
 	return streams
 }
 
-func (app *App) AddStream(connUUID, hostUUID string, body *model.Stream) *model.Stream {
+func (app *App) AddStream(connUUID, hostUUID string, flowNetworkUUIDS []string, body *model.Stream) *model.Stream {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	if len(flowNetworkUUIDS) == 0 {
+		app.crudMessage(false, fmt.Sprintf("flow-network uuids can not be empty"))
+		return nil
+	}
+	var flowNetworks []*model.FlowNetwork
+	for _, uuid := range flowNetworkUUIDS {
+		for _, network := range flowNetworks {
+			network.UUID = uuid
+		}
+	}
+	if len(flowNetworks) == 0 {
+		app.crudMessage(false, fmt.Sprintf("flow-networks can not be empty"))
+		return nil
+	}
+	body.FlowNetworks = flowNetworks
 	streams, err := app.flow.AddStream(body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

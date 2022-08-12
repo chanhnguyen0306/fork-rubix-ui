@@ -47,6 +47,8 @@ func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*as
 }
 
 func (app *App) resetFlow(ip string, port int) {
+	app.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
+	defer app.mutex.Unlock()
 	app.flow = flow.New(&ffclient.Connection{
 		Ip:   ip,
 		Port: port,
