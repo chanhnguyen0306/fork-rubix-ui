@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Modal } from "antd";
-import { useEffect, useState } from "react";
 import { model } from "../../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../../common/json-schema-form";
-import { useParams } from "react-router-dom";
 
 import Stream = model.Stream;
 import { FlowStreamFactory } from "../factory";
