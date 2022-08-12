@@ -1,20 +1,20 @@
 import { Space, Spin } from "antd";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FlowStreamFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../../common/rb-table";
+import {
+  RbAddButton,
+  RbDeleteButton,
+  RbRefreshButton,
+} from "../../../../../../../common/rb-table-actions";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { STREAM_HEADERS } from "../../../../../../../constants/headers";
+import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
 import Stream = model.Stream;
-
-import {
-  RbAddButton,
-  RbRefreshButton,
-} from "../../../../../../../common/rb-table-actions";
-import { CreateEditModal } from "./create";
-import { FlowStreamFactory } from "../factory";
 
 export const StreamsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -54,6 +54,11 @@ export const StreamsTable = (props: any) => {
       ),
     },
   ];
+
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
 
   const getSchema = () => {
     const schema = {
@@ -107,6 +112,7 @@ export const StreamsTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton showModal={() => showModal({} as Stream)} />
       <RbTable
         rowKey="uuid"

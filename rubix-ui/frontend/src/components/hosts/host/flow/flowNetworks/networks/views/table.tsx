@@ -1,20 +1,20 @@
 import { Space, Spin } from "antd";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FlowFrameworkNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import RbTable from "../../../../../../../common/rb-table";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORK_HEADERS } from "../../../../../../../constants/headers";
-
-import UUIDs = main.UUIDs;
-import FlowNetwork = model.FlowNetwork;
 import {
   RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
-import { FlowFrameworkNetworkFactory } from "../factory";
+import RbTable from "../../../../../../../common/rb-table";
 import { CreateEditModal } from "./create";
+
+import UUIDs = main.UUIDs;
+import FlowNetwork = model.FlowNetwork;
 
 export const FlowNetworksTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
