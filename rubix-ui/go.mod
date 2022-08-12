@@ -9,9 +9,9 @@ go 1.17
 require (
 	github.com/NubeIO/git v0.0.5
 	github.com/NubeIO/lib-date v0.0.2
-	github.com/NubeIO/lib-dirs v0.0.3
+	github.com/NubeIO/lib-dirs v0.0.2
 	github.com/NubeIO/lib-networking v0.0.6
-	github.com/NubeIO/lib-rubix-installer v0.1.0
+	github.com/NubeIO/lib-rubix-installer v0.0.8
 	github.com/NubeIO/lib-schema v0.0.6
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
