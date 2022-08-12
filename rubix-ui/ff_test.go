@@ -1,28 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
 
-func TestApp_exportPointBulk(t *testing.T) {
+func TestApp_GetStreams(t *testing.T) {
 
 	app := NewApp()
-	data, err := app.exportPointBulk("cloud", "hos_8DD8915845C0", "points test", "dev_a58dca24bba644b2", []string{"pnt_1b4fc54752f843c9", "pnt_19e1cfcff9784b5e"})
-	fmt.Println(err)
-	pprint.PrintJOSN(data)
+	bulk := app.GetStreams("cloud", "hos_0F226C392A55")
+	pprint.PrintJOSN(bulk)
 
 }
 
-func TestApp_importPointBulk(t *testing.T) {
+func TestApp_AddStream(t *testing.T) {
 
 	app := NewApp()
-	bulk, err := app.importPointBulk("cloud", "hos_8DD8915845C0", "bac_2C6B38A580B3", "dev_a982466359a042b9")
-	fmt.Println(err)
-	if err != nil {
-		return
+	stream := &model.Stream{
+		CommonStream: model.CommonStream{
+			CommonName: model.CommonName{
+				Name: "test",
+			},
+		},
 	}
+	bulk := app.AddStream("cloud", "hos_0F226C392A55", []string{"fln_45c87700647940ed"}, stream)
 	pprint.PrintJOSN(bulk)
 
 }

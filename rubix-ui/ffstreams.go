@@ -60,7 +60,9 @@ func (app *App) AddStream(connUUID, hostUUID string, flowNetworkUUIDS []string, 
 		app.crudMessage(false, fmt.Sprintf("flow-network uuids can not be empty"))
 		return nil
 	}
+	flowNetwork := &model.FlowNetwork{}
 	var flowNetworks []*model.FlowNetwork
+	flowNetworks = append(flowNetworks, flowNetwork)
 	for _, uuid := range flowNetworkUUIDS {
 		for _, network := range flowNetworks {
 			network.UUID = uuid
