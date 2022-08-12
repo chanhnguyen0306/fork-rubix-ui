@@ -1,6 +1,6 @@
 {
   "uuid": "",
-  "release": "v0.6.1",
+  "release": "v0.6.6",
   "apps": [
     {
       "name": "flow-framework",
@@ -10,15 +10,19 @@
       "transport": "http",
       "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
         "armv7"
       ],
-      "version": "v0.6.1",
-      "min_version": "v0.6.1",
-      "max_version": "v0.6.1",
+      "version": "v0.6.6",
+      "min_version": "v0.6.6",
+      "max_version": "v0.6.6",
       "flow_dependency": false,
       "plugin_dependency": [
       ],
@@ -33,15 +37,19 @@
       "transport": "udp",
       "app_specfic_exec_start": "",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
         "armv7"
       ],
-      "version": "v0.0.2",
-      "min_version": "v0.0.2",
-      "max_version": "v0.0.2",
+      "version": "v0.0.12",
+      "min_version": "v0.0.12",
+      "max_version": "v0.0.12",
       "flow_dependency": true,
       "plugin_dependency": [
         "bacnetserver"
@@ -63,9 +71,9 @@
       "arch": [
         "armv7"
       ],
-      "version": "v0.0.9",
-      "min_version": "v0.0.9",
-      "max_version": "v0.0.9",
+      "version": "v0.1.0",
+      "min_version": "v0.1.0",
+      "max_version": "v0.1.0",
       "flow_dependency": true,
       "plugin_dependency": [
         "rubixio"
@@ -81,7 +89,6 @@
       "transport": "serial",
       "app_specfic_exec_start": "",
       "products": [
-        "RubixCompute",
         "RubixCompute5",
         "RubixComputeIO"
       ],
@@ -113,7 +120,8 @@
         "armv7"
       ],
       "version": "v0.0.2",
-      "max_version": "v0.0.9",
+      "min_version": "v0.0.2",
+      "max_version": "v0.0.2",
       "flow_dependency": true,
       "plugin_dependency": [
         "edge28"
@@ -129,10 +137,15 @@
       "transport": "http",
       "app_specfic_exec_start": "",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "version": "v2.7.4",
-      "max_version": "v2.9.9",
+      "min_version": "v2.7.4",
+      "max_version": "v2.7.4",
       "flow_dependency": false,
       "plugin_dependency": [
       ],
@@ -148,7 +161,11 @@
       "plugin": "system",
       "description": "system plugin is used for scheduling and a generic network, device and points",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
@@ -168,7 +185,10 @@
       "transport": "tcp",
       "description": "",
       "products": [
-        "Server"
+        "Server",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
@@ -189,7 +209,11 @@
       "port": 47808,
       "transport": "udp",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
@@ -209,7 +233,11 @@
       "port": 47809,
       "transport": "udp",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
@@ -270,7 +298,10 @@
       "port": 1883,
       "transport": "mqtt",
       "products": [
-        "Server"
+        "Server",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
@@ -294,7 +325,25 @@
       "port": 1883,
       "transport": "mqtt",
       "products": [
-        "Server"
+        "Server",
+        "Edge28",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ]
+    },
+    {
+      "name": "rubix-compute-io-pi-dependency",
+      "service_name": "pigpiod",
+      "description": "used for the rubix-compute-io driver",
+      "port": 8888,
+      "transport": "tcp",
+      "products": [
+        "RubixComputeIO"
       ],
       "arch": [
         "amd64",
