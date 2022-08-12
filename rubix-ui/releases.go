@@ -48,7 +48,15 @@ func (app *App) GetReleaseByVersion(version string) *store.Release {
 }
 
 func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
-	return app.DB.GetReleaseByVersion(version)
+	v, err := app.DB.GetReleaseByVersion(version)
+	if err != nil {
+		return nil, err
+	}
+	if v == nil {
+		return nil, errors.New(fmt.Sprintf("filed to find release by version:%s", version))
+	}
+	return v, nil
+
 }
 
 func (app *App) getAppFromReleases(version, appName string) (*store.Apps, error) {
