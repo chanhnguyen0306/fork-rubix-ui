@@ -182,6 +182,14 @@ export function DoBackup(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['DoBackup'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
+export function EdgeAppsInstalledComparedToReleaseVersion(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeAppsInstalledComparedToReleaseVersion'](arg1, arg2, arg3);
+}
+
+export function EdgeListAppsAndService(arg1, arg2) {
+  return window['go']['main']['App']['EdgeListAppsAndService'](arg1, arg2);
+}
+
 export function EditConsumer(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['EditConsumer'](arg1, arg2, arg3, arg4);
 }
@@ -424,6 +432,10 @@ export function GetNetworks(arg1, arg2, arg3) {
 
 export function GetNetworksWithPoints(arg1, arg2) {
   return window['go']['main']['App']['GetNetworksWithPoints'](arg1, arg2);
+}
+
+export function GetNetworksWithPointsDisplay(arg1, arg2) {
+  return window['go']['main']['App']['GetNetworksWithPointsDisplay'](arg1, arg2);
 }
 
 export function GetPcGetNetworks() {
