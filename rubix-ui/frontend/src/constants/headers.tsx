@@ -94,3 +94,51 @@ export const STREAM_HEADERS = [
   //   dataIndex: "flow_networks",
   // },
 ];
+
+export const BACKUP_HEADERS = [
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+  {
+    title: "connection name",
+    dataIndex: "connection_name",
+    key: "connection_name",
+  },
+  {
+    title: "connection uuid",
+    dataIndex: "connection_uuid",
+    key: "connection_uuid",
+  },
+  {
+    title: "host name",
+    dataIndex: "host_name",
+    key: "host_name",
+  },
+  {
+    title: "host uuid",
+    dataIndex: "host_uuid",
+    key: "host_uuid",
+  },
+  {
+    title: "timestamp",
+    dataIndex: "time",
+    key: "time",
+  },
+  {
+    title: "application",
+    dataIndex: "application",
+    key: "application",
+  },
+  {
+    title: "info",
+    dataIndex: "backup_info",
+    key: "backup_info",
+  },
+  {
+    title: "Comments",
+    dataIndex: "user_comment",
+    key: "user_comment",
+  },
+];
