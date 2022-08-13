@@ -101,6 +101,10 @@ export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.Plugin
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
+export function EdgeAppsInstalledComparedToReleaseVersion(arg1:string,arg2:string,arg3:string):Promise<Array<main.InstalledApps>>;
+
+export function EdgeListAppsAndService(arg1:string,arg2:string):Promise<Array<installer.InstalledServices>>;
+
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
 
 export function EditDevice(arg1:string,arg2:string,arg3:string,arg4:model.Device):Promise<model.Device>;
@@ -221,7 +225,9 @@ export function GetNetworkWithPoints(arg1:string,arg2:string,arg3:string):Promis
 
 export function GetNetworks(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Network>>;
 
-export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<model.Network>;
+export function GetNetworksWithPoints(arg1:string,arg2:string):Promise<Array<model.Network>>;
+
+export function GetNetworksWithPointsDisplay(arg1:string,arg2:string):Promise<Array<main.NetworksList>>;
 
 export function GetPcGetNetworks():Promise<any>;
 

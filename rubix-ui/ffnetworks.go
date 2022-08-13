@@ -312,18 +312,79 @@ func (app *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, w
 	return network
 }
 
-func (app *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *model.Network {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+type NetworksList struct {
+	Name      string `json:"name"`
+	PointUUID string `json:"point_uuid"`
+}
+
+func (app *App) GetNetworksWithPointsDisplay(connUUID, hostUUID string) []NetworksList {
+	list, err := app.getNetworksWithPointsDisplay(connUUID, hostUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	networks, err := app.flow.GetNetworkWithPoints(networkUUID)
+	return list
+}
+
+func (app *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]NetworksList, error) {
+	networks, err := app.getNetworksWithPoints(connUUID, hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	var networksLists []NetworksList
+	var networksList NetworksList
+	for _, network := range networks {
+		for _, device := range network.Devices {
+			for _, point := range device.Points {
+				networksList.Name = fmt.Sprintf("%s:%s:%s", network.Name, device.Name, point.Name)
+				networksList.PointUUID = point.UUID
+				networksLists = append(networksLists, networksList)
+			}
+		}
+	}
+	return networksLists, nil
+}
+
+func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
+	networks, err := app.getNetworksWithPoints(connUUID, hostUUID)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
+}
+
+func (app *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *model.Network {
+	networks, err := app.getNetworkWithPoints(connUUID, hostUUID, networkUUID)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return networks
+}
+
+func (app *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		return nil, err
+	}
+	networks, err := app.flow.GetNetworkWithPoints(networkUUID)
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
+}
+
+func (app *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		return nil, err
+	}
+	networks, err := app.flow.GetNetworksWithPoints()
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
 }
 
 func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
