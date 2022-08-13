@@ -4,6 +4,7 @@ import { Space, Spin } from "antd";
 import { FlowPointFactory } from "../factory";
 import { main, model } from "../../../../../../../wailsjs/go/models";
 import { isObjectEmpty } from "../../../../../../utils/utils";
+import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -38,33 +39,8 @@ export const FlowPointsTable = (props: any) => {
   flowPointFactory.connectionUUID = connUUID;
   flowPointFactory.hostUUID = hostUUID;
 
-  const bulkDelete = async () => {
-    await flowPointFactory.BulkDelete(selectedUUIDs);
-    refreshList();
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
-
   const columns = [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "device",
-      dataIndex: "device_uuid",
-      key: "device_uuid",
-    },
+    ...FLOW_POINT_HEADERS,
     {
       title: "Actions",
       dataIndex: "actions",
@@ -82,6 +58,17 @@ export const FlowPointsTable = (props: any) => {
       ),
     },
   ];
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  const bulkDelete = async () => {
+    await flowPointFactory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
 
   const getSchema = async (pluginName: string) => {
     setIsLoadingForm(true);

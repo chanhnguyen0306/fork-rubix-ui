@@ -1,9 +1,9 @@
-import { Space, Spin } from "antd";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
-import { STREAM_HEADERS } from "../../../../../../../constants/headers";
 
 import UUIDs = main.UUIDs;
 import Consumer = model.Consumer;
@@ -28,7 +28,7 @@ export const ConsumersTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...STREAM_HEADERS,
+    ...CONSUMER_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",

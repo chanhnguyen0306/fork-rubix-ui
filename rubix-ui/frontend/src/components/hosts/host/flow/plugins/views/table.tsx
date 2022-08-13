@@ -1,16 +1,16 @@
-import { Button, Spin, Tag, Image } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Spin } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { CreateModal } from "./create";
 import { main, model } from "../../../../../../../wailsjs/go/models";
+import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
-import { pluginLogo } from "../../../../../../utils/utils";
+import { CreateModal } from "./create";
 
 export const FlowPluginsTable = (props: any) => {
   const { data, isFetching, connUUID, hostUUID, fetchPlugins } = props;
@@ -25,6 +25,8 @@ export const FlowPluginsTable = (props: any) => {
 
   let factory = new FlowPluginFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
+
+  const columns = PLUGIN_HEADERS;
 
   useEffect(() => {
     if (isModalVisible) {
@@ -70,61 +72,6 @@ export const FlowPluginsTable = (props: any) => {
   const showModal = () => {
     setIsModalVisible(true);
   };
-
-  const columns = [
-    {
-      title: "name",
-      key: "name",
-      dataIndex: "name",
-      render(name: string) {
-        let image = pluginLogo(name);
-        return <Image preview={false} width={70} src={image} />;
-      },
-    },
-    {
-      title: "name",
-      key: "name",
-      dataIndex: "name",
-      render(plugin_name: string) {
-        let colour = "#4d4dff";
-        let text = plugin_name.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
-      },
-    },
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "Tags",
-      key: "has_network",
-      dataIndex: "has_network",
-      render(has_network: boolean) {
-        let colour = "blue";
-        let text = "non network plugin";
-        if (has_network) {
-          colour = "orange";
-          text = "network driver";
-        }
-        return <Tag color={colour}>{text}</Tag>;
-      },
-    },
-    {
-      title: "status",
-      key: "enabled",
-      dataIndex: "enabled",
-      render(enabled: boolean) {
-        let colour = "blue";
-        let text = "disabled";
-        if (enabled) {
-          colour = "orange";
-          text = "enabled";
-        }
-        return <Tag color={colour}>{text}</Tag>;
-      },
-    },
-  ];
 
   return (
     <>

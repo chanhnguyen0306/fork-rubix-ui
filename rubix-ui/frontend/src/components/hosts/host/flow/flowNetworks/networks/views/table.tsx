@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { FlowFrameworkNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../../constants/routes";
-import { FLOW_NETWORK_HEADERS } from "../../../../../../../constants/headers";
+import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
 import {
   RbAddButton,
   RbDeleteButton,
@@ -34,7 +34,7 @@ export const FlowNetworksTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...FLOW_NETWORK_HEADERS,
+    ...FLOW_NETWORKS_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",

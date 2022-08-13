@@ -1,14 +1,12 @@
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { Link, useParams } from "react-router-dom";
-import { useState } from "react";
 import { isObjectEmpty } from "../../../../../../utils/utils";
 import { FlowDeviceFactory } from "../factory";
-import { EditModal } from "./edit";
-import { CreateModal } from "./create";
-import RbTable from "../../../../../../common/rb-table";
-import Device = model.Device;
 import { ROUTES } from "../../../../../../constants/routes";
+import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
+import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
@@ -16,6 +14,10 @@ import {
   RbImportButton,
 } from "../../../../../../common/rb-table-actions";
 import { ExportModal, ImportModal } from "./import-export";
+import { EditModal } from "./edit";
+import { CreateModal } from "./create";
+
+import Device = model.Device;
 
 export const FlowDeviceTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -62,16 +64,7 @@ export const FlowDeviceTable = (props: any) => {
   };
 
   const columns = [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-    },
+    ...FLOW_DEVICE_HEADERS,
     {
       title: "Actions",
       dataIndex: "actions",

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Image, PaginationProps, Space, Spin, Tag } from "antd";
+import { Button, PaginationProps, Space, Spin } from "antd";
 import { FileSyncOutlined } from "@ant-design/icons";
 import { FlowNetworkFactory } from "../factory";
 import { BackupFactory } from "../../../../../backups/factory";
 import { main, model, storage } from "../../../../../../../wailsjs/go/models";
-import { pluginLogo } from "../../../../../../utils/utils";
 import { ROUTES } from "../../../../../../constants/routes";
+import { NETWORK_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -16,10 +16,10 @@ import {
 } from "../../../../../../common/rb-table-actions";
 import { CreateModal, EditModal } from "./create";
 import { SidePanel } from "./side-panel";
+import { ExportModal, ImportModal } from "./import-export";
 import "./style.css";
 
 import Backup = storage.Backup;
-import { ExportModal, ImportModal } from "./import-export";
 
 export const FlowNetworkTable = (props: any) => {
   const { data, isFetching, fetchNetworks } = props;
@@ -51,35 +51,7 @@ export const FlowNetworkTable = (props: any) => {
   const subApplication = backupFactory.SubFlowFrameworkNetwork;
 
   const columns = [
-    {
-      title: "network",
-      key: "plugin_name",
-      dataIndex: "plugin_name",
-      render(name: string) {
-        let image = pluginLogo(name);
-        return <Image width={70} preview={false} src={image} />;
-      },
-    },
-    {
-      title: "network-type",
-      key: "plugin_name",
-      dataIndex: "plugin_name",
-      render(plugin_name: string) {
-        let colour = "#4d4dff";
-        let text = plugin_name.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
-      },
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
+    ...NETWORK_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",

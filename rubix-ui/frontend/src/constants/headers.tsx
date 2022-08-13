@@ -1,6 +1,11 @@
-import { Tag } from "antd";
+import { Tag, Image } from "antd";
+import { PlayCircleOutlined, BookOutlined } from "@ant-design/icons";
+import { pluginLogo } from "../utils/utils";
+import imageRC5 from "../assets/images/RC5.png";
+import imageRCIO from "../assets/images/RC-IO.png";
+import imageEdge28 from "../assets/images/Edge-iO-28.png";
 
-export const FLOW_NETWORK_HEADERS = [
+export const FLOW_NETWORKS_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
@@ -95,6 +100,296 @@ export const STREAM_HEADERS = [
   // },
 ];
 
+export const CONSUMER_HEADERS = [
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
+  },
+  {
+    key: "name",
+    title: "name",
+    dataIndex: "name",
+  },
+];
+
+export const CONNECTION_HEADERS = [
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Address",
+    dataIndex: "ip",
+    key: "ip",
+  },
+  {
+    title: "Port",
+    dataIndex: "port",
+    key: "port",
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const HOST_NETWORK_HEADERS = [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Hosts number",
+    dataIndex: "hosts",
+    key: "hosts",
+    render: (hosts: []) => <a>{hosts ? hosts.length : 0}</a>,
+  },
+
+  {
+    title: "UUID",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const HOST_HEADERS = [
+  {
+    title: "product",
+    key: "product_type",
+    dataIndex: "product_type",
+    render(product: string) {
+      let image = imageRC5;
+      if (product == "RubixCompute") {
+        image = imageRC5;
+      }
+      if (product == "RubixComputeIO") {
+        image = imageRCIO;
+      }
+      if (product == "Edge28") {
+        image = imageEdge28;
+      }
+      return <Image width={70} src={image} />;
+    },
+  },
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "product",
+    key: "product_type",
+    dataIndex: "product_type",
+    render(product: string) {
+      let icon = <PlayCircleOutlined />;
+      if (product == "RubixCompute") {
+        icon = <BookOutlined />;
+      }
+      if (product == "RubixComputeIO") {
+      }
+      return (
+        //BookOutlined
+        icon
+      );
+    },
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const NETWORK_HEADERS = [
+  {
+    title: "network",
+    key: "plugin_name",
+    dataIndex: "plugin_name",
+    render(name: string) {
+      let image = pluginLogo(name);
+      return <Image width={70} preview={false} src={image} />;
+    },
+  },
+  {
+    title: "network-type",
+    key: "plugin_name",
+    dataIndex: "plugin_name",
+    render(plugin_name: string) {
+      let colour = "#4d4dff";
+      let text = plugin_name.toUpperCase();
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const FLOW_DEVICE_HEADERS = [
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+  },
+];
+
+export const FLOW_POINT_HEADERS = [
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "device",
+    dataIndex: "device_uuid",
+    key: "device_uuid",
+  },
+];
+
+export const BACNET_HEADERS = [
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "device id",
+    dataIndex: "device_object_id",
+    key: "device_object_id",
+  },
+  {
+    title: "ip",
+    dataIndex: "host",
+    key: "host",
+  },
+  {
+    title: "port",
+    dataIndex: "port",
+    key: "port",
+  },
+];
+
+export const PLUGIN_HEADERS = [
+  {
+    title: "name",
+    key: "name",
+    dataIndex: "name",
+    render(name: string) {
+      let image = pluginLogo(name);
+      return <Image preview={false} width={70} src={image} />;
+    },
+  },
+  {
+    title: "name",
+    key: "name",
+    dataIndex: "name",
+    render(plugin_name: string) {
+      let colour = "#4d4dff";
+      let text = plugin_name.toUpperCase();
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+  {
+    title: "Tags",
+    key: "has_network",
+    dataIndex: "has_network",
+    render(has_network: boolean) {
+      let colour = "blue";
+      let text = "non network plugin";
+      if (has_network) {
+        colour = "orange";
+        text = "network driver";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    title: "status",
+    key: "enabled",
+    dataIndex: "enabled",
+    render(enabled: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enabled) {
+        colour = "orange";
+        text = "enabled";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+];
+
+export const LOG_HEADERS = [
+  [
+    {
+      title: "uuid",
+      dataIndex: "uuid",
+      key: "uuid",
+    },
+    {
+      title: "Timestamp",
+      dataIndex: "time",
+      key: "time",
+    },
+    {
+      title: "Table",
+      dataIndex: "function",
+      key: "function",
+    },
+    {
+      title: "Action Type",
+      dataIndex: "type",
+      key: "type",
+    },
+  ],
+];
+
 export const BACKUP_HEADERS = [
   {
     title: "uuid",
@@ -140,5 +435,22 @@ export const BACKUP_HEADERS = [
     title: "Comments",
     dataIndex: "user_comment",
     key: "user_comment",
+  },
+];
+
+export const SCANNER_HEADERS = [
+  {
+    title: "Ip",
+    dataIndex: "ip",
+    key: "ip",
+  },
+  {
+    title: "Port",
+    dataIndex: "ports",
+    render: (services: any[]) =>
+      services.map((service, index) => (
+        <p key={index}> {`${service.service}: ${service.port}`} </p>
+      )),
+    key: "ports",
   },
 ];
