@@ -38,7 +38,6 @@ export const CreateModal = (props: any) => {
   };
 
   const handleSubmit = async (item: any) => {
-    console.log(item);
     setConfirmLoading(true);
     await addNetwork(item);
     setConfirmLoading(false);

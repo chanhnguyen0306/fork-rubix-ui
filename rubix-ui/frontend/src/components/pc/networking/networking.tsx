@@ -60,11 +60,7 @@ const ScannerTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      console.log(selectedRowKeys, selectedRows);
     },
     onSelect: (record: any, selected: any, selectedRows: any) => {
       console.log(record, selected, selectedRows);

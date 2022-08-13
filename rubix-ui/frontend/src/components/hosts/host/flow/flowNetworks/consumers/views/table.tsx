@@ -56,10 +56,6 @@ export const ConsumersTable = (props: any) => {
           title: "name",
           type: "string",
         },
-        message: {
-          title: "message",
-          type: "string",
-        },
         uuid: {
           readOnly: true,
           title: "uuid",

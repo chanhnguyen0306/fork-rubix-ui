@@ -35,8 +35,7 @@ export const CreateEditModal = (props: any) => {
       stream.uuid = currentItem.uuid;
       await factory.Update(stream.uuid, stream);
     } else {
-      const res = await factory.Add(stream, flNetworkUUIDs);
-      console.log(res);
+      await factory.Add(stream, flNetworkUUIDs);
     }
     setConfirmLoading(false);
     refreshList();
