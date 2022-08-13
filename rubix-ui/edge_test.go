@@ -16,12 +16,6 @@ func TestApp_edgeProductInfo(t *testing.T) {
 	pprint.PrintJOSN(store)
 }
 
-func TestApp_EdgeAppsComparedToReleaseVersion(t *testing.T) {
-	app := NewApp()
-	store := app.EdgeAppsInstalledComparedToReleaseVersion(connection, "rc", appVersion)
-	pprint.PrintJOSN(store)
-}
-
 func TestApp_edgeListApps(t *testing.T) {
 	app := NewApp()
 	store, err := app.edgeListApps(connection, "rc")
@@ -49,10 +43,4 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 		return
 	}
 	pprint.PrintJOSN(store)
-}
-
-func TestApp_appInstallAppOnEdge(t *testing.T) {
-	app := NewApp()
-	resp := app.AppInstallAppOnEdge(connection, "rc", appName, appVersion, arch, appVersion)
-	pprint.PrintJOSN(resp)
 }

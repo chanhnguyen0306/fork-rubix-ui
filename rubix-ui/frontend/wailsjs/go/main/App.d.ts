@@ -4,9 +4,12 @@ import {storage} from '../models';
 import {model} from '../models';
 import {assistmodel} from '../models';
 import {store} from '../models';
-import {installer} from '../models';
 import {main} from '../models';
 import {assitcli} from '../models';
+import {installer} from '../models';
+import {systemctl} from '../models';
+import {edgecli} from '../models';
+import {appstore} from '../models';
 import {edge} from '../models';
 import {networking} from '../models';
 import {datelib} from '../models';
@@ -34,8 +37,6 @@ export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise
 export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function AddStream(arg1:string,arg2:string,arg3:model.Stream):Promise<model.Stream>;
-
-export function AppInstallAppOnEdge(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
 
@@ -101,9 +102,29 @@ export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.Plugin
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
-export function EdgeAppsInstalledComparedToReleaseVersion(arg1:string,arg2:string,arg3:string):Promise<Array<main.InstalledApps>>;
+export function EdgeAppsInstalled(arg1:string,arg2:string,arg3:string):Promise<Array<main.InstalledApps>>;
 
-export function EdgeListAppsAndService(arg1:string,arg2:string):Promise<Array<installer.InstalledServices>>;
+export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemResponseChecks>;
+
+export function EdgeDeleteAllPlugins(arg1:string,arg2:string):Promise<edgecli.Message>;
+
+export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<edgecli.Message>;
+
+export function EdgeEdgeCtlAction(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemResponse>;
+
+export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
+
+export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
+
+export function EdgeProductInfo(arg1:string,arg2:string):Promise<installer.Product>;
+
+export function EdgeServiceMassAction(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<Array<systemctl.MassSystemResponse>>;
+
+export function EdgeServiceMassStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<Array<systemctl.MassSystemResponseChecks>>;
+
+export function EdgeServices(arg1:string,arg2:string):Promise<Array<installer.InstalledServices>>;
+
+export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<assitcli.EdgeUploadResponse>;
 
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
 
