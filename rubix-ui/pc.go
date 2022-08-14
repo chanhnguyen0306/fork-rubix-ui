@@ -13,6 +13,14 @@ import (
 
 var pcDate = datelib.New(&datelib.Date{})
 
+func (app *App) getPcGetNetworksSchema() ([]networking.NetworkInterfaces, error) {
+	return nets.GetNetworks()
+}
+
+func (app *App) getInternetIP() (networking.Check, error) {
+	return nets.GetInternetIP()
+}
+
 func (app *App) GetPcGetNetworksSchema() interface{} {
 	names, err := nets.GetNetworks()
 	if err != nil {

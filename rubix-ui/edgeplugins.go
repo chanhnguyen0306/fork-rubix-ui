@@ -96,16 +96,15 @@ func (app *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugi
 	}
 	if restartFlow {
 		app.crudMessage(true, fmt.Sprintf("(step 4 of %s) try and to restart flow-framework", lastStep))
-		_, err := app.edgeEdgeCtlAction(connUUID, hostUUID, &installer.CtlBody{ // restart flow to reload the plugins
+		restart, err := app.edgeEdgeCtlAction(connUUID, hostUUID, &installer.CtlBody{ // restart flow to reload the plugins
 			Service: "nubeio-flow-framework.service",
 			Action:  "restart",
 		})
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-
-			return nil
+			app.crudMessage(false, fmt.Sprintf("restart flow-framework err:%s", err.Error()))
+		} else {
+			app.crudMessage(true, fmt.Sprintf("(step 4 of %s)  restart flow-framework msg:%s", lastStep, restart.Message))
 		}
-		app.crudMessage(true, fmt.Sprintf("(step 4 of %s)  restart flow-framework ok", lastStep))
 	}
 	app.crudMessage(true, fmt.Sprintf("competed upload to edge-device %s", body.PluginName))
 	return resp

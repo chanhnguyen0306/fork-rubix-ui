@@ -11,7 +11,7 @@ import (
 
 // EdgeAppsInstalled list the installed apps
 func (app *App) EdgeAppsInstalled(connUUID, hostUUID, releaseVersion string) []InstalledApps {
-	edgeAppsAndService, err := app.edgeAppsInstalled(connUUID, hostUUID, releaseVersion)
+	edgeAppsAndService, err := app.edgeAppsInstalled(connUUID, hostUUID, releaseVersion, nil)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -112,6 +112,12 @@ func (app *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, re
 	return installEdgeService
 }
 
+type EdgeDeviceInfo struct {
+	Product                 *installer.Product        `json:"product,omitempty"`
+	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
+	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
+}
+
 type InstalledApps struct {
 	AppName             string `json:"app_name,omitempty"`
 	ServiceName         string `json:"service_name,omitempty"`
@@ -129,18 +135,50 @@ type InstalledApps struct {
 	SubState            string `json:"sub_state,omitempty"`
 }
 
-func (app *App) edgeAppsInstalled(connUUID, hostUUID, releaseVersion string) ([]InstalledApps, error) {
+type AppsAvailableForInstall struct {
+	AppName       string `json:"app_name,omitempty"`
+	LatestVersion string `json:"latest_version,omitempty"`
+}
+
+func (app *App) EdgeDeviceInfo(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
+	resp, err := app.edgeDeviceInfo(connUUID, hostUUID, releaseVersion)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+
+}
+
+func (app *App) edgeDeviceInfo(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
+	pro, err := app.edgeProductInfo(connUUID, hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	installed, err := app.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
+	if err != nil {
+		return nil, err
+	}
+	return &EdgeDeviceInfo{
+		Product:                 pro,
+		InstalledApps:           installed.InstalledApps,
+		AppsAvailableForInstall: installed.AppsAvailableForInstall,
+	}, nil
+}
+
+func (app *App) edgeAppsInstalled(connUUID, hostUUID, releaseVersion string, product *installer.Product) ([]InstalledApps, error) {
+
 	services, err := app.edgeListAppsAndService(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	installedApps, err := app.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion)
+	installedApps, err := app.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, product)
 	if err != nil {
 		return nil, err
 	}
 	var filteredApps []InstalledApps
 	for _, service := range services {
-		for _, apps := range installedApps {
+		for _, apps := range installedApps.InstalledApps {
 			if service.AppName == apps.AppName {
 				apps.ServiceName = service.ServiceName
 				apps.State = string(service.AppStatus.State)
@@ -154,7 +192,7 @@ func (app *App) edgeAppsInstalled(connUUID, hostUUID, releaseVersion string) ([]
 	return filteredApps, nil
 }
 
-func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string) ([]InstalledApps, error) {
+func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *installer.Product) (*EdgeDeviceInfo, error) {
 	apps, err := app.edgeListApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
@@ -166,6 +204,19 @@ func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion str
 	var installedApps []InstalledApps
 	var installedApp InstalledApps
 	installedApp.ReleaseVersion = releaseVersion
+
+	var appsAvailable []AppsAvailableForInstall
+	var appAvailable AppsAvailableForInstall
+	for _, versionApp := range getVersion.Apps { // list all the that the edge device can install
+		for _, pro := range versionApp.Products {
+			if product.Product == pro {
+				appAvailable.AppName = versionApp.Name
+				appAvailable.LatestVersion = versionApp.Version
+				appsAvailable = append(appsAvailable, appAvailable)
+			}
+		}
+	}
+
 	for _, installed := range apps {
 		for _, versionApp := range getVersion.Apps {
 			if installed.Name == flowFramework {
@@ -200,7 +251,12 @@ func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion str
 			}
 		}
 	}
-	return installedApps, nil
+
+	return &EdgeDeviceInfo{
+		Product:                 nil,
+		InstalledApps:           installedApps,
+		AppsAvailableForInstall: appsAvailable,
+	}, nil
 }
 
 func (app *App) edgeListApps(connUUID, hostUUID string) ([]installer.Apps, error) {

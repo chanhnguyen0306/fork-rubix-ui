@@ -194,6 +194,10 @@ export function EdgeDeletePlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
 }
 
+export function EdgeDeviceInfo(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeDeviceInfo'](arg1, arg2, arg3);
+}
+
 export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
@@ -242,8 +246,8 @@ export function EdgeUnInstallApp(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeUnInstallApp'](arg1, arg2, arg3);
 }
 
-export function EdgeUploadPlugin(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3);
+export function EdgeUploadPlugin(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3, arg4);
 }
 
 export function EditConsumer(arg1, arg2, arg3, arg4) {

@@ -110,6 +110,8 @@ export function EdgeDeleteAllPlugins(arg1:string,arg2:string):Promise<edgecli.Me
 
 export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<edgecli.Message>;
 
+export function EdgeDeviceInfo(arg1:string,arg2:string,arg3:string):Promise<main.EdgeDeviceInfo>;
+
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
 export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
@@ -134,7 +136,7 @@ export function EdgeServices(arg1:string,arg2:string):Promise<Array<installer.In
 
 export function EdgeUnInstallApp(arg1:string,arg2:string,arg3:string):Promise<installer.RemoveRes>;
 
-export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<assitcli.EdgeUploadResponse>;
+export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin,arg4:boolean):Promise<assitcli.EdgeUploadResponse>;
 
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
 
