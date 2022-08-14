@@ -29,6 +29,17 @@ func (app *App) EdgeServices(connUUID, hostUUID string) []installer.InstalledSer
 	return service
 }
 
+// EdgeUnInstallApp uninstall an app
+func (app *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *installer.RemoveRes {
+	resp, err := app.edgeUnInstallApp(connUUID, hostUUID, appName)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+// EdgeInstallApp install an app
 func (app *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
 	var lastStep = "5"
 	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
@@ -294,6 +305,28 @@ func (app *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serv
 		Source:      serviceFilePath,
 	})
 	return resp, err
+}
+
+func (app *App) edgeAppInstalled(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*installer.InstallResp, error) {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.InstallEdgeService(hostUUID, &installer.Install{
+		Name:        appName,
+		Version:     appVersion,
+		ServiceName: "",
+		Source:      serviceFilePath,
+	})
+	return resp, err
+}
+
+func (app *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*installer.RemoveRes, error) {
+	client, err := app.initConnection(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeUnInstallApp(hostUUID, appName, true)
 }
 
 func emptyString(item, name string) error {

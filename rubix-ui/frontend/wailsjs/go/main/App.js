@@ -238,6 +238,10 @@ export function EdgeServices(arg1, arg2) {
   return window['go']['main']['App']['EdgeServices'](arg1, arg2);
 }
 
+export function EdgeUnInstallApp(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeUnInstallApp'](arg1, arg2, arg3);
+}
+
 export function EdgeUploadPlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3);
 }
@@ -636,10 +640,6 @@ export function StoreCheckAppAndVersionExists(arg1, arg2) {
 
 export function StoreCheckAppExists(arg1) {
   return window['go']['main']['App']['StoreCheckAppExists'](arg1);
-}
-
-export function StoreDownloadAll(arg1, arg2, arg3) {
-  return window['go']['main']['App']['StoreDownloadAll'](arg1, arg2, arg3);
 }
 
 export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {

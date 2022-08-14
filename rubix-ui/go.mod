@@ -4,7 +4,7 @@ go 1.17
 
 replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
 
-//replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
+replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
 require (
 	github.com/NubeIO/git v0.0.5

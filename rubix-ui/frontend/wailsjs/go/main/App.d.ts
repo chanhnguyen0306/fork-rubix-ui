@@ -132,6 +132,8 @@ export function EdgeServiceStop(arg1:string,arg2:string,arg3:string,arg4:number)
 
 export function EdgeServices(arg1:string,arg2:string):Promise<Array<installer.InstalledServices>>;
 
+export function EdgeUnInstallApp(arg1:string,arg2:string,arg3:string):Promise<installer.RemoveRes>;
+
 export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<assitcli.EdgeUploadResponse>;
 
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
@@ -331,8 +333,6 @@ export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):
 export function StoreCheckAppAndVersionExists(arg1:string,arg2:string):Promise<Error>;
 
 export function StoreCheckAppExists(arg1:string):Promise<Error>;
-
-export function StoreDownloadAll(arg1:string,arg2:string,arg3:boolean):Promise<Array<store.App>>;
 
 export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
 

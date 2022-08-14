@@ -23,6 +23,12 @@ func TestApp_EdgeAppsInstalled(t *testing.T) {
 	pprint.PrintJOSN(resp)
 }
 
+func TestApp_EdgeUnInstallApp(t *testing.T) {
+	app := NewApp()
+	resp := app.EdgeUnInstallApp(connection, "rc", appName)
+	pprint.PrintJOSN(resp)
+}
+
 func TestApp_edgeAppServices(t *testing.T) {
 	app := NewApp()
 	resp, _ := app.edgeAppServices(connection, "rc")
