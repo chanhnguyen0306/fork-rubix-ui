@@ -8,6 +8,7 @@ import (
 	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
 	"github.com/NubeIO/rubix-ui/backend/flow"
 	"github.com/NubeIO/rubix-ui/backend/storage"
+	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 	"sync"
 )
@@ -20,6 +21,7 @@ type App struct {
 	DB    storage.Storage
 	flow  *ffclient.FlowClient
 	mutex sync.RWMutex
+	store *store.Store
 }
 
 // NewApp creates a new App application struct
@@ -30,6 +32,12 @@ func NewApp() *App {
 		Ip:   "0.0.0.0",
 		Port: 1662,
 	})
+	str := &store.Store{}
+	appStore, err := store.New(str)
+	if err != nil {
+		log.Fatalf("init store on start of app err:%s", err.Error())
+	}
+	app.store = appStore
 	return app
 }
 

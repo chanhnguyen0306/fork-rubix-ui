@@ -9,9 +9,9 @@ import (
 
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
-var releaseVersion = "v0.6.1"
+var releaseVersion = "v0.6.6"
 var appName = "flow-framework"
-var appVersion = "v0.6.1"
+var appVersion = "v0.6.6"
 var product = "Server"
 var arch = "amd64"
 
@@ -44,35 +44,4 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	app := NewApp()
 	downloaded := app.StoreDownloadApp(token, "edge-28-driver", "v0.6.1", "armv7", false)
 	pprint.PrintJOSN(downloaded)
-}
-
-func TestApp_downloadAll(t *testing.T) { // will save all apps from the version
-	token := git.DecodeToken(token)
-	fmt.Printf("%q\n", token)
-	app := NewApp()
-	_, err := app.downloadAll(token, "v0.6.1", false)
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-}
-
-func TestApp_assistListStore(t *testing.T) { // list all apps on assist
-	app := NewApp()
-	store, err := app.assistListStore(connection)
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	pprint.PrintJOSN(store)
-}
-
-func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
-	app := NewApp()
-	store, err := app.assistAddUploadApp(connection, appName, appVersion, product, arch, false)
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	pprint.PrintJOSN(store)
 }

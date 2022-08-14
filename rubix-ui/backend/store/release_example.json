@@ -320,7 +320,7 @@
   "services": [
     {
       "name": "mqtt-broker",
-      "service_name": "mosquitto",
+      "service_name": "mosquitto.service",
       "description": "a local mqtt broker",
       "port": 1883,
       "transport": "mqtt",
@@ -338,7 +338,7 @@
     },
     {
       "name": "rubix-compute-io-pi-dependency",
-      "service_name": "pigpiod",
+      "service_name": "pigpiod.service",
       "description": "used for the rubix-compute-io driver",
       "port": 8888,
       "transport": "tcp",

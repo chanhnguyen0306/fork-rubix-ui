@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/git/pkg/git"
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
 	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/service/appstore"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -36,6 +37,7 @@ type Store struct {
 	Arch              string `json:"arch"`
 	ServiceFile       string `json:"service_file"`
 	BackupsDir        string `json:"backups_dir"`
+	assistStore       *appstore.Store
 }
 
 func New(store *Store) (*Store, error) {
@@ -44,16 +46,16 @@ func New(store *Store) (*Store, error) {
 		return nil, errors.New("store can not be empty")
 	}
 	if store.App == nil {
-		return nil, errors.New("app can not be empty")
+		store.App = &installer.App{}
 	}
 	if store.Owner == "" {
 		store.Owner = "NubeIO"
 	}
 	if store.Repo == "" {
-		return nil, errors.New("repo can not be empty, try rubix-wires")
+		store.Repo = "releases"
 	}
 	if store.Version == "" {
-		return nil, errors.New("version can not be empty, try v0.1.1")
+		store.Version = "latest"
 	}
 	if store.UserPath == "" {
 		store.UserPath = filePath(fmt.Sprintf("%s/rubix", homeDir))
@@ -77,6 +79,13 @@ func New(store *Store) (*Store, error) {
 		store.BackupsDir = filePath(fmt.Sprintf("%s/backups", store.UserPath))
 	}
 	store.App = installer.New(store.App)
+	appStore, err := appstore.New(&appstore.Store{
+		App: &installer.App{},
+	})
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("init assit-store err:%s", err.Error()))
+	}
+	store.assistStore = appStore
 	return store, nil
 }
 

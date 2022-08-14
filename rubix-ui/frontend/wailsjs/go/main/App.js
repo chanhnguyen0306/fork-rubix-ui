@@ -50,10 +50,6 @@ export function AddStream(arg1, arg2, arg3) {
   return window['go']['main']['App']['AddStream'](arg1, arg2, arg3);
 }
 
-export function AppInstallAppOnEdge(arg1, arg2, arg3, arg4, arg5, arg6) {
-  return window['go']['main']['App']['AppInstallAppOnEdge'](arg1, arg2, arg3, arg4, arg5, arg6);
-}
-
 export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
 }
@@ -182,12 +178,72 @@ export function DoBackup(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['DoBackup'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
-export function EdgeAppsInstalledComparedToReleaseVersion(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeAppsInstalledComparedToReleaseVersion'](arg1, arg2, arg3);
+export function EdgeAppsInstalled(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeAppsInstalled'](arg1, arg2, arg3);
 }
 
-export function EdgeListAppsAndService(arg1, arg2) {
-  return window['go']['main']['App']['EdgeListAppsAndService'](arg1, arg2);
+export function EdgeCtlStatus(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeCtlStatus'](arg1, arg2, arg3);
+}
+
+export function EdgeDeleteAllPlugins(arg1, arg2) {
+  return window['go']['main']['App']['EdgeDeleteAllPlugins'](arg1, arg2);
+}
+
+export function EdgeDeletePlugin(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
+}
+
+export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5, arg6) {
+  return window['go']['main']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4, arg5, arg6);
+}
+
+export function EdgeListPlugins(arg1, arg2) {
+  return window['go']['main']['App']['EdgeListPlugins'](arg1, arg2);
+}
+
+export function EdgeProductInfo(arg1, arg2) {
+  return window['go']['main']['App']['EdgeProductInfo'](arg1, arg2);
+}
+
+export function EdgeServiceDisable(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceDisable'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceEnable(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceEnable'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceMassAction(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeServiceMassAction'](arg1, arg2, arg3);
+}
+
+export function EdgeServiceMassStatus(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeServiceMassStatus'](arg1, arg2, arg3);
+}
+
+export function EdgeServiceRestart(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceRestart'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceStart(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceStart'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceStop(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceStop'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServices(arg1, arg2) {
+  return window['go']['main']['App']['EdgeServices'](arg1, arg2);
+}
+
+export function EdgeUnInstallApp(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeUnInstallApp'](arg1, arg2, arg3);
+}
+
+export function EdgeUploadPlugin(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3);
 }
 
 export function EditConsumer(arg1, arg2, arg3, arg4) {
@@ -584,10 +640,6 @@ export function StoreCheckAppAndVersionExists(arg1, arg2) {
 
 export function StoreCheckAppExists(arg1) {
   return window['go']['main']['App']['StoreCheckAppExists'](arg1);
-}
-
-export function StoreDownloadAll(arg1, arg2, arg3) {
-  return window['go']['main']['App']['StoreDownloadAll'](arg1, arg2, arg3);
 }
 
 export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {

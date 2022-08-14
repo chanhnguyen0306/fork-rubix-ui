@@ -9,14 +9,15 @@ go 1.17
 require (
 	github.com/NubeIO/git v0.0.5
 	github.com/NubeIO/lib-date v0.0.2
-	github.com/NubeIO/lib-dirs v0.0.3
+	github.com/NubeIO/lib-dirs v0.0.5
 	github.com/NubeIO/lib-networking v0.0.6
-	github.com/NubeIO/lib-rubix-installer v0.1.0
+	github.com/NubeIO/lib-rubix-installer v0.1.2
 	github.com/NubeIO/lib-schema v0.0.9
+	github.com/NubeIO/lib-systemctl-go v0.0.9
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0
-	github.com/NubeIO/rubix-assist v0.2.6
+	github.com/NubeIO/rubix-assist v0.2.7
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0
@@ -35,7 +36,6 @@ require (
 
 require (
 	github.com/NubeIO/flow-framework v0.5.6 // indirect
-	github.com/NubeIO/lib-systemctl-go v0.0.8 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
