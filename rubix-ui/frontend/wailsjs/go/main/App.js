@@ -194,10 +194,6 @@ export function EdgeDeletePlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
 }
 
-export function EdgeEdgeCtlAction(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeEdgeCtlAction'](arg1, arg2, arg3);
-}
-
 export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
@@ -210,12 +206,32 @@ export function EdgeProductInfo(arg1, arg2) {
   return window['go']['main']['App']['EdgeProductInfo'](arg1, arg2);
 }
 
+export function EdgeServiceDisable(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceDisable'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceEnable(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceEnable'](arg1, arg2, arg3, arg4);
+}
+
 export function EdgeServiceMassAction(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeServiceMassAction'](arg1, arg2, arg3);
 }
 
 export function EdgeServiceMassStatus(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeServiceMassStatus'](arg1, arg2, arg3);
+}
+
+export function EdgeServiceRestart(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceRestart'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceStart(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceStart'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeServiceStop(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeServiceStop'](arg1, arg2, arg3, arg4);
 }
 
 export function EdgeServices(arg1, arg2) {
@@ -628,6 +644,10 @@ export function StoreDownloadAll(arg1, arg2, arg3) {
 
 export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function StoreUploadPlugin(arg1, arg2) {
+  return window['go']['main']['App']['StoreUploadPlugin'](arg1, arg2);
 }
 
 export function UpdateConnection(arg1, arg2) {

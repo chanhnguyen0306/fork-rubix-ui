@@ -1,12 +1,74 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/lib-systemctl-go/systemctl"
 )
 
-func (app *App) EdgeEdgeCtlAction(connUUID, hostUUID string, body *installer.CtlBody) *systemctl.SystemResponse {
+func (app *App) EdgeServiceStart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	body := &installer.CtlBody{
+		Service: appOrService,
+		Action:  "start",
+		Timeout: timeout,
+	}
+	resp, err := app.edgeEdgeCtlAction(connUUID, hostUUID, body)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) EdgeServiceStop(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	body := &installer.CtlBody{
+		Service: appOrService,
+		Action:  "stop",
+		Timeout: timeout,
+	}
+	resp, err := app.edgeEdgeCtlAction(connUUID, hostUUID, body)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) EdgeServiceRestart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	body := &installer.CtlBody{
+		Service: appOrService,
+		Action:  "restart",
+		Timeout: timeout,
+	}
+	resp, err := app.edgeEdgeCtlAction(connUUID, hostUUID, body)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) EdgeServiceEnable(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	body := &installer.CtlBody{
+		Service: appOrService,
+		Action:  "enable",
+		Timeout: timeout,
+	}
+	resp, err := app.edgeEdgeCtlAction(connUUID, hostUUID, body)
+	if err != nil {
+		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+func (app *App) EdgeServiceDisable(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	body := &installer.CtlBody{
+		Service: appOrService,
+		Action:  "disable",
+		Timeout: timeout,
+	}
 	resp, err := app.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -16,6 +78,9 @@ func (app *App) EdgeEdgeCtlAction(connUUID, hostUUID string, body *installer.Ctl
 }
 
 func (app *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.CtlBody) (*systemctl.SystemResponse, error) {
+	if body.Service == "" {
+		return nil, errors.New("service-name can not be empty")
+	}
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
@@ -27,7 +92,7 @@ func (app *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.Ctl
 	return resp, err
 }
 
-func (app *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody) *systemctl.SystemResponseChecks {
+func (app *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody) *systemctl.SystemState {
 	resp, err := app.edgeCtlStatus(connUUID, hostUUID, body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -36,7 +101,7 @@ func (app *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody
 	return resp
 }
 
-func (app *App) edgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody) (*systemctl.SystemResponseChecks, error) {
+func (app *App) edgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody) (*systemctl.SystemState, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
@@ -69,7 +134,7 @@ func (app *App) edgeServiceMassAction(connUUID, hostUUID string, body *installer
 	return resp, err
 }
 
-func (app *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installer.CtlBody) []systemctl.MassSystemResponseChecks {
+func (app *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installer.CtlBody) []systemctl.SystemState {
 	resp, err := app.edgeServiceMassStatus(connUUID, hostUUID, body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -78,7 +143,7 @@ func (app *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installer
 	return resp
 }
 
-func (app *App) edgeServiceMassStatus(connUUID, hostUUID string, body *installer.CtlBody) ([]systemctl.MassSystemResponseChecks, error) {
+func (app *App) edgeServiceMassStatus(connUUID, hostUUID string, body *installer.CtlBody) ([]systemctl.SystemState, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err

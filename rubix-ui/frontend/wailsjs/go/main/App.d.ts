@@ -104,13 +104,11 @@ export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:st
 
 export function EdgeAppsInstalled(arg1:string,arg2:string,arg3:string):Promise<Array<main.InstalledApps>>;
 
-export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemResponseChecks>;
+export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemState>;
 
 export function EdgeDeleteAllPlugins(arg1:string,arg2:string):Promise<edgecli.Message>;
 
 export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<edgecli.Message>;
-
-export function EdgeEdgeCtlAction(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemResponse>;
 
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
@@ -118,9 +116,19 @@ export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.
 
 export function EdgeProductInfo(arg1:string,arg2:string):Promise<installer.Product>;
 
+export function EdgeServiceDisable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
+
+export function EdgeServiceEnable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
+
 export function EdgeServiceMassAction(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<Array<systemctl.MassSystemResponse>>;
 
-export function EdgeServiceMassStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<Array<systemctl.MassSystemResponseChecks>>;
+export function EdgeServiceMassStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<Array<systemctl.SystemState>>;
+
+export function EdgeServiceRestart(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
+
+export function EdgeServiceStart(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
+
+export function EdgeServiceStop(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
 
 export function EdgeServices(arg1:string,arg2:string):Promise<Array<installer.InstalledServices>>;
 
@@ -327,6 +335,8 @@ export function StoreCheckAppExists(arg1:string):Promise<Error>;
 export function StoreDownloadAll(arg1:string,arg2:string,arg3:boolean):Promise<Array<store.App>>;
 
 export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
+
+export function StoreUploadPlugin(arg1:string,arg2:appstore.Plugin):Promise<appstore.UploadResponse>;
 
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 

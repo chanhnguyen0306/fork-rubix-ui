@@ -9,13 +9,28 @@ import (
 func TestApp_EdgeEdgeCtlAction(t *testing.T) {
 	app := NewApp()
 	body := &installer.CtlBody{
-		AppName:      "",
-		Service:      "",
-		Action:       "",
-		Timeout:      0,
-		ServiceNames: nil,
-		AppNames:     nil,
+		AppName: "flow-framework",
+		Action:  "enable",
 	}
-	resp := app.EdgeEdgeCtlAction(connection, "rc", body)
+	resp, _ := app.edgeEdgeCtlAction(connection, "rc", body)
+	pprint.PrintJOSN(resp)
+}
+
+func TestApp_EdgeCtlStatus(t *testing.T) {
+	app := NewApp()
+	body := &installer.CtlBody{
+		AppName: "flow-framework",
+	}
+	resp := app.EdgeCtlStatus(connection, "rc", body)
+	pprint.PrintJOSN(resp)
+}
+
+func TestApp_EdgeServiceMassStatus(t *testing.T) {
+	app := NewApp()
+	body := &installer.CtlBody{
+		AppNames: []string{"flow-framework"},
+		Action:   "isInstalled",
+	}
+	resp := app.EdgeServiceMassStatus(connection, "rc", body)
 	pprint.PrintJOSN(resp)
 }
