@@ -34,6 +34,6 @@ func TestApp_StoreUploadPlugin(t *testing.T) {
 		Arch:       "amd64",
 		Version:    "v0.6.6",
 	}
-	store := app.StoreUploadPlugin(connection, body)
+	store := app.EdgeUploadPlugin(connection, "rc", body)
 	pprint.PrintJOSN(store)
 }

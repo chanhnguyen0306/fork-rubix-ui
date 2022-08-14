@@ -35,13 +35,35 @@ func (app *App) EdgeDeleteAllPlugins(connUUID, hostUUID string) *edgecli.Message
 }
 
 func (app *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin) *assitcli.EdgeUploadResponse {
-	var lastStep = "5"
+	var lastStep = "3"
 	var matchedName bool
 	var matchedArch bool
 	var matchedVersion bool
+	if body == nil {
+		app.crudMessage(false, fmt.Sprintf("plugin interface cant be empty"))
+		return nil
+	}
+	if body.PluginName == "" {
+		app.crudMessage(false, fmt.Sprintf("plugin name cant be empty"))
+		return nil
+	}
+	if body.Arch == "" {
+		app.crudMessage(false, fmt.Sprintf("plugin arch cant be empty"))
+		return nil
+	}
+	if body.Version == "" {
+		app.crudMessage(false, fmt.Sprintf("plugin version cant be empty"))
+		return nil
+	}
+	app.crudMessage(false, fmt.Sprintf("(step 1 of %s) check plugin is in downloads plugin:%s version:%s arch:%s", lastStep, body.PluginName, body.Version, body.Arch))
+	_, checkPlugin, err := app.storeGetPlugin(body)
+	if checkPlugin == nil || err != nil {
+		app.crudMessage(false, fmt.Sprintf("failed to find plugin:%s version:%s arch:%s", body.PluginName, body.Version, body.Arch))
+		return nil
+	}
 	plugins, err := app.assistStoreListPlugins(connUUID)
 	if err != nil {
-		return nil
+		app.crudMessage(false, fmt.Sprintf("assist check store for plugin:%s err:%s", body.PluginName, err.Error()))
 	}
 	for _, plg := range plugins {
 		if plg.MatchedName == body.PluginName {
@@ -55,21 +77,23 @@ func (app *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugi
 		}
 	}
 	if matchedName && matchedArch && matchedVersion {
-		app.crudMessage(true, fmt.Sprintf("(step 1 of %s) plugin found in assist-store", lastStep))
+		app.crudMessage(true, fmt.Sprintf("(step 2 of %s) plugin found in assist-store", lastStep))
 	} else {
+		app.crudMessage(true, fmt.Sprintf("(step 2 of %s) try and upload plugin:%s to assist-store", lastStep, body.PluginName))
 		plg, err := app.assistStoreUploadPlugin(connUUID, body)
 		if err != nil {
 			app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 			return nil
 		}
-		app.crudMessage(true, fmt.Sprintf("(step 1 of %s) uploaded plugin to assist-store:%s", lastStep, plg.UploadedFile))
+		app.crudMessage(true, fmt.Sprintf(" uploaded plugin to assist-store:%s", plg.UploadedFile))
 	}
-	app.crudMessage(true, fmt.Sprintf("(step 2 of %s) start to upload plugin:%s to edge device", lastStep, body.PluginName))
+	app.crudMessage(true, fmt.Sprintf("(step 3 of %s) start to upload plugin:%s to edge device", lastStep, body.PluginName))
 	resp, err := app.edgeUploadPlugin(connUUID, hostUUID, body)
 	if err != nil {
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	app.crudMessage(true, fmt.Sprintf("competed upload to edge-device %s", body.PluginName))
 	return resp
 }
 

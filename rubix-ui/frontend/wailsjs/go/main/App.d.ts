@@ -336,8 +336,6 @@ export function StoreDownloadAll(arg1:string,arg2:string,arg3:boolean):Promise<A
 
 export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
 
-export function StoreUploadPlugin(arg1:string,arg2:appstore.Plugin):Promise<appstore.UploadResponse>;
-
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 
 export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;

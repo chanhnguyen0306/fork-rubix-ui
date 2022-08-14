@@ -91,7 +91,11 @@ func (app *App) assistStoreUploadPlugin(connUUID string, body *appstore.Plugin) 
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.StoreUploadPlugin(body)
+	f, flowPlugin, err := app.storeGetPlugin(body)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.StoreUploadPlugin(flowPlugin.ZipName, f)
 	if err != nil {
 		return nil, err
 	}
