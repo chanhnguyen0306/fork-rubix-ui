@@ -80,7 +80,7 @@ func (app *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, re
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	assistUpload, err := app.assistAddUploadApp(connUUID, appName, appVersion, product, arch, false)
+	assistUpload, err := app.assistAddUploadApp(connUUID, appName, appVersion, product, arch)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to rubix-assist app-name:%s err:%s", appName, err.Error())
 		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

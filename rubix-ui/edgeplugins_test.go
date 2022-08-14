@@ -13,7 +13,7 @@ func TestApp_EdgeUploadPlugin(t *testing.T) {
 		Arch:       "amd64",
 		Version:    "v0.6.6",
 	}
-	resp := app.EdgeUploadPlugin(connection, "rc", body)
+	resp := app.EdgeUploadPlugin(connection, "rc", body, true)
 	pprint.PrintJOSN(resp)
 }
 

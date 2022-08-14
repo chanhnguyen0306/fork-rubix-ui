@@ -21,7 +21,7 @@ func (app *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	return resp, err
 }
 
-func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string, addIfExisting bool) (*appstore.UploadResponse, error) {
+func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*appstore.UploadResponse, error) {
 	client, err := app.initConnection(connUUID)
 	if err != nil {
 		return nil, err
