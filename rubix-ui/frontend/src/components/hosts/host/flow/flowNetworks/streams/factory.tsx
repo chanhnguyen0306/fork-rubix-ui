@@ -45,14 +45,11 @@ export class FlowStreamFactory {
     return resp;
   }
 
-  async Add(
-    body: model.Stream,
-    flowNetworkUUIDS: string[]
-  ): Promise<model.Stream> {
+  async Add(body: model.Stream): Promise<model.Stream> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     let resp: model.Stream = {} as model.Stream;
-    await AddStream(this.connectionUUID, this.hostUUID, flowNetworkUUIDS, body)
+    await AddStream(this.connectionUUID, this.hostUUID, body)
       .then((res) => {
         resp = res as model.Stream;
       })

@@ -29,7 +29,7 @@ export const CreateEditModal = (props: any) => {
       stream.uuid = currentItem.uuid;
       await factory.Update(stream.uuid, stream);
     } else {
-      await factory.Add(stream, flowNetworkUUIDS);
+      await factory.Add(stream);
     }
     setConfirmLoading(false);
     refreshList();
