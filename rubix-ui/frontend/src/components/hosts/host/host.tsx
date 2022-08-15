@@ -12,11 +12,13 @@ import { FlowPluginsTable } from "./flow/plugins/views/table";
 import { ROUTES } from "../../../constants/routes";
 import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
 import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
+import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clones";
 
+const infoKey = "INFO";
 const networksKey = "NETWORKS";
 const pluginsKey = "PLUGINS";
 const flownetworksKey = "FLOW NETWORKS";
-const infoKey = "INFO";
+const flownetworkClonesKey = "FLOW NETWORK CLONES";
 
 const { Title } = Typography;
 
@@ -166,6 +168,9 @@ export const Host = () => {
           </TabPane>
           <TabPane tab={flownetworksKey} key={flownetworksKey}>
             <FlowNetworks />
+          </TabPane>
+          <TabPane tab={flownetworkClonesKey} key={flownetworkClonesKey}>
+            <FlowNetworkClones />
           </TabPane>
         </Tabs>
       </Card>
