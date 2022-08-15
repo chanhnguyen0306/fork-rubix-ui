@@ -8,22 +8,23 @@ import (
 )
 
 type Apps struct {
-	Name                   string   `json:"name"`
-	Repo                   string   `json:"repo"`
-	Description            string   `json:"description"`
-	Port                   int      `json:"port,omitempty"`
-	Transport              string   `json:"transport"`
-	AppSpecficExecStart    string   `json:"app_specfic_exec_start"`
-	EnvironmentVars        []string `json:"environment_vars"`
-	Products               []string `json:"products"`
-	Arch                   []string `json:"arch"`
-	Version                string   `json:"version"`
-	MinVersion             string   `json:"min_version,omitempty"`
-	MaxVersion             string   `json:"max_version"`
-	FlowDependency         bool     `json:"flow_dependency"`
-	PluginDependency       []string `json:"plugin_dependency"`
-	ServiceDependency      []string `json:"service_dependency"`
-	CustomServiceExecStart string   `json:"custom_service_exec_start,omitempty"`
+	Name                    string   `json:"name"`
+	Repo                    string   `json:"repo"`
+	Description             string   `json:"description"`
+	Port                    int      `json:"port,omitempty"`
+	Transport               string   `json:"transport"`
+	AppSpecficExecStart     string   `json:"app_specfic_exec_start"`
+	CustomServiceExecStart  string   `json:"custom_service_exec_start,omitempty"`
+	ServiceWorkingDirectory string   `json:"service_working_directory"`
+	EnvironmentVars         []string `json:"environment_vars"`
+	Products                []string `json:"products"`
+	Arch                    []string `json:"arch"`
+	Version                 string   `json:"version"`
+	MinVersion              string   `json:"min_version,omitempty"`
+	MaxVersion              string   `json:"max_version"`
+	FlowDependency          bool     `json:"flow_dependency"`
+	PluginDependency        []string `json:"plugin_dependency"`
+	ServiceDependency       []string `json:"service_dependency"`
 }
 
 type Plugins struct {
