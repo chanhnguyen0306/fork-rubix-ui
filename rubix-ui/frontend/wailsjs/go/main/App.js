@@ -178,10 +178,6 @@ export function DoBackup(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['DoBackup'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
-export function EdgeAppsInstalled(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeAppsInstalled'](arg1, arg2, arg3);
-}
-
 export function EdgeCtlStatus(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeCtlStatus'](arg1, arg2, arg3);
 }
@@ -194,8 +190,8 @@ export function EdgeDeletePlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
 }
 
-export function EdgeDeviceInfo(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeDeviceInfo'](arg1, arg2, arg3);
+export function EdgeDeviceInfoAndApps(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeDeviceInfoAndApps'](arg1, arg2, arg3);
 }
 
 export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5, arg6) {

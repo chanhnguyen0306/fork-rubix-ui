@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/git/pkg/git"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 	"path/filepath"
@@ -29,11 +30,8 @@ func (app *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cl
 		app.crudMessage(false, fmt.Sprintf("error download release err:%s", err.Error()))
 		return nil
 	}
-	getRelease, err = app.getReleaseByVersion(releaseVersion)
-	if getRelease == nil {
-		app.crudMessage(false, fmt.Sprintf("failed to find release by version: %s", releaseVersion))
-		return nil
-	}
+
+	pprint.PrintJOSN(getRelease)
 	for _, apps := range getRelease.Apps {
 		if appName == rubixWires && apps.Name == rubixWires { // download wires
 			app.crudMessage(true, fmt.Sprintf("try to download app:%s version:%s", appName, apps.Version))
