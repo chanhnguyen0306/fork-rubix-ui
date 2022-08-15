@@ -5,10 +5,10 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage"
 )
 
-func (app *App) GetLogs() interface{} {
-	logs, err := app.DB.GetLogs()
+func (inst *App) GetLogs() interface{} {
+	logs, err := inst.DB.GetLogs()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	var resp []storage.Log
@@ -20,31 +20,31 @@ func (app *App) GetLogs() interface{} {
 	return resp
 }
 
-func (app *App) GetLogsWithData() interface{} {
-	logs, err := app.DB.GetLogs()
+func (inst *App) GetLogsWithData() interface{} {
+	logs, err := inst.DB.GetLogs()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	return logs
 }
 
-func (app *App) GetLogsByConnection(connUUID string) interface{} {
-	logs, err := app.DB.GetLogsByConnection(connUUID)
+func (inst *App) GetLogsByConnection(connUUID string) interface{} {
+	logs, err := inst.DB.GetLogsByConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	return logs
 }
 
-func (app *App) DeleteLogBulk(logUUIDs []UUIDs) interface{} {
+func (inst *App) DeleteLogBulk(logUUIDs []UUIDs) interface{} {
 	for _, uuid := range logUUIDs {
-		err := app.DB.DeleteLog(uuid.UUID)
+		err := inst.DB.DeleteLog(uuid.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("deleted log: %s", uuid.UUID))
+			inst.crudMessage(false, fmt.Sprintf("deleted log: %s", uuid.UUID))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleted log: %s", uuid.UUID))
+			inst.crudMessage(true, fmt.Sprintf("deleted log: %s", uuid.UUID))
 		}
 	}
 	return "ok"

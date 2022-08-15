@@ -11,43 +11,43 @@ import (
 	"time"
 )
 
-func (app *App) ImportBackup(body *storage.Backup) string {
+func (inst *App) ImportBackup(body *storage.Backup) string {
 	body.BackupInfo = fmt.Sprintf("was imported from host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
-	_, err := app.addBackup(body)
+	_, err := inst.addBackup(body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return ""
 	}
 	return "imported backup ok"
 }
 
-func (app *App) ExportBackup(uuid string) {
-	name, err := app.exportBackup(uuid)
+func (inst *App) ExportBackup(uuid string) {
+	name, err := inst.exportBackup(uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 	} else {
-		app.crudMessage(true, fmt.Sprintf("saved backup %s", name))
+		inst.crudMessage(true, fmt.Sprintf("saved backup %s", name))
 	}
 }
 
-func (app *App) exportBackup(uuid string) (string, error) {
+func (inst *App) exportBackup(uuid string) (string, error) {
 	if uuid == "" {
 		return "", errors.New("uuid can not be empty")
 	}
-	backup, err := app.getBackup(uuid)
+	backup, err := inst.getBackup(uuid)
 	if err != nil {
 		return "", err
 	}
 	if backup == nil {
 		return "", errors.New("backup with that uuid not found")
 	}
-	inst := &store.Store{
+	str := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
 	}
 	t := time.Now().Format("2006-01-02 15:04:05")
-	appStore, err := store.New(inst)
+	appStore, err := store.New(str)
 	name := fmt.Sprintf("type-%s-%s-%s", backup.SubApplication, backup.UserComment, t)
 	err = appStore.SaveBackup(strings.ToLower(name), backup)
 	if err != nil {
@@ -56,7 +56,7 @@ func (app *App) exportBackup(uuid string) (string, error) {
 	return name, nil
 }
 
-func (app *App) DoBackup(connUUID, hostUUID, application, subApplication, userComment string, data interface{}) *storage.Backup {
+func (inst *App) DoBackup(connUUID, hostUUID, application, subApplication, userComment string, data interface{}) *storage.Backup {
 	back := &storage.Backup{}
 	back.ConnectionUUID = connUUID
 	back.HostUUID = hostUUID
@@ -64,38 +64,38 @@ func (app *App) DoBackup(connUUID, hostUUID, application, subApplication, userCo
 	back.SubApplication = subApplication
 	back.UserComment = userComment
 	back.Data = data
-	backup, err := app.addBackup(back)
+	backup, err := inst.addBackup(back)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return backup
 }
 
-func (app *App) addBackup(back *storage.Backup) (*storage.Backup, error) {
+func (inst *App) addBackup(back *storage.Backup) (*storage.Backup, error) {
 	if back.ConnectionName == "" {
-		connection := app.GetConnection(back.ConnectionUUID)
+		connection := inst.GetConnection(back.ConnectionUUID)
 		if connection != nil {
 			back.ConnectionName = connection.Name
 		}
 	}
 	if back.HostName == "" {
-		host := app.GetHost(back.ConnectionUUID, back.HostUUID)
+		host := inst.GetHost(back.ConnectionUUID, back.HostUUID)
 		if host != nil {
 			back.HostName = host.Name
 		}
 	}
-	back, err := app.DB.AddBackup(back)
+	back, err := inst.DB.AddBackup(back)
 	if err != nil {
 		return nil, err
 	}
 	return back, nil
 }
 
-func (app *App) GetBackupsNoData() []storage.Backup {
-	back, err := app.getBackups()
+func (inst *App) GetBackupsNoData() []storage.Backup {
+	back, err := inst.getBackups()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	var out []storage.Backup
@@ -106,40 +106,40 @@ func (app *App) GetBackupsNoData() []storage.Backup {
 	return out
 }
 
-func (app *App) DeleteBackup(uuid string) string {
-	err := app.DB.DeleteBackup(uuid)
+func (inst *App) DeleteBackup(uuid string) string {
+	err := inst.DB.DeleteBackup(uuid)
 	if err != nil {
 		return err.Error()
 	}
 	return "deleted ok"
 }
 
-func (app *App) DeleteBackupBulk(backUUIDs []UUIDs) interface{} {
+func (inst *App) DeleteBackupBulk(backUUIDs []UUIDs) interface{} {
 	for _, uuid := range backUUIDs {
-		err := app.DB.DeleteBackup(uuid.UUID)
+		err := inst.DB.DeleteBackup(uuid.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("deleted backup: %s", uuid.UUID))
+			inst.crudMessage(false, fmt.Sprintf("deleted backup: %s", uuid.UUID))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleted backup: %s", uuid.UUID))
+			inst.crudMessage(true, fmt.Sprintf("deleted backup: %s", uuid.UUID))
 		}
 	}
 	return "ok"
 }
 
 // GetBackupsByApplication get all backups as example RubixWires
-func (app *App) GetBackupsByApplication(application, subApplication string, withData bool) []storage.Backup {
+func (inst *App) GetBackupsByApplication(application, subApplication string, withData bool) []storage.Backup {
 	if application == "" {
-		app.crudMessage(false, fmt.Sprintf("error %s", "application cant not be empty"))
+		inst.crudMessage(false, fmt.Sprintf("error %s", "application cant not be empty"))
 		return nil
 	}
-	back, err := app.getBackups()
+	back, err := inst.getBackups()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	err = logstore.CheckApplication(application)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	var out []storage.Backup
@@ -161,42 +161,42 @@ func (app *App) GetBackupsByApplication(application, subApplication string, with
 	return out
 }
 
-func (app *App) GetBackups() []storage.Backup {
-	back, err := app.getBackups()
+func (inst *App) GetBackups() []storage.Backup {
+	back, err := inst.getBackups()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return back
 }
 
-func (app *App) GetBackup(uuid string) *storage.Backup {
-	back, err := app.getBackup(uuid)
+func (inst *App) GetBackup(uuid string) *storage.Backup {
+	back, err := inst.getBackup(uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return back
 }
 
-func (app *App) getBackup(uuid string) (*storage.Backup, error) {
-	back, err := app.DB.GetBackup(uuid)
+func (inst *App) getBackup(uuid string) (*storage.Backup, error) {
+	back, err := inst.DB.GetBackup(uuid)
 	if err != nil {
 		return nil, err
 	}
 	return back, nil
 }
 
-func (app *App) getBackups() ([]storage.Backup, error) {
-	back, err := app.DB.GetBackups()
+func (inst *App) getBackups() ([]storage.Backup, error) {
+	back, err := inst.DB.GetBackups()
 	if err != nil {
 		return nil, err
 	}
 	return back, nil
 }
 
-func (app *App) getBackupsByHostUUID(hostUUID string) ([]storage.Backup, error) {
-	back, err := app.DB.GetBackupsByHostUUID(hostUUID)
+func (inst *App) getBackupsByHostUUID(hostUUID string) ([]storage.Backup, error) {
+	back, err := inst.DB.GetBackupsByHostUUID(hostUUID)
 	if err != nil {
 		return nil, err
 	}

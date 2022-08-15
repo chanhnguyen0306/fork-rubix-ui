@@ -10,43 +10,43 @@ const flowFramework = "flow-framework"
 const rubixWires = "rubix-wires"
 const wiresBuilds = "wires-builds"
 
-func (app *App) GetReleases() []store.Release {
-	out, err := app.getReleases()
+func (inst *App) GetReleases() []store.Release {
+	out, err := inst.getReleases()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get releases:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get releases:%s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) getReleases() ([]store.Release, error) {
-	return app.DB.GetReleases()
+func (inst *App) getReleases() ([]store.Release, error) {
+	return inst.DB.GetReleases()
 }
 
-func (app *App) GetRelease(uuid string) *store.Release {
-	out, err := app.getRelease(uuid)
+func (inst *App) GetRelease(uuid string) *store.Release {
+	out, err := inst.getRelease(uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get release:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get release:%s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) getRelease(uuid string) (*store.Release, error) {
-	return app.DB.GetRelease(uuid)
+func (inst *App) getRelease(uuid string) (*store.Release, error) {
+	return inst.DB.GetRelease(uuid)
 }
 
-func (app *App) GetReleaseByVersion(version string) *store.Release {
-	out, err := app.getReleaseByVersion(version)
+func (inst *App) GetReleaseByVersion(version string) *store.Release {
+	out, err := inst.getReleaseByVersion(version)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error get release by version:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get release by version:%s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
-	v, err := app.DB.GetReleaseByVersion(version)
+func (inst *App) getReleaseByVersion(version string) (*store.Release, error) {
+	v, err := inst.DB.GetReleaseByVersion(version)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (app *App) getReleaseByVersion(version string) (*store.Release, error) {
 
 }
 
-func (app *App) getAppFromReleases(version, appName string) (*store.Apps, error) {
-	release, err := app.getReleaseByVersion(version)
+func (inst *App) getAppFromReleases(version, appName string) (*store.Apps, error) {
+	release, err := inst.getReleaseByVersion(version)
 	if err != nil {
 		return nil, err
 	}
@@ -70,19 +70,19 @@ func (app *App) getAppFromReleases(version, appName string) (*store.Apps, error)
 	return nil, errors.New(fmt.Sprintf("failed to find app by name:%s", appName))
 }
 
-func (app *App) AddRelease(token, version string) *store.Release {
-	out, err := app.addRelease(token, version)
+func (inst *App) AddRelease(token, version string) *store.Release {
+	out, err := inst.addRelease(token, version)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error add release:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error add release:%s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) addRelease(token, version string) (*store.Release, error) {
-	release, err := app.gitDownloadRelease(token, version)
+func (inst *App) addRelease(token, version string) (*store.Release, error) {
+	release, err := inst.gitDownloadRelease(token, version)
 	if err != nil {
 		return nil, err
 	}
-	return app.DB.AddRelease(release)
+	return inst.DB.AddRelease(release)
 }

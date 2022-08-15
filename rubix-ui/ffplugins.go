@@ -12,15 +12,15 @@ type PluginName struct {
 }
 
 //GetPluginsNames return's an array of name and uuid
-func (app *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	out, err := app.flow.GetPlugins()
+	out, err := inst.flow.GetPlugins()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	var names []PluginName
@@ -30,15 +30,15 @@ func (app *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
 	return names
 }
 
-func (app *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.PluginConf, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.PluginConf, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, nil
 	}
-	plugins, err := app.flow.GetPlugins()
+	plugins, err := inst.flow.GetPlugins()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, nil
 	}
 	for _, plg := range plugins {
@@ -49,29 +49,29 @@ func (app *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.P
 	return nil, errors.New(fmt.Sprintf("no plugin found with that name:%s", pluginName))
 }
 
-func (app *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginConf {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginConf {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	out, err := app.flow.GetPlugin(pluginUUID)
+	out, err := inst.flow.GetPlugin(pluginUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	out, err := app.flow.GetPlugins()
+	out, err := inst.flow.GetPlugins()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return out
@@ -82,63 +82,63 @@ type PluginUUIDs struct {
 	UUID string `json:"uuid"`
 }
 
-func (app *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		_, err := app.flow.DisablePlugin(plg.UUID)
+		_, err := inst.flow.DisablePlugin(plg.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("disabled plugin fail: %s", plg.Name))
+			inst.crudMessage(false, fmt.Sprintf("disabled plugin fail: %s", plg.Name))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("disabled plugin:%s", plg.Name))
+			inst.crudMessage(true, fmt.Sprintf("disabled plugin:%s", plg.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, plg := range pluginUUID {
-		_, err := app.flow.EnablePlugin(plg.UUID)
+		_, err := inst.flow.EnablePlugin(plg.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("enable plugin fail: %s", plg.Name))
+			inst.crudMessage(false, fmt.Sprintf("enable plugin fail: %s", plg.Name))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("enabled plugin:%s", plg.Name))
+			inst.crudMessage(true, fmt.Sprintf("enabled plugin:%s", plg.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) EnablePlugin(connUUID, hostUUID, pluginUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EnablePlugin(connUUID, hostUUID, pluginUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	out, err := app.flow.EnablePlugin(pluginUUID)
+	out, err := inst.flow.EnablePlugin(pluginUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (app *App) DisablePlugin(connUUID, hostUUID, pluginUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DisablePlugin(connUUID, hostUUID, pluginUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	out, err := app.flow.DisablePlugin(pluginUUID)
+	out, err := inst.flow.DisablePlugin(pluginUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return out

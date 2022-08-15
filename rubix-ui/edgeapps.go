@@ -5,110 +5,149 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
 )
 
 // EdgeDeviceInfoAndApps list the installed apps
-func (app *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
-	edgeAppsAndService, err := app.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
+func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
+	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return edgeAppsAndService
 }
 
 // EdgeServices list the services on the edge device with name "nubeio"
-func (app *App) EdgeServices(connUUID, hostUUID string) []installer.InstalledServices {
-	service, err := app.edgeListAppsAndService(connUUID, hostUUID)
+func (inst *App) EdgeServices(connUUID, hostUUID string) []installer.InstalledServices {
+	service, err := inst.edgeListAppsAndService(connUUID, hostUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return service
 }
 
 // EdgeUnInstallApp uninstall an app
-func (app *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *installer.RemoveRes {
-	resp, err := app.edgeUnInstallApp(connUUID, hostUUID, appName)
+func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *installer.RemoveRes {
+	resp, err := inst.edgeUnInstallApp(connUUID, hostUUID, appName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
 // EdgeInstallApp install an app
-func (app *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
+func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
 	var lastStep = "5"
 	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	if err := emptyString(appName, "appName"); err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	if err := emptyString(appVersion, "appVersion"); err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	if err := emptyString(arch, "arch"); err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	err := app.StoreCheckAppExists(appName)
+
+	release, err := inst.getReleaseByVersion(releaseVersion)
+	var appHasPlugins bool
+	var releaseApp *store.Apps
+	for _, app := range release.Apps {
+		if app.Name == appName {
+			releaseApp = &app
+			for _, plg := range app.PluginDependency {
+				appHasPlugins = true
+				inst.crudMessage(true, fmt.Sprintf("app and plugin will be installed (app:%s plugin%s)", app.Name, plg))
+			}
+		}
+	}
+
+	if releaseApp != nil {
+
+	}
+
+	err = inst.StoreCheckAppExists(appName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	err = app.StoreCheckAppAndVersionExists(appName, appVersion)
+	err = inst.StoreCheckAppAndVersionExists(appName, appVersion)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	info, err := app.edgeProductInfo(connUUID, hostUUID)
+	info, err := inst.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
 		log.Errorf("install-edge-app get product:%s", err.Error())
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	var product = info.Product
-	app.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type:%s app:%s", lastStep, product, appName))
+	log.Errorln(" INSTALL-APP add check to make its correct arch and product")
+	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type:%s app:%s", lastStep, product, appName))
 	if err = emptyString(product, "product"); err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	assistUpload, err := app.assistAddUploadApp(connUUID, appName, appVersion, product, arch)
+	log.Errorln("INSTALL-APP UPLOAD APP TO ASSIST AND IN CHECK TO SEE IF APP IS ALREADY UPLOADED")
+	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, product, arch)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to rubix-assist app-name:%s err:%s", appName, err.Error())
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	app.crudMessage(true, fmt.Sprintf("(step 2 of %s) upload app to rubix-assist app:%s", lastStep, assistUpload.Name))
-	uploadApp, err := app.edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, product, arch)
+	inst.crudMessage(true, fmt.Sprintf("(step 2 of %s) upload app to rubix-assist app:%s", lastStep, assistUpload.Name))
+	uploadApp, err := inst.edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, product, arch)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to edge app-name:%s err:%s", appName, err.Error())
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	app.crudMessage(true, fmt.Sprintf("(step 3 of %s) upload app to rubix-edge app:%s", lastStep, uploadApp.Name))
-	uploadEdgeService, err := app.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
+	inst.crudMessage(true, fmt.Sprintf("(step 3 of %s) upload app to rubix-edge app:%s", lastStep, uploadApp.Name))
+	uploadEdgeService, err := inst.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
 	if err != nil {
 		log.Errorf("install-edge-app upload linux-service to edge app-name:%s err:%s", appName, err.Error())
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	app.crudMessage(true, fmt.Sprintf("(step 4 of %s) upload linux-service to rubix-edge name:%s", lastStep, uploadEdgeService.UploadedFile))
+	inst.crudMessage(true, fmt.Sprintf("(step 4 of %s) upload linux-service to rubix-edge name:%s", lastStep, uploadEdgeService.UploadedFile))
 	serviceFile := uploadEdgeService.UploadedFile
-	installEdgeService, err := app.installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFile)
+	installEdgeService, err := inst.installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFile)
 	if err != nil {
 		log.Errorf("install-edge-app install app to edge app-name:%s err:%s", appName, err.Error())
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	app.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge name:%s", lastStep, installEdgeService.Install))
+
+	if appHasPlugins {
+		for _, plg := range releaseApp.PluginDependency {
+			appHasPlugins = true
+			inst.crudMessage(true, fmt.Sprintf("start upload and install of plugin (app:%s plugin%s)", appName, plg))
+			inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
+				PluginName: plg,
+				Arch:       arch,
+				Version:    appVersion,
+			}, false)
+		}
+		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err:%s", err.Error()))
+		} else {
+			inst.crudMessage(true, fmt.Sprintf("(step 4 of %s)  restart flow-framework msg:%s", lastStep, restart.Message))
+		}
+	}
+	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge name:%s", lastStep, installEdgeService.Install))
 	return installEdgeService
 }
 
@@ -140,12 +179,12 @@ type AppsAvailableForInstall struct {
 }
 
 // edgeDeviceInfoAndApps get the complete app info of the device, installed apps, what apps can be installed and the product info
-func (app *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
-	pro, err := app.edgeProductInfo(connUUID, hostUUID)
+func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
+	pro, err := inst.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	installed, err := app.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
+	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
 	if err != nil {
 		return nil, err
 	}
@@ -157,12 +196,12 @@ func (app *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string)
 }
 
 // edgeAppsInstalledVersions list the installed apps on the edge device and what is available for install
-func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *installer.Product) (*EdgeDeviceInfo, error) {
-	installedApps, err := app.edgeInstalledApps(connUUID, hostUUID)
+func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *installer.Product) (*EdgeDeviceInfo, error) {
+	installedApps, err := inst.edgeInstalledApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	getVersion, err := app.getReleaseByVersion(releaseVersion)
+	getVersion, err := inst.getReleaseByVersion(releaseVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -219,12 +258,12 @@ func (app *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion str
 }
 
 // edgeListApps apps that are in the app dir and have a linux service
-func (app *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, error) {
-	apps, err := app.edgeListApps(connUUID, hostUUID)
+func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, error) {
+	apps, err := inst.edgeListApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	services, err := app.edgeListAppsAndService(connUUID, hostUUID)
+	services, err := inst.edgeListAppsAndService(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -252,8 +291,8 @@ func (app *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, e
 }
 
 // edgeListApps apps that are in the app dir
-func (app *App) edgeListApps(connUUID, hostUUID string) ([]installer.Apps, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeListApps(connUUID, hostUUID string) ([]installer.Apps, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -265,8 +304,8 @@ func (app *App) edgeListApps(connUUID, hostUUID string) ([]installer.Apps, error
 }
 
 // edgeAppServices apps that have a systemctl service
-func (app *App) edgeAppServices(connUUID, hostUUID string) ([]InstalledApps, error) {
-	services, err := app.edgeListAppsAndService(connUUID, hostUUID)
+func (inst *App) edgeAppServices(connUUID, hostUUID string) ([]InstalledApps, error) {
+	services, err := inst.edgeListAppsAndService(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -287,8 +326,8 @@ func (app *App) edgeAppServices(connUUID, hostUUID string) ([]InstalledApps, err
 }
 
 // edgeListAppsAndService list all the apps in the rubix-service dir that have a service
-func (app *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.InstalledServices, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.InstalledServices, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -300,8 +339,8 @@ func (app *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.I
 }
 
 // edgeListNubeServices list all the linux services starting with name "nubeio"
-func (app *App) edgeListNubeServices(connUUID, hostUUID string) ([]installer.InstalledServices, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeListNubeServices(connUUID, hostUUID string) ([]installer.InstalledServices, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -312,8 +351,8 @@ func (app *App) edgeListNubeServices(connUUID, hostUUID string) ([]installer.Ins
 	return resp, err
 }
 
-func (app *App) edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, product, arch string) (*installer.AppResponse, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, product, arch string) (*installer.AppResponse, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -326,12 +365,12 @@ func (app *App) edgeUploadEdgeApp(connUUID, hostUUID, appName, appVersion, produ
 	return resp, err
 }
 
-func (app *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
-	nubeApp, err := app.getAppFromReleases(releaseVersion, appName)
+	nubeApp, err := inst.getAppFromReleases(releaseVersion, appName)
 	if err != nil {
 		return nil, err
 	}
@@ -346,8 +385,8 @@ func (app *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, relea
 	return resp, err
 }
 
-func (app *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*installer.InstallResp, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*installer.InstallResp, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -360,8 +399,8 @@ func (app *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serv
 	return resp, err
 }
 
-func (app *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*installer.InstallResp, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*installer.InstallResp, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -374,8 +413,8 @@ func (app *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, serviceF
 	return resp, err
 }
 
-func (app *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*installer.RemoveRes, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*installer.RemoveRes, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
