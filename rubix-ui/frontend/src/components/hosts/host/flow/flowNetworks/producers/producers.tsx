@@ -6,8 +6,6 @@ import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
 import { ProducersTable } from "./views/table";
 
-import Producer = model.Producer;
-
 export const Producers = () => {
   const {
     connUUID = "",
@@ -16,12 +14,6 @@ export const Producers = () => {
     hostUUID = "",
     flNetworkUUID = "",
   } = useParams();
-  const [producers, setProducers] = useState([] as Producer[]);
-  const [isFetching, setIsFetching] = useState(false);
-
-  let factory = new FlowProducerFactory();
-  factory.connectionUUID = connUUID;
-  factory.hostUUID = hostUUID;
 
   const routes = [
     {
@@ -65,30 +57,10 @@ export const Producers = () => {
     },
   ];
 
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  const fetch = async () => {
-    try {
-      setIsFetching(true);
-      const res = await factory.GetAll();
-      setProducers(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
   return (
     <>
       <RbxBreadcrumb routes={routes} />
-      <ProducersTable
-        data={producers}
-        isFetching={isFetching}
-        refreshList={fetch}
-      />
+      <ProducersTable />
     </>
   );
 };
