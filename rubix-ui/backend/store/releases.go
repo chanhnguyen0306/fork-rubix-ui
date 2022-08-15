@@ -14,6 +14,7 @@ type Apps struct {
 	Port                   int      `json:"port,omitempty"`
 	Transport              string   `json:"transport"`
 	AppSpecficExecStart    string   `json:"app_specfic_exec_start"`
+	EnvironmentVars        []string `json:"environment_vars"`
 	Products               []string `json:"products"`
 	Arch                   []string `json:"arch"`
 	Version                string   `json:"version"`

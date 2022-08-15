@@ -9,6 +9,7 @@
       "port": 1660,
       "transport": "http",
       "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+      "environment_vars":[],
       "products": [
         "Server",
         "Edge28",
@@ -35,7 +36,8 @@
       "description": "a bacnet server",
       "port": 47808,
       "transport": "udp",
-      "app_specfic_exec_start": "",
+      "app_specfic_exec_start": "app",
+      "environment_vars": ["g=/data/bacnet-server-driver", "s=config.yml"],
       "products": [
         "Server",
         "Edge28",
@@ -65,6 +67,7 @@
       "port": 5001,
       "transport": "http",
       "app_specfic_exec_start": "",
+      "environment_vars":[],
       "products": [
         "RubixComputeIO"
       ],
@@ -88,6 +91,7 @@
       "description": "rubix compute io service",
       "transport": "serial",
       "app_specfic_exec_start": "",
+      "environment_vars":[],
       "products": [
         "RubixCompute5",
         "RubixComputeIO"
@@ -113,6 +117,7 @@
       "port": 5000,
       "transport": "http",
       "app_specfic_exec_start": "",
+      "environment_vars":[],
       "products": [
         "Edge28"
       ],
@@ -136,6 +141,7 @@
       "port": 1313,
       "transport": "http",
       "app_specfic_exec_start": "",
+      "environment_vars":[],
       "products": [
         "Server",
         "Edge28",

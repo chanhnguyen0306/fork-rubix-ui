@@ -117,7 +117,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, r
 	inst.crudMessage(true, fmt.Sprintf("(step 3 of %s) upload app to rubix-edge app:%s", lastStep, uploadApp.Name))
 	uploadEdgeService, err := inst.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
 	if err != nil {
-		log.Errorf("install-edge-app upload linux-service to edge app-name:%s err:%s", appName, err.Error())
+		log.Errorf("install-edge-app upload linux-service to edge app-name:%s", appName)
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
@@ -147,7 +147,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, r
 			inst.crudMessage(true, fmt.Sprintf("(step 4 of %s)  restart flow-framework msg:%s", lastStep, restart.Message))
 		}
 	}
-	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge name:%s", lastStep, installEdgeService.Install))
+	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge %s name:%s", lastStep, installEdgeService.Install, appName))
 	return installEdgeService
 }
 
@@ -375,12 +375,10 @@ func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, rele
 		return nil, err
 	}
 	resp, err := client.UploadEdgeService(hostUUID, &appstore.ServiceFile{
-		Name:                    appName,
-		Version:                 appVersion,
-		ServiceDescription:      "",
-		RunAsUser:               "",
-		ServiceWorkingDirectory: "",
-		AppSpecficExecStart:     nubeApp.AppSpecficExecStart,
+		Name:                appName,
+		Version:             appVersion,
+		AppSpecficExecStart: nubeApp.AppSpecficExecStart,
+		EnvironmentVars:     nubeApp.EnvironmentVars,
 	})
 	return resp, err
 }
