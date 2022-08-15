@@ -1,52 +1,38 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
-import { FlowConsumerFactory } from "../factory";
 import { FlowNetworkFactory } from "../../../networks/factory";
-import { FlowProducerFactory } from "../../producers/factory";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { FlowProducerFactory } from "../factory";
+import { model } from "../../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../../common/json-schema-form";
 
-import Consumer = model.Consumer;
-import NetworksList = main.NetworksList;
+import Producer = model.Producer;
 
 export const CreateEditModal = (props: any) => {
   const { currentItem, isModalVisible, refreshList, onCloseModal } = props;
   const { connUUID = "", hostUUID = "", streamUUID = "" } = useParams();
   const [formData, setFormData] = useState(currentItem);
-  const [networksWithPoints, setNetworksWithPoints] = useState(
-    [] as NetworksList[]
-  );
-  const [jsonSchema, setJsonSchema] = useState({});
-
+  const [schema, setSchema] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowConsumerFactory();
-  let producerFactory = new FlowProducerFactory();
+  let factory = new FlowProducerFactory();
   let flowNetworkFactory = new FlowNetworkFactory();
-  factory.connectionUUID =
-    flowNetworkFactory.connectionUUID =
-    producerFactory.connectionUUID =
-      connUUID;
-  factory.hostUUID =
-    flowNetworkFactory.hostUUID =
-    producerFactory.hostUUID =
-      hostUUID;
+  factory.connectionUUID = flowNetworkFactory.connectionUUID = connUUID;
+  factory.hostUUID = flowNetworkFactory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData(currentItem);
   }, [isModalVisible]);
 
   useEffect(() => {
-    GetNetworksWithPointsDisplay();
+    getSchema();
   }, []);
 
-  const GetNetworksWithPointsDisplay = async () => {
+  const getSchema = async () => {
     try {
       setIsFetching(true);
       const res = await flowNetworkFactory.GetNetworksWithPointsDisplay();
-      setNetworksWithPoints(res);
       const jsonSchema = {
         properties: {
           uuid: {
@@ -88,7 +74,7 @@ export const CreateEditModal = (props: any) => {
           },
         },
       };
-      setJsonSchema(jsonSchema);
+      setSchema(jsonSchema);
     } catch (error) {
       console.log(error);
     } finally {
@@ -96,7 +82,7 @@ export const CreateEditModal = (props: any) => {
     }
   };
 
-  const handleSubmit = async (item: any) => {
+  const handleSubmit = async (item: Producer) => {
     try {
       setConfirmLoading(true);
       if (currentItem.uuid) {
@@ -108,7 +94,7 @@ export const CreateEditModal = (props: any) => {
           stream_uuid: streamUUID,
           history_type: "",
           history_interval: 0,
-        };
+        } as any;
         await factory.Add(item);
       }
       refreshList();
@@ -137,7 +123,7 @@ export const CreateEditModal = (props: any) => {
             formData={formData}
             setFormData={setFormData}
             handleSubmit={handleSubmit}
-            jsonSchema={jsonSchema}
+            jsonSchema={schema}
           />
         </Spin>
       </Modal>

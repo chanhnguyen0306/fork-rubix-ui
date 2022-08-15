@@ -100,7 +100,7 @@ export const STREAM_HEADERS = [
   // },
 ];
 
-export const CONSUMER_HEADERS = [
+export const PRODUCER_HEADERS = [
   {
     key: "uuid",
     title: "uuid",

@@ -2,37 +2,36 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
+import { FlowProducerFactory } from "../factory";
+import { PRODUCER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
-
-import UUIDs = main.UUIDs;
-import Consumer = model.Consumer;
-
 import {
   RbAddButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
 import { CreateEditModal } from "./create";
-import { FlowConsumerFactory } from "../factory";
 
-export const ConsumersTable = (props: any) => {
+import UUIDs = main.UUIDs;
+import Producer = model.Producer;
+
+export const ProducersTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
   let { connUUID = "", hostUUID = "" } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [currentItem, setCurrentItem] = useState({} as Consumer);
+  const [currentItem, setCurrentItem] = useState({} as Producer);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  let factory = new FlowConsumerFactory();
+  let factory = new FlowProducerFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...CONSUMER_HEADERS,
+    ...PRODUCER_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, item: Consumer) => (
+      render: (_: any, item: Producer) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -52,20 +51,20 @@ export const ConsumersTable = (props: any) => {
     },
   };
 
-  const showModal = (item: Consumer) => {
+  const showModal = (item: Producer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
   };
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentItem({} as Consumer);
+    setCurrentItem({} as Producer);
   };
 
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
-      <RbAddButton showModal={() => showModal({} as Consumer)} />
+      <RbAddButton showModal={() => showModal({} as Producer)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

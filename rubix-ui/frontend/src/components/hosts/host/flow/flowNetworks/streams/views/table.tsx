@@ -42,7 +42,7 @@ export const StreamsTable = (props: any) => {
       key: "actions",
       render: (_: any, item: Stream) => (
         <Space size="middle">
-          <Link to={getNavigationLink(item.uuid)}>View Consumers</Link>
+          <Link to={getNavigationLink(item.uuid)}>View Producers</Link>
           <a
             onClick={() => {
               showModal(item);
@@ -80,7 +80,7 @@ export const StreamsTable = (props: any) => {
   };
 
   const getNavigationLink = (streamUUID: string): string => {
-    return ROUTES.CONSUMERS.replace(":connUUID", connUUID)
+    return ROUTES.PRODUCERS.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID)

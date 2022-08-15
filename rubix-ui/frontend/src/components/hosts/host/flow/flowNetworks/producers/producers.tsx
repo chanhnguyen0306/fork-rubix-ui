@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FlowConsumerFactory } from "./factory";
 import { model } from "../../../../../../../wailsjs/go/models";
+import { FlowProducerFactory } from "./factory";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
-import { ConsumersTable } from "./views/table";
+import { ProducersTable } from "./views/table";
 
-import Consumer = model.Consumer;
+import Producer = model.Producer;
 
-export const Consumers = () => {
+export const Producers = () => {
   const {
     connUUID = "",
     locUUID = "",
@@ -16,10 +16,10 @@ export const Consumers = () => {
     hostUUID = "",
     flNetworkUUID = "",
   } = useParams();
-  const [consumers, setConsumers] = useState([] as Consumer[]);
+  const [producers, setProducers] = useState([] as Producer[]);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowConsumerFactory();
+  let factory = new FlowProducerFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -61,7 +61,7 @@ export const Consumers = () => {
       breadcrumbName: "Streams",
     },
     {
-      breadcrumbName: "Consumers",
+      breadcrumbName: "Producers",
     },
   ];
 
@@ -72,8 +72,8 @@ export const Consumers = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll(false);
-      setConsumers(res);
+      const res = await factory.GetAll();
+      setProducers(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -84,8 +84,8 @@ export const Consumers = () => {
   return (
     <>
       <RbxBreadcrumb routes={routes} />
-      <ConsumersTable
-        data={consumers}
+      <ProducersTable
+        data={producers}
         isFetching={isFetching}
         refreshList={fetch}
       />
