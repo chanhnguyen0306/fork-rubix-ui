@@ -4,7 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { Logs } from "./components/logs/logs";
 import { Hosts } from "./components/hosts/hosts";
 import { Host } from "./components/hosts/host/host";
-import AppStore from './components/release/appStore';
+import AppStore from "./components/release/appStore";
 import { Backups } from "./components/backups/backups";
 import { DocsRubixHardware } from "./components/docs/docs";
 import { DocsSoftware } from "./components/docs/software";
@@ -15,6 +15,8 @@ import { Connections } from "./components/connections/connections";
 import { PcNetworking } from "./components/pc/networking/networking";
 import { FlowPoints } from "./components/hosts/host/flow/points/flowPoints";
 import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
+import { Streams } from "./components/hosts/host/flow/flowNetworks/streams/streams";
+import { Producers } from "./components/hosts/host/flow/flowNetworks/producers/producers";
 import ConnectionPage from "./components/connections/connection-page";
 import { ROUTES as routes } from "./constants/routes";
 
@@ -65,6 +67,16 @@ function AppRoutes() {
           key={routes.POINTS}
           path={routes.POINTS}
           element={<FlowPoints />}
+        />
+        <Route
+          key={routes.STREAMS}
+          path={routes.STREAMS}
+          element={<Streams />}
+        />
+        <Route
+          key={routes.PRODUCERS}
+          path={routes.PRODUCERS}
+          element={<Producers />}
         />
       </Route>
     </Routes>

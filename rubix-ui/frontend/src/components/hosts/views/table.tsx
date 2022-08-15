@@ -1,30 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Space, Spin, Image, PaginationProps } from "antd";
-import {
-  MenuFoldOutlined,
-  PlayCircleOutlined,
-  BookOutlined,
-} from "@ant-design/icons";
-
-import { SidePanel } from "./side-panel";
+import { Space, Spin, PaginationProps } from "antd";
+import { MenuFoldOutlined } from "@ant-design/icons";
 import { HostsFactory } from "../factory";
-import { CreateEditModal } from "./create";
-import RbTable from "../../../common/rb-table";
-import { ROUTES } from "../../../constants/routes";
-import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
-import imageRC5 from "../../../assets/images/RC5.png";
-import imageRCIO from "../../../assets/images/RC-IO.png";
-import imageEdge28 from "../../../assets/images/Edge-iO-28.png";
 import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
-
+import { isObjectEmpty } from "../../../utils/utils";
+import { ROUTES } from "../../../constants/routes";
+import { HOST_HEADERS } from "../../../constants/headers";
+import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../common/rb-table-actions";
-
+import { CreateEditModal } from "./create";
+import { SidePanel } from "./side-panel";
 import "./style.css";
 
 import Host = assistmodel.Host;
@@ -51,52 +42,7 @@ export const HostsTable = (props: any) => {
   factory.connectionUUID = connUUID as string;
 
   const columns = [
-    {
-      title: "product",
-      key: "product_type",
-      dataIndex: "product_type",
-      render(product: string) {
-        let image = imageRC5;
-        if (product == "RubixCompute") {
-          image = imageRC5;
-        }
-        if (product == "RubixComputeIO") {
-          image = imageRCIO;
-        }
-        if (product == "Edge28") {
-          image = imageEdge28;
-        }
-        return <Image width={70} src={image} />;
-      },
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-    },
-
-    {
-      title: "description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "product",
-      key: "product_type",
-      dataIndex: "product_type",
-      render(product: string) {
-        let icon = <PlayCircleOutlined />;
-        if (product == "RubixCompute") {
-          icon = <BookOutlined />;
-        }
-        if (product == "RubixComputeIO") {
-        }
-        return (
-          //BookOutlined
-          icon
-        );
-      },
-    },
+    ...HOST_HEADERS,
     {
       title: "network",
       dataIndex: "network_uuid",
@@ -104,11 +50,6 @@ export const HostsTable = (props: any) => {
       render: (network_uuid: string) => (
         <span>{getNetworkNameByUUID(network_uuid)}</span>
       ),
-    },
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
     },
     {
       title: "Actions",

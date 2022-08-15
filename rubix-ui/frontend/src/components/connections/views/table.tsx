@@ -8,11 +8,12 @@ import {
 import { ConnectionFactory } from "../factory";
 import { main, storage } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
+import { ROUTES } from "../../../constants/routes";
+import { CONNECTION_HEADERS } from "../../../constants/headers";
 import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
-import { ROUTES } from "../../../constants/routes";
 
 export const ConnectionsTable = (props: any) => {
   const { connections, refreshList, showModal, isFetching } = props;
@@ -24,36 +25,7 @@ export const ConnectionsTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
 
   const columns = [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Address",
-      dataIndex: "ip",
-      key: "ip",
-    },
-    {
-      title: "Port",
-      dataIndex: "port",
-      key: "port",
-    },
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
+    ...CONNECTION_HEADERS,
     {
       title: "Actions",
       dataIndex: "actions",

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 

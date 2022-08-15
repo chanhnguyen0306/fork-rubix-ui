@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Tabs, Card, Typography } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { assistmodel, model } from "../../../../wailsjs/go/models";
@@ -11,9 +11,12 @@ import { FlowPluginFactory } from "./flow/plugins/factory";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
 import { ROUTES } from "../../../constants/routes";
 import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
+import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
 
-let networksKey = "NETWORKS";
-let pluginsKey = "PLUGINS";
+const networksKey = "NETWORKS";
+const pluginsKey = "PLUGINS";
+const flownetworksKey = "FLOW NETWORKS";
+const infoKey = "INFO";
 
 const { Title } = Typography;
 
@@ -154,12 +157,15 @@ export const Host = () => {
               fetchPlugins={fetchPlugins}
             />
           </TabPane>
-          <TabPane tab="INFO" key="INFO">
+          <TabPane tab={infoKey} key={infoKey}>
             <HostTable
               data={host}
               isFetching={isFetching}
               setIsFetching={setIsFetching}
             />
+          </TabPane>
+          <TabPane tab={flownetworksKey} key={flownetworksKey}>
+            <FlowNetworks />
           </TabPane>
         </Tabs>
       </Card>

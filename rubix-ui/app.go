@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"sync"
+
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
@@ -10,7 +12,6 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
-	"sync"
 )
 
 const flowPort = 1660

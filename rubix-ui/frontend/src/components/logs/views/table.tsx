@@ -1,15 +1,17 @@
-import {Button, Popconfirm, Spin} from "antd";
+import { useState } from "react";
+import { Button, Popconfirm, Spin } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { LogFactory } from "../factory";
+import { main } from "../../../../wailsjs/go/models";
+import { LOG_HEADERS } from "../../../constants/headers";
 import RbTable from "../../../common/rb-table";
-import React, {useState} from "react";
-import {main} from "../../../../wailsjs/go/models";
-import {LogFactory} from "../factory";
-import {DeleteOutlined} from "@ant-design/icons";
 
 export const LogsTable = (props: any) => {
   const { logs, isFetching, fetch } = props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
   let logFactory = new LogFactory();
 
+  const columns = LOG_HEADERS;
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
@@ -19,48 +21,23 @@ export const LogsTable = (props: any) => {
 
   const bulkDelete = async () => {
     await logFactory.BulkDelete(selectedUUIDs);
-    fetch()
-
+    fetch();
   };
 
-  const columns = [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "Timestamp",
-      dataIndex: "time",
-      key: "time",
-    },
-    {
-      title: "Table",
-      dataIndex: "function",
-      key: "function",
-    },
-    {
-      title: "Action Type",
-      dataIndex: "type",
-      key: "type",
-    },
-  ];
-
   return (
-      <>
-        <Popconfirm title="Delete" onConfirm={bulkDelete}>
-          <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
-            <DeleteOutlined /> Delete
-          </Button>
-        </Popconfirm>
-        <RbTable
-            rowKey="uuid"
-            rowSelection={rowSelection}
-            dataSource={logs}
-            columns={columns}
-            loading={{ indicator: <Spin />, spinning: isFetching }}
-        />
-      </>
-
+    <>
+      <Popconfirm title="Delete" onConfirm={bulkDelete}>
+        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+          <DeleteOutlined /> Delete
+        </Button>
+      </Popconfirm>
+      <RbTable
+        rowKey="uuid"
+        rowSelection={rowSelection}
+        dataSource={logs}
+        columns={columns}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+    </>
   );
 };

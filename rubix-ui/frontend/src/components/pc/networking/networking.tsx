@@ -46,24 +46,7 @@ export const PcNetworking = () => {
 
 const ScannerTable = (props: any) => {
   let { data, isFetching, schema } = props;
-
   if (!data) return <></>;
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
-    },
-    onSelect: (record: any, selected: any, selectedRows: any) => {
-      console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-      console.log(selected, selectedRows, changeRows);
-    },
-  };
 
   const columns = schema.sort((a: any, b: any) => {
     if (a.key < b.key) {
@@ -74,6 +57,18 @@ const ScannerTable = (props: any) => {
     }
     return 0;
   });
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      console.log(selectedRowKeys, selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
 
   return (
     <div>

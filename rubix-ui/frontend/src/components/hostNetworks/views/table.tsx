@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Space, Spin } from "antd";
 import { Link } from "react-router-dom";
-
-import { NetworksFactory } from "../factory";
-import RbTable from "../../../common/rb-table";
-import { ROUTES } from "../../../constants/routes";
-import { RbDeleteButton } from "../../../common/rb-table-actions";
 import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
 import { assistmodel, main } from "../../../../wailsjs/go/models";
+import { NetworksFactory } from "../factory";
+import { ROUTES } from "../../../constants/routes";
+import { HOST_NETWORK_HEADERS } from "../../../constants/headers";
+import RbTable from "../../../common/rb-table";
+import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 export const NetworksTable = (props: any) => {
   const {
@@ -27,22 +27,7 @@ export const NetworksTable = (props: any) => {
   factory.connectionUUID = connUUID;
 
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Hosts number",
-      dataIndex: "hosts",
-      key: "hosts",
-      render: (hosts: []) => <a>{hosts ? hosts.length : 0}</a>,
-    },
+    ...HOST_NETWORK_HEADERS,
     {
       title: "Location",
       dataIndex: "location_uuid",
@@ -50,11 +35,6 @@ export const NetworksTable = (props: any) => {
       render: (location_uuid: string) => (
         <span>{getLocationNameByUUID(location_uuid)}</span>
       ),
-    },
-    {
-      title: "UUID",
-      dataIndex: "uuid",
-      key: "uuid",
     },
     {
       title: "Actions",
