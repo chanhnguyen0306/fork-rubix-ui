@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
@@ -37,6 +38,9 @@ func (inst *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []m
 }
 
 func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwork) (*model.FlowNetwork, error) {
+	if body.Name == "" {
+		return nil, errors.New("flow network name can not be empty")
+	}
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
@@ -49,12 +53,7 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 }
 
 func (inst *App) AddFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwork) *model.FlowNetwork {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	networks, err := inst.flow.AddFlowNetwork(body)
+	networks, err := inst.addFlowNetwork(connUUID, hostUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
