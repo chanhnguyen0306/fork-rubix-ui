@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { model } from "../../../../../../../wailsjs/go/models";
-import { FlowProducerFactory } from "./factory";
+import { Typography } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
 import { ProducersTable } from "./views/table";
+
+const { Title } = Typography;
 
 export const Producers = () => {
   const {
@@ -59,6 +59,9 @@ export const Producers = () => {
 
   return (
     <>
+      <Title level={3} style={{ textAlign: "left" }}>
+        Producers
+      </Title>
       <RbxBreadcrumb routes={routes} />
       <ProducersTable />
     </>

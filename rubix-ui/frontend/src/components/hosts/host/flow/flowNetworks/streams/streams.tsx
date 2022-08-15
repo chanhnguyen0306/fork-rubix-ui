@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Typography } from "antd";
 import { FlowStreamFactory } from "./factory";
 import { model } from "../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../constants/routes";
@@ -8,13 +9,14 @@ import { StreamsTable } from "./views/table";
 
 import Stream = model.Stream;
 
+const { Title } = Typography;
+
 export const Streams = () => {
   const {
     connUUID = "",
     locUUID = "",
     netUUID = "",
     hostUUID = "",
-    flNetworkUUID = "",
   } = useParams();
   const [streams, setStreams] = useState([] as Stream[]);
   const [isFetching, setIsFetching] = useState(false);
@@ -75,6 +77,9 @@ export const Streams = () => {
 
   return (
     <>
+      <Title level={3} style={{ textAlign: "left" }}>
+        Flow Network Streams
+      </Title>
       <RbxBreadcrumb routes={routes} />
       <StreamsTable
         data={streams}
