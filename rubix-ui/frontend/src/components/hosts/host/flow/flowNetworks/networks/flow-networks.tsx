@@ -7,13 +7,7 @@ import { FlowNetworksTable } from "./views/table";
 import FlowNetwork = model.FlowNetwork;
 
 export const FlowNetworks = () => {
-  const {
-    connUUID = "",
-    locUUID = "",
-    netUUID = "",
-    hostUUID = "",
-    flNetworkUUID = "",
-  } = useParams();
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [networks, setNetworks] = useState([] as FlowNetwork[]);
   const [isFetching, setIsFetching] = useState(false);
 

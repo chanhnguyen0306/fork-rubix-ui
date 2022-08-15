@@ -19,7 +19,6 @@ export const ConsumersTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
   let { connUUID = "", hostUUID = "" } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Consumer);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -47,25 +46,6 @@ export const ConsumersTable = (props: any) => {
     },
   ];
 
-  const getSchema = () => {
-    const schema = {
-      properties: {
-        name: {
-          maxLength: 50,
-          minLength: 2,
-          title: "name",
-          type: "string",
-        },
-        uuid: {
-          readOnly: true,
-          title: "uuid",
-          type: "string",
-        },
-      },
-    };
-    setSchema(schema);
-  };
-
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
@@ -75,7 +55,6 @@ export const ConsumersTable = (props: any) => {
   const showModal = (item: Consumer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
-    getSchema();
   };
 
   const onCloseModal = () => {
@@ -95,7 +74,6 @@ export const ConsumersTable = (props: any) => {
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
       <CreateEditModal
-        schema={schema}
         currentItem={currentItem}
         isModalVisible={isModalVisible}
         refreshList={refreshList}
