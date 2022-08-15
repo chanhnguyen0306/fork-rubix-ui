@@ -102,14 +102,58 @@ export const STREAM_HEADERS = [
 
 export const PRODUCER_HEADERS = [
   {
-    key: "uuid",
-    title: "uuid",
-    dataIndex: "uuid",
-  },
-  {
     key: "name",
     title: "name",
     dataIndex: "name",
+  },
+  {
+    key: "producer_application",
+    title: "application",
+    dataIndex: "producer_application",
+  },
+  {
+    key: "producer_thing_class",
+    title: "thing class",
+    dataIndex: "producer_thing_class",
+  },
+  {
+    key: "producer_thing_name",
+    title: "thing name",
+    dataIndex: "producer_thing_name",
+  },
+  {
+    key: "history_type",
+    title: "history type",
+    dataIndex: "history_type",
+    render(plugin_name: string) {
+      let colour = "#4d4dff";
+      let text = plugin_name.toUpperCase();
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    key: "history_interval",
+    title: "history interval",
+    dataIndex: "history_interval",
+  },
+  {
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enabled: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enabled) {
+        colour = "orange";
+        text = "enabled";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
   },
 ];
 
