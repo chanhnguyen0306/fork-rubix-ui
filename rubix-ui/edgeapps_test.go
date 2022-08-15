@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func TestApp_EdgeDeviceInfoAndApps(t *testing.T) {
+	app := NewApp()
+	resp := app.EdgeDeviceInfoAndApps(connection, "rc", appVersion)
+	pprint.PrintJOSN(resp)
+}
+
 func TestApp_EdgeInstallApp(t *testing.T) {
 	app := NewApp()
 	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion, arch, appVersion)
@@ -17,26 +23,14 @@ func TestApp_EdgeServices(t *testing.T) {
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_EdgeAppsInstalled(t *testing.T) {
-	app := NewApp()
-	resp := app.EdgeAppsInstalled(connection, "rc", appVersion)
-	pprint.PrintJOSN(resp)
-}
-
-func TestApp_EdgeDeviceInfo(t *testing.T) {
-	app := NewApp()
-	resp := app.EdgeDeviceInfo(connection, "rc", appVersion)
-	pprint.PrintJOSN(resp)
-}
-
 func TestApp_EdgeUnInstallApp(t *testing.T) {
 	app := NewApp()
 	resp := app.EdgeUnInstallApp(connection, "rc", appName)
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_edgeAppServices(t *testing.T) {
+func TestApp_edgeAppsInstalledVersions(t *testing.T) {
 	app := NewApp()
-	resp, _ := app.edgeAppServices(connection, "rc")
+	resp, _ := app.edgeListApps(connection, "rc")
 	pprint.PrintJOSN(resp)
 }
