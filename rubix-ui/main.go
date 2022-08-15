@@ -51,15 +51,15 @@ func main() {
 	}
 }
 
-func (app *App) reload() {
-	wailsruntime.WindowReloadApp(app.ctx)
+func (inst *App) reload() {
+	wailsruntime.WindowReloadApp(inst.ctx)
 }
 
-func (app *App) quit() {
-	wailsruntime.Quit(app.ctx)
+func (inst *App) quit() {
+	wailsruntime.Quit(inst.ctx)
 }
 
-func (app *App) nubeHelp() {
+func (inst *App) nubeHelp() {
 	url := "https://desk.zoho.com.au/portal/nubeio/en/home"
 	var err error
 	switch runtime.GOOS {

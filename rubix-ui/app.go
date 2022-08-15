@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"sync"
+
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
@@ -10,7 +12,6 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
-	"sync"
 )
 
 const flowPort = 1660
@@ -42,30 +43,28 @@ func NewApp() *App {
 }
 
 //resetHost will be used later to cache a host ip, port and token
-func (app *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
-	host, err := app.getHost(connUUID, hostUUID)
+func (inst *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
+	host, err := inst.getHost(connUUID, hostUUID)
 	if err != nil {
 		log.Errorf("resetHost connUUID:%s hostUUID:%s", connUUID, hostUUID)
 		return nil, err
 	}
 	if resetFlow {
-		app.resetFlow(host.IP, flowPort)
+		inst.resetFlow(host.IP, flowPort)
 	}
 	return host, err
 }
 
-func (app *App) resetFlow(ip string, port int) {
-	app.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
-	defer app.mutex.Unlock()
-	app.flow = flow.New(&ffclient.Connection{
+func (inst *App) resetFlow(ip string, port int) {
+	inst.flow = flow.New(&ffclient.Connection{
 		Ip:   ip,
 		Port: port,
 	})
 }
 
 // startup is called when the app starts. The context is saved, so we can call the runtime methods
-func (app *App) startup(ctx context.Context) {
-	app.ctx = ctx
+func (inst *App) startup(ctx context.Context) {
+	inst.ctx = ctx
 	//app.sendTimeToUI(ctx)
 }
 
@@ -79,21 +78,21 @@ func matchConnectionUUID(uuid string) bool {
 }
 
 //initRest get rest client
-func (app *App) initConnection(connUUID string) (*assitcli.Client, error) {
-	app.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
-	defer app.mutex.Unlock()
+func (inst *App) initConnection(connUUID string) (*assitcli.Client, error) {
+	inst.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
+	defer inst.mutex.Unlock()
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
 	}
 	var err error
 	connection := &storage.RubixConnection{}
 	if matchConnectionUUID(connUUID) {
-		connection, err = app.DB.Select(connUUID)
+		connection, err = inst.DB.Select(connUUID)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		connection, err = app.DB.SelectByName(connUUID)
+		connection, err = inst.DB.SelectByName(connUUID)
 		if err != nil {
 			return nil, err
 		}

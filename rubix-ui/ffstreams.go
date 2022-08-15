@@ -2,128 +2,112 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (app *App) DeleteStreamBulk(connUUID, hostUUID string, streamUUIDs []UUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, streamUUIDs []UUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, net := range streamUUIDs {
-		msg := app.DeleteStream(connUUID, hostUUID, net.UUID)
+		msg := inst.DeleteStream(connUUID, hostUUID, net.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete stream %s %s", net.Name, msg))
+			inst.crudMessage(false, fmt.Sprintf("delete stream %s %s", net.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleteed stream: %s", net.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleteed stream: %s", net.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.StreamClone{}
 	}
-	streams, err := app.flow.GetStreamClones()
+	streams, err := inst.flow.GetStreamClones()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.StreamClone{}
 	}
 	return streams
 }
 
-func (app *App) GetStreams(connUUID, hostUUID string) []model.Stream {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetStreams(connUUID, hostUUID string) []model.Stream {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.Stream{}
 	}
-	streams, err := app.flow.GetStreams()
+	streams, err := inst.flow.GetStreams()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.Stream{}
 	}
 	return streams
 }
 
-func (app *App) AddStream(connUUID, hostUUID string, flowNetworkUUIDS []string, body *model.Stream) *model.Stream {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) AddStream(connUUID, hostUUID string, body *model.Stream) *model.Stream {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	if len(flowNetworkUUIDS) == 0 {
-		app.crudMessage(false, fmt.Sprintf("flow-network uuids can not be empty"))
-		return nil
-	}
-	flowNetwork := &model.FlowNetwork{}
-	var flowNetworks []*model.FlowNetwork
-	flowNetworks = append(flowNetworks, flowNetwork)
-	for _, uuid := range flowNetworkUUIDS {
-		for _, network := range flowNetworks {
-			network.UUID = uuid
-		}
-	}
-	if len(flowNetworks) == 0 {
-		app.crudMessage(false, fmt.Sprintf("flow-networks can not be empty"))
-		return nil
-	}
-	body.FlowNetworks = flowNetworks
-	streams, err := app.flow.AddStream(body)
+	streams, err := inst.flow.AddStream(body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams
 }
 
-func (app *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.Stream) *model.Stream {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.Stream) *model.Stream {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	streams, err := app.flow.EditStream(streamUUID, body)
+	streams, err := inst.flow.EditStream(streamUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams
 }
-func (app *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
-	_, err = app.flow.DeleteStream(streamUUID)
+	_, err = inst.flow.DeleteStream(streamUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
 }
 
-func (app *App) getStream(connUUID, hostUUID, streamUUID string) (*model.Stream, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getStream(connUUID, hostUUID, streamUUID string) (*model.Stream, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	streams, err := app.flow.GetStream(streamUUID)
+	streams, err := inst.flow.GetStream(streamUUID)
 	if err != nil {
 		return nil, err
 	}
 	return streams, nil
 }
 
-func (app *App) GetStream(connUUID, hostUUID, streamUUID string) *model.Stream {
-	streams, err := app.getStream(connUUID, hostUUID, streamUUID)
+func (inst *App) GetStream(connUUID, hostUUID, streamUUID string) *model.Stream {
+	streams, err := inst.getStream(connUUID, hostUUID, streamUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams

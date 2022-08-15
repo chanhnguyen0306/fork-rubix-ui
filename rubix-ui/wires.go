@@ -10,8 +10,8 @@ import (
 )
 
 // wiresUpload upload a flow to wires
-func (app *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -24,12 +24,12 @@ func (app *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interf
 }
 
 // wiresFileUpload upload to wire's from a local json file
-func (app *App) wiresFileUpload(connUUID, hostUUID string, fileName string) error {
+func (inst *App) wiresFileUpload(connUUID, hostUUID string, fileName string) error {
 	f, err := files.New().GetBackUpFile(fileName)
 	if err != nil {
 		return err
 	}
-	_, err = app.wiresUpload(connUUID, hostUUID, f)
+	_, err = inst.wiresUpload(connUUID, hostUUID, f)
 	if err != nil {
 		return err
 	}
@@ -41,8 +41,8 @@ func isJSON(s string) bool {
 	return json.Unmarshal([]byte(s), &js) == nil
 }
 
-func (app *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (interface{}, error) {
-	data, err := app.getBackup(backupUUID)
+func (inst *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (interface{}, error) {
+	data, err := inst.getBackup(backupUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (app *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (inter
 	if data.Data == nil {
 		return nil, errors.New(fmt.Sprintf("no valid flow found in data %s:", logstore.RubixWires.String()))
 	}
-	ret, err := app.wiresUpload(connUUID, hostUUID, data.Data)
+	ret, err := inst.wiresUpload(connUUID, hostUUID, data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -63,18 +63,18 @@ func (app *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (inter
 }
 
 // WiresBackupRestore upload to wire's from a backup entry
-func (app *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) interface{} {
-	backup, err := app.wiresBackupRestore(connUUID, hostUUID, backupUUID)
+func (inst *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) interface{} {
+	backup, err := inst.wiresBackupRestore(connUUID, hostUUID, backupUUID)
 	if err != nil {
 		return err.Error()
 	}
 	return backup
 }
 
-func (app *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Backup {
-	data, err := app.wiresBackup(connUUID, hostUUID)
+func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Backup {
+	data, err := inst.wiresBackup(connUUID, hostUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	backup := &storage.Backup{
@@ -85,18 +85,18 @@ func (app *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Bac
 		Data:           data,
 		UserComment:    userComment,
 	}
-	addBackup, err := app.addBackup(backup)
+	addBackup, err := inst.addBackup(backup)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return addBackup
 }
 
-func (app *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, errors.New(fmt.Sprintf("error %s", err.Error()))
 	}
 	data, err := client.WiresBackup(hostUUID)

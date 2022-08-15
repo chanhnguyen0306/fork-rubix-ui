@@ -9,8 +9,8 @@ import (
 	"os"
 )
 
-func (app *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -21,18 +21,18 @@ func (app *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	return resp, err
 }
 
-func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*appstore.UploadResponse, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*appstore.UploadResponse, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
-	inst := &store.Store{
+	str := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
 		Arch:    arch,
 	}
-	appStore, err := store.New(inst)
+	appStore, err := store.New(str)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch str
 	if err != nil {
 		return nil, err
 	}
-	path := inst.GetAppPathAndVersion(appName, version)
+	path := str.GetAppPathAndVersion(appName, version)
 	var dontCheckArch bool
 	if appName == rubixWires {
 		dontCheckArch = true
@@ -74,8 +74,8 @@ func (app *App) assistAddUploadApp(connUUID, appName, version, product, arch str
 	return uploadApp, err
 }
 
-func (app *App) assistStoreListPlugins(connUUID string) ([]installer.BuildDetails, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) assistStoreListPlugins(connUUID string) ([]installer.BuildDetails, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -86,12 +86,12 @@ func (app *App) assistStoreListPlugins(connUUID string) ([]installer.BuildDetail
 	return resp, nil
 }
 
-func (app *App) assistStoreUploadPlugin(connUUID string, body *appstore.Plugin) (*appstore.UploadResponse, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) assistStoreUploadPlugin(connUUID string, body *appstore.Plugin) (*appstore.UploadResponse, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
-	f, flowPlugin, err := app.storeGetPlugin(body)
+	f, flowPlugin, err := inst.storeGetPlugin(body)
 	if err != nil {
 		return nil, err
 	}

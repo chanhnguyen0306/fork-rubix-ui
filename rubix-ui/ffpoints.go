@@ -10,118 +10,118 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (app *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	sch, err := app.flow.PointSchema(pluginName)
+	sch, err := inst.flow.PointSchema(pluginName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return sch
 }
 
-func (app *App) GetPoints(connUUID, hostUUID string) []model.Point {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	points, err := app.flow.GetPoints()
+	points, err := inst.flow.GetPoints()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
 }
 
-func (app *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
-	device, err := app.getDevice(connUUID, hostUUID, deviceUUID, true)
+func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
+	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return device.Points
 }
 
-func (app *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	point, err := app.flow.AddPoint(body)
+	point, err := inst.flow.AddPoint(body)
 	if err != nil {
 		return nil, err
 	}
 	return point, nil
 }
 
-func (app *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
-	point, err := app.addPoint(connUUID, hostUUID, body)
+func (inst *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
+	point, err := inst.addPoint(connUUID, hostUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return point
 }
 
-func (app *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Point) *model.Point {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Point) *model.Point {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	points, err := app.flow.EditPoint(pointUUID, body)
+	points, err := inst.flow.EditPoint(pointUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
 }
 
-func (app *App) DeletePointBulk(connUUID, hostUUID string, pointUUIDs []UUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeletePointBulk(connUUID, hostUUID string, pointUUIDs []UUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, pnt := range pointUUIDs {
-		msg := app.DeletePoint(connUUID, hostUUID, pnt.UUID)
+		msg := inst.DeletePoint(connUUID, hostUUID, pnt.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete point error: %s %s", pnt.Name, msg))
+			inst.crudMessage(false, fmt.Sprintf("delete point error: %s %s", pnt.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleted point: %s", pnt.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleted point: %s", pnt.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
-	_, err = app.flow.DeletePoint(pointUUID)
+	_, err = inst.flow.DeletePoint(pointUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
 }
 
-func (app *App) GetPoint(connUUID, hostUUID, pointUUID string) *model.Point {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPoint(connUUID, hostUUID, pointUUID string) *model.Point {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	points, err := app.flow.GetPoint(pointUUID)
+	points, err := inst.flow.GetPoint(pointUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
@@ -133,20 +133,20 @@ type BulkAddResponse struct {
 	ErrorCount int    `json:"error_count"`
 }
 
-func (app *App) ImportPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) *BulkAddResponse {
-	resp, err := app.importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID)
+func (inst *App) ImportPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) *BulkAddResponse {
+	resp, err := inst.importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) (*BulkAddResponse, error) {
+func (inst *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) (*BulkAddResponse, error) {
 	if deviceUUID == "" {
 		return nil, errors.New("device uuid cant not be empty")
 	}
-	backup, err := app.getBackup(backupUUID)
+	backup, err := inst.getBackup(backupUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func (app *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID strin
 	var errorCount int
 	for _, point := range points {
 		point.DeviceUUID = deviceUUID
-		newPnt, err := app.addPoint(connUUID, hostUUID, &point)
+		newPnt, err := inst.addPoint(connUUID, hostUUID, &point)
 		if err != nil {
 			log.Errorf(fmt.Sprintf("add point err:%s", err.Error()))
 			message = fmt.Sprintf("last error on add point err:%s", err.Error())
@@ -185,23 +185,23 @@ func (app *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID strin
 	}, err
 }
 
-func (app *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) *storage.Backup {
-	resp, err := app.exportPointBulk(connUUID, hostUUID, userComment, deviceUUID, pointUUIDs)
+func (inst *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) *storage.Backup {
+	resp, err := inst.exportPointBulk(connUUID, hostUUID, userComment, deviceUUID, pointUUIDs)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) exportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) (*storage.Backup, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) exportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) (*storage.Backup, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
 	var pointsList []model.Point
 	var count int
-	device, err := app.getDevice(connUUID, hostUUID, deviceUUID, true)
+	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func (app *App) exportPointBulk(connUUID, hostUUID, userComment, deviceUUID stri
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkPoint)
 	back.UserComment = fmt.Sprintf("comment:%s device-name:%s", userComment, device.Name)
 	back.Data = pointsList
-	backup, err := app.addBackup(back)
+	backup, err := inst.addBackup(back)
 	if err != nil {
 		return nil, err
 	}

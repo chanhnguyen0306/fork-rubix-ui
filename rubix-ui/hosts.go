@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-func (app *App) GetHostSchema(connUUID string) interface{} {
-	client, err := app.initConnection(connUUID)
+func (inst *App) GetHostSchema(connUUID string) interface{} {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, res := client.GetHostSchema()
 	if data == nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", res.Message))
+		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 		return nil
 	}
 	out := map[string]interface{}{
@@ -26,10 +26,10 @@ func (app *App) GetHostSchema(connUUID string) interface{} {
 	return out
 }
 
-func (app *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Host {
-	client, err := app.initConnection(connUUID)
+func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Host {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	if host == nil {
@@ -49,20 +49,20 @@ func (app *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Ho
 	return data
 }
 
-func (app *App) DeleteHostBulk(connUUID string, uuids []UUIDs) interface{} {
+func (inst *App) DeleteHostBulk(connUUID string, uuids []UUIDs) interface{} {
 	for _, item := range uuids {
-		msg, err := app.deleteHost(connUUID, item.UUID)
+		msg, err := inst.deleteHost(connUUID, item.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete host %s %s", item.Name, msg.Message))
+			inst.crudMessage(false, fmt.Sprintf("delete host %s %s", item.Name, msg.Message))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleteed host: %s", item.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleteed host: %s", item.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,18 +73,18 @@ func (app *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, er
 	return res, nil
 }
 
-func (app *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
-	client, err := app.initConnection(connUUID)
+func (inst *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	res := client.DeleteHost(uuid)
 	return res
 }
 
-func (app *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -97,19 +97,19 @@ func (app *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error)
 	return host, nil
 }
 
-func (app *App) GetHost(connUUID string, uuid string) *assistmodel.Host {
-	host, err := app.getHost(connUUID, uuid)
+func (inst *App) GetHost(connUUID string, uuid string) *assistmodel.Host {
+	host, err := inst.getHost(connUUID, uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return host
 }
 
-func (app *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) *assistmodel.Host {
-	client, err := app.initConnection(connUUID)
+func (inst *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) *assistmodel.Host {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	if host == nil {
@@ -120,11 +120,11 @@ func (app *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) *
 	return data
 }
 
-func (app *App) GetHosts(connUUID string) (resp []assistmodel.Host) {
+func (inst *App) GetHosts(connUUID string) (resp []assistmodel.Host) {
 	resp = []assistmodel.Host{}
-	client, err := app.initConnection(connUUID)
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, _ := client.GetHosts()

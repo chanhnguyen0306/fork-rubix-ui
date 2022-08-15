@@ -5,17 +5,17 @@ import (
 	"github.com/NubeIO/lib-rubix-installer/installer"
 )
 
-func (app *App) EdgeProductInfo(connUUID, hostUUID string) *installer.Product {
-	resp, err := app.edgeProductInfo(connUUID, hostUUID)
+func (inst *App) EdgeProductInfo(connUUID, hostUUID string) *installer.Product {
+	resp, err := inst.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product, error) {
-	client, err := app.initConnection(connUUID)
+func (inst *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product, error) {
+	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		return nil, err
 	}

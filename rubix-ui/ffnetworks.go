@@ -15,90 +15,90 @@ type UUIDs struct {
 	UUID string `json:"uuid"`
 }
 
-func (app *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	sch, err := app.flow.NetworkSchema(pluginName)
+	sch, err := inst.flow.NetworkSchema(pluginName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return sch
 }
 
-func (app *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, net := range networkUUIDs {
-		msg := app.DeleteNetwork(connUUID, hostUUID, net.UUID)
+		msg := inst.DeleteNetwork(connUUID, hostUUID, net.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
+			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) getNetworks(connUUID, hostUUID string, withDevice bool) ([]model.Network, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool) ([]model.Network, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return []model.Network{}, err
 	}
-	networks, err := app.flow.GetNetworks(withDevice)
+	networks, err := inst.flow.GetNetworks(withDevice)
 	if err != nil {
 		return []model.Network{}, err
 	}
 	return networks, nil
 }
 
-func (app *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
-	networks, err := app.getNetworks(connUUID, hostUUID, withDevice)
+func (inst *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
+	networks, err := inst.getNetworks(connUUID, hostUUID, withDevice)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
 
-func (app *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*model.Network, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*model.Network, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := app.flow.AddNetwork(body)
+	networks, err := inst.flow.AddNetwork(body)
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (app *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {
-	networks, err := app.addNetwork(connUUID, hostUUID, body)
+func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {
+	networks, err := inst.addNetwork(connUUID, hostUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
 
-func (app *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
-	resp, err := app.importNetworksBulk(connUUID, hostUUID, backupUUID)
+func (inst *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
+	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) importNetworksBulk(connUUID, hostUUID, backupUUID string) (*BulkAddResponse, error) {
-	backup, err := app.getBackup(backupUUID)
+func (inst *App) importNetworksBulk(connUUID, hostUUID, backupUUID string) (*BulkAddResponse, error) {
+	backup, err := inst.getBackup(backupUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (app *App) importNetworksBulk(connUUID, hostUUID, backupUUID string) (*Bulk
 	var addedCount int
 	var errorCount int
 	for _, net := range networks {
-		newDev, err := app.addNetwork(connUUID, hostUUID, &net)
+		newDev, err := inst.addNetwork(connUUID, hostUUID, &net)
 		if err != nil {
 			log.Errorf(fmt.Sprintf("add network err:%s", err.Error()))
 			message = fmt.Sprintf("last error on add network err:%s", err.Error())
@@ -136,23 +136,23 @@ func (app *App) importNetworksBulk(connUUID, hostUUID, backupUUID string) (*Bulk
 	}, err
 }
 
-func (app *App) ExportNetworksBulk(connUUID, hostUUID, userComment string, deviceUUIDs []string) *storage.Backup {
-	resp, err := app.exportNetworksBulk(connUUID, hostUUID, userComment, deviceUUIDs)
+func (inst *App) ExportNetworksBulk(connUUID, hostUUID, userComment string, deviceUUIDs []string) *storage.Backup {
+	resp, err := inst.exportNetworksBulk(connUUID, hostUUID, userComment, deviceUUIDs)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) exportNetworksBulk(connUUID, hostUUID, userComment string, networkUUIDs []string) (*storage.Backup, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, networkUUIDs []string) (*storage.Backup, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
 	var networkList []model.Network
 	var count int
-	network, err := app.getNetworks(connUUID, hostUUID, true)
+	network, err := inst.getNetworks(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +171,7 @@ func (app *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netwo
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkNetwork)
 	back.UserComment = fmt.Sprintf("comment:%s", userComment)
 	back.Data = networkList
-	backup, err := app.addBackup(back)
+	backup, err := inst.addBackup(back)
 	if err != nil {
 		return nil, err
 	}
@@ -259,54 +259,54 @@ func (app *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netwo
 //	return net
 //}
 
-func (app *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	networks, err := app.flow.EditNetwork(networkUUID, body)
+	networks, err := inst.flow.EditNetwork(networkUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
-func (app *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
-	_, err = app.flow.DeleteNetwork(networkUUID)
+	_, err = inst.flow.DeleteNetwork(networkUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
 }
 
-func (app *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.Network, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.Network, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := app.flow.GetNetwork(networkUUID, withDevice)
+	networks, err := inst.flow.GetNetwork(networkUUID, withDevice)
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (app *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, withDevice bool) *model.Network {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, withDevice bool) *model.Network {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	network, err := app.flow.GetNetworkByPluginName(networkName)
+	network, err := inst.flow.GetNetworkByPluginName(networkName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return network
@@ -317,17 +317,17 @@ type NetworksList struct {
 	PointUUID string `json:"point_uuid"`
 }
 
-func (app *App) GetNetworksWithPointsDisplay(connUUID, hostUUID string) []NetworksList {
-	list, err := app.getNetworksWithPointsDisplay(connUUID, hostUUID)
+func (inst *App) GetNetworksWithPointsDisplay(connUUID, hostUUID string) []NetworksList {
+	list, err := inst.getNetworksWithPointsDisplay(connUUID, hostUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return list
 }
 
-func (app *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]NetworksList, error) {
-	networks, err := app.getNetworksWithPoints(connUUID, hostUUID)
+func (inst *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]NetworksList, error) {
+	networks, err := inst.getNetworksWithPoints(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -345,60 +345,60 @@ func (app *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]Netwo
 	return networksLists, nil
 }
 
-func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
-	networks, err := app.getNetworksWithPoints(connUUID, hostUUID)
+func (inst *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
+	networks, err := inst.getNetworksWithPoints(connUUID, hostUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
 
-func (app *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *model.Network {
-	networks, err := app.getNetworkWithPoints(connUUID, hostUUID, networkUUID)
+func (inst *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *model.Network {
+	networks, err := inst.getNetworkWithPoints(connUUID, hostUUID, networkUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
 
-func (app *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := app.flow.GetNetworkWithPoints(networkUUID)
+	networks, err := inst.flow.GetNetworkWithPoints(networkUUID)
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (app *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := app.flow.GetNetworksWithPoints()
+	networks, err := inst.flow.GetNetworksWithPoints()
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (app *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
-	networks, err := app.getNetwork(connUUID, hostUUID, networkUUID, withDevice)
+func (inst *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {
+	networks, err := inst.getNetwork(connUUID, hostUUID, networkUUID, withDevice)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
 }
 
 // GetNetworkBackupsByUUID get all backups for a network
-func (app *App) GetNetworkBackupsByUUID(application, subApplication, networkUUID string) []storage.Backup {
-	data := app.GetBackupsByApplication(application, subApplication, true)
+func (inst *App) GetNetworkBackupsByUUID(application, subApplication, networkUUID string) []storage.Backup {
+	data := inst.GetBackupsByApplication(application, subApplication, true)
 	var backups []storage.Backup
 	for _, back := range data {
 		network, ok := back.Data.(*model.Network)
@@ -412,8 +412,8 @@ func (app *App) GetNetworkBackupsByUUID(application, subApplication, networkUUID
 }
 
 // GetNetworkBackupsByPlugin get all backups for a network by its plugin
-func (app *App) GetNetworkBackupsByPlugin(application, subApplication, pluginName string) []storage.Backup {
-	data := app.GetBackupsByApplication(application, subApplication, true)
+func (inst *App) GetNetworkBackupsByPlugin(application, subApplication, pluginName string) []storage.Backup {
+	data := inst.GetBackupsByApplication(application, subApplication, true)
 	var backups []storage.Backup
 	for _, back := range data {
 		network, ok := back.Data.(*model.Network)
