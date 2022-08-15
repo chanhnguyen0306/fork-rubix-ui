@@ -10,8 +10,8 @@ import (
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
 var releaseVersion = "v0.6.6"
-var appName = "bacnet-server-driver"
-var appVersion = "v0.0.12"
+var appName = "flow-framework"
+var appVersion = "v0.6.6"
 var product = "Server"
 var arch = "amd64"
 
