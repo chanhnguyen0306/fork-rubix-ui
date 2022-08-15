@@ -10,144 +10,144 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (app *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	sch, err := app.flow.DeviceSchema(pluginName)
+	sch, err := inst.flow.DeviceSchema(pluginName)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return sch
 }
 
-func (app *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	devices, err := app.flow.GetDevices(withPoints)
+	devices, err := inst.flow.GetDevices(withPoints)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
 }
 
-func (app *App) addDevice(connUUID, hostUUID string, body *model.Device) (*model.Device, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*model.Device, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	devices, err := app.flow.AddDevice(body)
+	devices, err := inst.flow.AddDevice(body)
 	if err != nil {
 		return nil, err
 	}
 	return devices, nil
 }
 
-func (app *App) AddDevice(connUUID, hostUUID string, body *model.Device) *model.Device {
-	devices, err := app.addDevice(connUUID, hostUUID, body)
+func (inst *App) AddDevice(connUUID, hostUUID string, body *model.Device) *model.Device {
+	devices, err := inst.addDevice(connUUID, hostUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
 }
 
-func (app *App) GetNetworkDevices(connUUID, hostUUID, networkUUID string) []*model.Device {
-	net, err := app.getNetwork(connUUID, hostUUID, networkUUID, true)
+func (inst *App) GetNetworkDevices(connUUID, hostUUID, networkUUID string) []*model.Device {
+	net, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return net.Devices
 }
 
-func (app *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.Device) *model.Device {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.Device) *model.Device {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	devices, err := app.flow.EditDevice(deviceUUID, body)
+	devices, err := inst.flow.EditDevice(deviceUUID, body)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
 }
 
-func (app *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	for _, dev := range deviceUUIDs {
-		msg := app.DeleteDevice(connUUID, hostUUID, dev.UUID)
+		msg := inst.DeleteDevice(connUUID, hostUUID, dev.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete device error: %s %s", dev.Name, msg))
+			inst.crudMessage(false, fmt.Sprintf("delete device error: %s %s", dev.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleted device: %s", dev.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleted device: %s", dev.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{} {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
-	_, err = app.flow.DeleteDevice(deviceUUID)
+	_, err = inst.flow.DeleteDevice(deviceUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
 }
 
-func (app *App) getDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) (*model.Device, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) getDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) (*model.Device, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
-	devices, err := app.flow.GetDevice(deviceUUID, withPoints)
+	devices, err := inst.flow.GetDevice(deviceUUID, withPoints)
 	if err != nil {
 		return nil, err
 	}
 	return devices, nil
 }
 
-func (app *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) *model.Device {
-	devices, err := app.getDevice(connUUID, hostUUID, deviceUUID, withPoints)
+func (inst *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) *model.Device {
+	devices, err := inst.getDevice(connUUID, hostUUID, deviceUUID, withPoints)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
 }
 
-func (app *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) *BulkAddResponse {
-	resp, err := app.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID)
+func (inst *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) *BulkAddResponse {
+	resp, err := inst.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) (*BulkAddResponse, error) {
+func (inst *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) (*BulkAddResponse, error) {
 	if networkUUID == "" {
 		return nil, errors.New("network uuid cant not be empty")
 	}
-	backup, err := app.getBackup(backupUUID)
+	backup, err := inst.getBackup(backupUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (app *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID st
 	var errorCount int
 	for _, device := range devices {
 		device.NetworkUUID = networkUUID
-		newDev, err := app.addDevice(connUUID, hostUUID, &device)
+		newDev, err := inst.addDevice(connUUID, hostUUID, &device)
 		if err != nil {
 			log.Errorf(fmt.Sprintf("add device err:%s", err.Error()))
 			message = fmt.Sprintf("last error on add device err:%s", err.Error())
@@ -186,23 +186,23 @@ func (app *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID st
 	}, err
 }
 
-func (app *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) *storage.Backup {
-	resp, err := app.exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID, deviceUUIDs)
+func (inst *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) *storage.Backup {
+	resp, err := inst.exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID, deviceUUIDs)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
 }
 
-func (app *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) (*storage.Backup, error) {
-	_, err := app.resetHost(connUUID, hostUUID, true)
+func (inst *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) (*storage.Backup, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
 	}
 	var pointsList []model.Device
 	var count int
-	network, err := app.getNetwork(connUUID, hostUUID, networkUUID, true)
+	network, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true)
 	if err != nil {
 		return nil, err
 	}
@@ -221,7 +221,7 @@ func (app *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID s
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkDevice)
 	back.UserComment = fmt.Sprintf("comment:%s network-name:%s", userComment, network.Name)
 	back.Data = pointsList
-	backup, err := app.addBackup(back)
+	backup, err := inst.addBackup(back)
 	if err != nil {
 		return nil, err
 	}

@@ -178,10 +178,6 @@ export function DoBackup(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['DoBackup'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
-export function EdgeAppsInstalled(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeAppsInstalled'](arg1, arg2, arg3);
-}
-
 export function EdgeCtlStatus(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeCtlStatus'](arg1, arg2, arg3);
 }
@@ -192,6 +188,10 @@ export function EdgeDeleteAllPlugins(arg1, arg2) {
 
 export function EdgeDeletePlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
+}
+
+export function EdgeDeviceInfoAndApps(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeDeviceInfoAndApps'](arg1, arg2, arg3);
 }
 
 export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5, arg6) {
@@ -242,8 +242,8 @@ export function EdgeUnInstallApp(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeUnInstallApp'](arg1, arg2, arg3);
 }
 
-export function EdgeUploadPlugin(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3);
+export function EdgeUploadPlugin(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['EdgeUploadPlugin'](arg1, arg2, arg3, arg4);
 }
 
 export function EditConsumer(arg1, arg2, arg3, arg4) {

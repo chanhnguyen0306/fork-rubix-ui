@@ -24,72 +24,72 @@ func connectionSchema() *ConnectionSchema {
 	return m
 }
 
-func (app *App) GetConnectionSchema() *ConnectionSchema {
+func (inst *App) GetConnectionSchema() *ConnectionSchema {
 	c := connectionSchema()
 	return c
 }
 
-func (app *App) GetConnection(uuid string) *storage.RubixConnection {
-	conn, err := app.DB.Select(uuid)
+func (inst *App) GetConnection(uuid string) *storage.RubixConnection {
+	conn, err := inst.DB.Select(uuid)
 	if err != nil {
 		return nil
 	}
 	return conn
 }
 
-func (app *App) GetConnections() []storage.RubixConnection {
-	conn, err := app.DB.SelectAll()
+func (inst *App) GetConnections() []storage.RubixConnection {
+	conn, err := inst.DB.SelectAll()
 	if err != nil {
 		return nil
 	}
 	return conn
 }
 
-func (app *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConnection {
-	conn, err := app.DB.Add(conn)
+func (inst *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConnection {
+	conn, err := inst.DB.Add(conn)
 	if err != nil {
 		return nil
 	}
 	return conn
 }
 
-func (app *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *storage.RubixConnection {
-	connection, err := app.DB.Select(uuid)
+func (inst *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *storage.RubixConnection {
+	connection, err := inst.DB.Select(uuid)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	app.DB.AddLog(&storage.Log{
+	inst.DB.AddLog(&storage.Log{
 		Function: logstore.Connection.String(),
 		Type:     logstore.Update.String(),
 		Data:     connection,
 	})
-	conn, err = app.DB.Update(uuid, conn)
+	conn, err = inst.DB.Update(uuid, conn)
 	if err != nil {
 		return nil
 	}
 	return conn
 }
 
-func (app *App) DeleteConnectionBulk(uuids []UUIDs) interface{} {
+func (inst *App) DeleteConnectionBulk(uuids []UUIDs) interface{} {
 
 	for _, item := range uuids {
-		msg, err := app.deleteConnection(item.UUID)
+		msg, err := inst.deleteConnection(item.UUID)
 		if err != nil {
-			app.crudMessage(false, fmt.Sprintf("delete network %s %s", item.Name, msg))
+			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", item.Name, msg))
 		} else {
-			app.crudMessage(true, fmt.Sprintf("deleteed network: %s", item.Name))
+			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", item.Name))
 		}
 	}
 	return "ok"
 }
 
-func (app *App) deleteConnection(uuid string) (string, error) {
-	connection, err := app.DB.Select(uuid)
+func (inst *App) deleteConnection(uuid string) (string, error) {
+	connection, err := inst.DB.Select(uuid)
 	if err != nil {
 		return "failed to find connection to backup", err
 	}
-	_, err = app.DB.AddLog(&storage.Log{
+	_, err = inst.DB.AddLog(&storage.Log{
 		Function: logstore.Connection.String(),
 		Type:     logstore.Delete.String(),
 		Data:     connection,
@@ -97,24 +97,24 @@ func (app *App) deleteConnection(uuid string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err = app.DB.Delete(uuid)
+	err = inst.DB.Delete(uuid)
 	if err != nil {
 		return "", err
 	}
 	return "deleted ok", nil
 }
 
-func (app *App) DeleteConnection(uuid string) string {
-	connection, err := app.DB.Select(uuid)
+func (inst *App) DeleteConnection(uuid string) string {
+	connection, err := inst.DB.Select(uuid)
 	if err != nil {
 		return "failed to find connection to backup"
 	}
-	app.DB.AddLog(&storage.Log{
+	inst.DB.AddLog(&storage.Log{
 		Function: logstore.Connection.String(),
 		Type:     logstore.Delete.String(),
 		Data:     connection,
 	})
-	err = app.DB.Delete(uuid)
+	err = inst.DB.Delete(uuid)
 	if err != nil {
 		return err.Error()
 	}
@@ -126,9 +126,9 @@ type DeleteAllConnections struct {
 	Error        string
 }
 
-func (app *App) DeleteAllConnections() *DeleteAllConnections {
+func (inst *App) DeleteAllConnections() *DeleteAllConnections {
 	resp := &DeleteAllConnections{}
-	count, err := app.DB.Wipe()
+	count, err := inst.DB.Wipe()
 	resp.CountDeleted = count
 	if err != nil {
 		resp.Error = err.Error()

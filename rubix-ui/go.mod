@@ -11,13 +11,13 @@ require (
 	github.com/NubeIO/lib-date v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.5
 	github.com/NubeIO/lib-networking v0.0.6
-	github.com/NubeIO/lib-rubix-installer v0.1.2
+	github.com/NubeIO/lib-rubix-installer v0.1.3
 	github.com/NubeIO/lib-schema v0.0.9
 	github.com/NubeIO/lib-systemctl-go v0.1.0
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0
-	github.com/NubeIO/rubix-assist v0.2.7
+	github.com/NubeIO/rubix-assist v0.2.8
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0
@@ -65,6 +65,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/sergeymakinen/go-systemdconf/v2 v2.0.2 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

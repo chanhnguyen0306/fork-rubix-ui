@@ -102,13 +102,13 @@ export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.Plugin
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
-export function EdgeAppsInstalled(arg1:string,arg2:string,arg3:string):Promise<Array<main.InstalledApps>>;
-
 export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemState>;
 
 export function EdgeDeleteAllPlugins(arg1:string,arg2:string):Promise<edgecli.Message>;
 
 export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<edgecli.Message>;
+
+export function EdgeDeviceInfoAndApps(arg1:string,arg2:string,arg3:string):Promise<main.EdgeDeviceInfo>;
 
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
@@ -134,7 +134,7 @@ export function EdgeServices(arg1:string,arg2:string):Promise<Array<installer.In
 
 export function EdgeUnInstallApp(arg1:string,arg2:string,arg3:string):Promise<installer.RemoveRes>;
 
-export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<assitcli.EdgeUploadResponse>;
+export function EdgeUploadPlugin(arg1:string,arg2:string,arg3:appstore.Plugin,arg4:boolean):Promise<assitcli.EdgeUploadResponse>;
 
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
 

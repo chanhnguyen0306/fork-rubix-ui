@@ -6,48 +6,48 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/store"
 )
 
-func (app *App) GitListReleases(token string) []store.ReleaseList {
-	out, err := app.gitListReleases(token)
+func (inst *App) GitListReleases(token string) []store.ReleaseList {
+	out, err := inst.gitListReleases(token)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error list relases:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error list relases:%s", err.Error()))
 		return []store.ReleaseList{}
 	}
 	return out
 }
 
 //gitListReleases gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (app *App) gitListReleases(token string) ([]store.ReleaseList, error) {
-	inst := &store.Store{
+func (inst *App) gitListReleases(token string) ([]store.ReleaseList, error) {
+	str := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
 		Arch:    "",
 	}
-	appStore, err := store.New(inst)
+	appStore, err := store.New(str)
 	if err != nil {
 		return nil, err
 	}
 	return appStore.GitListReleases(token)
 }
 
-func (app *App) GitDownloadRelease(token, version string) *store.Release {
-	out, err := app.gitDownloadRelease(token, version)
+func (inst *App) GitDownloadRelease(token, version string) *store.Release {
+	out, err := inst.gitDownloadRelease(token, version)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error download relase:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error download relase:%s", err.Error()))
 		return nil
 	}
 	return out
 }
 
 //gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (app *App) gitDownloadRelease(token, path string) (*store.Release, error) {
-	inst := &store.Store{
+func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) {
+	str := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
 		Arch:    "",
 	}
-	appStore, err := store.New(inst)
+	appStore, err := store.New(str)
 	if err != nil {
 		return nil, err
 	}

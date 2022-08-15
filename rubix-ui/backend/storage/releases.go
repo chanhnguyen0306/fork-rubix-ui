@@ -16,10 +16,7 @@ func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(rel.Uuid)
-		fmt.Println(rel.Release)
 	}
-
 	return inst.addRelease(body)
 
 }

@@ -13,56 +13,64 @@ import (
 
 var pcDate = datelib.New(&datelib.Date{})
 
-func (app *App) GetPcGetNetworksSchema() interface{} {
+func (inst *App) getPcGetNetworksSchema() ([]networking.NetworkInterfaces, error) {
+	return nets.GetNetworks()
+}
+
+func (inst *App) getInternetIP() (networking.Check, error) {
+	return nets.GetInternetIP()
+}
+
+func (inst *App) GetPcGetNetworksSchema() interface{} {
 	names, err := nets.GetNetworks()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	b, err := json.Marshal(names)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return humanize.ArrayOfMaps(b)
 }
 
-func (app *App) GetPcTime() *datelib.Time {
+func (inst *App) GetPcTime() *datelib.Time {
 	return pcDate.SystemTime()
 }
 
-func (app *App) GetPcGetNetworks() interface{} {
+func (inst *App) GetPcGetNetworks() interface{} {
 	names, err := nets.GetNetworks()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []networking.NetworkInterfaces{}
 	}
 	return names
 }
 
-func (app *App) GetPcInterfaces() networking.InterfaceNames {
+func (inst *App) GetPcInterfaces() networking.InterfaceNames {
 	names, err := nets.GetInterfacesNames()
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return networking.InterfaceNames{}
 	}
 	return names
 }
 
-func (app *App) GetScannerSchema() interface{} {
+func (inst *App) GetScannerSchema() interface{} {
 	return scanner.BuildSchema()
 }
 
-func (app *App) Scanner(iface, ip string, count int, ports []string) interface{} {
+func (inst *App) Scanner(iface, ip string, count int, ports []string) interface{} {
 	runScanner, err := scanner.RunScanner(iface, ip, count, ports)
 	if err != nil {
-		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return runScanner
 }
 
-func (app *App) OpenURL(url string) {
+func (inst *App) OpenURL(url string) {
 	var err error
 	switch runtime.GOOS {
 	case "linux":
