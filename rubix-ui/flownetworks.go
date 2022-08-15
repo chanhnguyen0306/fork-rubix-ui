@@ -36,6 +36,18 @@ func (app *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []mo
 	return networks
 }
 
+func (app *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwork) (*model.FlowNetwork, error) {
+	_, err := app.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		return nil, err
+	}
+	networks, err := app.flow.AddFlowNetwork(body)
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
+}
+
 func (app *App) AddFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwork) *model.FlowNetwork {
 	_, err := app.resetHost(connUUID, hostUUID, true)
 	if err != nil {

@@ -59,23 +59,6 @@ func (app *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, add
 	return app.flow.BacnetDevicePoints(deviceUUID, addPoints, makeWriteable)
 }
 
-func (app *App) GetNetworksWithPoints(connUUID, hostUUID string) *[]model.Network {
-	err := app.bacnetChecks(connUUID, hostUUID, "bacnetmaster")
-	if err != nil {
-		return nil
-	}
-	_, err = app.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil
-	}
-	points, err := app.flow.GetNetworksWithPoints()
-	if err != nil {
-
-	}
-	fmt.Println(points)
-	return nil
-}
-
 func (app *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) (*[]model.Device, error) {
 	err := app.bacnetChecks(connUUID, hostUUID, pluginName)
 	if err != nil {

@@ -19,7 +19,7 @@ export const CreateEditModal = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
-  const flNetworkUUIDs = [flNetworkUUID];
+  const flowNetworkUUIDS = [flNetworkUUID];
 
   let factory = new FlowStreamFactory();
   factory.connectionUUID = connUUID;
@@ -35,7 +35,7 @@ export const CreateEditModal = (props: any) => {
       stream.uuid = currentItem.uuid;
       await factory.Update(stream.uuid, stream);
     } else {
-      await factory.Add(stream, flNetworkUUIDs);
+      await factory.Add(stream, flowNetworkUUIDS);
     }
     setConfirmLoading(false);
     refreshList();

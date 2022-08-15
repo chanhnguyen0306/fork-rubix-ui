@@ -1,4 +1,4 @@
-import { main, model, storage } from "../../../../../../wailsjs/go/models";
+import {main, model, storage, store} from "../../../../../../wailsjs/go/models";
 import {
   AddNetwork,
   DeleteNetwork,
@@ -7,8 +7,7 @@ import {
   ExportNetworksBulk,
   GetFlowNetworkSchema,
   GetNetwork,
-  GetNetworks,
-  GetNetworkWithPoints,
+  GetNetworks, GetNetworksWithPointsDisplay, GetNetworkWithPoints,
   ImportNetworksBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../helpers/checks";
@@ -52,17 +51,15 @@ export class FlowNetworkFactory {
   }
 
   async GetNetworkWithPoints(uuid: string): Promise<model.Network> {
-    let resp: model.Network = {} as model.Network;
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await GetNetworkWithPoints(this.connectionUUID, this.hostUUID, uuid)
-      .then((res) => {
-        resp = res as model.Network;
-      })
-      .catch((resp) => {
-        return resp;
-      });
-    return resp;
+    return await GetNetworkWithPoints(this.connectionUUID, this.hostUUID, uuid);
+  }
+
+  async GetNetworksWithPointsDisplay(): Promise<Array<main.NetworksList>> {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return await GetNetworksWithPointsDisplay(this.connectionUUID, this.hostUUID);
   }
 
   async Add(body: model.Network): Promise<model.Network> {
