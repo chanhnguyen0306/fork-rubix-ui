@@ -68,7 +68,7 @@ const InstallApp = (props: any) => {
     return Promise.all(
       payloads.map((payload: any) =>
         releaseFactory
-          .AppInstallAppOnEdge(
+          .EdgeInstallApp(
             payload.connUUID,
             payload.hostUUID,
             payload.appName,
