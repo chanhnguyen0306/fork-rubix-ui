@@ -65,13 +65,13 @@ export const STREAM_HEADERS = [
     dataIndex: "name",
   },
   {
-    title: "status",
-    key: "enabled",
-    dataIndex: "enabled",
-    render(enabled: boolean) {
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
       let colour = "blue";
       let text = "disabled";
-      if (enabled) {
+      if (enable) {
         colour = "orange";
         text = "enabled";
       }
