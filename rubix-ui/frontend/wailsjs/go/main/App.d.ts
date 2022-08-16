@@ -118,8 +118,6 @@ export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.
 
 export function EdgeProductInfo(arg1:string,arg2:string):Promise<installer.Product>;
 
-export function EdgeReplaceConfig(arg1:string,arg2:string,arg3:appstore.EdgeReplaceConfig):Promise<appstore.EdgeReplaceConfigResp>;
-
 export function EdgeServiceDisable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
 
 export function EdgeServiceEnable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
