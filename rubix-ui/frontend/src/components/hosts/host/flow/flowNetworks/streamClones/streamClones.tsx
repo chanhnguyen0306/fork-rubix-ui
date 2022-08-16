@@ -45,7 +45,7 @@ export const StreamClones = () => {
       breadcrumbName: "Flow Networks",
     },
     {
-      breadcrumbName: "Flow Network Streams Clone",
+      breadcrumbName: "Streams Clone",
     },
   ];
 
