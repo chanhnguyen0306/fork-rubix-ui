@@ -1,12 +1,7 @@
 import { main, model } from "../../../../../../../wailsjs/go/models";
 import {
-  AddStream,
-  DeleteStream,
-  DeleteStreamBulk,
-  EditStream,
-  GetStream,
   GetStreamClones,
-  GetStreams,
+  DeleteStreamBulkClones,
 } from "../../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../../helpers/checks";
 
@@ -39,13 +34,13 @@ export class FlowStreamCloneFactory {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     let resp: Promise<any> = {} as Promise<any>;
-    // await DeleteStreamCloneBulk(this.connectionUUID, this.hostUUID, uuids)
-    //   .then((res) => {
-    //     resp = res as Promise<any>;
-    //   })
-    //   .catch((err) => {
-    //     return resp;
-    //   });
+    await DeleteStreamBulkClones(this.connectionUUID, this.hostUUID, uuids)
+      .then((res) => {
+        resp = res as Promise<any>;
+      })
+      .catch((err) => {
+        return resp;
+      });
     return resp;
   }
 }
