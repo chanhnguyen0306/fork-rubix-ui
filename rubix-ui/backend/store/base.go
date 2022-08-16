@@ -86,6 +86,11 @@ func New(store *Store) (*Store, error) {
 		return nil, errors.New(fmt.Sprintf("init assit-store err:%s", err.Error()))
 	}
 	store.assistStore = appStore
+	err = store.initMakeAllDirs()
+	if err != nil {
+		return nil, err
+	}
+
 	return store, nil
 }
 

@@ -17,6 +17,25 @@ type App struct {
 	RealseVersion string `json:"realse_version"`
 }
 
+func (inst *Store) initMakeAllDirs() error {
+	if err := inst.makeUserPath(); err != nil {
+		return err
+	}
+	if err := inst.makeUserStorePath(); err != nil {
+		return err
+	}
+	if err := inst.makeUserPathTmp(); err != nil {
+		return err
+	}
+	if err := inst.makeUserConfig(); err != nil {
+		return err
+	}
+	if err := inst.makeBackupPath(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // AddApp make all the app store dirs
 func (inst *Store) AddApp(app *App) (*App, error) {
 	appName := app.Name
@@ -105,7 +124,7 @@ func (inst *Store) StoreCheckAppAndVersionExists(appName, version string) error 
 	return nil
 }
 
-//makeUserPath  => /hom/user/rubix
+//makeUserPath  => /home/user/rubix
 func (inst *Store) makeUserPath() error {
 	return inst.App.MakeDirectoryIfNotExists(inst.getUserPath(), os.FileMode(FilePerm))
 }
@@ -113,6 +132,31 @@ func (inst *Store) makeUserPath() error {
 //makeUserStorePath  => /hom/user/rubix/store
 func (inst *Store) makeUserStorePath() error {
 	return inst.App.MakeDirectoryIfNotExists(inst.getUserStorePath(), os.FileMode(FilePerm))
+}
+
+//makeUserStorePath  => /hom/user/rubix/tmp
+func (inst *Store) makeUserPathTmp() error {
+	return inst.App.MakeDirectoryIfNotExists(fmt.Sprintf("%s/tmp", inst.getUserPath()), os.FileMode(FilePerm))
+}
+
+//makeUserStorePath  => /hom/user/rubix/config
+func (inst *Store) makeUserConfig() error {
+	return inst.App.MakeDirectoryIfNotExists(fmt.Sprintf("%s/config", inst.getUserPath()), os.FileMode(FilePerm))
+}
+
+//MakeAppConfig  => /hom/user/rubix/config/bacnet-server
+func (inst *Store) MakeAppConfig(appName string) error {
+	return inst.App.MakeDirectoryIfNotExists(fmt.Sprintf("%s/config/%s", inst.getUserPath(), appName), os.FileMode(FilePerm))
+}
+
+//GetUserConfig  => /home/user/rubix/config
+func (inst *Store) GetUserConfig() string {
+	return fmt.Sprintf("%s/config", inst.getUserPath())
+}
+
+//makeUserPath  => /home/user/rubix/backups
+func (inst *Store) makeBackupPath() error {
+	return inst.App.MakeDirectoryIfNotExists(inst.BackupsDir, os.FileMode(FilePerm))
 }
 
 //MakeApp  => /data/store/apps/flow-framework

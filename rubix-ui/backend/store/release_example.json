@@ -9,6 +9,8 @@
       "port": 1660,
       "transport": "http",
       "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
+      "custom_service_exec_start": "",
+      "service_working_directory": "",
       "environment_vars":[],
       "products": [
         "Server",
@@ -37,6 +39,8 @@
       "port": 47808,
       "transport": "udp",
       "app_specfic_exec_start": "app",
+      "custom_service_exec_start": "",
+      "service_working_directory": "",
       "environment_vars": ["g=/data/bacnet-server-driver", "s=config.yml"],
       "products": [
         "Server",
@@ -67,6 +71,7 @@
       "port": 5001,
       "transport": "http",
       "app_specfic_exec_start": "",
+      "service_working_directory": "",
       "environment_vars":[],
       "products": [
         "RubixComputeIO"
@@ -91,6 +96,7 @@
       "description": "rubix compute io service",
       "transport": "serial",
       "app_specfic_exec_start": "",
+      "service_working_directory": "",
       "environment_vars":[],
       "products": [
         "RubixCompute5",
@@ -116,7 +122,9 @@
       "description": "edge-28 service",
       "port": 5000,
       "transport": "http",
-      "app_specfic_exec_start": "",
+      "app_specfic_exec_start": "-p 5000 -g /data/edge-28-driver -d data -c config -i nubeio-edge-28-driver -s config.json -l logging.conf --prod",
+      "service_working_directory": "",
+      "custom_service_exec_start": "",
       "environment_vars":[],
       "products": [
         "Edge28"
@@ -141,6 +149,8 @@
       "port": 1313,
       "transport": "http",
       "app_specfic_exec_start": "",
+      "service_working_directory": "",
+      "custom_service_exec_start": "/usr/bin/npm run prod:start --prod -- --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env",
       "environment_vars":[],
       "products": [
         "Server",
@@ -157,8 +167,7 @@
       ],
       "service_dependency": [
         "nodejs"
-      ],
-      "custom_service_exec_start": "npm run prod:start --prod --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env"
+      ]
     }
   ],
   "plugins": [

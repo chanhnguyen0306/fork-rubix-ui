@@ -12,3 +12,10 @@ func TestApp_getInternetIP(t *testing.T) {
 	fmt.Println(err)
 	pprint.PrintJOSN(ips)
 }
+
+func TestApp_Scanner(*testing.T) {
+	app := NewApp()
+	ips := app.Scanner("", "", 254, nil)
+
+	pprint.PrintJOSN(ips)
+}

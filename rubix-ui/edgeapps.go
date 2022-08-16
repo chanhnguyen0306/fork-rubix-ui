@@ -374,11 +374,16 @@ func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, rele
 	if err != nil {
 		return nil, err
 	}
+	if appName == rubixWires {
+		nubeApp.ServiceWorkingDirectory = fmt.Sprintf("/data/rubix-service/apps/install/wires-builds/%s/rubix-wires", appVersion)
+	}
 	resp, err := client.UploadEdgeService(hostUUID, &appstore.ServiceFile{
-		Name:                appName,
-		Version:             appVersion,
-		AppSpecficExecStart: nubeApp.AppSpecficExecStart,
-		EnvironmentVars:     nubeApp.EnvironmentVars,
+		Name:                    appName,
+		Version:                 appVersion,
+		AppSpecficExecStart:     nubeApp.AppSpecficExecStart,
+		CustomServiceExecStart:  nubeApp.CustomServiceExecStart,
+		ServiceWorkingDirectory: nubeApp.ServiceWorkingDirectory, // used to set rubix-wires working dir as it does not follow the norm
+		EnvironmentVars:         nubeApp.EnvironmentVars,
 	})
 	return resp, err
 }
