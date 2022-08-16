@@ -40,6 +40,8 @@ export function AddStream(arg1:string,arg2:string,arg3:model.Stream):Promise<mod
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
 
+export function ConfigBACnetServer(arg1:main.ConfigBACnetServer):Promise<Error>;
+
 export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
 
 export function DeleteBackup(arg1:string):Promise<string>;
@@ -115,6 +117,8 @@ export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,a
 export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
 
 export function EdgeProductInfo(arg1:string,arg2:string):Promise<installer.Product>;
+
+export function EdgeReplaceConfig(arg1:string,arg2:string,arg3:appstore.EdgeReplaceConfig):Promise<appstore.EdgeReplaceConfigResp>;
 
 export function EdgeServiceDisable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
 

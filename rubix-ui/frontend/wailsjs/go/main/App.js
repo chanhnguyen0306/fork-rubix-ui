@@ -54,6 +54,10 @@ export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
 }
 
+export function ConfigBACnetServer(arg1) {
+  return window['go']['main']['App']['ConfigBACnetServer'](arg1);
+}
+
 export function DeleteAllConnections() {
   return window['go']['main']['App']['DeleteAllConnections']();
 }
@@ -204,6 +208,10 @@ export function EdgeListPlugins(arg1, arg2) {
 
 export function EdgeProductInfo(arg1, arg2) {
   return window['go']['main']['App']['EdgeProductInfo'](arg1, arg2);
+}
+
+export function EdgeReplaceConfig(arg1, arg2, arg3) {
+  return window['go']['main']['App']['EdgeReplaceConfig'](arg1, arg2, arg3);
 }
 
 export function EdgeServiceDisable(arg1, arg2, arg3, arg4) {

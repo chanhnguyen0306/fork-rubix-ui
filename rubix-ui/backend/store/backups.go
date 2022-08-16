@@ -6,13 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"io/ioutil"
-	"os"
 )
-
-//makeUserPath  => /home/user/rubix/backups
-func (inst *Store) makeBackupPath() error {
-	return inst.App.MakeDirectoryIfNotExists(inst.BackupsDir, os.FileMode(FilePerm))
-}
 
 // SaveBackup save a backup to disc
 func (inst *Store) SaveBackup(fileName string, data interface{}) error {
