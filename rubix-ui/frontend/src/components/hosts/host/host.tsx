@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { Button, Tabs, Card, Typography } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
-import { assistmodel, model } from "../../../../wailsjs/go/models";
-import { HostsFactory } from "../factory";
-import { HostTable } from "./views/hostTable";
-import { FlowNetworkFactory } from "./flow/networks/factory";
-import { FlowNetworkTable } from "./flow/networks/views/table";
-import { FlowPluginFactory } from "./flow/plugins/factory";
-import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { model } from "../../../../wailsjs/go/models";
 import { ROUTES } from "../../../constants/routes";
 import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
 import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
 import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clones";
+import { FlowNetworkFactory } from "./flow/networks/factory";
+import { FlowNetworkTable } from "./flow/networks/views/table";
+import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { HostTable } from "./views/hostTable";
 
 const infoKey = "INFO";
 const networksKey = "NETWORKS";
@@ -31,17 +29,12 @@ export const Host = () => {
   } = useParams();
 
   const [networks, setNetworks] = useState([] as model.Network[]);
-  const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
 
   let networkFactory = new FlowNetworkFactory();
-  let flowPluginFactory = new FlowPluginFactory();
 
   const { TabPane } = Tabs;
   const onChange = (key: string) => {
-    if (key == pluginsKey) {
-      fetchPlugins();
-    }
     if (key == networksKey) {
       fetchNetworks();
     }
@@ -49,19 +42,6 @@ export const Host = () => {
   useEffect(() => {
     fetchNetworks();
   }, []);
-
-  const fetchPlugins = async () => {
-    try {
-      flowPluginFactory.connectionUUID = connUUID;
-      flowPluginFactory.hostUUID = hostUUID;
-      let res = (await flowPluginFactory.GetAll()) || [];
-      setPlugins(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
 
   const fetchNetworks = async () => {
     try {
@@ -134,14 +114,7 @@ export const Host = () => {
             />
           </TabPane>
           <TabPane tab={pluginsKey} key={pluginsKey}>
-            <FlowPluginsTable
-              data={plugins}
-              isFetching={isFetching}
-              connUUID={connUUID}
-              hostUUID={hostUUID}
-              setIsFetching={setIsFetching}
-              fetchPlugins={fetchPlugins}
-            />
+            <FlowPluginsTable />
           </TabPane>
           <TabPane tab={infoKey} key={infoKey}>
             <HostTable />
