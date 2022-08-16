@@ -49,10 +49,10 @@ export const CreateEditModal = (props: any) => {
           enable: {
             title: "enable",
             type: "boolean",
+            default: true,
           },
-
-          producer_thing_uuid: {
-            title: "Point",
+          producer_uuid: {
+            title: "producer",
             type: "string",
             anyOf: res.map((n) => {
               return { type: "string", enum: [n.uuid], title: n.name };
