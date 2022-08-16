@@ -1,55 +1,56 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FlowStreamCloneFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import { FlowFrameworkNetworkCloneFactory } from "../factory";
 import { ROUTES } from "../../../../../../../constants/routes";
-import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
+import { STREAM_HEADERS } from "../../../../../../../constants/headers";
+import RbTable from "../../../../../../../common/rb-table";
 import {
-  RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
-import RbTable from "../../../../../../../common/rb-table";
 
 import UUIDs = main.UUIDs;
-import FlowNetworkClone = model.FlowNetworkClone;
+import StreamClone = model.StreamClone;
 
-export const NetworkClonesTable = (props: any) => {
+export const StreamClonesTable = () => {
   let {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
     locUUID = "",
+    flNetworkCloneUUID = "",
   } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [networks, setNetworks] = useState([] as Array<UUIDs>);
+  const [streamClones, setStreamClones] = useState([] as StreamClone[]);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowFrameworkNetworkCloneFactory();
+  let factory = new FlowStreamCloneFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...FLOW_NETWORKS_HEADERS,
+    ...STREAM_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, network: FlowNetworkClone) => (
+      render: (_: any, item: StreamClone) => (
         <Space size="middle">
-          <Link to={getNavigationLink(network.uuid)}>View Streams</Link>
+          <Link to={getNavigationLink(item.uuid)}>View Consumers</Link>
         </Space>
       ),
     },
   ];
 
-  const getNavigationLink = (flNetworkCloneUUID: string): string => {
-    return ROUTES.STREAMCLONES.replace(":connUUID", connUUID)
+  const getNavigationLink = (streamCloneUUID: string): string => {
+    return ROUTES.CONSUMERS.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID)
-      .replace(":flNetworkCloneUUID", flNetworkCloneUUID);
+      .replace(":flNetworkCloneUUID", flNetworkCloneUUID)
+      .replace(":streamCloneUUID", streamCloneUUID);
   };
 
   const rowSelection = {
@@ -58,21 +59,21 @@ export const NetworkClonesTable = (props: any) => {
     },
   };
 
+  const bulkDelete = async () => {
+    await factory.BulkDelete(selectedUUIDs);
+    fetch();
+  };
+
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll(false);
-      setNetworks(res);
+      const res = await factory.GetAll();
+      setStreamClones(res);
     } catch (error) {
       console.log(error);
     } finally {
       setIsFetching(false);
     }
-  };
-
-  const bulkDelete = async () => {
-    await factory.BulkDelete(selectedUUIDs);
-    fetch();
   };
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export const NetworkClonesTable = (props: any) => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={networks}
+        dataSource={streamClones}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
