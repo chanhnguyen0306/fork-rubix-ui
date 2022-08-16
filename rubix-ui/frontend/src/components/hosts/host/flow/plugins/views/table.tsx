@@ -39,6 +39,16 @@ export const FlowPluginsTable = (props: any) => {
     },
   };
 
+  useEffect(() => {
+    fetchPlugins();
+  }, []);
+
+  useEffect(() => {
+    if (isModalVisible) {
+      getSchema();
+    }
+  }, [pluginsUUIDs, isModalVisible]);
+
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -78,16 +88,6 @@ export const FlowPluginsTable = (props: any) => {
       setIsFetching(false);
     }
   };
-
-  useEffect(() => {
-    fetchPlugins();
-  }, []);
-
-  useEffect(() => {
-    if (isModalVisible) {
-      getSchema();
-    }
-  }, [pluginsUUIDs, isModalVisible]);
 
   return (
     <>
