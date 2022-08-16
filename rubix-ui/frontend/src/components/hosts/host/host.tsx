@@ -30,12 +30,10 @@ export const Host = () => {
     netUUID = "",
   } = useParams();
 
-  const [host, setHost] = useState({} as assistmodel.Host);
   const [networks, setNetworks] = useState([] as model.Network[]);
   const [plugins, setPlugins] = useState([] as model.PluginConf[]);
   const [isFetching, setIsFetching] = useState(true);
 
-  let hostFactory = new HostsFactory();
   let networkFactory = new FlowNetworkFactory();
   let flowPluginFactory = new FlowPluginFactory();
 
@@ -49,22 +47,8 @@ export const Host = () => {
     }
   };
   useEffect(() => {
-    fetchHost();
     fetchNetworks();
   }, []);
-
-  const fetchHost = async () => {
-    try {
-      hostFactory.connectionUUID = connUUID;
-      hostFactory.uuid = hostUUID;
-      let res = (await hostFactory.GetOne()) || [];
-      setHost(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
 
   const fetchPlugins = async () => {
     try {
@@ -160,11 +144,7 @@ export const Host = () => {
             />
           </TabPane>
           <TabPane tab={infoKey} key={infoKey}>
-            <HostTable
-              data={host}
-              isFetching={isFetching}
-              setIsFetching={setIsFetching}
-            />
+            <HostTable />
           </TabPane>
           <TabPane tab={flownetworksKey} key={flownetworksKey}>
             <FlowNetworks />
