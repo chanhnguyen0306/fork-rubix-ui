@@ -402,8 +402,8 @@ export function GetHost(arg1, arg2) {
   return window['go']['main']['App']['GetHost'](arg1, arg2);
 }
 
-export function GetPlugin(arg1, arg2, arg3) {
-  return window['go']['main']['App']['GetPlugin'](arg1, arg2, arg3);
+export function GetHostActiveNetworks(arg1, arg2) {
+  return window['go']['main']['App']['GetHostActiveNetworks'](arg1, arg2);
 }
 
 export function GetHostInterfaces(arg1, arg2) {
@@ -426,8 +426,8 @@ export function GetHostSchema(arg1) {
   return window['go']['main']['App']['GetHostSchema'](arg1);
 }
 
-export function GetPoint(arg1, arg2, arg3) {
-  return window['go']['main']['App']['GetPoint'](arg1, arg2, arg3);
+export function GetHostTime(arg1, arg2) {
+  return window['go']['main']['App']['GetHostTime'](arg1, arg2);
 }
 
 export function GetHosts(arg1) {
@@ -562,8 +562,8 @@ export function GetRelease(arg1) {
   return window['go']['main']['App']['GetRelease'](arg1);
 }
 
-export function EditStream(arg1, arg2, arg3, arg4) {
-  return window['go']['main']['App']['EditStream'](arg1, arg2, arg3, arg4);
+export function GetReleaseByVersion(arg1) {
+  return window['go']['main']['App']['GetReleaseByVersion'](arg1);
 }
 
 export function GetReleases() {
@@ -610,8 +610,8 @@ export function HostRubixScan(arg1, arg2) {
   return window['go']['main']['App']['HostRubixScan'](arg1, arg2);
 }
 
-export function GetScannerSchema() {
-  return window['go']['main']['App']['GetScannerSchema']();
+export function ImportBackup(arg1) {
+  return window['go']['main']['App']['ImportBackup'](arg1);
 }
 
 export function ImportDevicesBulk(arg1, arg2, arg3, arg4) {
