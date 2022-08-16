@@ -94,8 +94,8 @@ github.com/NubeIO/nubeio-rubix-lib-models-go v1.0.4/go.mod h1:A1BPuc3UpE1EF3ugdf
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0 h1:8dGLH9FnYFdpufF8VLXr9G2r7M3F+bz+wJuxR4zUWDw=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.0/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
 github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8/go.mod h1:MU13rBQBD1xc/n2aRvNyCr8HZ5NNTsPhiZSUFhIgrT4=
-github.com/NubeIO/rubix-assist v0.3.0 h1:ChGZL7X2Q1Vsvbgmi4IcpeVYdNb5l134L3eT0Ce7f08=
-github.com/NubeIO/rubix-assist v0.3.0/go.mod h1:aELUL0t+sN5Hd4s5WKb2/Nw8DKCxGFVlbdjP0f3W+s8=
+github.com/NubeIO/rubix-assist v0.3.1 h1:hBIyLHEQ1YnJx4ZOjZqQxu/gZyFQA99nzfzjEHykmTE=
+github.com/NubeIO/rubix-assist v0.3.1/go.mod h1:aELUL0t+sN5Hd4s5WKb2/Nw8DKCxGFVlbdjP0f3W+s8=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PuerkitoBio/goquery v1.6.0/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
