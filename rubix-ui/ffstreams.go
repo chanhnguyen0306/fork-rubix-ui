@@ -23,6 +23,23 @@ func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, streamUUIDs []UUIDs
 	return "ok"
 }
 
+func (inst *App) DeleteStreamBulkClones(connUUID, hostUUID string, streamUUIDs []UUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, net := range streamUUIDs {
+		msg := inst.DeleteStreamClone(connUUID, hostUUID, net.UUID)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("delete stream-clone %s %s", net.Name, msg))
+		} else {
+			inst.crudMessage(true, fmt.Sprintf("deleteed stream-clone: %s", net.Name))
+		}
+	}
+	return "ok"
+}
+
 func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
@@ -78,6 +95,7 @@ func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.S
 	}
 	return streams
 }
+
 func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{} {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
@@ -85,6 +103,20 @@ func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{}
 		return err
 	}
 	_, err = inst.flow.DeleteStream(streamUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	return "delete ok"
+}
+
+func (inst *App) DeleteStreamClone(connUUID, hostUUID, streamUUID string) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	_, err = inst.flow.DeleteStreamClone(streamUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
