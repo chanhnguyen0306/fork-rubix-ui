@@ -69,6 +69,11 @@ export const StreamsTable = (props: any) => {
           title: "name",
           type: "string",
         },
+        enable: {
+          title: "enable",
+          type: "boolean",
+          default: true,
+        },
         uuid: {
           readOnly: true,
           title: "uuid",

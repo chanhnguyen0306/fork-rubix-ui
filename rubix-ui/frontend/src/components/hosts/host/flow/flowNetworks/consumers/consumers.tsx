@@ -1,18 +1,16 @@
+import Title from "antd/lib/typography/Title";
 import { useParams } from "react-router-dom";
-import { Typography } from "antd";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
-import { ProducersTable } from "./views/table";
+import { ConsumersTable } from "./views/table";
 
-const { Title } = Typography;
-
-export const Producers = () => {
+export const Consumers = () => {
   const {
     connUUID = "",
     locUUID = "",
     netUUID = "",
     hostUUID = "",
-    flNetworkUUID = "",
+    flNetworkCloneUUID = "",
   } = useParams();
 
   const routes = [
@@ -45,25 +43,25 @@ export const Producers = () => {
       breadcrumbName: "Flow Networks",
     },
     {
-      path: ROUTES.STREAMS.replace(":connUUID", connUUID || "")
+      path: ROUTES.STREAMCLONES.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID || "")
         .replace(":hostUUID", hostUUID || "")
-        .replace(":flNetworkUUID", flNetworkUUID || ""),
-      breadcrumbName: "Streams",
+        .replace(":flNetworkCloneUUID", flNetworkCloneUUID || ""),
+      breadcrumbName: "Streams Clone",
     },
     {
-      breadcrumbName: "Producers",
+      breadcrumbName: "Consumers",
     },
   ];
 
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Producers
+        Consumers
       </Title>
       <RbxBreadcrumb routes={routes} />
-      <ProducersTable />
+      <ConsumersTable />
     </>
   );
 };

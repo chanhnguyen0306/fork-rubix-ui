@@ -1,18 +1,18 @@
 import { useParams } from "react-router-dom";
 import { Typography } from "antd";
+import { model } from "../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
-import { ProducersTable } from "./views/table";
+import { StreamClonesTable } from "./views/table";
 
 const { Title } = Typography;
 
-export const Producers = () => {
+export const StreamClones = () => {
   const {
     connUUID = "",
     locUUID = "",
     netUUID = "",
     hostUUID = "",
-    flNetworkUUID = "",
   } = useParams();
 
   const routes = [
@@ -45,25 +45,17 @@ export const Producers = () => {
       breadcrumbName: "Flow Networks",
     },
     {
-      path: ROUTES.STREAMS.replace(":connUUID", connUUID || "")
-        .replace(":locUUID", locUUID || "")
-        .replace(":netUUID", netUUID || "")
-        .replace(":hostUUID", hostUUID || "")
-        .replace(":flNetworkUUID", flNetworkUUID || ""),
-      breadcrumbName: "Streams",
-    },
-    {
-      breadcrumbName: "Producers",
+      breadcrumbName: "Streams Clone",
     },
   ];
 
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Producers
+        Flow Network Streams Clone
       </Title>
       <RbxBreadcrumb routes={routes} />
-      <ProducersTable />
+      <StreamClonesTable />
     </>
   );
 };

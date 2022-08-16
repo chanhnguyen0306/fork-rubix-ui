@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-
+import { ROUTES as routes } from "./constants/routes";
 import { Logs } from "./components/logs/logs";
 import { Hosts } from "./components/hosts/hosts";
 import { Host } from "./components/hosts/host/host";
@@ -18,7 +18,8 @@ import { FlowDevices } from "./components/hosts/host/flow/devices/flowDevices";
 import { Streams } from "./components/hosts/host/flow/flowNetworks/streams/streams";
 import { Producers } from "./components/hosts/host/flow/flowNetworks/producers/producers";
 import ConnectionPage from "./components/connections/connection-page";
-import { ROUTES as routes } from "./constants/routes";
+import { StreamClones } from "./components/hosts/host/flow/flowNetworks/streamClones/streamClones";
+import { Consumers } from "./components/hosts/host/flow/flowNetworks/consumers/consumers";
 
 function AppRoutes() {
   return (
@@ -77,6 +78,16 @@ function AppRoutes() {
           key={routes.PRODUCERS}
           path={routes.PRODUCERS}
           element={<Producers />}
+        />
+        <Route
+          key={routes.STREAMCLONES}
+          path={routes.STREAMCLONES}
+          element={<StreamClones />}
+        />
+        <Route
+          key={routes.CONSUMERS}
+          path={routes.CONSUMERS}
+          element={<Consumers />}
         />
       </Route>
     </Routes>

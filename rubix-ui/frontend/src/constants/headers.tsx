@@ -26,21 +26,6 @@ export const FLOW_NETWORKS_HEADERS = [
     title: "device name",
     dataIndex: "device_name",
   },
-  // {
-  //   key: "is_error",
-  //   title: "error",
-  //   dataIndex: "is_error",
-  // },
-  // {
-  //   key: "is_master_slave",
-  //   title: "master slave",
-  //   dataIndex: "is_master_slave",
-  // },
-  // {
-  //   key: "is_remote",
-  //   title: "remote",
-  //   dataIndex: "is_remote",
-  // },
   {
     key: "message",
     title: "message",
@@ -65,9 +50,102 @@ export const STREAM_HEADERS = [
     dataIndex: "name",
   },
   {
-    title: "status",
-    key: "enabled",
-    dataIndex: "enabled",
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enabled";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+];
+export const CONSUMER_HEADERS = [
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
+  },
+  {
+    key: "name",
+    title: "name",
+    dataIndex: "name",
+  },
+  {
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enabled";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    key: "message",
+    title: "message",
+    dataIndex: "message",
+  },
+  {
+    key: "producer_thing_class",
+    title: "producer thing class",
+    dataIndex: "producer_thing_class",
+  },
+  {
+    key: "producer_thing_name",
+    title: "producer thing name",
+    dataIndex: "producer_thing_name",
+  },
+];
+
+export const PRODUCER_HEADERS = [
+  {
+    key: "name",
+    title: "name",
+    dataIndex: "name",
+  },
+  {
+    key: "producer_application",
+    title: "application",
+    dataIndex: "producer_application",
+  },
+  {
+    key: "producer_thing_class",
+    title: "thing class",
+    dataIndex: "producer_thing_class",
+  },
+  {
+    key: "producer_thing_name",
+    title: "thing name",
+    dataIndex: "producer_thing_name",
+  },
+  {
+    key: "history_type",
+    title: "history type",
+    dataIndex: "history_type",
+    render(plugin_name: string) {
+      let colour = "#4d4dff";
+      let text = plugin_name.toUpperCase();
+      return <Tag color={colour}>{text}</Tag>;
+    },
+  },
+  {
+    key: "history_interval",
+    title: "history interval",
+    dataIndex: "history_interval",
+  },
+  {
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
     render(enabled: boolean) {
       let colour = "blue";
       let text = "disabled";
@@ -78,38 +156,10 @@ export const STREAM_HEADERS = [
       return <Tag color={colour}>{text}</Tag>;
     },
   },
-  // {
-  //   key: "command_groups",
-  //   title: "command groups",
-  //   dataIndex: "command_groups",
-  // },
-  // {
-  //   key: "producers",
-  //   title: "producers",
-  //   dataIndex: "producers",
-  // },
-  // {
-  //   key: "tags",
-  //   title: "tags",
-  //   dataIndex: "tags",
-  // },
-  // {
-  //   key: "flow_networks",
-  //   title: "flow_networks",
-  //   dataIndex: "flow_networks",
-  // },
-];
-
-export const PRODUCER_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
-  },
-  {
-    key: "name",
-    title: "name",
-    dataIndex: "name",
   },
 ];
 

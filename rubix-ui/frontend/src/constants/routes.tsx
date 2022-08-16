@@ -28,4 +28,8 @@ export const ROUTES: ROUTE = {
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks/:flNetworkUUID/streams",
   PRODUCERS:
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks/:flNetworkUUID/streams/:streamUUID/producers",
+  STREAMCLONES:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks-clone/:flNetworkCloneUUID/streams-clone",
+  CONSUMERS:
+    "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks-clone/:flNetworkCloneUUID/streams/:streamCloneUUID/consumers",
 };
