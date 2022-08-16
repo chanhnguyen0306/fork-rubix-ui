@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
-import { FlowNetworkFactory } from "../../../networks/factory";
+import { FlowConsumerFactory } from "../factory";
+import { FlowProducerFactory } from "../../producers/factory";
 import { model } from "../../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../../common/json-schema-form";
 
-import Producer = model.Producer;
-import { FlowProducerFactory } from "../../producers/factory";
+import Consumer = model.Consumer;
 
 export const CreateEditModal = (props: any) => {
   const { currentItem, isModalVisible, refreshList, onCloseModal } = props;
-  const { connUUID = "", hostUUID = "", streamUUID = "" } = useParams();
+  const { connUUID = "", hostUUID = "", streamCloneUUID = "" } = useParams();
   const [formData, setFormData] = useState(currentItem);
   const [schema, setSchema] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowProducerFactory();
-  let flowNetworkFactory = new FlowNetworkFactory();
-  factory.connectionUUID = flowNetworkFactory.connectionUUID = connUUID;
-  factory.hostUUID = flowNetworkFactory.hostUUID = hostUUID;
+  let factory = new FlowConsumerFactory();
+  let producerFactory = new FlowProducerFactory();
+  factory.connectionUUID = producerFactory.connectionUUID = connUUID;
+  factory.hostUUID = producerFactory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData(currentItem);
@@ -32,7 +32,7 @@ export const CreateEditModal = (props: any) => {
   const getSchema = async () => {
     try {
       setIsFetching(true);
-      const res = await flowNetworkFactory.GetNetworksWithPointsDisplay();
+      const res = await producerFactory.GetAll();
       const jsonSchema = {
         properties: {
           uuid: {
@@ -50,27 +50,14 @@ export const CreateEditModal = (props: any) => {
             title: "enable",
             type: "boolean",
           },
-          enable_history: {
-            title: "enable history",
-            type: "boolean",
-          },
-          producer_thing_class: {
-            type: "string",
-            enum: ["point", "schedule"],
-            default: "point",
-          },
-          producer_application: {
-            type: "string",
-            enum: ["mapping"],
-            default: "mapping",
-          },
+
           producer_thing_uuid: {
             title: "Point",
             type: "string",
             anyOf: res.map((n) => {
-              return { type: "string", enum: [n.point_uuid], title: n.name };
+              return { type: "string", enum: [n.uuid], title: n.name };
             }),
-            default: res[0].point_uuid,
+            default: res[0].uuid,
           },
         },
       };
@@ -82,18 +69,15 @@ export const CreateEditModal = (props: any) => {
     }
   };
 
-  const handleSubmit = async (item: Producer) => {
+  const handleSubmit = async (item: Consumer) => {
     try {
       setConfirmLoading(true);
       if (currentItem.uuid) {
-        item.uuid = currentItem.uuid;
-        await factory.Update(item.uuid, item);
+        await factory.Update(currentItem.uuid, item);
       } else {
         item = {
           ...item,
-          stream_uuid: streamUUID,
-          history_type: "",
-          history_interval: 0,
+          stream_clone_uuid: streamCloneUUID,
         } as any;
         await factory.Add(item);
       }

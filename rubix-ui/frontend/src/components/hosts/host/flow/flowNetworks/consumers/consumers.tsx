@@ -2,7 +2,7 @@ import Title from "antd/lib/typography/Title";
 import { useParams } from "react-router-dom";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
-import { ProducersTable } from "./views/table";
+import { ConsumersTable } from "./views/table";
 
 export const Consumers = () => {
   const {
@@ -61,7 +61,7 @@ export const Consumers = () => {
         Consumers
       </Title>
       <RbxBreadcrumb routes={routes} />
-      <ProducersTable />
+      <ConsumersTable />
     </>
   );
 };

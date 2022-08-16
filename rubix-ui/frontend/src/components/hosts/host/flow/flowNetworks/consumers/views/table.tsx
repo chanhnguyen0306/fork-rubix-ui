@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import { PRODUCER_HEADERS } from "../../../../../../../constants/headers";
+import { FlowConsumerFactory } from "../factory";
+import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -12,28 +13,27 @@ import {
 import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
-import Producer = model.Producer;
-import { FlowProducerFactory } from "../../producers/factory";
+import Consumer = model.Consumer;
 
-export const ProducersTable = (props: any) => {
+export const ConsumersTable = (props: any) => {
   let { connUUID = "", hostUUID = "" } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [producers, setProducers] = useState([] as Producer[]);
-  const [currentItem, setCurrentItem] = useState({} as Producer);
+  const [consumers, setConsumers] = useState([] as Consumer[]);
+  const [currentItem, setCurrentItem] = useState({} as Consumer);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowProducerFactory();
+  let factory = new FlowConsumerFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...PRODUCER_HEADERS,
+    ...CONSUMER_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, item: Producer) => (
+      render: (_: any, item: Consumer) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -53,21 +53,21 @@ export const ProducersTable = (props: any) => {
     },
   };
 
-  const showModal = (item: Producer) => {
+  const showModal = (item: Consumer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
   };
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentItem({} as Producer);
+    setCurrentItem({} as Consumer);
   };
 
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll();
-      setProducers(res);
+      const res = await factory.GetAll(false);
+      setConsumers(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -88,11 +88,11 @@ export const ProducersTable = (props: any) => {
     <>
       <RbRefreshButton refreshList={fetch} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showModal({} as Producer)} />
+      <RbAddButton showModal={() => showModal({} as Consumer)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={producers}
+        dataSource={consumers}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
