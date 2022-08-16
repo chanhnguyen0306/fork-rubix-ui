@@ -43,11 +43,11 @@ export const Consumers = () => {
       breadcrumbName: "Flow Networks",
     },
     {
-      path: ROUTES.STREAMS.replace(":connUUID", connUUID || "")
+      path: ROUTES.STREAMCLONES.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID || "")
         .replace(":hostUUID", hostUUID || "")
-        .replace(":flNetworkUUID", flNetworkCloneUUID || ""),
+        .replace(":flNetworkCloneUUID", flNetworkCloneUUID || ""),
       breadcrumbName: "Streams Clone",
     },
     {
