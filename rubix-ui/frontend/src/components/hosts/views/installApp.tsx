@@ -14,22 +14,13 @@ const InstallApp = (props: any) => {
   const { isOpen, closeDialog, dialogData } = props;
   const [isInstalling, updateIsInstalling] = useState(false);
 
+  const [initialValues, updateIntialValues] = useState({} as any);
   const [releases, updateReleases] = useState([] as any);
   const [availableApps, updateAvailableApps] = useState([] as any);
-  console.log(dialogData);
-  let {
-    connUUID = "",
-    hostUUID = "",
-    locUUID = "",
-    netUUID = "",
-  } = useParams();
+  let { connUUID = "" } = useParams();
 
   useEffect(() => {
     fetchReleases();
-
-    return () => {
-      console.log("close hook");
-    };
   }, []);
 
   const fetchReleases = () => {
@@ -42,11 +33,10 @@ const InstallApp = (props: any) => {
     const release = releases.find((release: any) => release.release == version);
     if (release && release.apps) {
       updateAvailableApps(release.apps);
-      console.log(release.apps);
+      updateInitialValues(release.apps, version);
     }
   };
-  const handleSubmit = (values: any) => {
-    console.log(values);
+  const handleSubmit = (values: any, formikProps: any) => {
     const payloads = Object.keys(values.apps).reduce((acc: any, appName) => {
       if (values.apps[appName].install) {
         acc.push({
@@ -63,7 +53,6 @@ const InstallApp = (props: any) => {
     }, []);
 
     updateIsInstalling(true);
-    console.log(payloads);
 
     return Promise.all(
       payloads.map((payload: any) =>
@@ -81,25 +70,33 @@ const InstallApp = (props: any) => {
     )
       .then(() => {
         closeDialog();
+        if (formikProps && typeof formikProps.resetForm === "function") {
+          formikProps.resetForm({ values: {} });
+        }
       })
       .finally(() => {
         updateIsInstalling(false);
       });
   };
 
-  const initialValues: any = {};
-
-  initialValues.apps = {
-    ...availableApps.reduce((acc: any, curr: any) => {
-      acc = {
-        ...acc,
-        [curr.name]: {
-          arch: "armv7",
-          install: false,
-        },
-      };
-      return acc;
-    }, {}),
+  const updateInitialValues = (availableApps: any, release: string) => {
+    const values = {
+      ...initialValues,
+      release,
+      apps: {
+        ...availableApps.reduce((acc: any, curr: any) => {
+          acc = {
+            ...acc,
+            [curr.name]: {
+              arch: "armv7",
+              install: false,
+            },
+          };
+          return acc;
+        }, {}),
+      },
+    };
+    updateIntialValues(values);
   };
 
   return (
@@ -118,68 +115,66 @@ const InstallApp = (props: any) => {
           }
           disabled={isInstalling}
           isLoading={isInstalling}
-          handleOk={() => handleSubmit(props.values)}
+          handleOk={() => handleSubmit(props.values, props)}
           isOpen={isOpen}
           close={closeDialog}
         >
           <Spin spinning={isInstalling}>
-            {isOpen ? (
-              <Form>
-                <Select
-                  showSearch
-                  name="release"
-                  style={{ width: "100%" }}
-                  placeholder="Select a version"
-                  optionFilterProp="children"
-                  onSelect={handleOnSelect}
-                  filterOption={(input, option) =>
-                    (option!.children as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                >
-                  {releases.map((release: any) => (
-                    <Option key={release.release} value={release.release}>
-                      {release.release}
-                    </Option>
-                  ))}
-                </Select>
-                <div style={{ padding: "10px 0" }}>
-                  {Array.isArray(availableApps) && availableApps.length > 0 && (
-                    <span style={{ padding: "20px 0 10px 0", fontWeight: 500 }}>
-                      Apps
+            <Form>
+              <Select
+                showSearch
+                name="release"
+                style={{ width: "100%" }}
+                placeholder="Select a version"
+                optionFilterProp="children"
+                onSelect={handleOnSelect}
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {releases.map((release: any) => (
+                  <Option key={release.release} value={release.release}>
+                    {release.release}
+                  </Option>
+                ))}
+              </Select>
+              <div style={{ padding: "10px 0" }}>
+                {props.values.release && Array.isArray(availableApps) && availableApps.length > 0 && (
+                  <span style={{ padding: "20px 0 10px 0", fontWeight: 500 }}>
+                    Apps
+                  </span>
+                )}
+                {props.values.release && availableApps.map((app: any) => (
+                  <span
+                    key={app.name}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      padding: "10px 0",
+                    }}
+                  >
+                    <span className="flex-2">{app.name}</span>
+                    <span className="flex-1">
+                      <Checkbox name={`apps.${app.name}.install`}>
+                        Install
+                      </Checkbox>
                     </span>
-                  )}
-                  {availableApps.map((app: any) => (
-                    <span
-                      key={app.name}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "10px 0",
-                      }}
-                    >
-                      <span className="flex-2">{app.name}</span>
-                      <span className="flex-1">
-                        <Checkbox name={`apps.${app.name}.install`}>
-                          Install
-                        </Checkbox>
-                      </span>
-                      <span className="flex-3">
-                        <Form.Item name="layout">
-                          <Radio.Group
-                            name={`apps.${app.name}.arch`}
-                            options={app.arch}
-                            optionType="button"
-                            buttonStyle="solid"
-                          />
-                        </Form.Item>
-                      </span>
+                    <span className="flex-3">
+                      <Form.Item name="layout">
+                        <Radio.Group
+                          name={`apps.${app.name}.arch`}
+                          options={app.arch}
+                          optionType="button"
+                          buttonStyle="solid"
+                        />
+                      </Form.Item>
                     </span>
-                  ))}
-                </div>
-              </Form>
-            ) : null}
+                  </span>
+                ))}
+              </div>
+            </Form>
           </Spin>
         </RbModal>
       )}
