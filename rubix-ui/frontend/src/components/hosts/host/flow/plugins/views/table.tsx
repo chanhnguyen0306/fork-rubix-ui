@@ -17,13 +17,8 @@ import PluginConf = model.PluginConf;
 import PluginUUIDs = main.PluginUUIDs;
 
 export const FlowPluginsTable = (props: any) => {
-  const { data } = props;
-
   const { connUUID = "", hostUUID = "" } = useParams();
   const [plugins, setPlugins] = useState([] as Array<PluginConf>);
-  const [selectedPlugins, setSelectedPlugins] = useState(
-    [] as Array<PluginConf>
-  );
   const [pluginName, setPluginName] = useState<string>();
   const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<PluginUUIDs>);
   const [networkSchema, setNetworkSchema] = useState({});
@@ -41,7 +36,6 @@ export const FlowPluginsTable = (props: any) => {
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: Array<model.PluginConf>) => {
       setPluginsUUIDs(selectedRows);
-      setSelectedPlugins(selectedRows);
     },
   };
 
@@ -61,8 +55,8 @@ export const FlowPluginsTable = (props: any) => {
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    if (selectedPlugins.length > 0) {
-      let plg = selectedPlugins.at(0) as unknown as PluginConf;
+    if (pluginsUUIDs.length > 0) {
+      let plg = pluginsUUIDs.at(0) as unknown as PluginConf;
       setPluginName(plg.name);
       const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
       const jsonSchema = {
