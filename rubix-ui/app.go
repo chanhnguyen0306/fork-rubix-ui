@@ -79,7 +79,7 @@ func matchConnectionUUID(uuid string) bool {
 
 //initRest get rest client
 func (inst *App) initConnection(connUUID string) (*assitcli.Client, error) {
-	inst.mutex.Lock() // mutex was added had issue with "concurrent map read and map write"
+	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
 	defer inst.mutex.Unlock()
 	if connUUID == "" {
 		return nil, errors.New("conn can not be empty")
