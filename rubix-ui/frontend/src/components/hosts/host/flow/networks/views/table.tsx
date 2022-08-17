@@ -13,6 +13,7 @@ import {
   RbDeleteButton,
   RbExportButton,
   RbImportButton,
+  RbRefreshButton,
 } from "../../../../../../common/rb-table-actions";
 import { CreateModal, EditModal } from "./create";
 import { SidePanel } from "./side-panel";
@@ -20,9 +21,10 @@ import { ExportModal, ImportModal } from "./import-export";
 import "./style.css";
 
 import Backup = storage.Backup;
+import UUIDs = main.UUIDs;
+import Network = model.Network;
 
 export const FlowNetworkTable = (props: any) => {
-  const { data, isFetching, fetchNetworks } = props;
   let {
     connUUID = "",
     hostUUID = "",
@@ -31,11 +33,13 @@ export const FlowNetworkTable = (props: any) => {
   } = useParams();
   const [currentItem, setCurrentItem] = useState({});
   const [networkSchema, setNetworkSchema] = useState({});
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [backups, setBackups] = useState([] as Backup[]);
+  const [networks, setNetworks] = useState([] as Network[]);
+  const [isFetching, setIsFetching] = useState(true);
   const [collapsed, setCollapsed] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
@@ -73,21 +77,40 @@ export const FlowNetworkTable = (props: any) => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
   useEffect(() => {
     fetchBackups();
+    fetchNetworks();
   }, []);
 
   useEffect(() => {
     setCollapsed(true);
-    const totalPage = Math.ceil(data.length / 10);
+    const totalPage = Math.ceil(networks.length / 10);
     setTotalPage(totalPage);
     sidePanelHeightHandle();
-  }, [data.length]);
+  }, [networks.length]);
 
   useEffect(() => {
     setCollapsed(true);
     sidePanelHeightHandle();
   }, [currentPage, selectedUUIDs]);
+
+  const fetchNetworks = async () => {
+    try {
+      setIsFetching(true);
+      let res = (await networkFactory.GetAll(false)) || [];
+      setNetworks(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const fetchBackups = async () => {
     try {
@@ -130,12 +153,6 @@ export const FlowNetworkTable = (props: any) => {
     setSelectedUUIDs([]);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
-
   const getNavigationLink = (
     networkUUID: string,
     pluginName: string
@@ -150,11 +167,11 @@ export const FlowNetworkTable = (props: any) => {
 
   const sidePanelHeightHandle = () => {
     if (currentPage === totalPage) {
-      const height = (data.length % 10) * 60 + 55; //get height of last page
+      const height = (networks.length % 10) * 60 + 55; //get height of last page
       setSidePanelHeight(height);
     } else {
       const height =
-        data.length >= 10 ? 10 * 60 + 55 : (data.length % 10) * 60 + 55;
+        networks.length >= 10 ? 10 * 60 + 55 : (networks.length % 10) * 60 + 55;
       setSidePanelHeight(height);
     }
   };
@@ -181,13 +198,14 @@ export const FlowNetworkTable = (props: any) => {
         >
           <FileSyncOutlined /> Backups
         </Button>
+        <RbRefreshButton refreshList={fetchNetworks} />
       </div>
 
       <div className="flow-networks">
         <RbTable
           rowKey="uuid"
           rowSelection={rowSelection}
-          dataSource={data}
+          dataSource={networks}
           columns={columns}
           loading={{ indicator: <Spin />, spinning: isFetching }}
           className={collapsed ? "full-width " : "uncollapsed-style "}
@@ -217,11 +235,6 @@ export const FlowNetworkTable = (props: any) => {
         onCloseModal={() => setIsCreateModalVisible(false)}
         refreshList={fetchNetworks}
       />
-      {/* <ImportJsonModal
-        isModalVisible={isImportModalVisible}
-        onClose={() => setIsImportModalVisible(false)}
-        onOk={handleImport}
-      /> */}
       <ExportModal
         isModalVisible={isExportModalVisible}
         onClose={() => setIsExportModalVisible(false)}

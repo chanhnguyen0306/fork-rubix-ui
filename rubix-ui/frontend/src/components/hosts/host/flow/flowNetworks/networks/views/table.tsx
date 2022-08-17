@@ -54,6 +54,12 @@ export const FlowNetworksTable = (props: any) => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);
     refreshList();
@@ -88,12 +94,6 @@ export const FlowNetworksTable = (props: any) => {
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID)
       .replace(":flNetworkUUID", flNetworkUUID);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
   };
 
   const showModal = (network: FlowNetwork) => {

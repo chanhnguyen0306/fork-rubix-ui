@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import { FlowConsumerFactory } from "../factory";
 import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
+import { ROUTES } from "../../../../../../../constants/routes";
 import RbTable from "../../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -16,14 +17,21 @@ import UUIDs = main.UUIDs;
 import Consumer = model.Consumer;
 
 export const ConsumersTable = (props: any) => {
-  let { connUUID = "", hostUUID = "" } = useParams();
+  const {
+    connUUID = "",
+    hostUUID = "",
+    locUUID = "",
+    netUUID = "",
+    flNetworkCloneUUID = "",
+    streamCloneUUID = "",
+  } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [consumers, setConsumers] = useState([] as Consumer[]);
   const [currentItem, setCurrentItem] = useState({} as Consumer);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowConsumerFactory();
+  const factory = new FlowConsumerFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -35,6 +43,7 @@ export const ConsumersTable = (props: any) => {
       key: "actions",
       render: (_: any, item: Consumer) => (
         <Space size="middle">
+          <Link to={getNavigationLink(item.uuid)}>View Writers</Link>
           <a
             onClick={() => {
               showModal(item);
@@ -53,6 +62,10 @@ export const ConsumersTable = (props: any) => {
     },
   };
 
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const showModal = (item: Consumer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
@@ -61,6 +74,16 @@ export const ConsumersTable = (props: any) => {
   const onCloseModal = () => {
     setIsModalVisible(false);
     setCurrentItem({} as Consumer);
+  };
+
+  const getNavigationLink = (consumerUUID: string): string => {
+    return ROUTES.WRITERS.replace(":connUUID", connUUID)
+      .replace(":locUUID", locUUID)
+      .replace(":netUUID", netUUID)
+      .replace(":hostUUID", hostUUID)
+      .replace(":flNetworkCloneUUID", flNetworkCloneUUID)
+      .replace(":streamCloneUUID", streamCloneUUID)
+      .replace(":consumerUUID", consumerUUID);
   };
 
   const fetch = async () => {
@@ -79,10 +102,6 @@ export const ConsumersTable = (props: any) => {
     await factory.BulkDelete(selectedUUIDs);
     fetch();
   };
-
-  useEffect(() => {
-    fetch();
-  }, []);
 
   return (
     <>

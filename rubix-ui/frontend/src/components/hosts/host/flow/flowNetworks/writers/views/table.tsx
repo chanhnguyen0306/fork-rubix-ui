@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import { FlowProducerFactory } from "../factory";
-import { PRODUCER_HEADERS } from "../../../../../../../constants/headers";
-import { ROUTES } from "../../../../../../../constants/routes";
+import { WritersFactory } from "../factory";
+import { FlowConsumerFactory } from "../../consumers/factory";
+import { WRITER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -14,36 +14,31 @@ import {
 import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
-import Producer = model.Producer;
+import Writer = model.Writer;
+import Consumer = model.Consumer;
 
-export const ProducersTable = (props: any) => {
-  const {
-    connUUID = "",
-    locUUID = "",
-    netUUID = "",
-    hostUUID = "",
-    flNetworkUUID = "",
-    streamUUID = "",
-  } = useParams();
+export const WritersTable = () => {
+  const { connUUID = "", hostUUID = "", consumerUUID = "" } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [producers, setProducers] = useState([] as Producer[]);
-  const [currentItem, setCurrentItem] = useState({} as Producer);
+  const [writers, setWriters] = useState([] as Writer[]);
+  const [thingClass, setThingClass] = useState<any>();
+  const [currentItem, setCurrentItem] = useState({} as Writer);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  const factory = new FlowProducerFactory();
-  factory.connectionUUID = connUUID;
-  factory.hostUUID = hostUUID;
+  const factory = new WritersFactory();
+  const consumerFactory = new FlowConsumerFactory();
+  factory.connectionUUID = consumerFactory.connectionUUID = connUUID;
+  factory.hostUUID = consumerFactory.hostUUID = hostUUID;
 
   const columns = [
-    ...PRODUCER_HEADERS,
+    ...WRITER_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, item: Producer) => (
+      render: (_: any, item: Writer) => (
         <Space size="middle">
-          <Link to={getNavigationLink(item.uuid)}>View Writer Clones</Link>
           <a
             onClick={() => {
               showModal(item);
@@ -66,31 +61,26 @@ export const ProducersTable = (props: any) => {
     fetch();
   }, []);
 
-  const showModal = (item: Producer) => {
-    setCurrentItem(item);
+  const showModal = async (item: Writer) => {
+    if (!thingClass && (!item || !item.uuid)) {
+      await setNewItem();
+    } else {
+      item.writer_thing_class = item.writer_thing_class ?? thingClass;
+      setCurrentItem(item);
+    }
     setIsModalVisible(true);
   };
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentItem({} as Producer);
-  };
-
-  const getNavigationLink = (producerUUID: string): string => {
-    return ROUTES.WRITERCLONES.replace(":connUUID", connUUID)
-      .replace(":locUUID", locUUID)
-      .replace(":netUUID", netUUID)
-      .replace(":hostUUID", hostUUID)
-      .replace(":flNetworkUUID", flNetworkUUID)
-      .replace(":streamUUID", streamUUID)
-      .replace(":producerUUID", producerUUID);
+    setCurrentItem({} as Writer);
   };
 
   const fetch = async () => {
     try {
       setIsFetching(true);
       const res = await factory.GetAll();
-      setProducers(res);
+      setWriters(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -103,15 +93,23 @@ export const ProducersTable = (props: any) => {
     fetch();
   };
 
+  const setNewItem = async () => {
+    const item = new Writer();
+    const consumer = await consumerFactory.GetOne(consumerUUID);
+    item.writer_thing_class = consumer.producer_thing_class;
+    setThingClass(consumer.producer_thing_class); //avoid calling get consumer endpoint again
+    setCurrentItem(item);
+  };
+
   return (
     <>
       <RbRefreshButton refreshList={fetch} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showModal({} as Producer)} />
+      <RbAddButton showModal={() => showModal({} as Writer)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={producers}
+        dataSource={writers}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />

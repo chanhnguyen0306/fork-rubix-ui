@@ -20,6 +20,8 @@ import { Producers } from "./components/hosts/host/flow/flowNetworks/producers/p
 import ConnectionPage from "./components/connections/connection-page";
 import { StreamClones } from "./components/hosts/host/flow/flowNetworks/streamClones/streamClones";
 import { Consumers } from "./components/hosts/host/flow/flowNetworks/consumers/consumers";
+import { Writers } from "./components/hosts/host/flow/flowNetworks/writers/writers";
+import { WriterClones } from "./components/hosts/host/flow/flowNetworks/writerClones/writer-clones";
 
 function AppRoutes() {
   return (
@@ -88,6 +90,16 @@ function AppRoutes() {
           key={routes.CONSUMERS}
           path={routes.CONSUMERS}
           element={<Consumers />}
+        />
+        <Route
+          key={routes.WRITERS}
+          path={routes.WRITERS}
+          element={<Writers />}
+        />
+        <Route
+          key={routes.WRITERCLONES}
+          path={routes.WRITERCLONES}
+          element={<WriterClones />}
         />
       </Route>
     </Routes>

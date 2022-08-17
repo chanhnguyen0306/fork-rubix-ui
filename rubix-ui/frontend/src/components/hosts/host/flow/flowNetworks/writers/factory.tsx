@@ -1,8 +1,9 @@
-import {main, model} from "../../../../../../../wailsjs/go/models";
+import { main, model } from "../../../../../../../wailsjs/go/models";
 import {
-  CreateWriter, DeleteWritersBulk,
+  CreateWriter,
+  DeleteWritersBulk,
   EditWriter,
-  GetWriters
+  GetWriters,
 } from "../../../../../../../wailsjs/go/main/App";
 
 export class WritersFactory {
@@ -13,18 +14,21 @@ export class WritersFactory {
     return await GetWriters(this.connectionUUID, this.hostUUID);
   }
 
-  async Add(body:model.Writer): Promise<model.Writer> {
+  async Add(body: model.Writer): Promise<model.Writer> {
     return await CreateWriter(this.connectionUUID, this.hostUUID, body);
   }
 
-  async Edit(uuid: string, body:model.Writer): Promise<model.Writer> {
-    return await EditWriter(this.connectionUUID, this.hostUUID, uuid, body, false);
+  async Edit(uuid: string, body: model.Writer): Promise<model.Writer> {
+    return await EditWriter(
+      this.connectionUUID,
+      this.hostUUID,
+      uuid,
+      body,
+      false
+    );
   }
 
   async BulkDelete(uuids: Array<main.UUIDs>): Promise<model.Writer> {
     return await DeleteWritersBulk(this.connectionUUID, this.hostUUID, uuids);
   }
-
-
-
 }

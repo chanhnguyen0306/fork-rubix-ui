@@ -64,6 +64,7 @@ export const STREAM_HEADERS = [
     },
   },
 ];
+
 export const CONSUMER_HEADERS = [
   {
     key: "uuid",
@@ -160,6 +161,24 @@ export const PRODUCER_HEADERS = [
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
+  },
+];
+
+export const WRITER_HEADERS = [
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
+  },
+  {
+    key: "writer_thing_class",
+    title: "writer thing class",
+    dataIndex: "writer_thing_class",
+  },
+  {
+    key: "writer_thing_name",
+    title: "writer thing name",
+    dataIndex: "writer_thing_name",
   },
 ];
 

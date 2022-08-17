@@ -55,6 +55,12 @@ export const StreamsTable = (props: any) => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);
     refreshList();
@@ -91,12 +97,6 @@ export const StreamsTable = (props: any) => {
       .replace(":hostUUID", hostUUID)
       .replace(":flNetworkUUID", flNetworkUUID)
       .replace(":streamUUID", streamUUID);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
   };
 
   const showModal = (item: Stream) => {
