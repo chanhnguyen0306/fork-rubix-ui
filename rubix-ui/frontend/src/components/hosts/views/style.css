@@ -34,3 +34,16 @@
 .rubix-wires-card > .ant-card-body {
     padding: 17px 24px;
 }
+
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.flex-3 {
+    flex:3;
+}

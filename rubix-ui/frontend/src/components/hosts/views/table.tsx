@@ -20,6 +20,10 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
+import { useDialogs } from "../../../hooks/useDialogs";
+import InstallApp from "./installApp";
+
+const INSTALL_DIALOG = "INSTALL_DIALOG";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
@@ -36,6 +40,9 @@ export const HostsTable = (props: any) => {
   const [hostSchema, setHostSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
+    INSTALL_DIALOG,
+  ]);
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
@@ -78,6 +85,13 @@ export const HostsTable = (props: any) => {
             }}
           >
             Delete
+          </a>
+          <a
+            onClick={() => {
+              openDialog(INSTALL_DIALOG, { state: host });
+            }}
+          >
+            Install
           </a>
           <a
             onClick={() => {
@@ -220,6 +234,11 @@ export const HostsTable = (props: any) => {
         connUUID={connUUID}
         refreshList={refreshList}
         onCloseModal={onCloseModal}
+      />
+      <InstallApp
+        isOpen={isOpen(INSTALL_DIALOG)}
+        closeDialog={() => closeDialog(INSTALL_DIALOG)}
+        dialogData={dialogData[INSTALL_DIALOG]}
       />
     </div>
   );
