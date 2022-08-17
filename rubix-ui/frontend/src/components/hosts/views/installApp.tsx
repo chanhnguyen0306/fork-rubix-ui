@@ -25,7 +25,7 @@ const InstallApp = (props: any) => {
 
   const fetchReleases = () => {
     releaseFactory.GetReleases().then((releases) => {
-      updateReleases(releases);
+      updateReleases(releases || []);
     });
   };
 
@@ -141,38 +141,41 @@ const InstallApp = (props: any) => {
                 ))}
               </Select>
               <div style={{ padding: "10px 0" }}>
-                {props.values.release && Array.isArray(availableApps) && availableApps.length > 0 && (
-                  <span style={{ padding: "20px 0 10px 0", fontWeight: 500 }}>
-                    Apps
-                  </span>
-                )}
-                {props.values.release && availableApps.map((app: any) => (
-                  <span
-                    key={app.name}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      padding: "10px 0",
-                    }}
-                  >
-                    <span className="flex-2">{app.name}</span>
-                    <span className="flex-1">
-                      <Checkbox name={`apps.${app.name}.install`}>
-                        Install
-                      </Checkbox>
+                {props.values.release &&
+                  Array.isArray(availableApps) &&
+                  availableApps.length > 0 && (
+                    <span style={{ padding: "20px 0 10px 0", fontWeight: 500 }}>
+                      Apps
                     </span>
-                    <span className="flex-3">
-                      <Form.Item name="layout">
-                        <Radio.Group
-                          name={`apps.${app.name}.arch`}
-                          options={app.arch}
-                          optionType="button"
-                          buttonStyle="solid"
-                        />
-                      </Form.Item>
+                  )}
+                {props.values.release &&
+                  availableApps.map((app: any) => (
+                    <span
+                      key={app.name}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "10px 0",
+                      }}
+                    >
+                      <span className="flex-2">{app.name}</span>
+                      <span className="flex-1">
+                        <Checkbox name={`apps.${app.name}.install`}>
+                          Install
+                        </Checkbox>
+                      </span>
+                      <span className="flex-3">
+                        <Form.Item name="layout">
+                          <Radio.Group
+                            name={`apps.${app.name}.arch`}
+                            options={app.arch}
+                            optionType="button"
+                            buttonStyle="solid"
+                          />
+                        </Form.Item>
+                      </span>
                     </span>
-                  </span>
-                ))}
+                  ))}
               </div>
             </Form>
           </Spin>
