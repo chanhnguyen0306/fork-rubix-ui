@@ -42,6 +42,8 @@ export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Pro
 
 export function ConfigBACnetServer(arg1:main.ConfigBACnetServer):Promise<Error>;
 
+export function CreateWriter(arg1:string,arg2:string,arg3:model.Writer):Promise<model.Writer>;
+
 export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
 
 export function DeleteBackup(arg1:string):Promise<string>;
@@ -102,6 +104,14 @@ export function DeleteStreamBulkClones(arg1:string,arg2:string,arg3:Array<main.U
 
 export function DeleteStreamClone(arg1:string,arg2:string,arg3:string):Promise<any>;
 
+export function DeleteWriter(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteWriterClone(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function DeleteWriterCloneBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
+export function DeleteWritersBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
+
 export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
@@ -159,6 +169,8 @@ export function EditPoint(arg1:string,arg2:string,arg3:string,arg4:model.Point):
 export function EditProducer(arg1:string,arg2:string,arg3:string,arg4:model.Producer):Promise<model.Producer>;
 
 export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
+
+export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer,arg5:boolean):Promise<model.Writer>;
 
 export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -313,6 +325,10 @@ export function GetStream(arg1:string,arg2:string,arg3:string):Promise<model.Str
 export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.StreamClone>>;
 
 export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>;
+
+export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.WriterClone>>;
+
+export function GetWriters(arg1:string,arg2:string):Promise<Array<model.Writer>>;
 
 export function GitDownloadRelease(arg1:string,arg2:string):Promise<store.Release>;
 
