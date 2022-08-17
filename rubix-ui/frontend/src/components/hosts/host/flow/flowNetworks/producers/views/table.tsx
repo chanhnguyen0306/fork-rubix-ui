@@ -53,6 +53,10 @@ export const ProducersTable = (props: any) => {
     },
   };
 
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const showModal = (item: Producer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
@@ -79,10 +83,6 @@ export const ProducersTable = (props: any) => {
     await factory.BulkDelete(selectedUUIDs);
     fetch();
   };
-
-  useEffect(() => {
-    fetch();
-  }, []);
 
   return (
     <>

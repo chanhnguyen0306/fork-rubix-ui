@@ -44,6 +44,16 @@ export const StreamClonesTable = () => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const getNavigationLink = (streamCloneUUID: string): string => {
     return ROUTES.CONSUMERS.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
@@ -51,12 +61,6 @@ export const StreamClonesTable = () => {
       .replace(":hostUUID", hostUUID)
       .replace(":flNetworkCloneUUID", flNetworkCloneUUID)
       .replace(":streamCloneUUID", streamCloneUUID);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
   };
 
   const bulkDelete = async () => {
@@ -75,10 +79,6 @@ export const StreamClonesTable = () => {
       setIsFetching(false);
     }
   };
-
-  useEffect(() => {
-    fetch();
-  }, []);
 
   return (
     <>

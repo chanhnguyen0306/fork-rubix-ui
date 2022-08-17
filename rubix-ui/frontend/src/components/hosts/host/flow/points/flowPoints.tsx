@@ -27,24 +27,6 @@ export const FlowPoints = () => {
     networkUUID = "",
   } = useParams();
 
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  const fetch = async () => {
-    try {
-      setIsFetching(true);
-      flowPointFactory.connectionUUID = connUUID;
-      flowPointFactory.hostUUID = hostUUID;
-      let res = await flowPointFactory.GetPointsForDevice(deviceUUID);
-      setDevices(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
@@ -88,6 +70,24 @@ export const FlowPoints = () => {
       breadcrumbName: "Flow Point",
     },
   ];
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
+    try {
+      setIsFetching(true);
+      flowPointFactory.connectionUUID = connUUID;
+      flowPointFactory.hostUUID = hostUUID;
+      let res = await flowPointFactory.GetPointsForDevice(deviceUUID);
+      setDevices(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   return (
     <>

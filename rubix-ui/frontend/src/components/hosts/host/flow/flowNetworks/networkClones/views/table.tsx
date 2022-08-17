@@ -44,18 +44,22 @@ export const NetworkClonesTable = (props: any) => {
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const getNavigationLink = (flNetworkCloneUUID: string): string => {
     return ROUTES.STREAMCLONES.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID)
       .replace(":flNetworkCloneUUID", flNetworkCloneUUID);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
   };
 
   const fetch = async () => {
@@ -74,10 +78,6 @@ export const NetworkClonesTable = (props: any) => {
     await factory.BulkDelete(selectedUUIDs);
     fetch();
   };
-
-  useEffect(() => {
-    fetch();
-  }, []);
 
   return (
     <>
