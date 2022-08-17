@@ -58,6 +58,10 @@ export function ConfigBACnetServer(arg1) {
   return window['go']['main']['App']['ConfigBACnetServer'](arg1);
 }
 
+export function CreateWriter(arg1, arg2, arg3) {
+  return window['go']['main']['App']['CreateWriter'](arg1, arg2, arg3);
+}
+
 export function DeleteAllConnections() {
   return window['go']['main']['App']['DeleteAllConnections']();
 }
@@ -178,6 +182,22 @@ export function DeleteStreamClone(arg1, arg2, arg3) {
   return window['go']['main']['App']['DeleteStreamClone'](arg1, arg2, arg3);
 }
 
+export function DeleteWriter(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DeleteWriter'](arg1, arg2, arg3);
+}
+
+export function DeleteWriterClone(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DeleteWriterClone'](arg1, arg2, arg3);
+}
+
+export function DeleteWriterCloneBulk(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DeleteWriterCloneBulk'](arg1, arg2, arg3);
+}
+
+export function DeleteWritersBulk(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DeleteWritersBulk'](arg1, arg2, arg3);
+}
+
 export function DisablePlugin(arg1, arg2, arg3) {
   return window['go']['main']['App']['DisablePlugin'](arg1, arg2, arg3);
 }
@@ -292,6 +312,10 @@ export function EditProducer(arg1, arg2, arg3, arg4) {
 
 export function EditStream(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['EditStream'](arg1, arg2, arg3, arg4);
+}
+
+export function EditWriter(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['EditWriter'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function EnablePlugin(arg1, arg2, arg3) {
@@ -600,6 +624,14 @@ export function GetStreamClones(arg1, arg2) {
 
 export function GetStreams(arg1, arg2) {
   return window['go']['main']['App']['GetStreams'](arg1, arg2);
+}
+
+export function GetWriterClones(arg1, arg2) {
+  return window['go']['main']['App']['GetWriterClones'](arg1, arg2);
+}
+
+export function GetWriters(arg1, arg2) {
+  return window['go']['main']['App']['GetWriters'](arg1, arg2);
 }
 
 export function GitDownloadRelease(arg1, arg2) {
