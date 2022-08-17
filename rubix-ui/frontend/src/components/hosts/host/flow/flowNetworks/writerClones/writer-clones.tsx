@@ -2,7 +2,7 @@ import Title from "antd/lib/typography/Title";
 import { useParams } from "react-router-dom";
 import { ROUTES } from "../../../../../../constants/routes";
 import RbxBreadcrumb from "../../../../../breadcrumbs/breadcrumbs";
-import { ConsumersTable } from "./views/table";
+import { WriterClonesTable } from "./views/table";
 
 export const WriterClones = () => {
   const {
@@ -71,7 +71,7 @@ export const WriterClones = () => {
         Writer Clones
       </Title>
       <RbxBreadcrumb routes={routes} />
-      <ConsumersTable />
+      <WriterClonesTable />
     </>
   );
 };
