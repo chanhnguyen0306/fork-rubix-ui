@@ -68,7 +68,7 @@ export const CreateEditModal = (props: any) => {
     try {
       setConfirmLoading(true);
       if (currentItem.uuid) {
-        const res = await factory.Edit(currentItem.uuid, item);
+        await factory.Edit(currentItem.uuid, item);
       } else {
         item.consumer_uuid = consumerUUID;
         await factory.Add(item);
