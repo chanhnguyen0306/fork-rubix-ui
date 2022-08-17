@@ -2,37 +2,37 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
 import { WritersFactory } from "../factory";
-import { FlowProducerFactory } from "../../producers/factory";
+import { FlowNetworkFactory } from "../../../networks/factory";
 import { model } from "../../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../../common/json-schema-form";
 
-import Consumer = model.Consumer;
+import Writer = model.Writer;
 
 export const CreateEditModal = (props: any) => {
   const { currentItem, isModalVisible, refreshList, onCloseModal } = props;
-  const { connUUID = "", hostUUID = "", streamCloneUUID = "" } = useParams();
+  const { connUUID = "", hostUUID = "", consumerUUID = "" } = useParams();
   const [formData, setFormData] = useState(currentItem);
-  const [schema, setSchema] = useState({});
+  const [schema, setSchema] = useState({} as any);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
   const factory = new WritersFactory();
-  const producerFactory = new FlowProducerFactory();
-  factory.connectionUUID = producerFactory.connectionUUID = connUUID;
-  factory.hostUUID = producerFactory.hostUUID = hostUUID;
+  const flowNetworkFactory = new FlowNetworkFactory();
+  factory.connectionUUID = flowNetworkFactory.connectionUUID = connUUID;
+  factory.hostUUID = flowNetworkFactory.hostUUID = hostUUID;
 
   useEffect(() => {
+    if (!isModalVisible) return;
+    if (!schema.properties) {
+      getSchema();
+    }
     setFormData(currentItem);
   }, [isModalVisible]);
-
-  useEffect(() => {
-    getSchema();
-  }, []);
 
   const getSchema = async () => {
     try {
       setIsFetching(true);
-      const res = await producerFactory.GetAll();
+      const res = await flowNetworkFactory.GetNetworksWithPointsDisplay();
       const jsonSchema = {
         properties: {
           uuid: {
@@ -40,24 +40,19 @@ export const CreateEditModal = (props: any) => {
             title: "uuid",
             type: "string",
           },
-          name: {
-            maxLength: 50,
-            minLength: 2,
-            title: "name",
+          writer_thing_class: {
+            readOnly: true,
+            title: "thing class",
             type: "string",
+            default: currentItem.writer_thing_class,
           },
-          enable: {
-            title: "enable",
-            type: "boolean",
-            default: true,
-          },
-          producer_uuid: {
-            title: "producer",
+          writer_thing_uuid: {
+            title: "Point",
             type: "string",
             anyOf: res.map((n) => {
-              return { type: "string", enum: [n.uuid], title: n.name };
+              return { type: "string", enum: [n.point_uuid], title: n.name };
             }),
-            default: res[0].uuid,
+            default: res[0].point_uuid,
           },
         },
       };
@@ -69,7 +64,7 @@ export const CreateEditModal = (props: any) => {
     }
   };
 
-  const handleSubmit = async (item: Consumer) => {
+  const handleSubmit = async (item: Writer) => {
     try {
       setConfirmLoading(true);
       if (currentItem.uuid) {
@@ -77,7 +72,7 @@ export const CreateEditModal = (props: any) => {
       } else {
         item = {
           ...item,
-          stream_clone_uuid: streamCloneUUID,
+          consumer_uuid: consumerUUID,
         } as any;
         await factory.Add(item);
       }
