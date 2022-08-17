@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Spin } from "antd";
-import { FlowConsumerFactory } from "../factory";
+import { WritersFactory } from "../factory";
 import { FlowProducerFactory } from "../../producers/factory";
 import { model } from "../../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../../common/json-schema-form";
@@ -16,7 +16,7 @@ export const CreateEditModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  const factory = new FlowConsumerFactory();
+  const factory = new WritersFactory();
   const producerFactory = new FlowProducerFactory();
   factory.connectionUUID = producerFactory.connectionUUID = connUUID;
   factory.hostUUID = producerFactory.hostUUID = hostUUID;
@@ -73,7 +73,7 @@ export const CreateEditModal = (props: any) => {
     try {
       setConfirmLoading(true);
       if (currentItem.uuid) {
-        await factory.Update(currentItem.uuid, item);
+        await factory.Edit(currentItem.uuid, item);
       } else {
         item = {
           ...item,

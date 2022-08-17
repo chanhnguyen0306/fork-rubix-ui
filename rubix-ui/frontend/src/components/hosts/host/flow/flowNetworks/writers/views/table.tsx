@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
-import { FlowConsumerFactory } from "../factory";
+import { WritersFactory } from "../factory";
 import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
 import {
@@ -13,7 +13,7 @@ import {
 import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
-import Consumer = model.Consumer;
+import Consumer = model.Writer;
 
 export const ConsumersTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
@@ -23,7 +23,7 @@ export const ConsumersTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  const factory = new FlowConsumerFactory();
+  const factory = new WritersFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -70,7 +70,7 @@ export const ConsumersTable = (props: any) => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll(false);
+      const res = await factory.GetAll();
       setConsumers(res);
     } catch (error) {
       console.log(error);
