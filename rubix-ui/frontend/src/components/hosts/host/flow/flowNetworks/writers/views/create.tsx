@@ -70,10 +70,7 @@ export const CreateEditModal = (props: any) => {
       if (currentItem.uuid) {
         const res = await factory.Edit(currentItem.uuid, item);
       } else {
-        item = {
-          ...item,
-          consumer_uuid: consumerUUID,
-        } as any;
+        item.consumer_uuid = consumerUUID;
         await factory.Add(item);
       }
       refreshList();
