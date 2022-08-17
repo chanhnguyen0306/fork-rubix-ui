@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import { WritersFactory } from "../factory";
-import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
+import { WRITER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -13,13 +13,13 @@ import {
 import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
-import Consumer = model.Writer;
+import Writer = model.Writer;
 
-export const ConsumersTable = (props: any) => {
+export const WritersTable = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [consumers, setConsumers] = useState([] as Consumer[]);
-  const [currentItem, setCurrentItem] = useState({} as Consumer);
+  const [writers, setWriters] = useState([] as Writer[]);
+  const [currentItem, setCurrentItem] = useState({} as Writer);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -28,12 +28,12 @@ export const ConsumersTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
-    ...CONSUMER_HEADERS,
+    ...WRITER_HEADERS,
     {
       title: "actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, item: Consumer) => (
+      render: (_: any, item: Writer) => (
         <Space size="middle">
           <a
             onClick={() => {
@@ -57,21 +57,21 @@ export const ConsumersTable = (props: any) => {
     fetch();
   }, []);
 
-  const showModal = (item: Consumer) => {
+  const showModal = (item: Writer) => {
     setCurrentItem(item);
     setIsModalVisible(true);
   };
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentItem({} as Consumer);
+    setCurrentItem({} as Writer);
   };
 
   const fetch = async () => {
     try {
       setIsFetching(true);
       const res = await factory.GetAll();
-      setConsumers(res);
+      setWriters(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -88,11 +88,11 @@ export const ConsumersTable = (props: any) => {
     <>
       <RbRefreshButton refreshList={fetch} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showModal({} as Consumer)} />
+      <RbAddButton showModal={() => showModal({} as Writer)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={consumers}
+        dataSource={writers}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
