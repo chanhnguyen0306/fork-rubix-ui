@@ -38,7 +38,7 @@ export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function AddStream(arg1:string,arg2:string,arg3:Array<string>,arg4:model.Stream):Promise<model.Stream>;
 
-export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.Device>;
+export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
 
 export function ConfigBACnetServer(arg1:main.ConfigBACnetServer):Promise<Error>;
 
