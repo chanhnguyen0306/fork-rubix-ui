@@ -350,7 +350,27 @@ export const FLOW_POINT_HEADERS = [
     key: "name",
   },
   {
-    title: "device",
+    title: "present value",
+    dataIndex: "present_value",
+    key: "present_value",
+  },
+  {
+    title: "original_value value",
+    dataIndex: "original_value",
+    key: "original_value",
+  },
+  {
+    title: "write_value",
+    dataIndex: "write_value",
+    key: "write_value",
+  },
+  {
+    title: "write_value_original",
+    dataIndex: "write_value_original",
+    key: "write_value_original",
+  },
+  {
+    title: "device-uuid",
     dataIndex: "device_uuid",
     key: "device_uuid",
   },

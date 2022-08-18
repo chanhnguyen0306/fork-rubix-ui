@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
@@ -39,6 +40,9 @@ func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.
 }
 
 func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*model.Device, error) {
+	if body.Name == "" {
+		body.Name = fmt.Sprintf("device-%s", uuid.ShortUUID("")[5:10])
+	}
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
