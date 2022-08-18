@@ -10,10 +10,7 @@ import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import {
-  RbAddButton,
-  RbRefreshButton,
-} from "../../../../../common/rb-table-actions";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
 
@@ -129,7 +126,7 @@ export const FlowDevices = () => {
       max_adpu: selectedUUIDs[0].max_adpu,
     } as model.Device;
     const add = await flowDeviceFactory.Add(networkUUID, payload);
-    if (add.name != undefined) {
+    if (add && add.name != undefined) {
       openNotificationWithIcon("success", `add device: ${add.name} success`);
     }
     fetch();
