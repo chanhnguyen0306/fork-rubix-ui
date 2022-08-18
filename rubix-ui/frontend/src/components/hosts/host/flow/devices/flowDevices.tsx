@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom";
 import { RedoOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Tabs, Card, Typography } from "antd";
-
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 import { BacnetFactory } from "../bacnet/factory";
@@ -11,17 +10,20 @@ import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import { RbRefreshButton } from "../../../../../common/rb-table-actions";
+import {
+  RbAddButton,
+  RbRefreshButton,
+} from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
 
+const { TabPane } = Tabs;
 const { Title } = Typography;
 
 export const FlowDevices = () => {
   const [data, setDevices] = useState([] as Devices[]);
   const [isFetching, setIsFetching] = useState(true);
-  const [whoIs, setWhois] = useState([] as model.Device[]);
-  let flowDeviceFactory = new FlowDeviceFactory();
+  const [whoIs, setWhoIs] = useState([] as model.Device[]);
   const {
     connUUID = "",
     hostUUID = "",
@@ -31,44 +33,10 @@ export const FlowDevices = () => {
     pluginName = "",
   } = useParams();
 
-  const { TabPane } = Tabs;
-  const onChange = (key: string) => {
-    console.log(key);
-  };
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  const fetch = async () => {
-    try {
-      flowDeviceFactory.connectionUUID = connUUID;
-      flowDeviceFactory.hostUUID = hostUUID;
-      let res = await flowDeviceFactory.GetNetworkDevices(networkUUID);
-      setDevices(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  let bacnetFactory = new BacnetFactory();
-  const runWhois = async () => {
-    try {
-      openNotificationWithIcon("info", `run bacnet discovery....`);
-      bacnetFactory.connectionUUID = connUUID;
-      bacnetFactory.hostUUID = hostUUID;
-      let res = await bacnetFactory.Whois(networkUUID, pluginName);
-      openNotificationWithIcon("success", `device count found: ${res.length}`);
-      setWhois(res);
-    } catch (error) {
-      console.log(error);
-      openNotificationWithIcon("error", `discovery error: ${error}`);
-    } finally {
-      setIsFetching(false);
-    }
-  };
+  const bacnetFactory = new BacnetFactory();
+  const flowDeviceFactory = new FlowDeviceFactory();
+  flowDeviceFactory.connectionUUID = bacnetFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = bacnetFactory.hostUUID = hostUUID;
 
   const routes = [
     {
@@ -110,6 +78,45 @@ export const FlowDevices = () => {
     },
   ];
 
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const onChange = (key: string) => {
+    console.log(key);
+  };
+
+  const fetch = async () => {
+    try {
+      let res = await flowDeviceFactory.GetNetworkDevices(networkUUID);
+      setDevices(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const runWhois = async () => {
+    try {
+      // openNotificationWithIcon("info", `run bacnet discovery....`);
+      const res = await bacnetFactory.Whois(networkUUID, pluginName);
+      openNotificationWithIcon("success", `device count found: ${res.length}`);
+      setWhoIs(res);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", `discovery error: ${error}`);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const addDevices = () => {
+    const payload = { ...whoIs[0], network_uuid: netUUID } as model.Device;
+    const res = flowDeviceFactory.Add(netUUID, payload);
+    console.log("res", res);
+  };
+
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
@@ -127,6 +134,7 @@ export const FlowDevices = () => {
             />
           </TabPane>
           <TabPane tab="BACNET" key="3">
+            <RbAddButton showModal={addDevices} />
             <Button
               type="primary"
               onClick={runWhois}
