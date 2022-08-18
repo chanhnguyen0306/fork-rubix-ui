@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
 )
 
 const bacnetMaster = "bacnetmaster"
@@ -41,10 +41,10 @@ func (inst *App) GetBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, ad
 		inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
 		return nil
 	}
-	return *points
+	return points
 }
 
-func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) (*[]model.Point, error) {
+func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) ([]model.Point, error) {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err
@@ -59,54 +59,54 @@ func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, ad
 	return inst.flow.BacnetDevicePoints(deviceUUID, addPoints, makeWriteable)
 }
 
-func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) ([]*model.Device, error) {
-	//err := inst.bacnetChecks(connUUID, hostUUID, pluginName)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//network, err := inst.bacnetNetwork(connUUID, hostUUID)
-	//if err != nil {
-	//	return nil, errors.New("no network is added, please add network")
-	//}
-	//var netUUID string
-	//if networkUUID != "" {
-	//	netUUID = networkUUID
-	//} else {
-	//	netUUID = network.UUID
-	//}
-	//if netUUID == "" {
-	//	return nil, errors.New("flow network uuid can not be empty")
-	//}
-	//devices, err := inst.flow.BacnetWhoIs(&ffclient.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
-	//if err != nil {
-	//	return nil, err
-	//}
-	var devices []*model.Device
-	device1 := &model.Device{
-		CommonName: model.CommonName{
-			Name: "dev 1",
-		},
-		DeviceMac:      nil,
-		DeviceObjectId: nils.NewInt(1),
-		NetworkNumber:  nils.NewInt(1),
+func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) ([]model.Device, error) {
+	err := inst.bacnetChecks(connUUID, hostUUID, pluginName)
+	if err != nil {
+		return nil, err
 	}
-	device2 := &model.Device{
-		CommonName: model.CommonName{
-			Name: "dev 1",
-		},
-		DeviceMac:      nil,
-		DeviceObjectId: nils.NewInt(1),
-		NetworkNumber:  nils.NewInt(1),
+	network, err := inst.bacnetNetwork(connUUID, hostUUID)
+	if err != nil {
+		return nil, errors.New("no network is added, please add network")
 	}
-	//var device2 &model.Device
-	devices = append(devices, device1)
-
-	devices = append(devices, device2)
+	var netUUID string
+	if networkUUID != "" {
+		netUUID = networkUUID
+	} else {
+		netUUID = network.UUID
+	}
+	if netUUID == "" {
+		return nil, errors.New("flow network uuid can not be empty")
+	}
+	devices, err := inst.flow.BacnetWhoIs(&ffclient.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
+	if err != nil {
+		return nil, err
+	}
+	//var devices []*model.Device
+	//device1 := &model.Device{
+	//	CommonName: model.CommonName{
+	//		Name: "dev 1",
+	//	},
+	//	DeviceMac:      nil,
+	//	DeviceObjectId: nils.NewInt(1),
+	//	NetworkNumber:  nils.NewInt(1),
+	//}
+	//device2 := &model.Device{
+	//	CommonName: model.CommonName{
+	//		Name: "dev 1",
+	//	},
+	//	DeviceMac:      nil,
+	//	DeviceObjectId: nils.NewInt(1),
+	//	NetworkNumber:  nils.NewInt(1),
+	//}
+	////var device2 &model.Device
+	//devices = append(devices, device1)
+	//
+	//devices = append(devices, device2)
 
 	return devices, nil
 }
 
-func (inst *App) BacnetWhois(connUUID, hostUUID, networkUUID, pluginName string) []*model.Device {
+func (inst *App) BacnetWhois(connUUID, hostUUID, networkUUID, pluginName string) []model.Device {
 	devices, err := inst.bacnetWhois(connUUID, hostUUID, networkUUID, pluginName)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
