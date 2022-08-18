@@ -183,7 +183,7 @@ export const FlowNetworkTable = (props: any) => {
   return (
     <>
       <div className="flow-networks-actions">
-        <RbAddButton showModal={() => setIsCreateModalVisible(true)} />
+        <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
         <RbDeleteButton bulkDelete={bulkDelete} />
         <RbImportButton showModal={() => setIsImportModalVisible(true)} />
         <RbExportButton

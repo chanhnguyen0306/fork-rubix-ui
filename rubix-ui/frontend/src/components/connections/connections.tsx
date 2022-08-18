@@ -93,7 +93,7 @@ export const Connections = () => {
             key="1"
           >
             <RbRefreshButton refreshList={refreshList} />
-            <RbAddButton showModal={() => showModal({} as RubixConnection)} />
+            <RbAddButton handleClick={() => showModal({} as RubixConnection)} />
             <ConnectionsTable
               connections={connections}
               isFetching={isFetching}

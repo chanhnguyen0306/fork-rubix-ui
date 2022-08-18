@@ -203,7 +203,7 @@ export const HostsTable = (props: any) => {
     <div>
       <div className="hosts-table-actions">
         <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbAddButton showModal={() => showModal({} as assistmodel.Host)} />
+        <RbAddButton handleClick={() => showModal({} as assistmodel.Host)} />
         <RbRefreshButton refreshList={refreshList} />
       </div>
       <div className="hosts-table">

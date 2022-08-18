@@ -105,7 +105,7 @@ export const WritersTable = () => {
     <>
       <RbRefreshButton refreshList={fetch} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showModal({} as Writer)} />
+      <RbAddButton handleClick={() => showModal({} as Writer)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

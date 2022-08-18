@@ -16,7 +16,6 @@ import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { assistmodel, storage } from "../../../wailsjs/go/models";
 import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 
-
 import Location = assistmodel.Location;
 import RubixConnection = storage.RubixConnection;
 
@@ -176,7 +175,7 @@ export const Locations = () => {
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
         <RbRefreshButton refreshList={refreshList} />
-        <RbAddButton showModal={() => showModal({} as Location)} />
+        <RbAddButton handleClick={() => showModal({} as Location)} />
         <LocationsTable
           locations={locations}
           isFetching={isFetching}

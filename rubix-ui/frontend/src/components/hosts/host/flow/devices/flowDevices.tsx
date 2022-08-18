@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, Tabs, Card, Typography } from "antd";
+import { RedoOutlined } from "@ant-design/icons";
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 import { BacnetFactory } from "../bacnet/factory";
@@ -9,15 +10,16 @@ import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import {
-  RbAddButton,
-  RbRefreshButton,
-} from "../../../../../common/rb-table-actions";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
+import { BACNET_HEADERS } from "../../../../../constants/headers";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
+
+const devices = "DEVICES";
+const bacnet = "BACNET";
 
 export const FlowDevices = () => {
   const {
@@ -30,6 +32,8 @@ export const FlowDevices = () => {
   } = useParams();
   const [data, setDevices] = useState([] as Devices[]);
   const [isFetching, setIsFetching] = useState(false);
+  const [whoIs, setWhoIs] = useState([] as model.Device[]);
+  const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
 
   const bacnetFactory = new BacnetFactory();
   const flowDeviceFactory = new FlowDeviceFactory();
@@ -92,6 +96,43 @@ export const FlowDevices = () => {
     }
   };
 
+  const runWhois = async () => {
+    try {
+      setIsFetchingWhoIs(true);
+      const res = await bacnetFactory.Whois(networkUUID, pluginName);
+      if (res) {
+        openNotificationWithIcon(
+          "success",
+          `device count found: ${res.length}`
+        );
+      }
+      setWhoIs(res);
+    } catch (error) {
+      console.log(error);
+      openNotificationWithIcon("error", `discovery error: ${error}`);
+    } finally {
+      setIsFetchingWhoIs(false);
+    }
+  };
+
+  const addDevices = async (selectedUUIDs: Array<model.Device>) => {
+    const payload = {
+      name: selectedUUIDs[0].name,
+      enable: true,
+      host: selectedUUIDs[0].host,
+      port: selectedUUIDs[0].port,
+      device_object_id: selectedUUIDs[0].device_object_id,
+      device_mac: selectedUUIDs[0].device_mac,
+      segmentation: selectedUUIDs[0].segmentation,
+      max_adpu: selectedUUIDs[0].max_adpu,
+    } as model.Device;
+    const add = await flowDeviceFactory.Add(networkUUID, payload);
+    if (add && add.name != undefined) {
+      openNotificationWithIcon("success", `add device: ${add.name} success`);
+    }
+    fetch();
+  };
+
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
@@ -99,8 +140,8 @@ export const FlowDevices = () => {
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
-        <Tabs defaultActiveKey="DEVICES">
-          <TabPane tab="DEVICES" key="DEVICES">
+        <Tabs defaultActiveKey={devices}>
+          <TabPane tab={devices} key={devices}>
             <RbRefreshButton refreshList={fetch} />
             <FlowDeviceTable
               data={data}
@@ -108,8 +149,22 @@ export const FlowDevices = () => {
               refreshList={fetch}
             />
           </TabPane>
-          <TabPane tab="BACNET" key="BACNET">
-            <BacnetWhoIsTable refreshDeviceList={fetch} />
+          <TabPane tab={bacnet} key={bacnet}>
+            <Button
+              type="primary"
+              onClick={runWhois}
+              style={{ margin: "5px", float: "right" }}
+            >
+              <RedoOutlined /> WHO-IS
+            </Button>
+            <BacnetWhoIsTable
+              refreshDeviceList={fetch}
+              data={whoIs}
+              isFetching={isFetchingWhoIs}
+              handleAdd={addDevices}
+              addBtnText="Create Devices"
+              headers={BACNET_HEADERS}
+            />
           </TabPane>
         </Tabs>
       </Card>

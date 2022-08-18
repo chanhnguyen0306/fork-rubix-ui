@@ -66,7 +66,7 @@ export const PcScanner = () => {
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
-      <RbAddButton showModal={showModal} />
+      <RbAddButton handleClick={showModal} />
       <ScannerTable
         data={data}
         isFetching={isFetching}
