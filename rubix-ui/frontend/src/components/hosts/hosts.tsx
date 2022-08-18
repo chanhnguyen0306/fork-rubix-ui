@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { GetHostNetworks, GetHosts } from "../../../wailsjs/go/main/App";
 import { HostsTable } from "./views/table";
 import { Tabs, Typography, Card } from "antd";
@@ -9,12 +9,11 @@ import { assistmodel } from "../../../wailsjs/go/models";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { ROUTES } from "../../constants/routes";
 
+const { TabPane } = Tabs;
 const { Title } = Typography;
 
 export const Hosts = () => {
-  const { TabPane } = Tabs;
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-  const location = useLocation() as any;
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
   const [isFetching, setIsFetching] = useState(true);

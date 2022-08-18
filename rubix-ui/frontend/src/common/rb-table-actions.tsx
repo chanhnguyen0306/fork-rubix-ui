@@ -11,15 +11,15 @@ import {
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
 
 export const RbAddButton = (props: any) => {
-  const { showModal, disabled } = props;
+  const { handleClick, disabled, label } = props;
   return (
     <Button
       className="nube-green white--text"
-      onClick={showModal}
+      onClick={handleClick}
       disabled={disabled}
       style={btn}
     >
-      <PlusOutlined /> Create
+      <PlusOutlined /> {label ? label : "Create"}
     </Button>
   );
 };

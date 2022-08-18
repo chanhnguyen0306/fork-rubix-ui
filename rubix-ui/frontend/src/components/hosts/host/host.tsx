@@ -8,6 +8,7 @@ import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
 import { HostTable } from "./views/hostTable";
 
+const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const infoKey = "INFO";
@@ -23,8 +24,6 @@ export const Host = () => {
     locUUID = "",
     netUUID = "",
   } = useParams();
-
-  const { TabPane } = Tabs;
 
   const routes = [
     {

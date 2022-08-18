@@ -112,7 +112,7 @@ export const FlowPointsTable = (props: any) => {
       />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showCreateModal({} as Point)} />
+      <RbAddButton handleClick={() => showCreateModal({} as Point)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

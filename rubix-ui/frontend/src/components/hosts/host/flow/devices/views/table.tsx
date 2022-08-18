@@ -130,7 +130,7 @@ export const FlowDeviceTable = (props: any) => {
       />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton showModal={() => showCreateModal({} as Device)} />
+      <RbAddButton handleClick={() => showCreateModal({} as Device)} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

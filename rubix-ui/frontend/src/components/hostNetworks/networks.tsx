@@ -105,7 +105,7 @@ export const Networks = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: 'Location Network'
+      breadcrumbName: "Location Network",
     },
   ];
 
@@ -117,7 +117,7 @@ export const Networks = () => {
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
         <RbRefreshButton refreshList={refreshList} />
-        <RbAddButton showModal={() => showModal({} as assistmodel.Network)} />
+        <RbAddButton handleClick={() => showModal({} as assistmodel.Network)} />
         <CreateEditModal
           networks={networks}
           currentNetwork={currentNetwork}
