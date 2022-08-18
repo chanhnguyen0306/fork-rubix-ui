@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
-import { RedoOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Tabs, Card, Typography } from "antd";
-
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 import { BacnetFactory } from "../bacnet/factory";
@@ -11,17 +9,17 @@ import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import { RbRefreshButton } from "../../../../../common/rb-table-actions";
+import {
+  RbAddButton,
+  RbRefreshButton,
+} from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
 
+const { TabPane } = Tabs;
 const { Title } = Typography;
 
 export const FlowDevices = () => {
-  const [data, setDevices] = useState([] as Devices[]);
-  const [isFetching, setIsFetching] = useState(true);
-  const [whoIs, setWhois] = useState([] as model.Device[]);
-  let flowDeviceFactory = new FlowDeviceFactory();
   const {
     connUUID = "",
     hostUUID = "",
@@ -30,45 +28,13 @@ export const FlowDevices = () => {
     netUUID = "",
     pluginName = "",
   } = useParams();
+  const [data, setDevices] = useState([] as Devices[]);
+  const [isFetching, setIsFetching] = useState(false);
 
-  const { TabPane } = Tabs;
-  const onChange = (key: string) => {
-    console.log(key);
-  };
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  const fetch = async () => {
-    try {
-      flowDeviceFactory.connectionUUID = connUUID;
-      flowDeviceFactory.hostUUID = hostUUID;
-      let res = await flowDeviceFactory.GetNetworkDevices(networkUUID);
-      setDevices(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  let bacnetFactory = new BacnetFactory();
-  const runWhois = async () => {
-    try {
-      openNotificationWithIcon("info", `run bacnet discovery....`);
-      bacnetFactory.connectionUUID = connUUID;
-      bacnetFactory.hostUUID = hostUUID;
-      let res = await bacnetFactory.Whois(networkUUID, pluginName);
-      openNotificationWithIcon("success", `device count found: ${res.length}`);
-      setWhois(res);
-    } catch (error) {
-      console.log(error);
-      openNotificationWithIcon("error", `discovery error: ${error}`);
-    } finally {
-      setIsFetching(false);
-    }
-  };
+  const bacnetFactory = new BacnetFactory();
+  const flowDeviceFactory = new FlowDeviceFactory();
+  flowDeviceFactory.connectionUUID = bacnetFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = bacnetFactory.hostUUID = hostUUID;
 
   const routes = [
     {
@@ -110,15 +76,31 @@ export const FlowDevices = () => {
     },
   ];
 
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
+    try {
+      setIsFetching(true);
+      let res = await flowDeviceFactory.GetNetworkDevices(networkUUID);
+      setDevices(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
         Flow Devices
       </Title>
       <Card bordered={false}>
-        <RbxBreadcrumb routes={routes}></RbxBreadcrumb>
-        <Tabs defaultActiveKey="1" onChange={onChange}>
-          <TabPane tab="DEVICES" key="1">
+        <RbxBreadcrumb routes={routes} />
+        <Tabs defaultActiveKey="DEVICES">
+          <TabPane tab="DEVICES" key="DEVICES">
             <RbRefreshButton refreshList={fetch} />
             <FlowDeviceTable
               data={data}
@@ -126,19 +108,8 @@ export const FlowDevices = () => {
               refreshList={fetch}
             />
           </TabPane>
-          <TabPane tab="BACNET" key="3">
-            <Button
-              type="primary"
-              onClick={runWhois}
-              style={{ margin: "5px", float: "right" }}
-            >
-              <RedoOutlined /> WHO-IS
-            </Button>
-            <BacnetWhoIsTable
-              data={whoIs}
-              isFetching={isFetching}
-              setIsFetching={setIsFetching}
-            />
+          <TabPane tab="BACNET" key="BACNET">
+            <BacnetWhoIsTable refreshDeviceList={fetch} />
           </TabPane>
         </Tabs>
       </Card>

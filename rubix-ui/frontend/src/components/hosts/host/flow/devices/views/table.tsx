@@ -38,30 +38,9 @@ export const FlowDeviceTable = (props: any) => {
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
-  let flowDeviceFactory = new FlowDeviceFactory();
-
-  const bulkDelete = async () => {
-    flowDeviceFactory.connectionUUID = connUUID;
-    flowDeviceFactory.hostUUID = hostUUID;
-    flowDeviceFactory.BulkDelete(selectedUUIDs);
-    refreshList();
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
-
-  const getNavigationLink = (deviceUUID: string): string => {
-    return ROUTES.POINTS.replace(":connUUID", connUUID)
-      .replace(":locUUID", locUUID)
-      .replace(":netUUID", netUUID)
-      .replace(":hostUUID", hostUUID)
-      .replace(":networkUUID", networkUUID)
-      .replace(":deviceUUID", deviceUUID)
-      .replace(":pluginName", pluginName);
-  };
+  const flowDeviceFactory = new FlowDeviceFactory();
+  flowDeviceFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = hostUUID;
 
   const columns = [
     ...FLOW_DEVICE_HEADERS,
@@ -83,6 +62,27 @@ export const FlowDeviceTable = (props: any) => {
       ),
     },
   ];
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
+
+  const bulkDelete = async () => {
+    await flowDeviceFactory.BulkDelete(selectedUUIDs);
+    refreshList();
+  };
+
+  const getNavigationLink = (deviceUUID: string): string => {
+    return ROUTES.POINTS.replace(":connUUID", connUUID)
+      .replace(":locUUID", locUUID)
+      .replace(":netUUID", netUUID)
+      .replace(":hostUUID", hostUUID)
+      .replace(":networkUUID", networkUUID)
+      .replace(":deviceUUID", deviceUUID)
+      .replace(":pluginName", pluginName);
+  };
 
   const getSchema = async () => {
     setIsLoadingForm(true);

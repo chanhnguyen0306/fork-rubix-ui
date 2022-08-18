@@ -2,7 +2,7 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
 
 //replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
@@ -17,7 +17,7 @@ require (
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.4
-	github.com/NubeIO/rubix-assist v0.3.6
+	github.com/NubeIO/rubix-assist v0.3.7
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0
