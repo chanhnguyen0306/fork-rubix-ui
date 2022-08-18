@@ -39,12 +39,21 @@ export const BacnetWhoIsTable = (props: any) => {
     const payload = {
       name: selectedUUIDs[0].name,
       enable: true,
+      host: selectedUUIDs[0].host,
+      port: selectedUUIDs[0].port,
+      device_object_id: selectedUUIDs[0].device_object_id,
+      device_mac: selectedUUIDs[0].device_mac,
+      segmentation: selectedUUIDs[0].segmentation,
+      max_adpu: selectedUUIDs[0].max_adpu,
     } as model.Device;
-    await flowDeviceFactory.Add(networkUUID, payload);
-    openNotificationWithIcon(
-      "success",
-      `add device: ${selectedUUIDs[0].name} success`
-    );
+   const add =  await flowDeviceFactory.Add(networkUUID, payload);
+    if (add.name != undefined) {
+      openNotificationWithIcon(
+        "success",
+        `add device: ${selectedUUIDs[0].name} success`
+      );
+    }
+
     refreshDeviceList();
   };
 
