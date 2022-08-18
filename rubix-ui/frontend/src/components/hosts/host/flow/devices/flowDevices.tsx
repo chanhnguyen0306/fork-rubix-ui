@@ -13,6 +13,7 @@ import { openNotificationWithIcon } from "../../../../../utils/utils";
 import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 
 import Devices = model.Device;
+import { BACNET_HEADERS } from "../../../../../constants/headers";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -162,6 +163,7 @@ export const FlowDevices = () => {
               isFetching={isFetchingWhoIs}
               handleAdd={addDevices}
               addBtnText="Create Devices"
+              headers={BACNET_HEADERS}
             />
           </TabPane>
         </Tabs>

@@ -13,6 +13,7 @@ import { FlowPointsTable } from "./views/table";
 import Points = model.Point;
 import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
+import { FLOW_POINT_HEADERS } from "../../../../../constants/headers";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -139,7 +140,6 @@ export const FlowPoints = () => {
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
-
         <Tabs defaultActiveKey={points}>
           <TabPane tab={points} key={points}>
             <RbRefreshButton refreshList={fetch} />
@@ -164,6 +164,7 @@ export const FlowPoints = () => {
               isFetching={isFetchingDiscoveries}
               handleAdd={addPoints}
               addBtnText="Create Points"
+              headers={FLOW_POINT_HEADERS}
             />
           </TabPane>
         </Tabs>

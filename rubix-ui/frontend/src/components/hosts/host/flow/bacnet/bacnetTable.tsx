@@ -7,10 +7,8 @@ import RbTable from "../../../../../common/rb-table";
 import { RbAddButton } from "../../../../../common/rb-table-actions";
 
 export const BacnetWhoIsTable = (props: any) => {
-  const { data, isFetching, handleAdd, addBtnText } = props;
+  const { data, isFetching, handleAdd, addBtnText, headers } = props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<model.Device>);
-
-  const columns = BACNET_HEADERS;
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
@@ -32,7 +30,7 @@ export const BacnetWhoIsTable = (props: any) => {
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={data}
-        columns={columns}
+        columns={headers}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
     </>
