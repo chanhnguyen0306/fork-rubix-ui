@@ -36,11 +36,24 @@ func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 }
 
 func (inst *App) GetBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) []model.Point {
-	points, err := inst.getBacnetDevicePoints(connUUID, hostUUID, deviceUUID, addPoints, makeWriteable)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
-		return nil
+	//points, err := inst.getBacnetDevicePoints(connUUID, hostUUID, deviceUUID, addPoints, makeWriteable)
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
+	//	return nil
+	//}
+	var points []model.Point
+	device1 := model.Point{
+
+		Name: "dev 1",
 	}
+	device2 := model.Point{
+		Name: "dev 2",
+	}
+	//var device2 &model.Device
+	points = append(points, device1)
+
+	points = append(points, device2)
+
 	return points
 }
 
@@ -81,27 +94,6 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if err != nil {
 		return nil, err
 	}
-	//var devices []*model.Device
-	//device1 := &model.Device{
-	//	CommonName: model.CommonName{
-	//		Name: "dev 1",
-	//	},
-	//	DeviceMac:      nil,
-	//	DeviceObjectId: nils.NewInt(1),
-	//	NetworkNumber:  nils.NewInt(1),
-	//}
-	//device2 := &model.Device{
-	//	CommonName: model.CommonName{
-	//		Name: "dev 1",
-	//	},
-	//	DeviceMac:      nil,
-	//	DeviceObjectId: nils.NewInt(1),
-	//	NetworkNumber:  nils.NewInt(1),
-	//}
-	////var device2 &model.Device
-	//devices = append(devices, device1)
-	//
-	//devices = append(devices, device2)
 
 	return devices, nil
 }
