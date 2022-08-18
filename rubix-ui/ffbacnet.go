@@ -18,7 +18,7 @@ func (inst *App) bacnetNetwork(connUUID, hostUUID string) (*model.Network, error
 }
 
 func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
-	if pluginName != "bacnetmaster" {
+	if pluginName != bacnetMaster {
 		return errors.New(fmt.Sprintf("network:%s is not not bacnet-master", pluginName))
 	}
 	plugin, err := inst.GetPluginByName(connUUID, hostUUID, pluginName)
@@ -36,24 +36,11 @@ func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 }
 
 func (inst *App) GetBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) []model.Point {
-	//points, err := inst.getBacnetDevicePoints(connUUID, hostUUID, deviceUUID, addPoints, makeWriteable)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
-	//	return nil
-	//}
-	var points []model.Point
-	device1 := model.Point{
-
-		Name: "dev 1",
+	points, err := inst.getBacnetDevicePoints(connUUID, hostUUID, deviceUUID, addPoints, makeWriteable)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
+		return nil
 	}
-	device2 := model.Point{
-		Name: "dev 2",
-	}
-	//var device2 &model.Device
-	points = append(points, device1)
-
-	points = append(points, device2)
-
 	return points
 }
 

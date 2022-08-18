@@ -63,6 +63,21 @@ func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.
 	return point, nil
 }
 
+func (inst *App) AddPointsBulk(connUUID, hostUUID string, body []model.Point) {
+	var addedCount int
+	var errorCount int
+	for _, pnt := range body {
+		_, err := inst.addPoint(connUUID, hostUUID, &pnt)
+		if err != nil {
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		} else {
+			addedCount++
+		}
+	}
+	inst.crudMessage(true, fmt.Sprintf("added points count:%d failed to add count:%d", addedCount, errorCount))
+}
+
 func (inst *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
 	point, err := inst.addPoint(connUUID, hostUUID, body)
 	if err != nil {

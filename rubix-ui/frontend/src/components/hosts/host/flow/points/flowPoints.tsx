@@ -107,8 +107,8 @@ export const FlowPoints = () => {
       setIsFetchingDiscoveries(true);
       const res = await bacnetFactory.DiscoverDevicePoints(
         deviceUUID,
-        true,
-        true
+        false,
+        false
       );
       if (res) {
         openNotificationWithIcon("success", `discoveries: ${res.length}`);
@@ -123,14 +123,7 @@ export const FlowPoints = () => {
   };
 
   const addPoints = async (selectedUUIDs: Array<Point>) => {
-    const payload = {
-      name: selectedUUIDs[0].name,
-      enable: true,
-    } as Point;
-    const add = await flowPointFactory.Add(deviceUUID, payload);
-    if (add && add.name != undefined) {
-      openNotificationWithIcon("success", `add point: ${add.name} success`);
-    }
+    await flowPointFactory.AddBulk(selectedUUIDs);
     fetch();
   };
 

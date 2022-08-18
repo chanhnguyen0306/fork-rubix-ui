@@ -1,6 +1,6 @@
 import { main, model, storage } from "../../../../../../wailsjs/go/models";
 import {
-  AddDevice,
+  AddDevice, AddDevicesBulk, AddPointsBulk,
   DeleteDevice,
   DeleteDeviceBulk,
   EditDevice,
@@ -90,6 +90,11 @@ export class FlowDeviceFactory {
       });
     return resp;
   }
+
+  async AddBulk(devices: Array<model.Device>) {
+    return AddDevicesBulk(this.connectionUUID, this.hostUUID, devices);
+  }
+
 
   async Update(deviceUUID: string, body: model.Device): Promise<model.Device> {
     hasUUID(this.connectionUUID);

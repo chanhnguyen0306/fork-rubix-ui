@@ -5,7 +5,7 @@ import {
   store,
 } from "../../../../../../wailsjs/go/models";
 import {
-  AddPoint,
+  AddPoint, AddPointsBulk,
   DeletePoint,
   DeletePointBulk,
   EditPoint,
@@ -124,6 +124,10 @@ export class FlowPointFactory {
         return resp;
       });
     return resp;
+  }
+
+  async AddBulk(points: Array<model.Point>) {
+    return AddPointsBulk(this.connectionUUID, this.hostUUID, points);
   }
 
   async Schema(

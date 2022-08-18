@@ -39,6 +39,21 @@ func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.
 	return devices
 }
 
+func (inst *App) AddDevicesBulk(connUUID, hostUUID string, body []model.Device) {
+	var addedCount int
+	var errorCount int
+	for _, dev := range body {
+		_, err := inst.addDevice(connUUID, hostUUID, &dev)
+		if err != nil {
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		} else {
+			addedCount++
+		}
+	}
+	inst.crudMessage(true, fmt.Sprintf("added devices count:%d failed to add count:%d", addedCount, errorCount))
+}
+
 func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*model.Device, error) {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("device-%s", uuid.ShortUUID("")[5:10])
