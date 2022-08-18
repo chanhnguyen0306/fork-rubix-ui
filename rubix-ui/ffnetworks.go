@@ -68,6 +68,9 @@ func (inst *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model
 }
 
 func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*model.Network, error) {
+	if body.Name == "" {
+		body.Name = fmt.Sprintf("%s", body.PluginPath)
+	}
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		return nil, err

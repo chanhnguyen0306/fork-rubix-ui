@@ -83,17 +83,13 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	//}
 	var devices []*model.Device
 	device1 := &model.Device{
-		CommonName: model.CommonName{
-			Name: "dev 1",
-		},
+		Name:           "dev 1",
 		DeviceMac:      nil,
 		DeviceObjectId: nils.NewInt(1),
 		NetworkNumber:  nils.NewInt(1),
 	}
 	device2 := &model.Device{
-		CommonName: model.CommonName{
-			Name: "dev 1",
-		},
+		Name:           "dev 2",
 		DeviceMac:      nil,
 		DeviceObjectId: nils.NewInt(1),
 		NetworkNumber:  nils.NewInt(1),
