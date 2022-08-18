@@ -46,12 +46,9 @@ export const BacnetWhoIsTable = (props: any) => {
       segmentation: selectedUUIDs[0].segmentation,
       max_adpu: selectedUUIDs[0].max_adpu,
     } as model.Device;
-   const add =  await flowDeviceFactory.Add(networkUUID, payload);
+    const add = await flowDeviceFactory.Add(networkUUID, payload);
     if (add.name != undefined) {
-      openNotificationWithIcon(
-        "success",
-        `add device: ${selectedUUIDs[0].name} success`
-      );
+      openNotificationWithIcon("success", `add device: ${add.name} success`);
     }
 
     refreshDeviceList();
@@ -61,7 +58,12 @@ export const BacnetWhoIsTable = (props: any) => {
     try {
       setIsFetching(true);
       const res = await bacnetFactory.Whois(networkUUID, pluginName);
-      openNotificationWithIcon("success", `device count found: ${res.length}`);
+      if (res) {
+        openNotificationWithIcon(
+          "success",
+          `device count found: ${res.length}`
+        );
+      }
       setWhoIs(res);
     } catch (error) {
       console.log(error);
