@@ -3,17 +3,18 @@ import { useEffect, useState } from "react";
 import { Button, Tabs, Card, Typography } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { FlowDeviceFactory } from "./factory";
-import { FlowDeviceTable } from "./views/table";
 import { BacnetFactory } from "../bacnet/factory";
 import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
-import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
-import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import { RbRefreshButton } from "../../../../../common/rb-table-actions";
-
-import Devices = model.Device;
+import { PLUGINS } from "../../../../../constants/plugins";
+import { ROUTES } from "../../../../../constants/routes";
 import { BACNET_HEADERS } from "../../../../../constants/headers";
+import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
+import { FlowDeviceTable } from "./views/table";
+
+import Device = model.Device;
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -30,9 +31,9 @@ export const FlowDevices = () => {
     netUUID = "",
     pluginName = "",
   } = useParams();
-  const [data, setDevices] = useState([] as Devices[]);
+  const [data, setDevices] = useState([] as Device[]);
   const [isFetching, setIsFetching] = useState(false);
-  const [whoIs, setWhoIs] = useState([] as model.Device[]);
+  const [whoIs, setWhoIs] = useState([] as Device[]);
   const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
 
   const bacnetFactory = new BacnetFactory();
@@ -115,7 +116,7 @@ export const FlowDevices = () => {
     }
   };
 
-  const addDevices = async (selectedUUIDs: Array<model.Device>) => {
+  const addDevices = async (selectedUUIDs: Array<Device>) => {
     const payload = {
       name: selectedUUIDs[0].name,
       enable: true,
@@ -149,23 +150,25 @@ export const FlowDevices = () => {
               refreshList={fetch}
             />
           </TabPane>
-          <TabPane tab={bacnet} key={bacnet}>
-            <Button
-              type="primary"
-              onClick={runWhois}
-              style={{ margin: "5px", float: "right" }}
-            >
-              <RedoOutlined /> WHO-IS
-            </Button>
-            <BacnetWhoIsTable
-              refreshDeviceList={fetch}
-              data={whoIs}
-              isFetching={isFetchingWhoIs}
-              handleAdd={addDevices}
-              addBtnText="Create Devices"
-              headers={BACNET_HEADERS}
-            />
-          </TabPane>
+          {pluginName === PLUGINS.bacnetmaster ? (
+            <TabPane tab={bacnet} key={bacnet}>
+              <Button
+                type="primary"
+                onClick={runWhois}
+                style={{ margin: "5px", float: "right" }}
+              >
+                <RedoOutlined /> WHO-IS
+              </Button>
+              <BacnetWhoIsTable
+                refreshDeviceList={fetch}
+                data={whoIs}
+                isFetching={isFetchingWhoIs}
+                handleAdd={addDevices}
+                addBtnText="Create Devices"
+                headers={BACNET_HEADERS}
+              />
+            </TabPane>
+          ) : null}
         </Tabs>
       </Card>
     </>

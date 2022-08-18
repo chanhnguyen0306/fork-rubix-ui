@@ -2,13 +2,14 @@ import { Spin } from "antd";
 import { useState } from "react";
 import { model } from "../../../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
-import { BACNET_HEADERS } from "../../../../../constants/headers";
 import RbTable from "../../../../../common/rb-table";
 import { RbAddButton } from "../../../../../common/rb-table-actions";
 
+import Device = model.Device;
+
 export const BacnetWhoIsTable = (props: any) => {
   const { data, isFetching, handleAdd, addBtnText, headers } = props;
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<model.Device>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<Device>);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {

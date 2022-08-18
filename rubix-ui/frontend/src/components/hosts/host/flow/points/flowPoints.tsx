@@ -6,14 +6,15 @@ import { FlowPointFactory } from "./factory";
 import { BacnetFactory } from "../bacnet/factory";
 import { ROUTES } from "../../../../../constants/routes";
 import { model } from "../../../../../../wailsjs/go/models";
+import { openNotificationWithIcon } from "../../../../../utils/utils";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
+import { FLOW_POINT_HEADERS } from "../../../../../constants/headers";
+import { PLUGINS } from "../../../../../constants/plugins";
 import { RbRefreshButton } from "../../../../../common/rb-table-actions";
+import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
 import { FlowPointsTable } from "./views/table";
 
-import Points = model.Point;
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
-import { openNotificationWithIcon } from "../../../../../utils/utils";
-import { FLOW_POINT_HEADERS } from "../../../../../constants/headers";
+import Point = model.Point;
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -22,8 +23,8 @@ const points = "POINTS";
 const discover = "DISCOVER";
 
 export const FlowPoints = () => {
-  const [data, setDevices] = useState([] as Points[]);
-  const [discoveries, setDiscoveries] = useState([] as Points[]);
+  const [data, setDevices] = useState([] as Point[]);
+  const [discoveries, setDiscoveries] = useState([] as Point[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
   const {
@@ -121,11 +122,11 @@ export const FlowPoints = () => {
     }
   };
 
-  const addPoints = async (selectedUUIDs: Array<Points>) => {
+  const addPoints = async (selectedUUIDs: Array<Point>) => {
     const payload = {
       name: selectedUUIDs[0].name,
       enable: true,
-    } as Points;
+    } as Point;
     const add = await flowPointFactory.Add(deviceUUID, payload);
     if (add && add.name != undefined) {
       openNotificationWithIcon("success", `add point: ${add.name} success`);
@@ -150,23 +151,25 @@ export const FlowPoints = () => {
               pluginName={pluginName}
             />
           </TabPane>
-          <TabPane tab={discover} key={discover}>
-            <Button
-              type="primary"
-              onClick={runDiscover}
-              style={{ margin: "5px", float: "right" }}
-            >
-              <RedoOutlined /> Discover
-            </Button>
-            <BacnetWhoIsTable
-              refreshDeviceList={fetch}
-              data={discoveries}
-              isFetching={isFetchingDiscoveries}
-              handleAdd={addPoints}
-              addBtnText="Create Points"
-              headers={FLOW_POINT_HEADERS}
-            />
-          </TabPane>
+          {pluginName === PLUGINS.bacnetmaster ? (
+            <TabPane tab={discover} key={discover}>
+              <Button
+                type="primary"
+                onClick={runDiscover}
+                style={{ margin: "5px", float: "right" }}
+              >
+                <RedoOutlined /> Discover
+              </Button>
+              <BacnetWhoIsTable
+                refreshDeviceList={fetch}
+                data={discoveries}
+                isFetching={isFetchingDiscoveries}
+                handleAdd={addPoints}
+                addBtnText="Create Points"
+                headers={FLOW_POINT_HEADERS}
+              />
+            </TabPane>
+          ) : null}
         </Tabs>
       </Card>
     </>
