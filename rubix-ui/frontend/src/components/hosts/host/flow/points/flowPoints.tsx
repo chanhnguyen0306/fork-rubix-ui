@@ -127,7 +127,7 @@ export const FlowPoints = () => {
     } as Points;
     const add = await flowPointFactory.Add(deviceUUID, payload);
     if (add && add.name != undefined) {
-      openNotificationWithIcon("success", `add device: ${add.name} success`);
+      openNotificationWithIcon("success", `add point: ${add.name} success`);
     }
     fetch();
   };
