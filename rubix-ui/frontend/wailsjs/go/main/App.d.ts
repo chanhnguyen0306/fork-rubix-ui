@@ -188,6 +188,8 @@ export function ExportNetworksBulk(arg1:string,arg2:string,arg3:string,arg4:Arra
 
 export function ExportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
+export function FFPoints(arg1:string,arg2:string):void;
+
 export function GetBackup(arg1:string):Promise<storage.Backup>;
 
 export function GetBackups():Promise<Array<storage.Backup>>;
@@ -242,7 +244,7 @@ export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Netw
 
 export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
 
-export function GetHostSchema(arg1:string):Promise<any>;
+export function GetHostSchema(arg1:string):Promise<assistmodel.HostSchema>;
 
 export function GetHostTime(arg1:string,arg2:string):Promise<any>;
 

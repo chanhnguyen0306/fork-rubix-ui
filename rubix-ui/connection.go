@@ -7,11 +7,17 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
 
+type Ip struct {
+	Type    string `json:"type" default:"string"`
+	Title   string `json:"title" default:"host ip address"`
+	Default string `json:"default" default:"0.0.0.0"`
+}
+
 type ConnectionSchema struct {
 	UUID        schema.UUID        `json:"uuid"`
 	Name        schema.Name        `json:"name"`
 	Description schema.Description `json:"description"`
-	IP          schema.IP          `json:"ip"`
+	IP          Ip                 `json:"ip"`
 	Port        schema.Port        `json:"port"`
 	HTTPS       schema.HTTPS       `json:"https"`
 	Username    schema.Username    `json:"username"`

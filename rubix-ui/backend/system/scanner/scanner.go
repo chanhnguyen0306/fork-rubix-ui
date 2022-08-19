@@ -23,9 +23,15 @@ type count struct {
 	Default int    `json:"default" default:"254"`
 }
 
+type Ip struct {
+	Type    string `json:"type" default:"string"`
+	Title   string `json:"title" default:"host ip address"`
+	Default string `json:"default" default:"0.0.0.0"`
+}
+
 type Schema struct {
 	Count     count            `json:"count"`
-	IP        schema.IP        `json:"ip"`
+	IP        Ip               `json:"ip"`
 	Interface schema.Interface `json:"interface"`
 }
 

@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func (inst *App) GetHostSchema(connUUID string) interface{} {
+func (inst *App) GetHostSchema(connUUID string) *assistmodel.HostSchema {
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -20,13 +20,11 @@ func (inst *App) GetHostSchema(connUUID string) interface{} {
 		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 		return nil
 	}
-	out := map[string]interface{}{
-		"properties": data,
-	}
-	return out
+	return data
 }
 
 func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Host {
+	host.Port = 1661
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

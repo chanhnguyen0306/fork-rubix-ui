@@ -25,6 +25,7 @@ export const EditModal = (props: any) => {
 
   let flowNetworkFactory = new FlowNetworkFactory();
 
+
   useEffect(() => {
     setFormData(currentItem);
   }, [currentItem]);
@@ -143,6 +144,7 @@ export const CreateModal = (props: any) => {
     }
   };
 
+
   return (
     <Modal
       title="Add New"
@@ -173,6 +175,7 @@ export const CreateModal = (props: any) => {
             setFormData={setFormData}
             handleSubmit={handleSubmit}
             jsonSchema={schema}
+            a={console.log(schema)}
           />
         </Spin>
       </Spin>

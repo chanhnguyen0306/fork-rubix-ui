@@ -134,18 +134,10 @@ export const HostsTable = (props: any) => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await factory.Schema();
-    res.properties = {
-      ...res.properties,
-      network_uuid: {
-        title: "network",
-        type: "string",
-        anyOf: networks.map((n: assistmodel.Network) => {
-          return { type: "string", enum: [n.uuid], title: n.name };
-        }),
-        default: netUUID,
-      },
+    const jsonSchema = {
+      properties: res,
     };
-    setHostSchema(res);
+    setHostSchema(jsonSchema);
     setIsLoadingForm(false);
   };
 

@@ -2,7 +2,9 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+
+replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 
 //replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
