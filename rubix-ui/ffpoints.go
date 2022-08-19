@@ -11,34 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	sch, err := inst.flow.PointSchema(pluginName)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return sch
-}
-
-func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	points, err := inst.flow.GetPoints()
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return points
-}
-
 func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
 	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
 	if err != nil {

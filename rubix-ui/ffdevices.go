@@ -11,20 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	sch, err := inst.flow.DeviceSchema(pluginName)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return sch
-}
-
 func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
