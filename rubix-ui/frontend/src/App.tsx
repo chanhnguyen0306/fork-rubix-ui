@@ -41,7 +41,6 @@ const sidebarItems = [
   { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
   { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
   { name: "Tools", icon: ToolOutlined, link: "" },
-  { name: "Documentation", icon: FileSearchOutlined, link: "" },
 ];
 
 const OK_EVENT = "ok";
@@ -279,32 +278,6 @@ const App: React.FC = () => {
                 label: <NavLink to="/backups">Backups</NavLink>,
               },
             ],
-          },
-        ],
-      };
-    }
-
-    if (name === "Documentation") {
-      return {
-        key: name,
-        name: name,
-        icon: <Icon />,
-        label: <div>{name}</div>,
-        children: [
-          {
-            key: "Hardware",
-            name: "hardware",
-            label: <NavLink to="/docs">Hardware</NavLink>,
-          },
-          {
-            key: "Software",
-            name: "software",
-            label: <NavLink to="/software">Software</NavLink>,
-          },
-          {
-            key: "Dips",
-            name: "dips",
-            label: <NavLink to="/switch">Dips</NavLink>,
           },
         ],
       };
