@@ -6,9 +6,6 @@ import { Hosts } from "./components/hosts/hosts";
 import { Host } from "./components/hosts/host/host";
 import AppStore from "./components/release/appStore";
 import { Backups } from "./components/backups/backups";
-import { DocsRubixHardware } from "./components/docs/docs";
-import { DocsSoftware } from "./components/docs/software";
-import { DipSwitch } from "./components/switch/switch";
 import { Locations } from "./components/locations/locations";
 import { Networks } from "./components/hostNetworks/networks";
 import { Connections } from "./components/connections/connections";
@@ -35,9 +32,6 @@ function AppRoutes() {
       <Route path={routes.FLOW_POINTS} element={<FlowPoints />} />
       <Route path={routes.LOGS} element={<Logs />} />
       <Route path={routes.BACKUPS} element={<Backups />} />
-      <Route path={routes.DOCS} element={<DocsRubixHardware />} />
-      <Route path={routes.DOCS_SOFTWARE} element={<DocsSoftware />} />
-      <Route path={routes.DOCS_DIPS} element={<DipSwitch />} />
       <Route path={routes.NETWORKING} element={<PcNetworking />} />
       <Route path={routes.CONNECTIONS} element={<ConnectionPage />}>
         <Route
