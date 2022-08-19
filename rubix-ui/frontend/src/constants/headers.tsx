@@ -348,24 +348,84 @@ export const FLOW_POINT_HEADERS = [
     title: "name",
     dataIndex: "name",
     key: "name",
+    render(name: string) {
+      if (name != undefined) {
+        let colour = "#4d4dff";
+        return <Tag color={colour}>{name}</Tag>;
+      }
+    },
+  },
+  {
+    title: "io number",
+    dataIndex: "io_number",
+    key: "io_number",
+    render(io_number: string) {
+      if (io_number != undefined) {
+        let colour = "#4d4dff";
+        let text = io_number.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
+      }
+    },
+  },
+  {
+    title: "object type",
+    dataIndex: "object_type",
+    key: "object_type",
+    render(object_type: string) {
+      if (object_type != undefined) {
+        let colour = "#4d4dff";
+        let text = object_type.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
+      }
+    },
+  },
+  {
+    title: "object id",
+    dataIndex: "object_id",
+    key: "object_id",
+    render(object_id: number) {
+      if (object_id != undefined) {
+        let colour = "#4d4dff";
+        return <Tag color={colour}>{object_id}</Tag>;
+      }
+    },
+  },
+
+  {
+    title: "io type",
+    dataIndex: "io_type",
+    key: "io_type",
+    render(io_type: string) {
+      if (io_type != undefined) {
+        let colour = "#4d4dff";
+        let text = io_type.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
+      }
+    },
   },
   {
     title: "present value",
     dataIndex: "present_value",
     key: "present_value",
+    render(present_value: number) {
+      if (present_value != undefined) {
+        let colour = "#4d4dff";
+        return <Tag color={colour}>{present_value}</Tag>;
+      }
+    },
   },
   {
-    title: "original_value value",
+    title: "original value value",
     dataIndex: "original_value",
     key: "original_value",
   },
   {
-    title: "write_value",
+    title: "write value",
     dataIndex: "write_value",
     key: "write_value",
   },
   {
-    title: "write_value_original",
+    title: "write value original",
     dataIndex: "write_value_original",
     key: "write_value_original",
   },

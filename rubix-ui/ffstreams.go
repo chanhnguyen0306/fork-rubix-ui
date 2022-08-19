@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -16,7 +17,7 @@ func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, streamUUIDs []UUIDs
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("delete stream %s %s", net.Name, msg))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed stream: %s", net.Name))
+			inst.crudMessage(true, fmt.Sprintf("delete stream: %s", net.Name))
 		}
 	}
 	return "ok"
@@ -68,6 +69,9 @@ func (inst *App) GetStreams(connUUID, hostUUID string) []model.Stream {
 }
 
 func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUIDS []string, body *model.Stream) *model.Stream {
+	if body.Name == "" {
+		body.Name = fmt.Sprintf("stream-%s", uuid.ShortUUID("")[5:10])
+	}
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

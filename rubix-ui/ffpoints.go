@@ -75,7 +75,13 @@ func (inst *App) AddPointsBulk(connUUID, hostUUID string, body []model.Point) {
 			addedCount++
 		}
 	}
-	inst.crudMessage(true, fmt.Sprintf("added points count:%d failed to add count:%d", addedCount, errorCount))
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("added count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to add count:%d", errorCount))
+	}
+
 }
 
 func (inst *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {

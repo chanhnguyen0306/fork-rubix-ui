@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -37,6 +38,9 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 }
 
 func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *model.Producer {
+	if body.Name == "" {
+		body.Name = fmt.Sprintf("producer-%s", uuid.ShortUUID("")[5:10])
+	}
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

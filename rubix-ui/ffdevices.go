@@ -51,7 +51,13 @@ func (inst *App) AddDevicesBulk(connUUID, hostUUID string, body []model.Device) 
 			addedCount++
 		}
 	}
-	inst.crudMessage(true, fmt.Sprintf("added devices count:%d failed to add count:%d", addedCount, errorCount))
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("added count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to add count:%d", errorCount))
+	}
+
 }
 
 func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*model.Device, error) {
