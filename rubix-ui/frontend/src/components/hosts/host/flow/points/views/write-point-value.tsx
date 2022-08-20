@@ -77,7 +77,7 @@ export const WritePointValueModal = (props: any) => {
 
   return (
     <Modal
-      title="Write Priority Array"
+      title={`Write Priority Array: ${point.name}`}
       visible={isModalVisible}
       onOk={handleSubmit}
       onCancel={handleClose}
