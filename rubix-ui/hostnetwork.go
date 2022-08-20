@@ -9,7 +9,7 @@ import (
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
-func (inst *App) GetNetworkSchema(connUUID string) *assistmodel.NetworkSchema {
+func (inst *App) GetNetworkSchema(connUUID string) interface{} {
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -20,7 +20,10 @@ func (inst *App) GetNetworkSchema(connUUID string) *assistmodel.NetworkSchema {
 		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 		return nil
 	}
-	return data
+	out := map[string]interface{}{
+		"properties": data,
+	}
+	return out
 }
 
 func (inst *App) AddHostNetwork(connUUID string, host *assistmodel.Network) *assistmodel.Network {

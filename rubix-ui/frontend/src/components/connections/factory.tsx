@@ -1,11 +1,11 @@
 import { Helpers } from "../../helpers/checks";
-import {assistmodel, main, storage} from "../../../wailsjs/go/models";
+import { main, storage } from "../../../wailsjs/go/models";
 import {
   AddConnection,
   DeleteConnectionBulk,
   GetConnection,
   GetConnections,
-  GetConnectionSchema, GetLocationSchema,
+  GetConnectionSchema,
   PingRubixAssist,
   UpdateConnection,
 } from "../../../wailsjs/go/main/App";
@@ -45,11 +45,18 @@ export class ConnectionFactory {
     return out;
   }
 
-
+  // get the first connection uuid
   async Schema(): Promise<main.ConnectionSchema> {
-    return await GetConnectionSchema();
+    let out: main.ConnectionSchema = {} as main.ConnectionSchema;
+    await GetConnectionSchema()
+      .then((res) => {
+        out = res;
+      })
+      .catch((err) => {
+        return out;
+      });
+    return out;
   }
-
 
   // get the first connection uuid
   async GetFist(): Promise<storage.RubixConnection> {

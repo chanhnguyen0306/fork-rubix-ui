@@ -11,6 +11,7 @@ import (
 	"github.com/NubeIO/lib-schema/masterschema"
 	"github.com/NubeIO/lib-schema/modbuschema"
 	"github.com/NubeIO/lib-schema/rubixioschema"
+	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/lib-schema/systemschema"
 )
 
@@ -57,7 +58,6 @@ func setPluginURL(pluginName, netDevOrPoint string) (string, error) {
 func setPluginSchema(body []byte, inter interface{}) (interface{}, error) {
 	err := json.Unmarshal(body, &inter)
 	return inter, err
-
 }
 
 func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
@@ -73,8 +73,11 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 		return nil
 	}
 	data, err := client.FFProxyGET(hostUUID, url)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if err != nil || data.StatusCode() > 299 {
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		}
+		return schema.GetDefaults()
 	}
 	var sch interface{}
 	switch pluginName {
@@ -119,8 +122,11 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 		return nil
 	}
 	data, err := client.FFProxyGET(hostUUID, url)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if err != nil || data.StatusCode() > 299 {
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		}
+		return schema.GetDefaults()
 	}
 	var sch interface{}
 	switch pluginName {
@@ -165,8 +171,11 @@ func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) inter
 		return nil
 	}
 	data, err := client.FFProxyGET(hostUUID, url)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if err != nil || data.StatusCode() > 299 {
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		}
+		return schema.GetDefaults()
 	}
 	var sch interface{}
 	switch pluginName {

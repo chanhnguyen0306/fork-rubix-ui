@@ -59,11 +59,18 @@ export const Networks = () => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     const res = await GetNetworkSchema(connUUID);
-    const jsonSchema = {
-      properties: res,
+    res.properties = {
+      ...res.properties,
+      location_uuid: {
+        title: "location",
+        type: "string",
+        anyOf: locations.map((l: assistmodel.Location) => {
+          return { type: "string", enum: [l.uuid], title: l.name };
+        }),
+        default: locUUID,
+      },
     };
-
-    setNetworkSchema(jsonSchema);
+    setNetworkSchema(res);
     setIsLoadingForm(false);
   };
 

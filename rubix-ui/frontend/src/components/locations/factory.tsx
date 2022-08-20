@@ -1,6 +1,6 @@
 import {
   AddLocation,
-  DeleteLocationBulk, GetHostSchema,
+  DeleteLocationBulk,
   GetLocation,
   GetLocations,
   GetLocationSchema,
@@ -41,8 +41,16 @@ export class LocationFactory {
     return this.count;
   }
 
-  async Schema(): Promise<main.LocationSchema> {
-    return await GetLocationSchema(this.connectionUUID);
+  async Schema(): Promise<any> {
+    let all: Promise<any> = {} as Promise<any>;
+    await GetLocationSchema(this.connectionUUID)
+      .then((res) => {
+        all = res as Promise<any>;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return all;
   }
 
   async TableSchema(): Promise<any> {
@@ -57,6 +65,19 @@ export class LocationFactory {
     return all;
   }
 
+  // get the first connection uuid
+  async GetFist(): Promise<assistmodel.Location> {
+    let one: assistmodel.Location = {} as assistmodel.Location;
+    await this.GetAll()
+      .then((res: any) => {
+        one = res.at(0) as assistmodel.Location;
+        this._this = one;
+      })
+      .catch((err) => {
+        return undefined;
+      });
+    return one;
+  }
 
   async GetAll(): Promise<Array<assistmodel.Location>> {
     let all: Array<assistmodel.Location> = {} as Array<assistmodel.Location>;

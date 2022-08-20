@@ -3,7 +3,7 @@ import { isObjectEmpty } from "../../utils/utils";
 import { ConnectionsTable } from "./views/table";
 import { CreateEditModal } from "./views/create";
 import { ConnectionFactory } from "./factory";
-import {  Card, Tabs, Typography } from "antd";
+import { Button, Card, Tabs, Typography } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { storage } from "../../../wailsjs/go/models";
 import { PcScanner } from "../pc/scanner/table";
@@ -51,7 +51,6 @@ export const Connections = () => {
     const jsonSchema = {
       properties: res,
     };
-    console.log(jsonSchema)
     setConnectionSchema(jsonSchema);
     setIsLoadingForm(false);
   };

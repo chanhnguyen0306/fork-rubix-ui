@@ -3,24 +3,26 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 )
 
-type LocationSchema struct {
-	UUID        schema.UUID        `json:"uuid"`
-	Name        schema.Name        `json:"name"`
-	Description schema.Description `json:"description"`
-}
-
-func (inst *App) GetLocationSchema(connUUID string) *LocationSchema {
-	m := &LocationSchema{}
-	schema.Set(m)
-	return m
+func (inst *App) GetLocationSchema(connUUID string) interface{} {
+	client, err := inst.initConnection(connUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	data, res := client.GetLocationSchema()
+	if data == nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
+	}
+	out := map[string]interface{}{
+		"properties": data,
+	}
+	return out
 }
 
 func (inst *App) GetLocationTableSchema(connUUID string) interface{} {
@@ -33,7 +35,6 @@ func (inst *App) GetLocationTableSchema(connUUID string) interface{} {
 	if data == nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 	}
-	pprint.PrintJOSN(data)
 	return humanize.BuildTableSchema(data)
 }
 

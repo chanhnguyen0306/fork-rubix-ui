@@ -70,10 +70,18 @@ export const Locations = () => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     let res = await locationFactory.Schema();
-    const jsonSchema = {
-      properties: res,
+    res = {
+      properties: {
+        ...res.properties,
+        connection_name: {
+          title: "Connection",
+          type: "string",
+          default: connection.name,
+          readOnly: true,
+        },
+      },
     };
-    setLocationSchema(jsonSchema);
+    setLocationSchema(res);
     setIsLoadingForm(false);
   };
 
@@ -104,7 +112,6 @@ export const Locations = () => {
     try {
       const r = await locationFactory.TableSchema();
       let tableSchema = r;
-      console.log(tableSchema)
       tableSchema = [
         ...tableSchema,
         {
