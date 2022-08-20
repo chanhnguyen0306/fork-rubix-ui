@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Space, Spin, PaginationProps } from "antd";
+import { Space, PaginationProps, Spin } from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
-import { HostsFactory } from "../factory";
-import { BackupFactory } from "../../backups/factory";
-import { assistmodel, main, storage } from "../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../utils/utils";
-import { ROUTES } from "../../../constants/routes";
-import { HOST_HEADERS } from "../../../constants/headers";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { assistmodel, storage, main } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
-  RbAddButton,
   RbDeleteButton,
+  RbAddButton,
   RbRefreshButton,
 } from "../../../common/rb-table-actions";
+import { HOST_HEADERS } from "../../../constants/headers";
+import { ROUTES } from "../../../constants/routes";
+import { useDialogs } from "../../../hooks/useDialogs";
+import { isObjectEmpty } from "../../../utils/utils";
+import { BackupFactory } from "../../backups/factory";
+import { HostsFactory } from "../factory";
 import { CreateEditModal } from "./create";
+import InstallApp from "./installApp";
 import { SidePanel } from "./side-panel";
-import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import { useDialogs } from "../../../hooks/useDialogs";
-import InstallApp from "./installApp";
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
 
@@ -81,13 +80,6 @@ export const HostsTable = (props: any) => {
           </a>
           <a
             onClick={() => {
-              deleteHost(host.uuid);
-            }}
-          >
-            Delete
-          </a>
-          <a
-            onClick={() => {
               openDialog(INSTALL_DIALOG, { state: host });
             }}
           >
@@ -139,12 +131,6 @@ export const HostsTable = (props: any) => {
     };
     setHostSchema(jsonSchema);
     setIsLoadingForm(false);
-  };
-
-  const deleteHost = async (uuid: string) => {
-    factory.uuid = uuid;
-    await factory.Delete();
-    refreshList();
   };
 
   const bulkDelete = async () => {
