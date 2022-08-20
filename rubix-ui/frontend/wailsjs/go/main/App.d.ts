@@ -371,3 +371,5 @@ export function UpdateSettings(arg1:string,arg2:storage.Settings):Promise<storag
 export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage.Backup>;
 
 export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function WritePointValue(arg1:string,arg2:string,arg3:string,arg4:model.Priority):Promise<model.Priority>;

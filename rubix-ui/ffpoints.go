@@ -34,6 +34,30 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	return points
 }
 
+func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Priority {
+	//_, err := inst.resetHost(connUUID, hostUUID, true)
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return nil
+	//}
+	//url, err := setPluginURL(pluginName, "network")
+	//client, err := inst.initConnection(connUUID)
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return nil
+	//}
+	//data, err := client.FFProxyGET(hostUUID, url)
+	//if err != nil || data.StatusCode() > 299 {
+	//	if err != nil {
+	//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	}
+	//	return schema.GetDefaults()
+	//}
+	return nil
+}
+
+///api/points/write/pnt_c60aa01f57b24f3a
+
 func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("point-%s", uuid.ShortUUID("")[5:10])
