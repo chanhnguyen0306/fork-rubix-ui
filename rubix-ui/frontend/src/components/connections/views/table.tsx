@@ -1,28 +1,25 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { Space, Spin } from "antd";
-import {
-  DeleteConnection,
-  PingRubixAssist,
-} from "../../../../wailsjs/go/main/App";
-import { ConnectionFactory } from "../factory";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { PingRubixAssist } from "../../../../wailsjs/go/main/App";
 import { main, storage } from "../../../../wailsjs/go/models";
-import { openNotificationWithIcon } from "../../../utils/utils";
-import { ROUTES } from "../../../constants/routes";
-import { CONNECTION_HEADERS } from "../../../constants/headers";
 import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
+import { CONNECTION_HEADERS } from "../../../constants/headers";
+import { ROUTES } from "../../../constants/routes";
+import { openNotificationWithIcon } from "../../../utils/utils";
+import { ConnectionFactory } from "../factory";
 
 import RubixConnection = storage.RubixConnection;
+import UUIDs = main.UUIDs;
 
 export const ConnectionsTable = (props: any) => {
   const { connections, refreshList, showModal, isFetching } = props;
   if (!connections) return <></>;
 
-  const navigate = useNavigate();
   let factory = new ConnectionFactory();
 
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
 
   const columns = [
     ...CONNECTION_HEADERS,
@@ -42,13 +39,6 @@ export const ConnectionsTable = (props: any) => {
           >
             Edit
           </a>
-          <a // delete
-            onClick={() => {
-              deleteConnection(conn.uuid);
-            }}
-          >
-            Delete
-          </a>
           <a //ping
             onClick={() => {
               pingConnection(conn.uuid);
@@ -60,11 +50,6 @@ export const ConnectionsTable = (props: any) => {
       ),
     },
   ];
-
-  const deleteConnection = async (uuid: string) => {
-    await DeleteConnection(uuid);
-    refreshList();
-  };
 
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);

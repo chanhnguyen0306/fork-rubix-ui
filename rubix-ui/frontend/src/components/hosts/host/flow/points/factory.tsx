@@ -5,7 +5,8 @@ import {
   store,
 } from "../../../../../../wailsjs/go/models";
 import {
-  AddPoint, AddPointsBulk,
+  AddPoint,
+  AddPointsBulk,
   DeletePoint,
   DeletePointBulk,
   EditPoint,
@@ -14,7 +15,8 @@ import {
   GetPoint,
   GetPoints,
   GetPointsForDevice,
-  ImportPointBulk, WritePointValue,
+  ImportPointBulk,
+  WritePointValue,
 } from "../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -178,8 +180,15 @@ export class FlowPointFactory {
     );
   }
 
-  async WritePointValue(pointUUID: string, body: model.Priority): Promise<model.Point>{
-    return await WritePointValue(this.connectionUUID, this.hostUUID, pointUUID, body);
+  async WritePointValue(
+    pointUUID: string,
+    body: model.Priority
+  ): Promise<model.Point> {
+    return await WritePointValue(
+      this.connectionUUID,
+      this.hostUUID,
+      pointUUID,
+      body
+    );
   }
-
 }

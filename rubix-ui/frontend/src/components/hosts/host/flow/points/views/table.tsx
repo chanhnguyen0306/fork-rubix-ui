@@ -17,6 +17,7 @@ import { CreateModal } from "./create";
 import { ExportModal, ImportModal } from "./import-export";
 
 import Point = model.Point;
+import { WritePointValueModal } from "./write-point-value";
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -27,13 +28,15 @@ export const FlowPointsTable = (props: any) => {
     pluginName = "",
   } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [schema, setSchema] = useState({});
+  const [currentItem, setCurrentItem] = useState({} as Point);
+  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const [schema, setSchema] = useState({});
-  const [currentItem, setCurrentItem] = useState({});
-  const [isExportModalVisible, setIsExportModalVisible] = useState(false);
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+  const [isWritePointModalVisible, setIsWritePointModalVisible] =
+    useState(false);
 
   let flowPointFactory = new FlowPointFactory();
   flowPointFactory.connectionUUID = connUUID;
@@ -53,6 +56,13 @@ export const FlowPointsTable = (props: any) => {
             }}
           >
             Edit
+          </a>
+          <a
+            onClick={() => {
+              showWritePointModal(point);
+            }}
+          >
+            Write Point Value
           </a>
         </Space>
       ),
@@ -80,7 +90,7 @@ export const FlowPointsTable = (props: any) => {
     setIsLoadingForm(false);
   };
 
-  const showEditModal = (item: any) => {
+  const showEditModal = (item: Point) => {
     setCurrentItem(item);
     setIsEditModalVisible(true);
     if (isObjectEmpty(schema)) {
@@ -90,10 +100,9 @@ export const FlowPointsTable = (props: any) => {
 
   const closeEditModal = () => {
     setIsEditModalVisible(false);
-    setCurrentItem({});
   };
 
-  const showCreateModal = (item: any) => {
+  const showCreateModal = () => {
     setIsCreateModalVisible(true);
     if (isObjectEmpty(schema)) {
       getSchema(pluginName);
@@ -104,6 +113,11 @@ export const FlowPointsTable = (props: any) => {
     setIsCreateModalVisible(false);
   };
 
+  const showWritePointModal = (item: Point) => {
+    setIsWritePointModalVisible(true);
+    setCurrentItem(item);
+  };
+
   return (
     <>
       <RbExportButton
@@ -112,7 +126,7 @@ export const FlowPointsTable = (props: any) => {
       />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton handleClick={() => showCreateModal({} as Point)} />
+      <RbAddButton handleClick={showCreateModal} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -148,6 +162,12 @@ export const FlowPointsTable = (props: any) => {
       <ImportModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
+        refreshList={refreshList}
+      />
+      <WritePointValueModal
+        isModalVisible={isWritePointModalVisible}
+        onCloseModal={() => setIsWritePointModalVisible(false)}
+        point={currentItem}
         refreshList={refreshList}
       />
     </>
