@@ -34,29 +34,38 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	return points
 }
 
-func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Priority {
-	//_, err := inst.resetHost(connUUID, hostUUID, true)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return nil
-	//}
-	//url, err := setPluginURL(pluginName, "network")
-	//client, err := inst.initConnection(connUUID)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return nil
-	//}
-	//data, err := client.FFProxyGET(hostUUID, url)
-	//if err != nil || data.StatusCode() > 299 {
-	//	if err != nil {
-	//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	}
-	//	return schema.GetDefaults()
-	//}
-	return nil
+type pointPriority struct {
+	Priority *model.Priority
 }
 
-///api/points/write/pnt_c60aa01f57b24f3a
+func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) (*model.Point, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, err
+	}
+	client, err := inst.initConnection(connUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, err
+	}
+
+	body := &pointPriority{
+		Priority: value,
+	}
+
+	url := fmt.Sprintf("/api/points/write/%s", pointUUID)
+	resp, err := client.FFProxyPATCH(hostUUID, url, body)
+	if err != nil {
+		return nil, err
+	}
+	pnt := &model.Point{}
+	err = json.Unmarshal(resp.Body(), &pnt)
+	if err != nil {
+		return nil, err
+	}
+	return pnt, nil
+}
 
 func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
 	if body.Name == "" {
