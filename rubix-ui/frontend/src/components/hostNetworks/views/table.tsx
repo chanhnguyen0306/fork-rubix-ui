@@ -1,13 +1,12 @@
-import { useState } from "react";
 import { Space, Spin } from "antd";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { DeleteHostNetwork } from "../../../../wailsjs/go/main/App";
-import { assistmodel, main } from "../../../../wailsjs/go/models";
-import { NetworksFactory } from "../factory";
-import { ROUTES } from "../../../constants/routes";
-import { HOST_NETWORK_HEADERS } from "../../../constants/headers";
+import { main, assistmodel } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
+import { HOST_NETWORK_HEADERS } from "../../../constants/headers";
+import { ROUTES } from "../../../constants/routes";
+import { NetworksFactory } from "../factory";
 
 export const NetworksTable = (props: any) => {
   const {
@@ -56,22 +55,10 @@ export const NetworksTable = (props: any) => {
           >
             Edit
           </a>
-          <a
-            onClick={() => {
-              deleteNetwork(network.uuid);
-            }}
-          >
-            Delete
-          </a>
         </Space>
       ),
     },
   ];
-
-  const deleteNetwork = async (networkUUID: string) => {
-    await DeleteHostNetwork(connUUID, networkUUID);
-    refreshList();
-  };
 
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);
