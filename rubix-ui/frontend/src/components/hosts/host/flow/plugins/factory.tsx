@@ -1,9 +1,8 @@
-import {main, model, store} from "../../../../../../wailsjs/go/models";
+import {main, model} from "../../../../../../wailsjs/go/models";
 import {
   DisablePluginBulk,
   EnablePluginBulk,
   GetPlugins,
-  GitListReleases, WritePointValue
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -53,8 +52,6 @@ export class FlowPluginFactory {
         return resp
     }
 
-  async WritePointValue(pointUUID: string, body: model.Priority): Promise<model.Priority>{
-    return await WritePointValue(this.connectionUUID, this.hostUUID, pointUUID, body);
-  }
+
 
 }

@@ -372,4 +372,4 @@ export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage
 
 export function WiresBackupRestore(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function WritePointValue(arg1:string,arg2:string,arg3:string,arg4:model.Priority):Promise<model.Priority>;
+export function WritePointValue(arg1:string,arg2:string,arg3:string,arg4:model.Priority):Promise<model.Point>;

@@ -14,8 +14,7 @@ import {
   GetPoint,
   GetPoints,
   GetPointsForDevice,
-  GetRelease,
-  ImportPointBulk,
+  ImportPointBulk, WritePointValue,
 } from "../../../../../../wailsjs/go/main/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -178,4 +177,9 @@ export class FlowPointFactory {
       uuids
     );
   }
+
+  async WritePointValue(pointUUID: string, body: model.Priority): Promise<model.Point>{
+    return await WritePointValue(this.connectionUUID, this.hostUUID, pointUUID, body);
+  }
+
 }

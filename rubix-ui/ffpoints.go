@@ -38,6 +38,15 @@ type pointPriority struct {
 	Priority *model.Priority
 }
 
+func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Point {
+	pointValue, err := inst.writePointValue(connUUID, hostUUID, pointUUID, value)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return pointValue
+}
+
 func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) (*model.Point, error) {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
 	if err != nil {
