@@ -54,6 +54,13 @@ export const FlowPointsTable = (props: any) => {
           >
             Edit
           </a>
+          <a
+            onClick={() => {
+              showEditModal(point);
+            }}
+          >
+            Write Point Values
+          </a>
         </Space>
       ),
     },
