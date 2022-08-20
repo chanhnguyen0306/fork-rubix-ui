@@ -1,20 +1,15 @@
-import { useEffect, useState } from "react";
-import { Space, Typography, Card } from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
-
-import {
-  DeleteLocation,
-  GetConnection,
-  GetLocations,
-} from "../../../wailsjs/go/main/App";
-import { LocationFactory } from "./factory";
-import { LocationsTable } from "./views/table";
+import { Typography, Space, Card } from "antd";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { GetLocations, GetConnection } from "../../../wailsjs/go/main/App";
+import { assistmodel, storage } from "../../../wailsjs/go/models";
+import { RbRefreshButton, RbAddButton } from "../../common/rb-table-actions";
 import { ROUTES } from "../../constants/routes";
-import { CreateEditModal } from "./views/create";
 import { isObjectEmpty } from "../../utils/utils";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
-import { assistmodel, storage } from "../../../wailsjs/go/models";
-import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
+import { LocationFactory } from "./factory";
+import { CreateEditModal } from "./views/create";
+import { LocationsTable } from "./views/table";
 
 import Location = assistmodel.Location;
 import RubixConnection = storage.RubixConnection;
@@ -85,12 +80,6 @@ export const Locations = () => {
     setIsLoadingForm(false);
   };
 
-  const deleteLocation = async (uuid: string) => {
-    await DeleteLocation(locationFactory.connectionUUID, uuid);
-    refreshList();
-    setIsFetching(true);
-  };
-
   const refreshList = () => {
     fetchList();
   };
@@ -140,13 +129,6 @@ export const Locations = () => {
                 }}
               >
                 Edit
-              </a>
-              <a
-                onClick={() => {
-                  deleteLocation(location.uuid);
-                }}
-              >
-                Delete
               </a>
             </Space>
           ),
