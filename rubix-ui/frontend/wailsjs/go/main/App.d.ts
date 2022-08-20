@@ -242,7 +242,7 @@ export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Netw
 
 export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
 
-export function GetHostSchema(arg1:string):Promise<any>;
+export function GetHostSchema(arg1:string):Promise<assistmodel.HostSchema>;
 
 export function GetHostTime(arg1:string,arg2:string):Promise<any>;
 

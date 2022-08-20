@@ -11,18 +11,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
+	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	sch, err := inst.flow.PointSchema(pluginName)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return sch
+	return device.Points
 }
 
 func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
@@ -37,15 +32,6 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 		return nil
 	}
 	return points
-}
-
-func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
-	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return device.Points
 }
 
 func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {

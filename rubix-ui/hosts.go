@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
 
-func (inst *App) GetHostSchema(connUUID string) interface{} {
+func (inst *App) GetHostSchema(connUUID string) *assistmodel.HostSchema {
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -20,13 +21,14 @@ func (inst *App) GetHostSchema(connUUID string) interface{} {
 		inst.crudMessage(false, fmt.Sprintf("error %s", res.Message))
 		return nil
 	}
-	out := map[string]interface{}{
-		"properties": data,
-	}
-	return out
+	return data
 }
 
 func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Host {
+	if host.Name == "" {
+		host.Name = fmt.Sprintf("host-%s", uuid.ShortUUID("")[5:10])
+	}
+	host.Port = 1661
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

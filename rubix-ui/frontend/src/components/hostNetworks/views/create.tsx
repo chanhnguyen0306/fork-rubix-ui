@@ -28,18 +28,14 @@ export const CreateEditModal = (props: any) => {
   const addNetwork = async (network: assistmodel.Network) => {
     try {
       await AddHostNetwork(connUUID, network);
-      openNotificationWithIcon("success", `added ${network.name} success`);
     } catch (error) {
-      openNotificationWithIcon("error", `added ${network.name} fail`);
     }
   };
 
   const editNetwork = async (network: assistmodel.Network) => {
     try {
       await EditHostNetwork(connUUID, network.uuid, network);
-      openNotificationWithIcon("success", `updated ${network.name} success`);
     } catch (error) {
-      openNotificationWithIcon("error", `updated ${network.name} fail`);
     }
   };
 
@@ -64,11 +60,7 @@ export const CreateEditModal = (props: any) => {
 
   const isDisabled = (): boolean => {
     let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50)) ||
-      !formData.location_uuid;
+    result = !formData.location_uuid;
     return result;
   };
 

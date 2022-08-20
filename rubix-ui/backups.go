@@ -46,7 +46,7 @@ func (inst *App) exportBackup(uuid string) (string, error) {
 		Version: "latest",
 		Repo:    "releases",
 	}
-	t := time.Now().Format("2006-01-02 15:04:05")
+	t := time.Now().Format("2006-01-02_15-04-05")
 	appStore, err := store.New(str)
 	name := fmt.Sprintf("type-%s-%s-%s", backup.SubApplication, backup.UserComment, t)
 	err = appStore.SaveBackup(strings.ToLower(name), backup)

@@ -29,12 +29,9 @@ export const CreateEditModal = (props: any) => {
     try {
       const res = await AddLocation(connUUID, location);
       if (res.uuid) {
-        openNotificationWithIcon("success", `added ${location.name} success`);
       } else {
-        openNotificationWithIcon("error", `added ${location.name} fail`);
       }
     } catch (err) {
-      openNotificationWithIcon("error", err);
       console.log(err);
     }
   };
@@ -42,9 +39,9 @@ export const CreateEditModal = (props: any) => {
   const editLocation = async (location: Location) => {
     try {
       const res = UpdateLocation(connUUID, location.uuid, location);
-      openNotificationWithIcon("success", `updated ${location.name} success`);
+      //openNotificationWithIcon("success", `updated ${location.name} success`);
     } catch (error) {
-      openNotificationWithIcon("error", `updated ${location.name} fail`);
+      //openNotificationWithIcon("error", `updated ${location.name} fail`);
     }
   };
 
@@ -71,10 +68,10 @@ export const CreateEditModal = (props: any) => {
 
   const isDisabled = (): boolean => {
     let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50));
+    // result =
+      // !formData.name ||
+      // (formData.name &&
+      //   (formData.name.length < 2 || formData.name.length > 50));
     return result;
   };
 

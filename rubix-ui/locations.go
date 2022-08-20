@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
@@ -38,6 +39,9 @@ func (inst *App) GetLocationTableSchema(connUUID string) interface{} {
 }
 
 func (inst *App) AddLocation(connUUID string, body *assistmodel.Location) *assistmodel.Location {
+	if body.Name == "" {
+		body.Name = fmt.Sprintf("loc-%s", uuid.ShortUUID("")[5:10])
+	}
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

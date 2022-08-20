@@ -15,19 +15,19 @@ type UUIDs struct {
 	UUID string `json:"uuid"`
 }
 
-func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	sch, err := inst.flow.NetworkSchema(pluginName)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return sch
-}
+//func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
+//	_, err := inst.resetHost(connUUID, hostUUID, true)
+//	if err != nil {
+//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+//		return nil
+//	}
+//	sch, err := inst.flow.NetworkSchema(pluginName)
+//	if err != nil {
+//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+//		return nil
+//	}
+//	return sch
+//}
 
 func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
 	_, err := inst.resetHost(connUUID, hostUUID, true)
