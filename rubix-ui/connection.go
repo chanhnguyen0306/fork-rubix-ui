@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/lib-schema/schema"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 )
@@ -26,6 +27,7 @@ type ConnectionSchema struct {
 
 func connectionSchema() *ConnectionSchema {
 	m := &ConnectionSchema{}
+	m.Port.Default = 1662
 	schema.Set(m)
 	return m
 }
@@ -52,6 +54,9 @@ func (inst *App) GetConnections() []storage.RubixConnection {
 }
 
 func (inst *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConnection {
+	if conn.Name == "" {
+		conn.Name = fmt.Sprintf("conn-%s", uuid.ShortUUID("")[5:10])
+	}
 	conn, err := inst.DB.Add(conn)
 	if err != nil {
 		return nil

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	log "github.com/sirupsen/logrus"
@@ -24,6 +25,9 @@ func (inst *App) GetHostSchema(connUUID string) *assistmodel.HostSchema {
 }
 
 func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.Host {
+	if host.Name == "" {
+		host.Name = fmt.Sprintf("host-%s", uuid.ShortUUID("")[5:10])
+	}
 	host.Port = 1661
 	client, err := inst.initConnection(connUUID)
 	if err != nil {

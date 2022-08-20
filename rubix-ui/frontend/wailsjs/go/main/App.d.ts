@@ -188,8 +188,6 @@ export function ExportNetworksBulk(arg1:string,arg2:string,arg3:string,arg4:Arra
 
 export function ExportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
-export function FFPoints(arg1:string,arg2:string):void;
-
 export function GetBackup(arg1:string):Promise<storage.Backup>;
 
 export function GetBackups():Promise<Array<storage.Backup>>;
@@ -252,7 +250,7 @@ export function GetHosts(arg1:string):Promise<Array<assistmodel.Host>>;
 
 export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
 
-export function GetLocationSchema(arg1:string):Promise<any>;
+export function GetLocationSchema(arg1:string):Promise<main.LocationSchema>;
 
 export function GetLocationTableSchema(arg1:string):Promise<any>;
 
@@ -274,7 +272,7 @@ export function GetNetworkByPluginName(arg1:string,arg2:string,arg3:string,arg4:
 
 export function GetNetworkDevices(arg1:string,arg2:string,arg3:string):Promise<Array<model.Device>>;
 
-export function GetNetworkSchema(arg1:string):Promise<any>;
+export function GetNetworkSchema(arg1:string):Promise<assistmodel.NetworkSchema>;
 
 export function GetNetworkWithPoints(arg1:string,arg2:string,arg3:string):Promise<model.Network>;
 

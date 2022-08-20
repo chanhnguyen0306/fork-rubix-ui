@@ -20,6 +20,20 @@ func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*mo
 	return device.Points
 }
 
+func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	points, err := inst.flow.GetPoints()
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return points
+}
+
 func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("point-%s", uuid.ShortUUID("")[5:10])

@@ -9,7 +9,7 @@ import (
 	"github.com/NubeIO/lib-schema/loraschema"
 	"github.com/NubeIO/lib-schema/lorawanschema"
 	"github.com/NubeIO/lib-schema/masterschema"
-	modbschema "github.com/NubeIO/lib-schema/modbuschema"
+	"github.com/NubeIO/lib-schema/modbuschema"
 	"github.com/NubeIO/lib-schema/rubixioschema"
 	"github.com/NubeIO/lib-schema/systemschema"
 )
@@ -22,7 +22,7 @@ const (
 	pluginLoraWAN      = "lorawan"
 	pluginSystem       = "system"
 	pluginEdge28       = "edge28"
-	pluginRubixIO      = "rubixio"
+	pluginRubixIO      = "rubix-io"
 )
 
 func setPluginURL(pluginName, netDevOrPoint string) (string, error) {
@@ -79,7 +79,7 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbschema.NetworkSchema{})
+		sch, err = setPluginSchema(data.Body(), &modbuschema.NetworkSchema{})
 		return sch
 	case pluginBACnet:
 		sch, err = setPluginSchema(data.Body(), &bacnetschema.NetworkSchema{})
@@ -125,7 +125,7 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbschema.DeviceSchema{})
+		sch, err = setPluginSchema(data.Body(), &modbuschema.DeviceSchema{})
 		return sch
 	case pluginBACnet:
 		sch, err = setPluginSchema(data.Body(), &bacnetschema.DeviceSchema{})
@@ -171,7 +171,7 @@ func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) inter
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbschema.PointSchema{})
+		sch, err = setPluginSchema(data.Body(), &modbuschema.PointSchema{})
 		return sch
 	case pluginBACnet:
 		sch, err = setPluginSchema(data.Body(), &bacnetschema.PointSchema{})

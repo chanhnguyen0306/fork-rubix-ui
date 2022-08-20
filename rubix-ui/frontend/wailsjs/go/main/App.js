@@ -350,10 +350,6 @@ export function ExportPointBulk(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['ExportPointBulk'](arg1, arg2, arg3, arg4, arg5);
 }
 
-export function FFPoints(arg1, arg2) {
-  return window['go']['main']['App']['FFPoints'](arg1, arg2);
-}
-
 export function GetBackup(arg1) {
   return window['go']['main']['App']['GetBackup'](arg1);
 }

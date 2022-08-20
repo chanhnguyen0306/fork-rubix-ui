@@ -62,14 +62,14 @@ export const CreateEditModal = (props: any) => {
 
   const isDisabled = (): boolean => {
     let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50)) ||
-      !formData.port ||
-      (formData.port && (formData.port < 2 || formData.port > 65535)) ||
-      !formData.ip ||
-      !formData.network_uuid;
+    // result =
+    //   !formData.name ||
+    //   (formData.name &&
+    //     (formData.name.length < 2 || formData.name.length > 50)) ||
+    //   !formData.port ||
+    //   (formData.port && (formData.port < 2 || formData.port > 65535)) ||
+    //   !formData.ip ||
+    //   !formData.network_uuid;
     return result;
   };
 

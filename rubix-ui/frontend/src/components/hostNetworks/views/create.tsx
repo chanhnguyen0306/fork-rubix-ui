@@ -64,11 +64,11 @@ export const CreateEditModal = (props: any) => {
 
   const isDisabled = (): boolean => {
     let result = false;
-    result =
-      !formData.name ||
-      (formData.name &&
-        (formData.name.length < 2 || formData.name.length > 50)) ||
-      !formData.location_uuid;
+    // result =
+    //   !formData.name ||
+    //   (formData.name &&
+    //     (formData.name.length < 2 || formData.name.length > 50)) ||
+    //   !formData.location_uuid;
     return result;
   };
 
