@@ -1,5 +1,9 @@
 import {main, model} from "../../../../../../wailsjs/go/models";
-import {DisablePluginBulk, EnablePluginBulk, GetPlugins} from "../../../../../../wailsjs/go/main/App";
+import {
+  DisablePluginBulk,
+  EnablePluginBulk,
+  GetPlugins,
+} from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -47,6 +51,7 @@ export class FlowPluginFactory {
         })
         return resp
     }
+
 
 
 }

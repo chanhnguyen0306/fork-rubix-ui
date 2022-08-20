@@ -34,6 +34,48 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	return points
 }
 
+type pointPriority struct {
+	Priority *model.Priority
+}
+
+func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Point {
+	pointValue, err := inst.writePointValue(connUUID, hostUUID, pointUUID, value)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return pointValue
+}
+
+func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) (*model.Point, error) {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, err
+	}
+	client, err := inst.initConnection(connUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, err
+	}
+
+	body := &pointPriority{
+		Priority: value,
+	}
+
+	url := fmt.Sprintf("/api/points/write/%s", pointUUID)
+	resp, err := client.FFProxyPATCH(hostUUID, url, body)
+	if err != nil {
+		return nil, err
+	}
+	pnt := &model.Point{}
+	err = json.Unmarshal(resp.Body(), &pnt)
+	if err != nil {
+		return nil, err
+	}
+	return pnt, nil
+}
+
 func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.Point, error) {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("point-%s", uuid.ShortUUID("")[5:10])

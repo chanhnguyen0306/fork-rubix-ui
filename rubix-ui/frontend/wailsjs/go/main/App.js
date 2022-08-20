@@ -717,3 +717,7 @@ export function WiresBackup(arg1, arg2, arg3) {
 export function WiresBackupRestore(arg1, arg2, arg3) {
   return window['go']['main']['App']['WiresBackupRestore'](arg1, arg2, arg3);
 }
+
+export function WritePointValue(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['WritePointValue'](arg1, arg2, arg3, arg4);
+}

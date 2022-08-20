@@ -55,7 +55,7 @@ func setPluginURL(pluginName, netDevOrPoint string) (string, error) {
 	return url, nil
 }
 
-func setPluginSchema(body []byte, inter interface{}) (interface{}, error) {
+func jsonToInterface(body []byte, inter interface{}) (interface{}, error) {
 	err := json.Unmarshal(body, &inter)
 	return inter, err
 }
@@ -82,28 +82,28 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbuschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &modbuschema.NetworkSchema{})
 		return sch
 	case pluginBACnet:
-		sch, err = setPluginSchema(data.Body(), &bacnetschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &bacnetschema.NetworkSchema{})
 		return sch
 	case pluginBACnetMaster:
-		sch, err = setPluginSchema(data.Body(), &masterschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &masterschema.NetworkSchema{})
 		return sch
 	case pluginLora:
-		sch, err = setPluginSchema(data.Body(), &loraschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &loraschema.NetworkSchema{})
 		return sch
 	case pluginLoraWAN:
-		sch, err = setPluginSchema(data.Body(), &loraschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &loraschema.NetworkSchema{})
 		return sch
 	case pluginSystem:
-		sch, err = setPluginSchema(data.Body(), &systemschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &systemschema.NetworkSchema{})
 		return sch
 	case pluginEdge28:
-		sch, err = setPluginSchema(data.Body(), &edge28schema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &edge28schema.NetworkSchema{})
 		return sch
 	case pluginRubixIO:
-		sch, err = setPluginSchema(data.Body(), &rubixioschema.NetworkSchema{})
+		sch, err = jsonToInterface(data.Body(), &rubixioschema.NetworkSchema{})
 		return sch
 	}
 	return sch
@@ -131,28 +131,28 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbuschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &modbuschema.DeviceSchema{})
 		return sch
 	case pluginBACnet:
-		sch, err = setPluginSchema(data.Body(), &bacnetschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &bacnetschema.DeviceSchema{})
 		return sch
 	case pluginBACnetMaster:
-		sch, err = setPluginSchema(data.Body(), &masterschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &masterschema.DeviceSchema{})
 		return sch
 	case pluginLora:
-		sch, err = setPluginSchema(data.Body(), &loraschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &loraschema.DeviceSchema{})
 		return sch
 	case pluginLoraWAN:
-		sch, err = setPluginSchema(data.Body(), &lorawanschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &lorawanschema.DeviceSchema{})
 		return sch
 	case pluginSystem:
-		sch, err = setPluginSchema(data.Body(), &systemschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &systemschema.DeviceSchema{})
 		return sch
 	case pluginEdge28:
-		sch, err = setPluginSchema(data.Body(), &edge28schema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &edge28schema.DeviceSchema{})
 		return sch
 	case pluginRubixIO:
-		sch, err = setPluginSchema(data.Body(), &rubixioschema.DeviceSchema{})
+		sch, err = jsonToInterface(data.Body(), &rubixioschema.DeviceSchema{})
 		return sch
 	}
 	return sch
@@ -180,28 +180,28 @@ func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) inter
 	var sch interface{}
 	switch pluginName {
 	case pluginModbus:
-		sch, err = setPluginSchema(data.Body(), &modbuschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &modbuschema.PointSchema{})
 		return sch
 	case pluginBACnet:
-		sch, err = setPluginSchema(data.Body(), &bacnetschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &bacnetschema.PointSchema{})
 		return sch
 	case pluginBACnetMaster:
-		sch, err = setPluginSchema(data.Body(), &masterschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &masterschema.PointSchema{})
 		return sch
 	case pluginLora:
-		sch, err = setPluginSchema(data.Body(), &loraschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &loraschema.PointSchema{})
 		return sch
 	case pluginLoraWAN:
-		sch, err = setPluginSchema(data.Body(), &lorawanschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &lorawanschema.PointSchema{})
 		return sch
 	case pluginSystem:
-		sch, err = setPluginSchema(data.Body(), &systemschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &systemschema.PointSchema{})
 		return sch
 	case pluginEdge28:
-		sch, err = setPluginSchema(data.Body(), &edge28schema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &edge28schema.PointSchema{})
 		return sch
 	case pluginRubixIO:
-		sch, err = setPluginSchema(data.Body(), &rubixioschema.PointSchema{})
+		sch, err = jsonToInterface(data.Body(), &rubixioschema.PointSchema{})
 		return sch
 	}
 	return sch
