@@ -34,6 +34,7 @@ type RubixConnection struct {
 	Customer    string `json:"customer"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
+	AssistToken string `json:"assist_token"`
 	IP          string `json:"ip"`
 	Port        int    `json:"port"`
 	HTTPS       bool   `json:"https"`
