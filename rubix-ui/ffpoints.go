@@ -64,7 +64,7 @@ func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, value *mo
 	}
 
 	url := fmt.Sprintf("/api/points/write/%s", pointUUID)
-	resp, err := client.FFProxyPATCH(hostUUID, url, body)
+	resp, err := client.ProxyPATCH(hostUUID, url, body)
 	if err != nil {
 		return nil, err
 	}

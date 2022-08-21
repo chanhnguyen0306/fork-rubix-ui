@@ -72,7 +72,7 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, err := client.FFProxyGET(hostUUID, url)
+	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -121,7 +121,7 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, err := client.FFProxyGET(hostUUID, url)
+	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -170,7 +170,7 @@ func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) inter
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, err := client.FFProxyGET(hostUUID, url)
+	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

@@ -37,6 +37,14 @@ func (inst *App) GetConnectionSchema() *ConnectionSchema {
 	return c
 }
 
+func (inst *App) getConnection(uuid string) (*storage.RubixConnection, error) {
+	conn, err := inst.DB.Select(uuid)
+	if err != nil {
+		return nil, err
+	}
+	return conn, nil
+}
+
 func (inst *App) GetConnection(uuid string) *storage.RubixConnection {
 	conn, err := inst.DB.Select(uuid)
 	if err != nil {
@@ -64,26 +72,24 @@ func (inst *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConn
 	return conn
 }
 
+func (inst *App) updateConnection(uuid string, conn *storage.RubixConnection) (*storage.RubixConnection, error) {
+	conn, err := inst.DB.Update(uuid, conn)
+	if err != nil {
+		return nil, err
+	}
+	return conn, nil
+}
+
 func (inst *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *storage.RubixConnection {
-	connection, err := inst.DB.Select(uuid)
+	resp, err := inst.updateConnection(uuid, conn)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	inst.DB.AddLog(&storage.Log{
-		Function: logstore.Connection.String(),
-		Type:     logstore.Update.String(),
-		Data:     connection,
-	})
-	conn, err = inst.DB.Update(uuid, conn)
-	if err != nil {
-		return nil
-	}
-	return conn
+	return resp
 }
 
 func (inst *App) DeleteConnectionBulk(uuids []UUIDs) interface{} {
-
 	for _, item := range uuids {
 		msg, err := inst.deleteConnection(item.UUID)
 		if err != nil {

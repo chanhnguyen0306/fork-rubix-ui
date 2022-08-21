@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"fmt"
 	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/lib-networking/scanner"
 	"github.com/NubeIO/lib-schema/schema"
@@ -63,7 +62,6 @@ func RunScanner(iface, ip string, count int, ports []string) (*scanner.Hosts, er
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(address, ports, len(ports))
 	host := scan.IPScanner(address, ports, true)
 	return host, nil
 }

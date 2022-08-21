@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"sync"
 
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
@@ -102,4 +104,57 @@ func (inst *App) initConnection(connUUID string) (*assitcli.Client, error) {
 	}
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
 	return assitcli.New(connection.IP, connection.Port), nil
+}
+
+type AssistClient struct {
+	ConnUUID string
+}
+
+//initRest get rest client
+func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient, error) {
+	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
+	defer inst.mutex.Unlock()
+	connUUID := body.ConnUUID
+	if connUUID == "" {
+		return nil, errors.New("conn can not be empty")
+	}
+	var err error
+	connection := &storage.RubixConnection{}
+	if matchConnectionUUID(connUUID) {
+		connection, err = inst.DB.Select(connUUID)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		connection, err = inst.DB.SelectByName(connUUID)
+		pprint.PrintJOSN(connection)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if connection == nil {
+		return nil, errors.New("failed to find a connection")
+	}
+
+	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
+	cli := assitcli.NewAuth(&assitcli.AssistClient{
+		URL:         connection.IP,
+		Port:        connection.Port,
+		HTTPS:       false,
+		AssistToken: connection.AssistToken,
+	})
+
+	token := connection.AssistToken
+	fmt.Println(111, token)
+	//fmt.Println(token)
+	//if token == "" {
+	//	err := inst.assistGenerateToken(connUUID, false)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//}
+	//
+	//cli.AssistToken = token
+
+	return cli, nil
 }
