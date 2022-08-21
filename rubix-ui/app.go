@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"sync"
 
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
@@ -127,7 +125,6 @@ func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient,
 		}
 	} else {
 		connection, err = inst.DB.SelectByName(connUUID)
-		pprint.PrintJOSN(connection)
 		if err != nil {
 			return nil, err
 		}
@@ -135,7 +132,6 @@ func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient,
 	if connection == nil {
 		return nil, errors.New("failed to find a connection")
 	}
-
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
 	cli := assitcli.NewAuth(&assitcli.AssistClient{
 		URL:         connection.IP,
@@ -143,18 +139,14 @@ func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient,
 		HTTPS:       false,
 		AssistToken: connection.AssistToken,
 	})
-
 	token := connection.AssistToken
-	fmt.Println(111, token)
-	//fmt.Println(token)
-	//if token == "" {
-	//	err := inst.assistGenerateToken(connUUID, false)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//}
-	//
-	//cli.AssistToken = token
+	if token == "" {
+		err := inst.assistGenerateToken(connUUID, true)
+		if err != nil {
+			return nil, err
+		}
+	}
+	cli.AssistToken = token
 
 	return cli, nil
 }
