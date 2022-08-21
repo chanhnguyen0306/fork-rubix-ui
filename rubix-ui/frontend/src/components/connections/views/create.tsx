@@ -4,7 +4,6 @@ import { storage } from "../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { ConnectionFactory } from "../factory";
 import { JsonForm } from "../../../common/json-schema-form";
-import { RbAddButton } from "../../../common/rb-table-actions";
 
 import RubixConnection = storage.RubixConnection;
 
@@ -43,7 +42,7 @@ export const CreateEditModal = (props: any) => {
   const editConnection = async (connection: RubixConnection) => {
     factory.this = connection;
     factory.uuid = connection.uuid;
-    const res = factory.Update();
+    await factory.Update();
   };
 
   const handleClose = () => {
@@ -51,17 +50,17 @@ export const CreateEditModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = (connection: RubixConnection) => {
+  const handleSubmit = async (connection: RubixConnection) => {
     setConfirmLoading(true);
     if (currentConnection.uuid) {
       connection.uuid = currentConnection.uuid;
-      editConnection(connection);
+      await editConnection(connection);
     } else {
-      addConnection(connection);
+      await addConnection(connection);
     }
     setConfirmLoading(false);
-    handleClose();
     refreshList();
+    handleClose();
   };
 
   return (
