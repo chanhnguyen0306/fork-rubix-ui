@@ -11,8 +11,8 @@ import (
 )
 
 // EdgeDeviceInfoAndApps list the installed apps
-func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
-	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
+func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID string) *EdgeDeviceInfo {
+	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -38,6 +38,24 @@ func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *installer
 		return nil
 	}
 	return resp
+}
+
+type EdgeInstallAppBulk struct {
+	AppName  string `json:"app_name"`
+	Version  string `json:"version"`
+	Arch     string `json:"arch"`
+	HostUUID string `json:"host_uuid"`
+}
+
+type EdgeInstallAppsBulk struct {
+	AppsList []EdgeInstallAppBulk `json:"apps_list"`
+}
+
+func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList EdgeInstallAppsBulk) {
+	for _, app := range appsList.AppsList {
+		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, app.Arch, releaseVersion)
+	}
+
 }
 
 // EdgeInstallApp install an app
@@ -179,12 +197,12 @@ type AppsAvailableForInstall struct {
 }
 
 // edgeDeviceInfoAndApps get the complete app info of the device, installed apps, what apps can be installed and the product info
-func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
+func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*EdgeDeviceInfo, error) {
 	pro, err := inst.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
+	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, pro.FlowVersion, pro)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +221,14 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	}
 	getVersion, err := inst.getReleaseByVersion(releaseVersion)
 	if err != nil {
-		return nil, err
+		token, err := inst.getGitToken("set_123456789ABC", false) // if not exist then try and download the version
+		if err != nil {
+			return nil, err
+		}
+		_, err = inst.gitDownloadRelease(token, releaseVersion)
+		if err != nil {
+			return nil, err
+		}
 	}
 	var appsList []InstalledApps
 	var appsAvailable []AppsAvailableForInstall

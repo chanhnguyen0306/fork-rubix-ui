@@ -102,7 +102,7 @@ func (inst *db) GetReleases() ([]store.Release, error) {
 			}
 			if matchReleaseUUID(data.Uuid) {
 				resp = append(resp, data)
-				//fmt.Printf("key: %s, value: %s\n", key, value)
+				fmt.Printf("key: %s, value: %s\n", key, value)
 			}
 			return true
 		})

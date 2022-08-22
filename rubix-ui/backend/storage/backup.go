@@ -9,8 +9,23 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
 	"github.com/tidwall/buntdb"
 	"sort"
+	"strings"
 	"time"
 )
+
+func strip(s string) string {
+	var result strings.Builder
+	for i := 0; i < len(s); i++ {
+		b := s[i]
+		if ('a' <= b && b <= 'z') ||
+			('A' <= b && b <= 'Z') ||
+			('0' <= b && b <= '9') ||
+			b == ' ' {
+			result.WriteByte(b)
+		}
+	}
+	return result.String()
+}
 
 func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 
@@ -36,11 +51,12 @@ func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 	}
 	body.Time = ttime.New().Now()
 	body.UUID = uuid.ShortUUID("bac")
+	body.UserComment = strip(body.UserComment)
 	if body.UserComment == "" {
-		body.UserComment = fmt.Sprintf("%s backup: %s", body.HostName, body.UserComment)
+		body.UserComment = fmt.Sprintf("%s backup- %s", body.HostName, body.UserComment)
 	}
 	if body.BackupInfo == "" {
-		body.BackupInfo = fmt.Sprintf("host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+		body.BackupInfo = fmt.Sprintf("host-%s connection-%s comment-%s date- %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
 	}
 	data, err := json.Marshal(body)
 	if err != nil {

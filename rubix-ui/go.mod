@@ -18,7 +18,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.4
-	github.com/NubeIO/rubix-assist v0.4.0
+	github.com/NubeIO/rubix-assist v0.4.3
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0

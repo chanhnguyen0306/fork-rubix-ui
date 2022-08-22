@@ -7,7 +7,6 @@ import (
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 func (inst *App) GetHostSchema(connUUID string) *assistmodel.HostSchema {
@@ -43,9 +42,6 @@ func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.H
 			host.NetworkUUID = net.UUID
 			break
 		}
-	}
-	if host.Name == "" {
-		host.Name = fmt.Sprintf("name_%d", time.Now().Unix())
 	}
 	data, _ := client.AddHost(host)
 	return data
