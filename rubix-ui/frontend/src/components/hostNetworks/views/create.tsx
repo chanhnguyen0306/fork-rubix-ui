@@ -43,15 +43,15 @@ export const CreateEditModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = (network: Network) => {
+  const handleSubmit = async (network: Network) => {
     try {
       setConfirmLoading(true);
       if (currentNetwork.uuid) {
         network.uuid = currentNetwork.uuid;
         network.hosts = currentNetwork.hosts;
-        editNetwork(network);
+        await editNetwork(network);
       } else {
-        addNetwork(network);
+        await addNetwork(network);
       }
       handleClose();
       refreshList();
