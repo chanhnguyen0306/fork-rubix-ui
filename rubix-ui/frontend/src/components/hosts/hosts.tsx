@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { GetHostNetworks, GetHosts } from "../../../wailsjs/go/main/App";
-import { HostsTable } from "./views/table";
 import { Tabs, Typography, Card } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
-import { PcScanner } from "../pc/scanner/table";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { GetHosts, GetHostNetworks } from "../../../wailsjs/go/main/App";
 import { assistmodel } from "../../../wailsjs/go/models";
-import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { ROUTES } from "../../constants/routes";
+import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import { PcScanner } from "../pc/scanner/table";
+import { HostsTable } from "./views/table";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;

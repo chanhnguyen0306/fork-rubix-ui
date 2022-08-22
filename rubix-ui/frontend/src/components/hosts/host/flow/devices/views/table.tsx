@@ -50,7 +50,7 @@ export const FlowDeviceTable = (props: any) => {
       key: "actions",
       render: (_: any, device: Device) => (
         <Space size="middle">
-          <Link to={getNavigationLink(device.uuid)}>View</Link>
+          <Link to={getNavigationLink(device.uuid)}>View Points</Link>
           <a
             onClick={() => {
               showEditModal(device);

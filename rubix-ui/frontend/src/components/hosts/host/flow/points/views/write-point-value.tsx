@@ -77,14 +77,16 @@ export const WritePointValueModal = (props: any) => {
 
   return (
     <Modal
+      centered
       title={`Write Priority Array: ${point.name}`}
+      okText="Send"
+      style={{ textAlign: "start" }}
+      maskClosable={false}
+      closable={false}
       visible={isModalVisible}
+      confirmLoading={confirmLoading}
       onOk={handleSubmit}
       onCancel={handleClose}
-      confirmLoading={confirmLoading}
-      okText="Send"
-      maskClosable={false}
-      style={{ textAlign: "start" }}
     >
       <Row gutter={[16, 24]}>
         {Object.keys(formData).map((priorityKey: string) => (

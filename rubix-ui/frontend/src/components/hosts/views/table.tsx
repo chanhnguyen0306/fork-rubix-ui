@@ -18,6 +18,7 @@ import { HostsFactory } from "../factory";
 import { CreateEditModal } from "./create";
 import InstallApp from "./installApp";
 import { SidePanel } from "./side-panel";
+import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
