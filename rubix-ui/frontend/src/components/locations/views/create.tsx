@@ -16,7 +16,6 @@ export const CreateEditModal = (props: any) => {
     connUUID,
     refreshList,
     onCloseModal,
-    setIsFetching,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentLocation);
@@ -26,23 +25,11 @@ export const CreateEditModal = (props: any) => {
   }, [currentLocation]);
 
   const addLocation = async (location: any) => {
-    try {
-      const res = await AddLocation(connUUID, location);
-      if (res.uuid) {
-      } else {
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    await AddLocation(connUUID, location);
   };
 
   const editLocation = async (location: Location) => {
-    try {
-      const res = UpdateLocation(connUUID, location.uuid, location);
-      //openNotificationWithIcon("success", `updated ${location.name} success`);
-    } catch (error) {
-      //openNotificationWithIcon("error", `updated ${location.name} fail`);
-    }
+    await UpdateLocation(connUUID, location.uuid, location);
   };
 
   const handleClose = () => {
@@ -51,28 +38,23 @@ export const CreateEditModal = (props: any) => {
   };
 
   const handleSubmit = (location: any) => {
-    setConfirmLoading(true);
-    delete location.connection_name;
-    if (currentLocation.uuid) {
-      location.uuid = currentLocation.uuid;
-      location.networks = currentLocation.networks;
-      editLocation(location);
-    } else {
-      addLocation(location);
+    try {
+      setConfirmLoading(true);
+      delete location.connection_name;
+      if (currentLocation.uuid) {
+        location.uuid = currentLocation.uuid;
+        location.networks = currentLocation.networks;
+        editLocation(location);
+      } else {
+        addLocation(location);
+      }
+      handleClose();
+      refreshList();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
-    setIsFetching(true);
-    handleClose();
-    refreshList();
-  };
-
-  const isDisabled = (): boolean => {
-    let result = false;
-    // result =
-      // !formData.name ||
-      // (formData.name &&
-      //   (formData.name.length < 2 || formData.name.length > 50));
-    return result;
   };
 
   return (
@@ -86,9 +68,6 @@ export const CreateEditModal = (props: any) => {
       onOk={() => handleSubmit(formData)}
       onCancel={handleClose}
       okText="Save"
-      okButtonProps={{
-        disabled: isDisabled(),
-      }}
       confirmLoading={confirmLoading}
       maskClosable={false} // prevent modal from closing on click outside
       style={{ textAlign: "start" }}
