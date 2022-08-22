@@ -40,6 +40,24 @@ func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *installer
 	return resp
 }
 
+type EdgeInstallAppBulk struct {
+	AppName  string `json:"app_name"`
+	Version  string `json:"version"`
+	Arch     string `json:"arch"`
+	HostUUID string `json:"host_uuid"`
+}
+
+type EdgeInstallAppsBulk struct {
+	AppsList []EdgeInstallAppBulk `json:"apps_list"`
+}
+
+func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList EdgeInstallAppsBulk) {
+	for _, app := range appsList.AppsList {
+		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, app.Arch, releaseVersion)
+	}
+
+}
+
 // EdgeInstallApp install an app
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
 	var lastStep = "5"
