@@ -203,7 +203,14 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	}
 	getVersion, err := inst.getReleaseByVersion(releaseVersion)
 	if err != nil {
-		return nil, err
+		token, err := inst.getGitToken("set_123456789ABC", false) // if not exist then try and download the version
+		if err != nil {
+			return nil, err
+		}
+		_, err = inst.gitDownloadRelease(token, releaseVersion)
+		if err != nil {
+			return nil, err
+		}
 	}
 	var appsList []InstalledApps
 	var appsAvailable []AppsAvailableForInstall
