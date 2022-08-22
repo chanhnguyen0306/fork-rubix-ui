@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-auth-go/user"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	"github.com/NubeIO/rubix-assist/service/clients/assistapi"
 )
 
 func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
@@ -45,7 +46,7 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 			}
 		}
 	}
-	token, err := client.GenerateToken(resp.AccessToken, &assitcli.TokenCreate{
+	token, err := client.GenerateToken(resp.AccessToken, &assistapi.TokenCreate{
 		Name:    tokenName,
 		Blocked: nils.NewFalse(),
 	})
@@ -60,6 +61,32 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 	return nil
 }
 
+func (inst *App) testProxy(connUUID, hostUUID string) error {
+	client, err := inst.initConnectionAuth(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	resp, err := client.EdgeSystemTime(hostUUID)
+	fmt.Println(err)
+	fmt.Println(resp)
+	return err
+}
+
+func (inst *App) EdgeAddNetwork(connUUID, hostUUID string, body *model.Network, restartPlugin bool) (*model.Network, error) {
+	client, err := inst.initConnectionAuth(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil, err
+	}
+	resp, err := client.EdgeAddNetwork(hostUUID, body, restartPlugin)
+	return resp, err
+}
+
 func (inst *App) ffProxy(connUUID, hostUUID string) error {
 	client, err := inst.initConnectionAuth(&AssistClient{
 		ConnUUID: connUUID,
@@ -68,9 +95,8 @@ func (inst *App) ffProxy(connUUID, hostUUID string) error {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
-	url := fmt.Sprintf("ff/api/points")
-	resp, err := client.ProxyGET(hostUUID, url)
+	resp, err := client.EdgeGetPoints(hostUUID)
 	fmt.Println(err)
-	fmt.Println(resp.String())
+	fmt.Println(resp)
 	return err
 }

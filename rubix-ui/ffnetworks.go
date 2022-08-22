@@ -71,15 +71,8 @@ func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*mo
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("%s", body.PluginPath)
 	}
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
-	networks, err := inst.flow.AddNetwork(body)
-	if err != nil {
-		return nil, err
-	}
-	return networks, nil
+	networks, err := inst.EdgeAddNetwork(connUUID, hostUUID, body, true)
+	return networks, err
 }
 
 func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {

@@ -49,6 +49,7 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 	if err != nil {
 		return nil, err
 	}
+
 	return networks, nil
 }
 

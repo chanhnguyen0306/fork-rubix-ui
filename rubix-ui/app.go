@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	"github.com/NubeIO/rubix-assist/service/clients/assistapi"
 	"sync"
 
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
@@ -109,7 +111,7 @@ type AssistClient struct {
 }
 
 //initRest get rest client
-func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient, error) {
+func (inst *App) initConnectionAuth(body *AssistClient) (*assistapi.Client, error) {
 	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
 	defer inst.mutex.Unlock()
 	connUUID := body.ConnUUID
@@ -133,20 +135,21 @@ func (inst *App) initConnectionAuth(body *AssistClient) (*assitcli.AssistClient,
 		return nil, errors.New("failed to find a connection")
 	}
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
-	cli := assitcli.NewAuth(&assitcli.AssistClient{
+	cli := assistapi.NewAuth(&assistapi.Client{
 		URL:         connection.IP,
 		Port:        connection.Port,
 		HTTPS:       false,
 		AssistToken: connection.AssistToken,
 	})
-	token := connection.AssistToken
-	if token == "" {
-		err := inst.assistGenerateToken(connUUID, true)
-		if err != nil {
-			return nil, err
-		}
-	}
-	cli.AssistToken = token
+	fmt.Println(11111, connection.AssistToken)
+	//token := connection.AssistToken
+	//if token == "" {
+	//	err := inst.assistGenerateToken(connUUID, true)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//}
+	//cli.AssistToken = token
 
 	return cli, nil
 }
