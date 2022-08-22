@@ -67,7 +67,6 @@ export const WritePointValueModal = (props: any) => {
       setConfirmLoading(true);
       await factory.WritePointValue(point.uuid, formData);
       refreshList();
-      handleClose();
     } catch (error) {
       console.log(error);
     } finally {
@@ -82,7 +81,6 @@ export const WritePointValueModal = (props: any) => {
       okText="Send"
       style={{ textAlign: "start" }}
       maskClosable={false}
-      closable={false}
       visible={isModalVisible}
       confirmLoading={confirmLoading}
       onOk={handleSubmit}
