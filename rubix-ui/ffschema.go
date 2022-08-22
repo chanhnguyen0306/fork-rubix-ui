@@ -33,21 +33,21 @@ func setPluginURL(pluginName, netDevOrPoint string) (string, error) {
 	var url string
 	switch pluginName {
 	case pluginModbus:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginBACnet:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginBACnetMaster:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginLora:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginLoraWAN:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginSystem:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginEdge28:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	case pluginRubixIO:
-		url = fmt.Sprintf("/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
+		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	}
 	if url == "" {
 		return "", errors.New(fmt.Sprintf("invaild plugin name was provided:%s", pluginName))

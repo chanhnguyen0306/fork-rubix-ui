@@ -38,6 +38,10 @@ func (inst *App) GetConsumerClones(connUUID, hostUUID string) []model.Consumer {
 }
 
 func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *model.Consumer {
+	if body.ProducerUUID == "" {
+		inst.crudMessage(false, fmt.Sprintf("please select a producer, eg select a point"))
+		return nil
+	}
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("con-%s", uuid.ShortUUID("")[5:10])
 	}

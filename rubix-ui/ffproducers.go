@@ -38,6 +38,10 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 }
 
 func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *model.Producer {
+	if body.ProducerThingUUID == "" {
+		inst.crudMessage(false, fmt.Sprintf("please select a select a point or a schedule"))
+		return nil
+	}
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("producer-%s", uuid.ShortUUID("")[5:10])
 	}

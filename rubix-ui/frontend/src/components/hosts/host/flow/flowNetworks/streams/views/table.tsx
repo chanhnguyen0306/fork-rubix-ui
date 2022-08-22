@@ -70,8 +70,8 @@ export const StreamsTable = (props: any) => {
     const schema = {
       properties: {
         name: {
-          maxLength: 50,
-          minLength: 2,
+          maxLength: 100,
+          minLength: 0,
           title: "name",
           type: "string",
         },
