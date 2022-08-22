@@ -62,7 +62,7 @@ export const FlowPointsTable = (props: any) => {
               showWritePointModal(point);
             }}
           >
-            Write Point Value
+            Write Point
           </a>
         </Space>
       ),
