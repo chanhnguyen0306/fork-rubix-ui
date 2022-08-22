@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-ui/backend/store"
-	"strings"
 )
 
 const flowFramework = "flow-framework"
@@ -81,10 +80,6 @@ func (inst *App) AddRelease(token, version string) *store.Release {
 }
 
 func (inst *App) addRelease(token, version string) (*store.Release, error) {
-	if strings.Contains(version, "flow/") {
-	} else {
-		version = fmt.Sprintf("flow/%s.json", version)
-	}
 	release, err := inst.gitDownloadRelease(token, version)
 	if err != nil {
 		return nil, err

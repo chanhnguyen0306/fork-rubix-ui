@@ -34,7 +34,6 @@ export class HostsFactory {
     return await GetHosts(this.connectionUUID);
   }
 
-
   async GetOne(): Promise<assistmodel.Host> {
     return await GetHost(this.connectionUUID, this.uuid);
   }
@@ -42,7 +41,6 @@ export class HostsFactory {
   async Add(): Promise<assistmodel.Host> {
     return await AddHost(this.connectionUUID, this._this);
   }
-
 
   async Update(): Promise<assistmodel.Host> {
     return await EditHost(this.connectionUUID, this.uuid,this._this);
