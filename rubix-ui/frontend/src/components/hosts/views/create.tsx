@@ -25,7 +25,7 @@ export const CreateEditModal = (props: any) => {
 
   const addHost = async (host: assistmodel.Host) => {
     try {
-      const res = await AddHost(connUUID, host);
+      await AddHost(connUUID, host);
       openNotificationWithIcon("success", `added ${host.name} success`);
     } catch (error) {
       openNotificationWithIcon("error", `added ${host.name} fail`);
@@ -47,30 +47,17 @@ export const CreateEditModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = (host: assistmodel.Host) => {
+  const handleSubmit = async (host: assistmodel.Host) => {
     setConfirmLoading(true);
     if (currentHost.uuid) {
       host.uuid = currentHost.uuid;
-      editHost(host);
+      await editHost(host);
     } else {
-      addHost(host);
+      await addHost(host);
     }
     setConfirmLoading(false);
     handleClose();
     refreshList();
-  };
-
-  const isDisabled = (): boolean => {
-    let result = false;
-    // result =
-    //   !formData.name ||
-    //   (formData.name &&
-    //     (formData.name.length < 2 || formData.name.length > 50)) ||
-    //   !formData.port ||
-    //   (formData.port && (formData.port < 2 || formData.port > 65535)) ||
-    //   !formData.ip ||
-    //   !formData.network_uuid;
-    return result;
   };
 
   return (
@@ -82,9 +69,6 @@ export const CreateEditModal = (props: any) => {
         onCancel={handleClose}
         confirmLoading={confirmLoading}
         okText="Save"
-        okButtonProps={{
-          disabled: isDisabled(),
-        }}
         maskClosable={false} // prevent modal from closing on click outside
         style={{ textAlign: "start" }}
       >

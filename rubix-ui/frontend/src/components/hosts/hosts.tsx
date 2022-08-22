@@ -16,7 +16,7 @@ export const Hosts = () => {
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     if (networks.length === 0) {
