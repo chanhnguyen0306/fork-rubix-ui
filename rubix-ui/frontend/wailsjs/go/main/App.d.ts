@@ -128,7 +128,7 @@ export function EdgeDeleteAllPlugins(arg1:string,arg2:string):Promise<edgecli.Me
 
 export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):Promise<edgecli.Message>;
 
-export function EdgeDeviceInfoAndApps(arg1:string,arg2:string,arg3:string):Promise<main.EdgeDeviceInfo>;
+export function EdgeDeviceInfoAndApps(arg1:string,arg2:string):Promise<main.EdgeDeviceInfo>;
 
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:string):Promise<installer.InstallResp>;
 
