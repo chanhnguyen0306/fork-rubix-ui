@@ -37,16 +37,16 @@ export const CreateEditModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = (location: any) => {
+  const handleSubmit = async (location: any) => {
     try {
       setConfirmLoading(true);
       delete location.connection_name;
       if (currentLocation.uuid) {
         location.uuid = currentLocation.uuid;
         location.networks = currentLocation.networks;
-        editLocation(location);
+        await editLocation(location);
       } else {
-        addLocation(location);
+        await addLocation(location);
       }
       handleClose();
       refreshList();
