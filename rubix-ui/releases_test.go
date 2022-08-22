@@ -26,6 +26,24 @@ func TestApp_ListReleases(t *testing.T) { //downloads from GitHub and stores in 
 	pprint.PrintJOSN(release)
 }
 
+func TestApp_getReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
+
+	app := NewApp()
+	resp, err := app.getReleases()
+	fmt.Println(err)
+	pprint.PrintJOSN(resp)
+
+}
+
+func TestApp_dropReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
+
+	app := NewApp()
+	err := app.dropReleases()
+	if err != nil {
+		return
+	}
+}
+
 func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
