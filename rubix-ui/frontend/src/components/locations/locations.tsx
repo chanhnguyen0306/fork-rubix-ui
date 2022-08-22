@@ -17,17 +17,16 @@ import RubixConnection = storage.RubixConnection;
 const { Title } = Typography;
 
 export const Locations = () => {
+  const { connUUID } = useParams();
   const [locations, setLocations] = useState([] as Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as Location);
   const [locationSchema, setLocationSchema] = useState({});
   const [tableSchema, setTableSchema] = useState([]);
   const [connection, setConnection] = useState({} as RubixConnection);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
-  let { connUUID } = useParams();
-  const navigate = useNavigate();
   let locationFactory = new LocationFactory();
   locationFactory.connectionUUID = connUUID as string;
 

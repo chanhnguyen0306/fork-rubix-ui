@@ -27,7 +27,7 @@ export const NetworksTable = () => {
   const [currentNetwork, setCurrentNetwork] = useState({} as Network);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   let factory = new NetworksFactory();
