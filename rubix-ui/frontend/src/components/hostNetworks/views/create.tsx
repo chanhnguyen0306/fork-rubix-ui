@@ -1,67 +1,65 @@
 import { Modal, Spin } from "antd";
 import { assistmodel } from "../../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
-import {
-  AddHostNetwork,
-  EditHostNetwork,
-} from "../../../../wailsjs/go/main/App";
-import { openNotificationWithIcon } from "../../../utils/utils";
 import { JsonForm } from "../../../common/json-schema-form";
+import { useParams } from "react-router-dom";
+import { NetworksFactory } from "../factory";
+
+import Network = assistmodel.Network;
 
 export const CreateEditModal = (props: any) => {
+  const { connUUID = "" } = useParams();
   const {
-    networkSchema,
+    schema,
     currentNetwork,
     isModalVisible,
     isLoadingForm,
-    connUUID,
     refreshList,
     onCloseModal,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentNetwork);
 
+  const factory = new NetworksFactory();
+  factory.connectionUUID = connUUID;
+
   useEffect(() => {
     setFormData(currentNetwork);
   }, [currentNetwork]);
 
-  const addNetwork = async (network: assistmodel.Network) => {
-    try {
-      await AddHostNetwork(connUUID, network);
-    } catch (error) {
-    }
+  const addNetwork = async (network: Network) => {
+    factory._this = network;
+    await factory.Add();
   };
 
-  const editNetwork = async (network: assistmodel.Network) => {
-    try {
-      await EditHostNetwork(connUUID, network.uuid, network);
-    } catch (error) {
-    }
+  const editNetwork = async (network: Network) => {
+    factory.uuid = network.uuid;
+    factory._this = network;
+    await factory.Update();
   };
 
   const handleClose = () => {
-    setFormData({} as assistmodel.Network);
+    setFormData({} as Network);
     onCloseModal();
   };
 
-  const handleSubmit = (network: assistmodel.Network) => {
-    setConfirmLoading(true);
-    if (currentNetwork.uuid) {
-      network.uuid = currentNetwork.uuid;
-      network.hosts = currentNetwork.hosts;
-      editNetwork(network);
-    } else {
-      addNetwork(network);
+  const handleSubmit = (network: Network) => {
+    try {
+      setConfirmLoading(true);
+      if (currentNetwork.uuid) {
+        network.uuid = currentNetwork.uuid;
+        network.hosts = currentNetwork.hosts;
+        editNetwork(network);
+      } else {
+        addNetwork(network);
+      }
+      handleClose();
+      refreshList();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
-    handleClose();
-    refreshList();
-  };
-
-  const isDisabled = (): boolean => {
-    let result = false;
-    result = !formData.location_uuid;
-    return result;
   };
 
   return (
@@ -75,9 +73,6 @@ export const CreateEditModal = (props: any) => {
         onCancel={handleClose}
         confirmLoading={confirmLoading}
         okText="Save"
-        okButtonProps={{
-          disabled: isDisabled(),
-        }}
         maskClosable={false} // prevent modal from closing on click outside
         style={{ textAlign: "start" }}
       >
@@ -86,7 +81,7 @@ export const CreateEditModal = (props: any) => {
             formData={formData}
             setFormData={setFormData}
             handleSubmit={handleSubmit}
-            jsonSchema={networkSchema}
+            jsonSchema={schema}
           />
         </Spin>
       </Modal>

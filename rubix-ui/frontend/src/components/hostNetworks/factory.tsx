@@ -1,10 +1,10 @@
 import {
   AddHostNetwork,
   DeleteHostNetworkBulk,
-  DeleteNetworkBulk,
   EditHostNetwork,
   GetHostNetwork,
   GetHostNetworks,
+  GetNetworkSchema,
 } from "../../../wailsjs/go/main/App";
 import { Helpers } from "../../helpers/checks";
 import { assistmodel, main } from "../../../wailsjs/go/models";
@@ -16,7 +16,7 @@ function hasUUID(uuid: string): Error {
 export class NetworksFactory {
   uuid!: string;
   connectionUUID!: string;
-  private _this!: assistmodel.Network;
+  _this!: assistmodel.Network;
   private count!: number;
 
   get this(): assistmodel.Network {
@@ -72,7 +72,7 @@ export class NetworksFactory {
   }
 
   async Add(): Promise<assistmodel.Network> {
-    hasUUID(this.uuid);
+    hasUUID(this.connectionUUID);
     let one: assistmodel.Network = {} as assistmodel.Network;
     await AddHostNetwork(this.connectionUUID, this._this)
       .then((res) => {
@@ -108,6 +108,19 @@ export class NetworksFactory {
       })
       .catch((err) => {
         return undefined;
+      });
+    return out;
+  }
+
+  async Schema(): Promise<any> {
+    hasUUID(this.connectionUUID);
+    let out = {} as any;
+    await GetNetworkSchema(this.connectionUUID)
+      .then((res) => {
+        out = res;
+      })
+      .catch((err) => {
+        return out;
       });
     return out;
   }
