@@ -265,26 +265,14 @@ export const HOST_HEADERS = [
     key: "name",
   },
   {
+    title: "ip",
+    dataIndex: "ip",
+    key: "ip",
+  },
+  {
     title: "description",
     dataIndex: "description",
     key: "description",
-  },
-  {
-    title: "product",
-    key: "product_type",
-    dataIndex: "product_type",
-    render(product: string) {
-      let icon = <PlayCircleOutlined />;
-      if (product == "RubixCompute") {
-        icon = <BookOutlined />;
-      }
-      if (product == "RubixComputeIO") {
-      }
-      return (
-        //BookOutlined
-        icon
-      );
-    },
   },
   {
     title: "uuid",
