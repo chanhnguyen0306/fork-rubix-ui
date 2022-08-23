@@ -1,4 +1,13 @@
-import { Space, PaginationProps, Spin } from "antd";
+import {
+  Space,
+  PaginationProps,
+  Spin,
+  List,
+  Badge,
+  Tag,
+  Typography,
+  Button,
+} from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -22,8 +31,262 @@ import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
+import { ReleasesFactory } from "../../release/factory";
+
+const { Text } = Typography;
+const releaseFactory = new ReleasesFactory();
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
+
+interface BadgeDetailI {
+  [name: string]: {
+    title: string;
+    color: string;
+  };
+}
+enum APPLICATION_STATES {
+  ENABLED = "enabled",
+  DISABLED = "disabled",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  RUNNING = "running",
+  ACTIVATING = "activating",
+  AUTORESTART = "auto-restart",
+  DEAD = "dead",
+}
+const badgeDetails: BadgeDetailI = {
+  [APPLICATION_STATES.ENABLED]: {
+    title: "Enabled",
+    color: "green",
+  },
+  [APPLICATION_STATES.DISABLED]: {
+    title: "Disabled",
+    color: "red",
+  },
+  [APPLICATION_STATES.ACTIVE]: {
+    title: "Active",
+    color: "blue",
+  },
+  [APPLICATION_STATES.INACTIVE]: {
+    title: "Inactive",
+    color: "orange",
+  },
+  [APPLICATION_STATES.ACTIVATING]: {
+    title: "Activating",
+    color: "yellow",
+  },
+  [APPLICATION_STATES.RUNNING]: {
+    title: "Running",
+    color: "green",
+  },
+  [APPLICATION_STATES.DEAD]: {
+    title: "Dead",
+    color: "volcano",
+  },
+  [APPLICATION_STATES.AUTORESTART]: {
+    title: "Auto-Restart",
+    color: "pink",
+  },
+  default: {
+    title: "",
+    color: "",
+  },
+};
+
+const tagMessageStateResolver = (
+  state: string,
+  subState: string,
+  activeState: string
+) => {
+  if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.ACTIVE &&
+    subState === APPLICATION_STATES.RUNNING
+  ) {
+    return "Application is enabled and running";
+  } else if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.ACTIVATING &&
+    subState === APPLICATION_STATES.AUTORESTART
+  ) {
+    return "Application is enabled and auto restarting.";
+  } else if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.INACTIVE &&
+    subState === APPLICATION_STATES.DEAD
+  ) {
+    return "Application enabled but is stopped.";
+  } else if (
+    state === APPLICATION_STATES.DISABLED &&
+    activeState === APPLICATION_STATES.ACTIVE &&
+    subState === APPLICATION_STATES.RUNNING
+  ) {
+    return "Application operations are disabled but running in background.";
+  } else if (
+    state === APPLICATION_STATES.DISABLED &&
+    activeState === APPLICATION_STATES.INACTIVE &&
+    subState === APPLICATION_STATES.DEAD
+  ) {
+    return "Application is disabled and stopped.";
+  }
+};
+
+const RbxTag = (props: any) => {
+  const { state } = props;
+  let badgeDetail = badgeDetails[state];
+  if (!badgeDetail) {
+    return <Tag>{state}</Tag>;
+  }
+
+  return <Tag color={badgeDetail.color}>{badgeDetail.title}</Tag>;
+};
+
+interface InstalledAppI {
+  active_state: string;
+  app_name: string;
+  is_installed: boolean;
+  latest_version: string;
+  match: boolean;
+  message: string;
+  service_name: string;
+  state: string;
+  sub_state: string;
+  version: string;
+}
+
+interface AvailableAppI {
+  app_name: string;
+  latest_version: string;
+}
+
+const ExpandedRow = (props: any) => {
+  return (
+    <div>
+      <AppInstallInfo {...props}></AppInstallInfo>
+    </div>
+  );
+};
+
+const AppInstallInfo = (props: any) => {
+  const [product, updateProduct] = useState({});
+  const [isLoading, updateIsLoading] = useState(false);
+  const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
+  const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
+  const [appInfoMsg, updateAppInfoMsg] = useState("");
+  const { host } = props;
+  const { connUUID = "" } = useParams();
+  useEffect(() => {
+    fetchAppInfo();
+  }, []);
+
+  const installApp = (item: any) => {
+    const payload = {
+      connUUID: connUUID,
+      hostUUID: host.uuid,
+      appName: item.app_name,
+      arch: "armv7",
+      appVersion: item.latest_version,
+    };
+    releaseFactory
+      .EdgeInstallApp(
+        payload.connUUID,
+        payload.hostUUID,
+        payload.appName,
+        payload.appVersion,
+        payload.arch,
+        payload.appVersion
+      )
+      .catch((err) => ({ payload, hasError: true, err: err }));
+  };
+
+  const fetchAppInfo = () => {
+    updateIsLoading(true);
+    const appInfo = releaseFactory
+      .EdgeDeviceInfoAndApps(connUUID, host.uuid)
+      .then((appInfo: any) => {
+        if (!appInfo) {
+          return updateAppInfoMsg("Apps are not downloaded yet.");
+        }
+        if (appInfo.product) {
+          updateProduct(appInfo.product);
+        }
+        if (appInfo.installed_apps) {
+          updateInstalledApps(appInfo.installed_apps);
+        }
+        if (appInfo.apps_available_for_install) {
+          updateAvailableApps(appInfo.apps_available_for_install);
+        }
+      })
+      .catch((err) => {
+        return updateAppInfoMsg("Error to fetch edge device info and apps");
+      })
+      .finally(() => {
+        updateIsLoading(false);
+      });
+  };
+
+  if (appInfoMsg) {
+    return <span>{appInfoMsg}</span>;
+  }
+
+  return (
+    <div>
+      <List
+        itemLayout="horizontal"
+        loading={isLoading}
+        dataSource={availableApps}
+        header={<strong>Available Apps</strong>}
+        renderItem={(item) => (
+          <List.Item style={{ padding: "0 16px" }}>
+            <List.Item.Meta
+              title={<span>{item.app_name}</span>}
+              description={item.latest_version}
+            />
+            <Button type="link" onClick={() => installApp(item)}>
+              Install
+            </Button>
+          </List.Item>
+        )}
+      />
+
+      <List
+        itemLayout="horizontal"
+        loading={isLoading}
+        dataSource={installedApps}
+        header={<strong>Installed Apps</strong>}
+        renderItem={(item) => (
+          <List.Item style={{ padding: "8px 16px" }}>
+            <List.Item.Meta
+              title={<span>{item.app_name}</span>}
+              description={item.message}
+            />
+            <span
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <span>
+                <RbxTag state={item.state} />
+                <RbxTag state={item.sub_state} />
+                <RbxTag state={item.active_state} />
+              </span>
+
+              <Text style={{ paddingTop: 5 }} type="secondary" italic>
+                {tagMessageStateResolver(
+                  item.state,
+                  item.sub_state,
+                  item.active_state
+                )}
+              </Text>
+            </span>
+          </List.Item>
+        )}
+      />
+    </div>
+  );
+};
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
@@ -194,6 +457,13 @@ export const HostsTable = (props: any) => {
           loading={{ indicator: <Spin />, spinning: isFetching }}
           className={collapsed ? "full-width" : "uncollapsed-style"}
           onChange={onChange}
+          expandable={{
+            expandedRowRender: (host: any) => (
+              <ExpandedRow host={host}></ExpandedRow>
+            ),
+            rowExpandable: (record: any) => record.name !== "Not Expandable",
+          }}
+          expandRowByClick
         />
         <SidePanel
           collapsed={collapsed}
