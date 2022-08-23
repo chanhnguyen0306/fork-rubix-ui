@@ -31,7 +31,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.12.1
-	github.com/wailsapp/wails/v2 v2.0.0-beta.39.2
+	github.com/wailsapp/wails/v2 v2.0.0-beta.37
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
@@ -41,7 +41,6 @@ require (
 	github.com/NubeIO/lib-dhcpd v0.0.2 // indirect
 	github.com/NubeIO/lib-ufw v0.0.2 // indirect
 	github.com/NubeIO/rubix-edge v0.1.5 // indirect
-	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -60,6 +59,7 @@ require (
 	github.com/labstack/echo/v4 v4.7.2 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leaanthony/go-ansi-parser v1.0.1 // indirect
+	github.com/leaanthony/go-common-file-dialog v1.0.3 // indirect
 	github.com/leaanthony/gosod v1.0.3 // indirect
 	github.com/leaanthony/slicer v1.5.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
