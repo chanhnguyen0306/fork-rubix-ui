@@ -6,7 +6,6 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	"sort"
-	"strings"
 )
 
 const flowFramework = "flow-framework"
