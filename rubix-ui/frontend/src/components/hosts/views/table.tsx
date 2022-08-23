@@ -15,7 +15,7 @@ import { useDialogs } from "../../../hooks/useDialogs";
 import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
 import { HostsFactory } from "../factory";
-import { CreateEditModal } from "./create";
+import { CreateEditModal } from "./modals";
 import InstallApp from "./installApp";
 import { SidePanel } from "./side-panel";
 import "./style.css";
@@ -27,8 +27,7 @@ const INSTALL_DIALOG = "INSTALL_DIALOG";
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
-  let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-
+  const { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const [collapsed, setCollapsed] = useState(true);
   const [selectedHost, setSelectedHost] = useState({} as Host);
   const [sidePanelHeight, setSidePanelHeight] = useState(0);
@@ -46,7 +45,7 @@ export const HostsTable = (props: any) => {
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
-  factory.connectionUUID = connUUID as string;
+  factory.connectionUUID = connUUID;
 
   const columns = [
     ...HOST_HEADERS,
@@ -115,13 +114,8 @@ export const HostsTable = (props: any) => {
   }, []);
 
   const fetchBackups = async () => {
-    try {
-      let res = (await backupFactory.GetBackupsRubixWires()) || [];
-      setBackups(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-    }
+    let res = (await backupFactory.GetBackupsRubixWires()) || [];
+    setBackups(res);
   };
 
   const getSchema = async () => {

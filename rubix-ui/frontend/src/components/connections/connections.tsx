@@ -12,7 +12,7 @@ const ConnectionsTab = () => {
   return (
     <span>
       <ApartmentOutlined />
-      Connections
+      CONNECTIONS
     </span>
   );
 };
@@ -21,7 +21,7 @@ const DiscoverTab = () => {
   return (
     <span>
       <RedoOutlined />
-      Discover
+      DISCOVER
     </span>
   );
 };

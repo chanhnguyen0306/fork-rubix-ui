@@ -12,6 +12,24 @@ import { HostsTable } from "./views/table";
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
+const HostsTab = () => {
+  return (
+    <span>
+      <ApartmentOutlined />
+      HOSTS
+    </span>
+  );
+};
+
+const DiscoverTab = () => {
+  return (
+    <span>
+      <RedoOutlined />
+      DISCOVER
+    </span>
+  );
+};
+
 export const Hosts = () => {
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
@@ -86,15 +104,7 @@ export const Hosts = () => {
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
         <Tabs defaultActiveKey="1">
-          <TabPane
-            tab={
-              <span>
-                <ApartmentOutlined />
-                HOSTS
-              </span>
-            }
-            key="1"
-          >
+          <TabPane tab={HostsTab()} key="1">
             <HostsTable
               hosts={hosts}
               networks={networks}
@@ -102,15 +112,7 @@ export const Hosts = () => {
               refreshList={refreshList}
             />
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                <RedoOutlined />
-                DISCOVER
-              </span>
-            }
-            key="2"
-          >
+          <TabPane tab={DiscoverTab()} key="2">
             <PcScanner />
           </TabPane>
         </Tabs>
