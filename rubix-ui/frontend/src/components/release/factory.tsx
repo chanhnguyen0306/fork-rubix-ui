@@ -6,6 +6,7 @@ import {
   GitDownloadRelease,
   GitListReleases,
   StoreDownloadApp,
+  EdgeDeviceInfoAndApps,
 } from "../../../wailsjs/go/main/App";
 
 export class ReleasesFactory {
@@ -61,4 +62,7 @@ export class ReleasesFactory {
     return await EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion);
   }
 
+  async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) {
+    return await EdgeDeviceInfoAndApps(connUUID, hostUUID);
+  }
 }
