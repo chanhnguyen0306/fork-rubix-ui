@@ -11,8 +11,8 @@ import (
 )
 
 // EdgeDeviceInfoAndApps list the installed apps
-func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID string) *EdgeDeviceInfo {
-	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID)
+func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
+	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -197,10 +197,13 @@ type AppsAvailableForInstall struct {
 }
 
 // edgeDeviceInfoAndApps get the complete app info of the device, installed apps, what apps can be installed and the product info
-func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*EdgeDeviceInfo, error) {
+func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
 	pro, err := inst.edgeProductInfo(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
+	}
+	if releaseVersion == "" {
+		releaseVersion = pro.FlowVersion
 	}
 	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, pro.FlowVersion, pro)
 	if err != nil {
