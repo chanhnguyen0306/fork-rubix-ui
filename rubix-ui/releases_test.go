@@ -64,3 +64,12 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	downloaded := app.StoreDownloadApp(token, "edge-28-driver", "v0.6.1", "armv7", false)
 	pprint.PrintJOSN(downloaded)
 }
+
+func TestApp_getLatestRelease(t *testing.T) {
+	release, err := NewApp().getLatestRelease()
+	fmt.Println(release)
+	fmt.Println(err)
+	if err != nil {
+		return
+	}
+}
