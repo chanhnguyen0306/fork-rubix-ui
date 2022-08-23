@@ -50,7 +50,7 @@ func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) 
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
-		Arch:    "",
+		Arch:    "armv7",
 	}
 	appStore, err := store.New(str)
 	if err != nil {

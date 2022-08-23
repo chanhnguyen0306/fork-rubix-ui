@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
@@ -60,6 +61,14 @@ func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList E
 
 // EdgeInstallApp install an app
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
+	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
+	if getProduct != nil {
+		arch = getProduct.Arch
+	} else {
+		inst.crudMessage(false, fmt.Sprintf("failed to find device app:%s arch:%s", appName, arch))
+		return nil
+	}
+	pprint.PrintJOSN(getProduct)
 	var lastStep = "5"
 	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -105,13 +114,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, r
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	info, err := inst.edgeProductInfo(connUUID, hostUUID)
-	if err != nil {
-		log.Errorf("install-edge-app get product:%s", err.Error())
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	var product = info.Product
+	product := getProduct.Product
 	log.Errorln(" INSTALL-APP add check to make its correct arch and product")
 	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type:%s app:%s", lastStep, product, appName))
 	if err = emptyString(product, "product"); err != nil {
@@ -205,7 +208,7 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string
 	if releaseVersion == "" {
 		releaseVersion = pro.FlowVersion
 	}
-	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, pro.FlowVersion, pro)
+	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
 	if err != nil {
 		return nil, err
 	}
@@ -224,16 +227,10 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	}
 	getVersion, err := inst.getReleaseByVersion(releaseVersion)
 	if getVersion == nil {
-		versionNumber, err := inst.getLatestRelease()
-		if err != nil {
-			return nil, err
-		}
+		versionNumber, _ := inst.getLatestRelease()
 		getVersion, err = inst.getReleaseByVersion(fmt.Sprintf("v%s", versionNumber))
-		if err != nil {
-			return nil, err
-		}
 	}
-	if err != nil {
+	if getVersion == nil {
 		token, err := inst.getGitToken("set_123456789ABC", false) // if not exist then try and download the version
 		if err != nil {
 			return nil, err
@@ -243,6 +240,7 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 			return nil, err
 		}
 	}
+	err = nil
 	var appsList []InstalledApps
 	var appsAvailable []AppsAvailableForInstall
 	var appAvailable AppsAvailableForInstall
