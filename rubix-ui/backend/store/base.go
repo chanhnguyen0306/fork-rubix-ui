@@ -45,6 +45,9 @@ func New(store *Store) (*Store, error) {
 	if store == nil {
 		return nil, errors.New("store can not be empty")
 	}
+	if store.Arch == "" {
+		store.Arch = "armv7"
+	}
 	if store.App == nil {
 		store.App = &installer.App{}
 	}

@@ -1,4 +1,13 @@
-import { Space, Spin, Tooltip } from "antd";
+import {
+  Space,
+  PaginationProps,
+  Spin,
+  List,
+  Badge,
+  Tag,
+  Typography,
+  Button,
+} from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -15,34 +24,292 @@ import { useDialogs } from "../../../hooks/useDialogs";
 import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
 import { HostsFactory } from "../factory";
-import { BackupModal, CreateEditModal } from "./modals";
+import { CreateEditModal } from "./create";
 import InstallApp from "./installApp";
+import { SidePanel } from "./side-panel";
 import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import Backup = storage.Backup;
-import UUIDs = main.UUIDs;
+import { ReleasesFactory } from "../../release/factory";
+
+const { Text } = Typography;
+const releaseFactory = new ReleasesFactory();
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
 
+interface BadgeDetailI {
+  [name: string]: {
+    title: string;
+    color: string;
+  };
+}
+enum APPLICATION_STATES {
+  ENABLED = "enabled",
+  DISABLED = "disabled",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  RUNNING = "running",
+  ACTIVATING = "activating",
+  AUTORESTART = "auto-restart",
+  DEAD = "dead",
+}
+const badgeDetails: BadgeDetailI = {
+  [APPLICATION_STATES.ENABLED]: {
+    title: "Enabled",
+    color: "green",
+  },
+  [APPLICATION_STATES.DISABLED]: {
+    title: "Disabled",
+    color: "red",
+  },
+  [APPLICATION_STATES.ACTIVE]: {
+    title: "Active",
+    color: "blue",
+  },
+  [APPLICATION_STATES.INACTIVE]: {
+    title: "Inactive",
+    color: "orange",
+  },
+  [APPLICATION_STATES.ACTIVATING]: {
+    title: "Activating",
+    color: "yellow",
+  },
+  [APPLICATION_STATES.RUNNING]: {
+    title: "Running",
+    color: "green",
+  },
+  [APPLICATION_STATES.DEAD]: {
+    title: "Dead",
+    color: "volcano",
+  },
+  [APPLICATION_STATES.AUTORESTART]: {
+    title: "Auto-Restart",
+    color: "pink",
+  },
+  default: {
+    title: "",
+    color: "",
+  },
+};
+
+const tagMessageStateResolver = (
+  state: string,
+  subState: string,
+  activeState: string
+) => {
+  if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.ACTIVE &&
+    subState === APPLICATION_STATES.RUNNING
+  ) {
+    return "Application is enabled and running";
+  } else if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.ACTIVATING &&
+    subState === APPLICATION_STATES.AUTORESTART
+  ) {
+    return "Application is enabled and auto restarting.";
+  } else if (
+    state === APPLICATION_STATES.ENABLED &&
+    activeState === APPLICATION_STATES.INACTIVE &&
+    subState === APPLICATION_STATES.DEAD
+  ) {
+    return "Application enabled but is stopped.";
+  } else if (
+    state === APPLICATION_STATES.DISABLED &&
+    activeState === APPLICATION_STATES.ACTIVE &&
+    subState === APPLICATION_STATES.RUNNING
+  ) {
+    return "Application operations are disabled but running in background.";
+  } else if (
+    state === APPLICATION_STATES.DISABLED &&
+    activeState === APPLICATION_STATES.INACTIVE &&
+    subState === APPLICATION_STATES.DEAD
+  ) {
+    return "Application is disabled and stopped.";
+  }
+};
+
+const RbxTag = (props: any) => {
+  const { state } = props;
+  let badgeDetail = badgeDetails[state];
+  if (!badgeDetail) {
+    return <Tag>{state}</Tag>;
+  }
+
+  return <Tag color={badgeDetail.color}>{badgeDetail.title}</Tag>;
+};
+
+interface InstalledAppI {
+  active_state: string;
+  app_name: string;
+  is_installed: boolean;
+  latest_version: string;
+  match: boolean;
+  message: string;
+  service_name: string;
+  state: string;
+  sub_state: string;
+  version: string;
+}
+
+interface AvailableAppI {
+  app_name: string;
+  latest_version: string;
+}
+
+const ExpandedRow = (props: any) => {
+  return (
+    <div>
+      <AppInstallInfo {...props}></AppInstallInfo>
+    </div>
+  );
+};
+
+const AppInstallInfo = (props: any) => {
+  const [product, updateProduct] = useState({});
+  const [isLoading, updateIsLoading] = useState(false);
+  const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
+  const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
+  const [appInfoMsg, updateAppInfoMsg] = useState("");
+  const { host } = props;
+  const { connUUID = "" } = useParams();
+  useEffect(() => {
+    fetchAppInfo();
+  }, []);
+
+  const installApp = (item: any) => {
+    const payload = {
+      connUUID: connUUID,
+      hostUUID: host.uuid,
+      appName: item.app_name,
+      arch: "armv7",
+      appVersion: item.latest_version,
+    };
+    releaseFactory
+      .EdgeInstallApp(
+        payload.connUUID,
+        payload.hostUUID,
+        payload.appName,
+        payload.appVersion,
+        payload.arch,
+        payload.appVersion
+      )
+      .catch((err) => ({ payload, hasError: true, err: err }));
+  };
+
+  const fetchAppInfo = () => {
+    updateIsLoading(true);
+    const appInfo = releaseFactory
+      .EdgeDeviceInfoAndApps(connUUID, host.uuid)
+      .then((appInfo: any) => {
+        if (!appInfo) {
+          return updateAppInfoMsg("Apps are not downloaded yet.");
+        }
+        if (appInfo.product) {
+          updateProduct(appInfo.product);
+        }
+        if (appInfo.installed_apps) {
+          updateInstalledApps(appInfo.installed_apps);
+        }
+        if (appInfo.apps_available_for_install) {
+          updateAvailableApps(appInfo.apps_available_for_install);
+        }
+      })
+      .catch((err) => {
+        return updateAppInfoMsg("Error to fetch edge device info and apps");
+      })
+      .finally(() => {
+        updateIsLoading(false);
+      });
+  };
+
+  if (appInfoMsg) {
+    return <span>{appInfoMsg}</span>;
+  }
+
+  return (
+    <div>
+      <List
+        itemLayout="horizontal"
+        loading={isLoading}
+        dataSource={availableApps}
+        header={<strong>Available Apps</strong>}
+        renderItem={(item) => (
+          <List.Item style={{ padding: "0 16px" }}>
+            <List.Item.Meta
+              title={<span>{item.app_name}</span>}
+              description={item.latest_version}
+            />
+            <Button type="link" onClick={() => installApp(item)}>
+              Install
+            </Button>
+          </List.Item>
+        )}
+      />
+
+      <List
+        itemLayout="horizontal"
+        loading={isLoading}
+        dataSource={installedApps}
+        header={<strong>Installed Apps</strong>}
+        renderItem={(item) => (
+          <List.Item style={{ padding: "8px 16px" }}>
+            <List.Item.Meta
+              title={<span>{item.app_name}</span>}
+              description={item.message}
+            />
+            <span
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <span>
+                <RbxTag state={item.state} />
+                <RbxTag state={item.sub_state} />
+                <RbxTag state={item.active_state} />
+              </span>
+
+              <Text style={{ paddingTop: 5 }} type="secondary" italic>
+                {tagMessageStateResolver(
+                  item.state,
+                  item.sub_state,
+                  item.active_state
+                )}
+              </Text>
+            </span>
+          </List.Item>
+        )}
+      />
+    </div>
+  );
+};
+
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
-  const { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
-    INSTALL_DIALOG,
-  ]);
-  const [backups, setBackups] = useState([] as Array<Backup>);
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [currentHost, setCurrentHost] = useState({} as Host);
+  let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
+
+  const [collapsed, setCollapsed] = useState(true);
+  const [selectedHost, setSelectedHost] = useState({} as Host);
+  const [sidePanelHeight, setSidePanelHeight] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [backups, setBackups] = useState([] as Array<storage.Backup>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
   const [hostSchema, setHostSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
+    INSTALL_DIALOG,
+  ]);
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
-  factory.connectionUUID = connUUID;
+  factory.connectionUUID = connUUID as string;
 
   const columns = [
     ...HOST_HEADERS,
@@ -82,30 +349,42 @@ export const HostsTable = (props: any) => {
           >
             Install
           </a>
-
-          <Tooltip title="Rubix-Wires and Backup">
-            <a onClick={() => showBackupModal(host)}>
-              <MenuFoldOutlined />
-            </a>
-          </Tooltip>
+          <a
+            onClick={() => {
+              setSelectedHost(host), setCollapsed(!collapsed);
+            }}
+          >
+            <MenuFoldOutlined />
+          </a>
         </Space>
       ),
     },
   ];
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
+  useEffect(() => {
+    setCollapsed(true);
+    const totalPage = Math.ceil(hosts.length / 10);
+    setTotalPage(totalPage);
+    sidePanelHeightHandle();
+  }, [hosts.length]);
+
+  useEffect(() => {
+    setCollapsed(true);
+    sidePanelHeightHandle();
+  }, [currentPage]);
 
   useEffect(() => {
     fetchBackups();
   }, []);
 
   const fetchBackups = async () => {
-    let res = (await backupFactory.GetBackupsRubixWires()) || [];
-    setBackups(res);
+    try {
+      let res = (await backupFactory.GetBackupsRubixWires()) || [];
+      setBackups(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
   };
 
   const getSchema = async () => {
@@ -128,7 +407,22 @@ export const HostsTable = (props: any) => {
     return network ? network.name : "";
   };
 
-  const showModal = (host: Host) => {
+  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
+    setCurrentPage(current);
+  };
+
+  const sidePanelHeightHandle = () => {
+    if (currentPage === totalPage) {
+      const height = (hosts.length % 10) * 103 + 55; //get height of last page
+      setSidePanelHeight(height);
+    } else {
+      const height =
+        hosts.length >= 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
+      setSidePanelHeight(height);
+    }
+  };
+
+  const showModal = (host: assistmodel.Host) => {
     setCurrentHost(host);
     setIsModalVisible(true);
     if (isObjectEmpty(hostSchema)) {
@@ -138,39 +432,55 @@ export const HostsTable = (props: any) => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentHost({} as Host);
+    setCurrentHost({} as assistmodel.Host);
   };
 
-  const showBackupModal = (host: Host) => {
-    setCurrentHost(host);
-    setIsBackupModalVisible(true);
-  };
-
-  const onCloseBackupModal = () => {
-    setIsBackupModalVisible(false);
-    setCurrentHost({} as Host);
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
   };
 
   return (
     <div>
       <div className="hosts-table-actions">
         <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbAddButton handleClick={() => showModal({} as Host)} />
+        <RbAddButton handleClick={() => showModal({} as assistmodel.Host)} />
         <RbRefreshButton refreshList={refreshList} />
       </div>
-      <RbTable
-        rowKey="uuid"
-        rowSelection={rowSelection}
-        dataSource={hosts}
-        columns={columns}
-        loading={{ indicator: <Spin />, spinning: isFetching }}
-      />
+      <div className="hosts-table">
+        <RbTable
+          rowKey="uuid"
+          rowSelection={rowSelection}
+          dataSource={hosts}
+          columns={columns}
+          loading={{ indicator: <Spin />, spinning: isFetching }}
+          className={collapsed ? "full-width" : "uncollapsed-style"}
+          onChange={onChange}
+          expandable={{
+            expandedRowRender: (host: any) => (
+              <ExpandedRow host={host}></ExpandedRow>
+            ),
+            rowExpandable: (record: any) => record.name !== "Not Expandable",
+          }}
+          expandRowByClick
+        />
+        <SidePanel
+          collapsed={collapsed}
+          selectedHost={selectedHost}
+          connUUID={connUUID}
+          sidePanelHeight={sidePanelHeight}
+          backups={backups}
+          fetchBackups={fetchBackups}
+        />
+      </div>
       <CreateEditModal
         hosts={hosts}
         currentHost={currentHost}
         hostSchema={hostSchema}
         isModalVisible={isModalVisible}
         isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
         refreshList={refreshList}
         onCloseModal={onCloseModal}
       />
@@ -178,13 +488,6 @@ export const HostsTable = (props: any) => {
         isOpen={isOpen(INSTALL_DIALOG)}
         closeDialog={() => closeDialog(INSTALL_DIALOG)}
         dialogData={dialogData[INSTALL_DIALOG]}
-      />
-      <BackupModal
-        isModalVisible={isBackupModalVisible}
-        selectedHost={currentHost}
-        backups={backups}
-        fetchBackups={fetchBackups}
-        onCloseModal={onCloseBackupModal}
       />
     </div>
   );

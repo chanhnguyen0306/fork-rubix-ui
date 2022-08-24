@@ -56,12 +56,8 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch st
 	if buildDetails == nil {
 		return nil, errors.New(fmt.Sprintf("failed to match build zip name app:%s version:%s arch:%s", appName, version, arch))
 	}
-	fileName := buildDetails.ZipName
-	//listStore, err := client.ListStore()
-	//if err != nil {
-	//	return nil, err
-	//}
 
+	fileName := buildDetails.ZipName
 	fileAndPath := appStore.FilePath(fmt.Sprintf("%s/%s", path, fileName))
 	reader, err := os.Open(fileAndPath)
 	if err != nil {

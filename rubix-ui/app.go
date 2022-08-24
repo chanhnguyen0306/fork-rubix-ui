@@ -35,7 +35,9 @@ func NewApp() *App {
 		Ip:   "0.0.0.0",
 		Port: 1662,
 	})
-	str := &store.Store{}
+	str := &store.Store{
+		Arch: "armv7",
+	}
 	appStore, err := store.New(str)
 	if err != nil {
 		log.Fatalf("init store on start of app err:%s", err.Error())

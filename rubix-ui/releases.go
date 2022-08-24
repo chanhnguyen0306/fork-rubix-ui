@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-ui/backend/store"
-	"strings"
+	"github.com/hashicorp/go-version"
+	"sort"
 )
 
 const flowFramework = "flow-framework"
@@ -22,6 +23,30 @@ func (inst *App) GetReleases() []store.Release {
 
 func (inst *App) getReleases() ([]store.Release, error) {
 	return inst.DB.GetReleases()
+}
+
+func (inst *App) getLatestRelease() (string, error) {
+	releases, err := inst.DB.GetReleases()
+	if err != nil {
+		return "", err
+	}
+	var versionsRaw []string
+	for _, release := range releases {
+		versionsRaw = append(versionsRaw, release.Release)
+	}
+	versions := make([]*version.Version, len(versionsRaw))
+	for i, raw := range versionsRaw {
+		v, _ := version.NewVersion(raw)
+		versions[i] = v
+	}
+	// After this, the versions are properly sorted
+	sort.Sort(version.Collection(versions))
+	if len(versions) > 0 {
+		return versions[len(versions)-1].String(), nil
+	} else {
+		return "", nil
+	}
+
 }
 
 func (inst *App) GetRelease(uuid string) *store.Release {
@@ -81,10 +106,6 @@ func (inst *App) AddRelease(token, version string) *store.Release {
 }
 
 func (inst *App) addRelease(token, version string) (*store.Release, error) {
-	if strings.Contains(version, "flow/") {
-	} else {
-		version = fmt.Sprintf("flow/%s.json", version)
-	}
 	release, err := inst.gitDownloadRelease(token, version)
 	if err != nil {
 		return nil, err

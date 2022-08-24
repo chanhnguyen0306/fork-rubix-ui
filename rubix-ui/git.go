@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-ui/backend/store"
+	"strings"
 )
 
 func (inst *App) GitListReleases(token string) []store.ReleaseList {
@@ -41,11 +42,15 @@ func (inst *App) GitDownloadRelease(token, version string) *store.Release {
 
 //gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
 func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) {
+	if strings.Contains(path, "flow/") {
+	} else {
+		path = fmt.Sprintf("flow/%s.json", path)
+	}
 	str := &store.Store{
 		App:     &installer.App{},
 		Version: "latest",
 		Repo:    "releases",
-		Arch:    "",
+		Arch:    "armv7",
 	}
 	appStore, err := store.New(str)
 	if err != nil {
