@@ -20,7 +20,7 @@ import "./style.css";
 import UUIDs = main.UUIDs;
 import Network = model.Network;
 
-export const FlowNetworkTable = (props: any) => {
+export const FlowNetworkTable = () => {
   let {
     connUUID = "",
     hostUUID = "",
