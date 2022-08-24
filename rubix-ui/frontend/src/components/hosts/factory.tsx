@@ -54,4 +54,8 @@ export class HostsFactory {
     return await DeleteHostBulk(this.connectionUUID, uuids);
   }
 
+  async Ping(hostUUID: string): Promise<boolean> {
+    return true
+  }
+
 }

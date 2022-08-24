@@ -14,7 +14,6 @@ import {
 import { Layout, Menu } from "antd";
 import {
   ApartmentOutlined,
-  FileSearchOutlined,
   ToolOutlined,
   UserOutlined,
   KeyOutlined,
