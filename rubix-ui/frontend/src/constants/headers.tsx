@@ -287,7 +287,6 @@ export const HOST_HEADERS = [
       }
       return <Image width={70} src={image} />;
     },
-    sorter: (a: any, b: any) => a.product_type.localeCompare(b.product_type),
   },
   {
     title: "name",
