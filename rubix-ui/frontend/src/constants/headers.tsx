@@ -560,16 +560,19 @@ export const LOG_HEADERS = [
       title: "Timestamp",
       dataIndex: "time",
       key: "time",
+      sorter: (a: any, b: any) => a.time.localeCompare(b.time),
     },
     {
       title: "Table",
       dataIndex: "function",
       key: "function",
+      sorter: (a: any, b: any) => a.function.localeCompare(b.function),
     },
     {
       title: "Action Type",
       dataIndex: "type",
       key: "type",
+      sorter: (a: any, b: any) => a.type.localeCompare(b.type),
     },
   ],
 ];
@@ -584,6 +587,8 @@ export const BACKUP_HEADERS = [
     title: "connection name",
     dataIndex: "connection_name",
     key: "connection_name",
+    sorter: (a: any, b: any) =>
+      a.connection_name.localeCompare(b.connection_name),
   },
   {
     title: "connection uuid",
@@ -594,6 +599,7 @@ export const BACKUP_HEADERS = [
     title: "host name",
     dataIndex: "host_name",
     key: "host_name",
+    sorter: (a: any, b: any) => a.host_name.localeCompare(b.host_name),
   },
   {
     title: "host uuid",
@@ -604,16 +610,19 @@ export const BACKUP_HEADERS = [
     title: "timestamp",
     dataIndex: "time",
     key: "time",
+    sorter: (a: any, b: any) => a.time.localeCompare(b.time),
   },
   {
     title: "application",
     dataIndex: "application",
     key: "application",
+    sorter: (a: any, b: any) => a.application.localeCompare(b.application),
   },
   {
     title: "info",
     dataIndex: "backup_info",
     key: "backup_info",
+    sorter: (a: any, b: any) => a.backup_info.localeCompare(b.backup_info),
   },
   {
     title: "Comments",
@@ -627,6 +636,7 @@ export const SCANNER_HEADERS = [
     title: "Ip",
     dataIndex: "ip",
     key: "ip",
+    sorter: (a: any, b: any) => a.ip.localeCompare(b.ip),
   },
   {
     title: "Port",
