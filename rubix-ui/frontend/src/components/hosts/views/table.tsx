@@ -1,13 +1,4 @@
-import {
-  Space,
-  PaginationProps,
-  Spin,
-  List,
-  Badge,
-  Tag,
-  Typography,
-  Button,
-} from "antd";
+import { Typography, Tag, List, Button, Space, Spin, Tooltip } from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -23,15 +14,17 @@ import { ROUTES } from "../../../constants/routes";
 import { useDialogs } from "../../../hooks/useDialogs";
 import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
+import { ReleasesFactory } from "../../release/factory";
 import { HostsFactory } from "../factory";
-import { CreateEditModal } from "./create";
 import InstallApp from "./installApp";
-import { SidePanel } from "./side-panel";
+import { BackupModal, CreateEditModal } from "./modals";
+
 import "./style.css";
 
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
-import { ReleasesFactory } from "../../release/factory";
+import Backup = storage.Backup;
+import UUIDs = main.UUIDs;
 
 const { Text } = Typography;
 const releaseFactory = new ReleasesFactory();
@@ -291,25 +284,20 @@ const AppInstallInfo = (props: any) => {
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-
-  const [collapsed, setCollapsed] = useState(true);
-  const [selectedHost, setSelectedHost] = useState({} as Host);
-  const [sidePanelHeight, setSidePanelHeight] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [backups, setBackups] = useState([] as Array<storage.Backup>);
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
-  const [currentHost, setCurrentHost] = useState({} as assistmodel.Host);
-  const [hostSchema, setHostSchema] = useState({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isLoadingForm, setIsLoadingForm] = useState(false);
   const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
     INSTALL_DIALOG,
   ]);
+  const [backups, setBackups] = useState([] as Array<Backup>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [currentHost, setCurrentHost] = useState({} as Host);
+  const [hostSchema, setHostSchema] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
-  factory.connectionUUID = connUUID as string;
+  factory.connectionUUID = connUUID;
 
   const columns = [
     ...HOST_HEADERS,
@@ -349,29 +337,21 @@ export const HostsTable = (props: any) => {
           >
             Install
           </a>
-          <a
-            onClick={() => {
-              setSelectedHost(host), setCollapsed(!collapsed);
-            }}
-          >
-            <MenuFoldOutlined />
-          </a>
+          <Tooltip title="Rubix-Wires and Backup">
+            <a onClick={() => showBackupModal(host)}>
+              <MenuFoldOutlined />
+            </a>
+          </Tooltip>
         </Space>
       ),
     },
   ];
 
-  useEffect(() => {
-    setCollapsed(true);
-    const totalPage = Math.ceil(hosts.length / 10);
-    setTotalPage(totalPage);
-    sidePanelHeightHandle();
-  }, [hosts.length]);
-
-  useEffect(() => {
-    setCollapsed(true);
-    sidePanelHeightHandle();
-  }, [currentPage]);
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
 
   useEffect(() => {
     fetchBackups();
@@ -383,7 +363,6 @@ export const HostsTable = (props: any) => {
       setBackups(res);
     } catch (error) {
       console.log(error);
-    } finally {
     }
   };
 
@@ -407,21 +386,6 @@ export const HostsTable = (props: any) => {
     return network ? network.name : "";
   };
 
-  const onChange: PaginationProps["onChange"] = ({ current }: any) => {
-    setCurrentPage(current);
-  };
-
-  const sidePanelHeightHandle = () => {
-    if (currentPage === totalPage) {
-      const height = (hosts.length % 10) * 103 + 55; //get height of last page
-      setSidePanelHeight(height);
-    } else {
-      const height =
-        hosts.length >= 10 ? 10 * 103 + 55 : (hosts.length % 10) * 103 + 55;
-      setSidePanelHeight(height);
-    }
-  };
-
   const showModal = (host: assistmodel.Host) => {
     setCurrentHost(host);
     setIsModalVisible(true);
@@ -435,10 +399,14 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as assistmodel.Host);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
+  const showBackupModal = (host: Host) => {
+    setCurrentHost(host);
+    setIsBackupModalVisible(true);
+  };
+
+  const onCloseBackupModal = () => {
+    setIsBackupModalVisible(false);
+    setCurrentHost({} as Host);
   };
 
   return (
@@ -448,32 +416,20 @@ export const HostsTable = (props: any) => {
         <RbAddButton handleClick={() => showModal({} as assistmodel.Host)} />
         <RbRefreshButton refreshList={refreshList} />
       </div>
-      <div className="hosts-table">
-        <RbTable
-          rowKey="uuid"
-          rowSelection={rowSelection}
-          dataSource={hosts}
-          columns={columns}
-          loading={{ indicator: <Spin />, spinning: isFetching }}
-          className={collapsed ? "full-width" : "uncollapsed-style"}
-          onChange={onChange}
-          expandable={{
-            expandedRowRender: (host: any) => (
-              <ExpandedRow host={host}></ExpandedRow>
-            ),
-            rowExpandable: (record: any) => record.name !== "Not Expandable",
-          }}
-          expandRowByClick
-        />
-        <SidePanel
-          collapsed={collapsed}
-          selectedHost={selectedHost}
-          connUUID={connUUID}
-          sidePanelHeight={sidePanelHeight}
-          backups={backups}
-          fetchBackups={fetchBackups}
-        />
-      </div>
+      <RbTable
+        rowKey="uuid"
+        rowSelection={rowSelection}
+        dataSource={hosts}
+        columns={columns}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
+        expandable={{
+          expandedRowRender: (host: any) => (
+            <ExpandedRow host={host}></ExpandedRow>
+          ),
+          rowExpandable: (record: any) => record.name !== "Not Expandable",
+        }}
+        expandRowByClick
+      />
       <CreateEditModal
         hosts={hosts}
         currentHost={currentHost}
@@ -483,6 +439,13 @@ export const HostsTable = (props: any) => {
         connUUID={connUUID}
         refreshList={refreshList}
         onCloseModal={onCloseModal}
+      />
+      <BackupModal
+        isModalVisible={isBackupModalVisible}
+        selectedHost={currentHost}
+        backups={backups}
+        fetchBackups={fetchBackups}
+        onCloseModal={onCloseBackupModal}
       />
       <InstallApp
         isOpen={isOpen(INSTALL_DIALOG)}
