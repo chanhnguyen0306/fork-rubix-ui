@@ -602,3 +602,49 @@ export const SCANNER_HEADERS = [
     key: "ports",
   },
 ];
+
+//--------------schema-------------//
+export const FLOW_NETWORKS_SCHEMA = {
+  name: {
+    maxLength: 50,
+    minLength: 2,
+    title: "name",
+    type: "string",
+  },
+  flow_ip: {
+    type: "string",
+    title: "flow ip",
+    default: "0.0.0.0",
+  },
+  flow_port: {
+    type: "number",
+    title: "flow port",
+    minLength: 2,
+    maxLength: 65535,
+    default: 1662,
+    help: "ip port, eg port 1660 192.168.15.10:1660",
+    readOnly: false,
+  },
+  flow_https: {
+    type: "boolean",
+    title: "enable https",
+    readOnly: false,
+  },
+  flow_username: {
+    maxLength: 50,
+    minLength: 2,
+    title: "flow username",
+    type: "string",
+  },
+  flow_password: {
+    maxLength: 50,
+    minLength: 2,
+    title: "flow password",
+    type: "string",
+  },
+  uuid: {
+    readOnly: true,
+    title: "uuid",
+    type: "string",
+  },
+};
