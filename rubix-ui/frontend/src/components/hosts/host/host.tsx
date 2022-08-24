@@ -12,10 +12,10 @@ const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const infoKey = "INFO";
-const networksKey = "NETWORKS";
-const pluginsKey = "PLUGINS";
-const flownetworksKey = "FLOW NETWORKS";
-const flownetworkClonesKey = "FLOW NETWORK CLONES";
+const networksKey = "DRIVERS";
+const pluginsKey = "MODULES";
+const flownetworksKey = "NETWORKS";
+const flownetworkClonesKey = "REMOTE/MAPPING NETWORK";
 
 export const Host = () => {
   let {

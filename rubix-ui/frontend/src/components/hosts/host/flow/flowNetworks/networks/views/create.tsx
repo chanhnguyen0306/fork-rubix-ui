@@ -1,9 +1,7 @@
-import { Button, Modal, Spin } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import { useEffect, useState } from "react";
-import { assistmodel, model } from "../../../../../../../../wailsjs/go/models";
-import { AddHost, EditHost } from "../../../../../../../../wailsjs/go/main/App";
-import { openNotificationWithIcon } from "../../../../../../../utils/utils";
+import { model } from "../../../../../../../../wailsjs/go/models";
+
 import { JsonForm } from "../../../../../../../common/json-schema-form";
 import { FlowFrameworkNetworkFactory } from "../factory";
 import { useParams } from "react-router-dom";
@@ -17,7 +15,7 @@ export const CreateEditModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
 
-  let factory = new FlowFrameworkNetworkFactory();
+  const factory = new FlowFrameworkNetworkFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -26,16 +24,20 @@ export const CreateEditModal = (props: any) => {
   }, [isModalVisible]);
 
   const handleSubmit = async (network: FlowNetwork) => {
-    setConfirmLoading(true);
-    if (currentItem.uuid) {
-      network.uuid = currentItem.uuid;
-      await factory.Update(network.uuid, network);
-    } else {
-      await factory.Add(network);
+    try {
+      setConfirmLoading(true);
+      if (currentItem.uuid) {
+        network.uuid = currentItem.uuid;
+        await factory.Update(network.uuid, network);
+      } else {
+        await factory.Add(network);
+      }
+      refreshList();
+      onCloseModal();
+    } catch (error) {
+    } finally {
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
-    refreshList();
-    onCloseModal();
   };
 
   return (

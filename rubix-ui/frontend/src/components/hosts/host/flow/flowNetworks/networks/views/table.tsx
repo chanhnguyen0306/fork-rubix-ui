@@ -4,7 +4,10 @@ import { Link, useParams } from "react-router-dom";
 import { FlowFrameworkNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../../constants/routes";
-import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
+import {
+  FLOW_NETWORKS_HEADERS,
+  FLOW_NETWORKS_SCHEMA,
+} from "../../../../../../../constants/headers";
 import {
   RbAddButton,
   RbDeleteButton,
@@ -67,23 +70,7 @@ export const FlowNetworksTable = (props: any) => {
 
   const getSchema = () => {
     const schema = {
-      properties: {
-        name: {
-          maxLength: 50,
-          minLength: 2,
-          title: "name",
-          type: "string",
-        },
-        message: {
-          title: "message",
-          type: "string",
-        },
-        uuid: {
-          readOnly: true,
-          title: "uuid",
-          type: "string",
-        },
-      },
+      properties: FLOW_NETWORKS_SCHEMA,
     };
     setSchema(schema);
   };

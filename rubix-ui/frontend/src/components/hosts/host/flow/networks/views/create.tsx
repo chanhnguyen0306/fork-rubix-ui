@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { Select, Modal, Spin } from "antd";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Modal, Select, Spin } from "antd";
-import { FlowNetworkFactory } from "../factory";
-import { FlowPluginFactory } from "../../plugins/factory";
 import { model } from "../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../common/json-schema-form";
+import { FlowPluginFactory } from "../../plugins/factory";
+import { FlowNetworkFactory } from "../factory";
 
 import Network = model.Network;
 import PluginConf = model.PluginConf;
@@ -19,19 +19,19 @@ export const EditModal = (props: any) => {
     onCloseModal,
     refreshList,
   } = props;
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
-  const { connUUID = "", hostUUID = "" } = useParams();
 
-  let flowNetworkFactory = new FlowNetworkFactory();
+  const flowNetworkFactory = new FlowNetworkFactory();
+  flowNetworkFactory.connectionUUID = connUUID;
+  flowNetworkFactory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData(currentItem);
   }, [currentItem]);
 
   const edit = async (net: Network) => {
-    flowNetworkFactory.connectionUUID = connUUID;
-    flowNetworkFactory.hostUUID = hostUUID;
     await flowNetworkFactory.Update(net.uuid, net);
   };
 
@@ -75,6 +75,7 @@ export const EditModal = (props: any) => {
 
 export const CreateModal = (props: any) => {
   const { isModalVisible, onCloseModal, refreshList } = props;
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Network);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -82,15 +83,11 @@ export const CreateModal = (props: any) => {
   const [isFetching, setIsFetching] = useState(true);
   const [plugins, setPlugins] = useState([] as PluginConf[]);
   const [selectedPlugin, setSelectedPlugin] = useState("");
-  const { connUUID = "", hostUUID = "" } = useParams();
 
-  let pluginFactory = new FlowPluginFactory();
-  pluginFactory.connectionUUID = connUUID;
-  pluginFactory.hostUUID = hostUUID;
-
-  let networkFactory = new FlowNetworkFactory();
-  networkFactory.connectionUUID = connUUID;
-  networkFactory.hostUUID = hostUUID;
+  const networkFactory = new FlowNetworkFactory();
+  const pluginFactory = new FlowPluginFactory();
+  pluginFactory.connectionUUID = networkFactory.connectionUUID = connUUID;
+  pluginFactory.hostUUID = networkFactory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData({} as Network);

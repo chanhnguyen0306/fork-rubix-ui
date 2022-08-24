@@ -1,5 +1,4 @@
 import { Tag, Image } from "antd";
-import { PlayCircleOutlined, BookOutlined } from "@ant-design/icons";
 import { pluginLogo } from "../utils/utils";
 import imageRC5 from "../assets/images/RC5.png";
 import imageRCIO from "../assets/images/RC-IO.png";
@@ -15,16 +14,19 @@ export const FLOW_NETWORKS_HEADERS = [
     key: "name",
     title: "name",
     dataIndex: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     key: "client_name",
     title: "client name",
     dataIndex: "client_name",
+    sorter: (a: any, b: any) => a.client_name.localeCompare(b.client_name),
   },
   {
     key: "device_name",
     title: "device name",
     dataIndex: "device_name",
+    sorter: (a: any, b: any) => a.device_name.localeCompare(b.device_name),
   },
   {
     key: "message",
@@ -35,6 +37,7 @@ export const FLOW_NETWORKS_HEADERS = [
     key: "connection",
     title: "connection",
     dataIndex: "connection",
+    sorter: (a: any, b: any) => a.connection.localeCompare(b.connection),
   },
 ];
 
@@ -48,6 +51,7 @@ export const STREAM_HEADERS = [
     key: "name",
     title: "name",
     dataIndex: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "enable",
@@ -62,6 +66,7 @@ export const STREAM_HEADERS = [
       }
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
 ];
 
@@ -75,6 +80,7 @@ export const CONSUMER_HEADERS = [
     key: "name",
     title: "name",
     dataIndex: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "enable",
@@ -89,6 +95,7 @@ export const CONSUMER_HEADERS = [
       }
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
   {
     key: "message",
@@ -99,11 +106,15 @@ export const CONSUMER_HEADERS = [
     key: "producer_thing_class",
     title: "producer thing class",
     dataIndex: "producer_thing_class",
+    sorter: (a: any, b: any) =>
+      a.producer_thing_class.localeCompare(b.producer_thing_class),
   },
   {
     key: "producer_thing_name",
     title: "producer thing name",
     dataIndex: "producer_thing_name",
+    sorter: (a: any, b: any) =>
+      a.producer_thing_name.localeCompare(b.producer_thing_name),
   },
 ];
 
@@ -112,21 +123,28 @@ export const PRODUCER_HEADERS = [
     key: "name",
     title: "name",
     dataIndex: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     key: "producer_application",
     title: "application",
     dataIndex: "producer_application",
+    sorter: (a: any, b: any) =>
+      a.producer_application.localeCompare(b.producer_application),
   },
   {
     key: "producer_thing_class",
     title: "thing class",
     dataIndex: "producer_thing_class",
+    sorter: (a: any, b: any) =>
+      a.producer_thing_class.localeCompare(b.producer_thing_class),
   },
   {
     key: "producer_thing_name",
     title: "thing name",
     dataIndex: "producer_thing_name",
+    sorter: (a: any, b: any) =>
+      a.producer_thing_name.localeCompare(b.producer_thing_name),
   },
   {
     key: "history_type",
@@ -137,11 +155,13 @@ export const PRODUCER_HEADERS = [
       let text = plugin_name.toUpperCase();
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.history_type.localeCompare(b.history_type),
   },
   {
     key: "history_interval",
     title: "history interval",
     dataIndex: "history_interval",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "enable",
@@ -156,6 +176,7 @@ export const PRODUCER_HEADERS = [
       }
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
   {
     key: "uuid",
@@ -174,11 +195,15 @@ export const WRITER_HEADERS = [
     key: "writer_thing_class",
     title: "writer thing class",
     dataIndex: "writer_thing_class",
+    sorter: (a: any, b: any) =>
+      a.writer_thing_class.localeCompare(b.writer_thing_class),
   },
   {
     key: "writer_thing_name",
     title: "writer thing name",
     dataIndex: "writer_thing_name",
+    sorter: (a: any, b: any) =>
+      a.writer_thing_name.localeCompare(b.writer_thing_name),
   },
 ];
 
@@ -192,6 +217,7 @@ export const CONNECTION_HEADERS = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "Description",
@@ -202,11 +228,13 @@ export const CONNECTION_HEADERS = [
     title: "Address",
     dataIndex: "ip",
     key: "ip",
+    sorter: (a: any, b: any) => a.ip.localeCompare(b.ip),
   },
   {
     title: "Port",
     dataIndex: "port",
     key: "port",
+    sorter: (a: any, b: any) => a.port - b.port,
   },
   {
     title: "uuid",
@@ -220,6 +248,7 @@ export const HOST_NETWORK_HEADERS = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "Description",
@@ -263,11 +292,13 @@ export const HOST_HEADERS = [
     title: "name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "ip",
     dataIndex: "ip",
     key: "ip",
+    sorter: (a: any, b: any) => a.ip - b.ip,
   },
   {
     title: "description",
@@ -300,11 +331,13 @@ export const NETWORK_HEADERS = [
       let text = plugin_name.toUpperCase();
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.plugin_name.localeCompare(b.plugin_name),
   },
   {
     title: "name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "uuid",
@@ -315,23 +348,19 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
-  },
-  {
     title: "name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 
 export const FLOW_POINT_HEADERS = [
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
-  },
   {
     title: "name",
     dataIndex: "name",
@@ -342,6 +371,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{name}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "io number",
@@ -354,6 +384,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.io_number - b.io_number,
   },
   {
     title: "object type",
@@ -378,7 +409,6 @@ export const FLOW_POINT_HEADERS = [
       }
     },
   },
-
   {
     title: "io type",
     dataIndex: "io_type",
@@ -401,49 +431,35 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{present_value}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.present_value - b.present_value,
   },
   {
     title: "original value value",
     dataIndex: "original_value",
     key: "original_value",
+    sorter: (a: any, b: any) => a.original_value - b.original_value,
   },
   {
     title: "write value",
     dataIndex: "write_value",
     key: "write_value",
+    sorter: (a: any, b: any) => a.write_value - b.write_value,
   },
   {
     title: "write value original",
     dataIndex: "write_value_original",
     key: "write_value_original",
+    sorter: (a: any, b: any) => a.write_value_original - b.write_value_original,
   },
   {
     title: "device-uuid",
     dataIndex: "device_uuid",
     key: "device_uuid",
   },
-];
-
-export const BACNET_HEADERS = [
   {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "device id",
-    dataIndex: "device_object_id",
-    key: "device_object_id",
-  },
-  {
-    title: "ip",
-    dataIndex: "host",
-    key: "host",
-  },
-  {
-    title: "port",
-    dataIndex: "port",
-    key: "port",
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 
@@ -466,11 +482,7 @@ export const PLUGIN_HEADERS = [
       let text = plugin_name.toUpperCase();
       return <Tag color={colour}>{text}</Tag>;
     },
-  },
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "Tags",
@@ -485,6 +497,7 @@ export const PLUGIN_HEADERS = [
       }
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.has_network - b.has_network,
   },
   {
     title: "status",
@@ -499,6 +512,39 @@ export const PLUGIN_HEADERS = [
       }
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.enabled - b.enabled,
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const BACNET_HEADERS = [
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "device id",
+    dataIndex: "device_object_id",
+    key: "device_object_id",
+    sorter: (a: any, b: any) =>
+      a.device_object_id.localeCompare(b.device_object_id),
+  },
+  {
+    title: "ip",
+    dataIndex: "host",
+    key: "host",
+    sorter: (a: any, b: any) => a.host.localeCompare(b.host),
+  },
+  {
+    title: "port",
+    dataIndex: "port",
+    key: "port",
   },
 ];
 
@@ -513,16 +559,19 @@ export const LOG_HEADERS = [
       title: "Timestamp",
       dataIndex: "time",
       key: "time",
+      sorter: (a: any, b: any) => a.time.localeCompare(b.time),
     },
     {
       title: "Table",
       dataIndex: "function",
       key: "function",
+      sorter: (a: any, b: any) => a.function.localeCompare(b.function),
     },
     {
       title: "Action Type",
       dataIndex: "type",
       key: "type",
+      sorter: (a: any, b: any) => a.type.localeCompare(b.type),
     },
   ],
 ];
@@ -537,6 +586,8 @@ export const BACKUP_HEADERS = [
     title: "connection name",
     dataIndex: "connection_name",
     key: "connection_name",
+    sorter: (a: any, b: any) =>
+      a.connection_name.localeCompare(b.connection_name),
   },
   {
     title: "connection uuid",
@@ -547,6 +598,7 @@ export const BACKUP_HEADERS = [
     title: "host name",
     dataIndex: "host_name",
     key: "host_name",
+    sorter: (a: any, b: any) => a.host_name.localeCompare(b.host_name),
   },
   {
     title: "host uuid",
@@ -557,16 +609,19 @@ export const BACKUP_HEADERS = [
     title: "timestamp",
     dataIndex: "time",
     key: "time",
+    sorter: (a: any, b: any) => a.time.localeCompare(b.time),
   },
   {
     title: "application",
     dataIndex: "application",
     key: "application",
+    sorter: (a: any, b: any) => a.application.localeCompare(b.application),
   },
   {
     title: "info",
     dataIndex: "backup_info",
     key: "backup_info",
+    sorter: (a: any, b: any) => a.backup_info.localeCompare(b.backup_info),
   },
   {
     title: "Comments",
@@ -580,6 +635,7 @@ export const SCANNER_HEADERS = [
     title: "Ip",
     dataIndex: "ip",
     key: "ip",
+    sorter: (a: any, b: any) => a.ip.localeCompare(b.ip),
   },
   {
     title: "Port",
@@ -591,3 +647,48 @@ export const SCANNER_HEADERS = [
     key: "ports",
   },
 ];
+
+//--------------schema-------------//
+export const FLOW_NETWORKS_SCHEMA = {
+  name: {
+    maxLength: 50,
+    minLength: 2,
+    title: "name",
+    type: "string",
+  },
+  flow_ip: {
+    type: "string",
+    title: "flow ip",
+    default: "0.0.0.0",
+  },
+  flow_port: {
+    type: "number",
+    title: "flow port",
+    minLength: 2,
+    maxLength: 65535,
+    default: 1662,
+    readOnly: false,
+  },
+  flow_https: {
+    type: "boolean",
+    title: "enable https",
+    readOnly: false,
+  },
+  flow_username: {
+    maxLength: 50,
+    minLength: 2,
+    title: "flow username",
+    type: "string",
+  },
+  flow_password: {
+    maxLength: 50,
+    minLength: 2,
+    title: "flow password",
+    type: "string",
+  },
+  uuid: {
+    readOnly: true,
+    title: "uuid",
+    type: "string",
+  },
+};
