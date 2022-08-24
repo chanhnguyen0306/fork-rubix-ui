@@ -100,12 +100,3 @@ func (inst *App) getFlowNetwork(connUUID, hostUUID, networkUUID string, withStre
 	}
 	return networks, nil
 }
-
-func (inst *App) GetFlowNetwork(connUUID, hostUUID, networkUUID string, withStream bool) *model.FlowNetwork {
-	networks, err := inst.getFlowNetwork(connUUID, hostUUID, networkUUID, withStream)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return networks
-}

@@ -40,5 +40,11 @@ func TestApp_EdgeAddNetwork(t *testing.T) {
 		PluginPath:       "bacnetmaster",
 		NetworkInterface: "eth0",
 	}
-	app.EdgeAddNetwork("cloud", "rc", body, true)
+	app.edgeAddNetwork("cloud", "rc", body, true)
+}
+
+func TestApp_GetFlowNetwork(t *testing.T) {
+	app := NewApp()
+
+	app.GetFlowNetwork("cloud", "rc", "body", true)
 }

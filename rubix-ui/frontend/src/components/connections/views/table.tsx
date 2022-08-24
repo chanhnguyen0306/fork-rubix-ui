@@ -113,7 +113,6 @@ export const ConnectionsTable = () => {
 
   const pingConnection = async (uuid: string) => {
     await PingRubixAssist(uuid).then((ok) => {
-      console.log("ping ok", ok, uuid);
       if (ok) {
         openNotificationWithIcon("success", `ping success`);
       } else {

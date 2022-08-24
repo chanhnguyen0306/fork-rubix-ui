@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 
 let ObjectType = {
-  CONNECTIONS: "connection",
+  CONNECTIONS: "Connections",
   LOCATIONS: "locations",
   NETWORKS: "networks",
   HOSTS: "hosts",
@@ -111,7 +111,7 @@ export function getTreeDataIterative(connections: any) {
         ...getTreeObject(
           connection,
           ObjectTypesToRoutes[ObjectType.CONNECTIONS](connection.uuid),
-          "Loc"
+          ""
         ),
         next: ObjectTypesToRoutes[ObjectType.CONNECTIONS](connection.uuid),
         value: getItemValue(connection, ObjectType.CONNECTIONS),
@@ -123,7 +123,7 @@ export function getTreeDataIterative(connections: any) {
                 connection.uuid,
                 location.uuid
               ),
-              "Nets"
+              ""
             ),
             next: ObjectTypesToRoutes[ObjectType.LOCATIONS](
               connection.uuid,
@@ -139,7 +139,7 @@ export function getTreeDataIterative(connections: any) {
                     location.uuid,
                     network.uuid
                   ),
-                  "Loc Nets"
+                  ""
                 ),
                 next: ObjectTypesToRoutes[ObjectType.NETWORKS](
                   connection.uuid,
@@ -156,7 +156,7 @@ export function getTreeDataIterative(connections: any) {
                       network.uuid,
                       host.uuid
                     ),
-                    "Host"
+                    ""
                   ),
                   next: ObjectTypesToRoutes[ObjectType.HOSTS](
                     connection.uuid,
