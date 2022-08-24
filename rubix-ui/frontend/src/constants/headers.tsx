@@ -300,11 +300,13 @@ export const NETWORK_HEADERS = [
       let text = plugin_name.toUpperCase();
       return <Tag color={colour}>{text}</Tag>;
     },
+    sorter: (a: any, b: any) => a.plugin_name.localeCompare(b.plugin_name),
   },
   {
     title: "name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "uuid",
@@ -315,23 +317,19 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
-  },
-  {
     title: "name",
     dataIndex: "name",
     key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 
 export const FLOW_POINT_HEADERS = [
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
-  },
   {
     title: "name",
     dataIndex: "name",
@@ -342,6 +340,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{name}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "io number",
@@ -354,6 +353,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.io_number - b.io_number,
   },
   {
     title: "object type",
@@ -378,7 +378,6 @@ export const FLOW_POINT_HEADERS = [
       }
     },
   },
-
   {
     title: "io type",
     dataIndex: "io_type",
@@ -401,26 +400,93 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{present_value}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.present_value - b.present_value,
   },
   {
     title: "original value value",
     dataIndex: "original_value",
     key: "original_value",
+    sorter: (a: any, b: any) => a.original_value - b.original_value,
   },
   {
     title: "write value",
     dataIndex: "write_value",
     key: "write_value",
+    sorter: (a: any, b: any) => a.write_value - b.write_value,
   },
   {
     title: "write value original",
     dataIndex: "write_value_original",
     key: "write_value_original",
+    sorter: (a: any, b: any) => a.write_value_original - b.write_value_original,
   },
   {
     title: "device-uuid",
     dataIndex: "device_uuid",
     key: "device_uuid",
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
+export const PLUGIN_HEADERS = [
+  {
+    title: "name",
+    key: "name",
+    dataIndex: "name",
+    render(name: string) {
+      let image = pluginLogo(name);
+      return <Image preview={false} width={70} src={image} />;
+    },
+  },
+  {
+    title: "name",
+    key: "name",
+    dataIndex: "name",
+    render(plugin_name: string) {
+      let colour = "#4d4dff";
+      let text = plugin_name.toUpperCase();
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "Tags",
+    key: "has_network",
+    dataIndex: "has_network",
+    render(has_network: boolean) {
+      let colour = "blue";
+      let text = "non network plugin";
+      if (has_network) {
+        colour = "orange";
+        text = "network driver";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.has_network - b.has_network,
+  },
+  {
+    title: "status",
+    key: "enabled",
+    dataIndex: "enabled",
+    render(enabled: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enabled) {
+        colour = "orange";
+        text = "enabled";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.enabled - b.enabled,
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 
@@ -444,61 +510,6 @@ export const BACNET_HEADERS = [
     title: "port",
     dataIndex: "port",
     key: "port",
-  },
-];
-
-export const PLUGIN_HEADERS = [
-  {
-    title: "name",
-    key: "name",
-    dataIndex: "name",
-    render(name: string) {
-      let image = pluginLogo(name);
-      return <Image preview={false} width={70} src={image} />;
-    },
-  },
-  {
-    title: "name",
-    key: "name",
-    dataIndex: "name",
-    render(plugin_name: string) {
-      let colour = "#4d4dff";
-      let text = plugin_name.toUpperCase();
-      return <Tag color={colour}>{text}</Tag>;
-    },
-  },
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
-  },
-  {
-    title: "Tags",
-    key: "has_network",
-    dataIndex: "has_network",
-    render(has_network: boolean) {
-      let colour = "blue";
-      let text = "non network plugin";
-      if (has_network) {
-        colour = "orange";
-        text = "network driver";
-      }
-      return <Tag color={colour}>{text}</Tag>;
-    },
-  },
-  {
-    title: "status",
-    key: "enabled",
-    dataIndex: "enabled",
-    render(enabled: boolean) {
-      let colour = "blue";
-      let text = "disabled";
-      if (enabled) {
-        colour = "orange";
-        text = "enabled";
-      }
-      return <Tag color={colour}>{text}</Tag>;
-    },
   },
 ];
 
