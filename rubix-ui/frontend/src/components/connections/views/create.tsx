@@ -68,7 +68,7 @@ export const CreateEditModal = (props: any) => {
       title={
         currentConnection.uuid
           ? "Edit " + currentConnection.name
-          : "Add New Connection"
+          : "Add New Supervisor"
       }
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}

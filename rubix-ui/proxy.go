@@ -75,7 +75,7 @@ func (inst *App) testProxy(connUUID, hostUUID string) error {
 	return err
 }
 
-func (inst *App) EdgeAddNetwork(connUUID, hostUUID string, body *model.Network, restartPlugin bool) (*model.Network, error) {
+func (inst *App) edgeAddNetwork(connUUID, hostUUID string, body *model.Network, restartPlugin bool) (*model.Network, error) {
 	client, err := inst.initConnectionAuth(&AssistClient{
 		ConnUUID: connUUID,
 	})
@@ -85,6 +85,26 @@ func (inst *App) EdgeAddNetwork(connUUID, hostUUID string, body *model.Network, 
 	}
 	resp, err := client.EdgeAddNetwork(hostUUID, body, restartPlugin)
 	return resp, err
+}
+
+func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
+	client, err := inst.initConnectionAuth(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	url := fmt.Sprintf("/api/flow_networks/%s?streams=false", uuid)
+	if withStreams {
+		url = fmt.Sprintf("/api/flow_networks/%s?streams=true", uuid)
+	}
+	resp, err := client.FFProxyGET(hostUUID, url)
+	fmt.Println(resp.Status())
+	fmt.Println(resp.String())
+	body := &model.FlowNetwork{}
+	_, err = jsonToInterface(resp.Body(), body)
+	return body
 }
 
 func (inst *App) ffProxy(connUUID, hostUUID string) error {

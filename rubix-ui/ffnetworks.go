@@ -71,7 +71,7 @@ func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*mo
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("%s", body.PluginPath)
 	}
-	networks, err := inst.EdgeAddNetwork(connUUID, hostUUID, body, true)
+	networks, err := inst.edgeAddNetwork(connUUID, hostUUID, body, true)
 	return networks, err
 }
 
