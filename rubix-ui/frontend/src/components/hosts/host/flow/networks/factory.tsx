@@ -161,7 +161,5 @@ export class FlowNetworkFactory {
     return resp;
   }
 
-  async RestartNetwork(networkUUID: string): Promise<boolean> {
-    return true
-  }
+
 }

@@ -107,6 +107,23 @@ func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams boo
 	return body
 }
 
+func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
+	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	for _, plg := range pluginUUID {
+		_, err := inst.flow.EnablePlugin(plg.UUID)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("enable plugin fail: %s", plg.Name))
+		} else {
+			inst.crudMessage(true, fmt.Sprintf("enabled plugin:%s", plg.Name))
+		}
+	}
+	return "ok"
+}
+
 func (inst *App) ffProxy(connUUID, hostUUID string) error {
 	client, err := inst.initConnectionAuth(&AssistClient{
 		ConnUUID: connUUID,

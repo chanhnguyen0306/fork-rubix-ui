@@ -2,7 +2,7 @@ import {main, model} from "../../../../../../wailsjs/go/models";
 import {
   DisablePluginBulk,
   EnablePluginBulk,
-  GetPlugins,
+  GetPlugins, RestartPluginBulk,
 } from "../../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -52,6 +52,16 @@ export class FlowPluginFactory {
         return resp
     }
 
-
+  async RestartBulk(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
+    let resp: Promise<any> = {} as Promise<any>
+    hasUUID(this.connectionUUID)
+    hasUUID(this.hostUUID)
+    await RestartPluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
+      resp = res as Promise<any>
+    }).catch(err => {
+      return resp
+    })
+    return resp
+  }
 
 }

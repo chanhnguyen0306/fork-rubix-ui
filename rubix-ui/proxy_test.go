@@ -46,5 +46,5 @@ func TestApp_EdgeAddNetwork(t *testing.T) {
 func TestApp_GetFlowNetwork(t *testing.T) {
 	app := NewApp()
 
-	app.GetFlowNetwork("cloud", "rc", "body", true)
+	app.GetFlowNetwork("cloud", "rc", "fln_545ef50811ca44d6", true)
 }
