@@ -13,7 +13,10 @@ function hasUUID(uuid: string): Error {
 export class HostNetworking {
     connectionUUID!: string;
     hostUUID!: string;
-    public GetActive(): Promise<any> {
+
+
+
+    public GetNetworks(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
         return GetHostActiveNetworks(this.connectionUUID, this.hostUUID);

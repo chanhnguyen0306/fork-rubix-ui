@@ -60,7 +60,6 @@ func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList E
 
 // EdgeInstallApp install an app
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *installer.InstallResp {
-
 	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
 	var arch string
 	if getProduct != nil {
@@ -78,10 +77,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 			inst.crudMessage(false, fmt.Sprintf("failed to find a vaild relase version"))
 			return nil
 		}
-		fmt.Println(release, 999999)
 		releaseVersion = release
-		//releases, err := inst.getReleases()
-		//pprint.PrintJOSN(releases)
 	}
 
 	var lastStep = "5"
