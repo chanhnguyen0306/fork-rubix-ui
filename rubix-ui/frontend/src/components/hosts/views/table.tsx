@@ -403,7 +403,7 @@ export const HostsTable = (props: any) => {
     return network ? network.name : "";
   };
 
-  const showModal = (host: assistmodel.Host, e: any) => {
+  const showModal = (host: Host, e: any) => {
     e.stopPropagation();
     setCurrentHost(host);
     setIsModalVisible(true);
@@ -414,7 +414,7 @@ export const HostsTable = (props: any) => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentHost({} as assistmodel.Host);
+    setCurrentHost({} as Host);
   };
 
   const showBackupModal = (host: Host, e: any) => {
@@ -432,7 +432,7 @@ export const HostsTable = (props: any) => {
     <div>
       <div className="hosts-table-actions">
         <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbAddButton handleClick={() => showModal({} as assistmodel.Host)} />
+        <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
         <RbRefreshButton refreshList={refreshList} />
       </div>
       <RbTable
