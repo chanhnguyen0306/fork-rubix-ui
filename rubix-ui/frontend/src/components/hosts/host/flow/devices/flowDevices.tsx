@@ -43,7 +43,7 @@ export const FlowDevices = () => {
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
-      breadcrumbName: "Connections",
+      breadcrumbName: "Supervisors",
     },
     {
       path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
@@ -54,20 +54,20 @@ export const FlowDevices = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: "Location Network",
+      breadcrumbName: "Group",
     },
     {
       path: ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID),
-      breadcrumbName: "Hosts",
+      breadcrumbName: "Controllers",
     },
     {
       path: ROUTES.HOST.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID || "")
         .replace(":hostUUID", hostUUID || ""),
-      breadcrumbName: "Flow Networks",
+      breadcrumbName: "Controller",
     },
     {
       path: ROUTES.DEVICES.replace(":connUUID", connUUID || "")
@@ -76,7 +76,7 @@ export const FlowDevices = () => {
         .replace(":hostUUID", hostUUID || "")
         .replace(":pluginName", pluginName || "")
         .replace(":networkUUID", networkUUID || ""),
-      breadcrumbName: "Flow Devices",
+      breadcrumbName: "Devices",
     },
   ];
 

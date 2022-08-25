@@ -37,7 +37,7 @@ import { TokenModal } from "./components/settings/views/token-modal";
 const { Content, Sider } = Layout;
 
 const sidebarItems = [
-  { name: "Connections", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
+  { name: "Supervisors", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
   { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
   { name: "Tools", icon: ToolOutlined, link: "" },
 ];
@@ -245,7 +245,7 @@ const App: React.FC = () => {
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon: Icon, link } = item;
 
-    if (name === "Connections") {
+    if (name === "Supervisors") {
       return { ...routeData[0], icon: <Icon /> } as any;
     }
 

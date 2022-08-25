@@ -12,7 +12,7 @@ export const Networks = () => {
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
-      breadcrumbName: "Connections",
+      breadcrumbName: "Supervisors",
     },
     {
       path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
@@ -23,7 +23,7 @@ export const Networks = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: "Location Network",
+      breadcrumbName: "Group",
     },
   ];
 

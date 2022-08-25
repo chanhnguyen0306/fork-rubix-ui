@@ -75,7 +75,7 @@ export const Hosts = () => {
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
-      breadcrumbName: "Connections",
+      breadcrumbName: "Supervisors",
     },
     {
       path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
@@ -86,20 +86,20 @@ export const Hosts = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: "Location Network",
+      breadcrumbName: "Group",
     },
     {
       path: ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID),
-      breadcrumbName: "Hosts",
+      breadcrumbName: "Controllers",
     },
   ];
 
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Hosts
+        Controllers
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />

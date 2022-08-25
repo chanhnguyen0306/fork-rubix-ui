@@ -102,7 +102,7 @@ export function getTreeDataIterative(connections: any) {
   return [
     {
       ...getTreeObject(
-        { name: "Connections", uuid: "connections" },
+        { name: "Supervisors", uuid: "connections" },
         ROUTES.CONNECTIONS,
         ""
       ),

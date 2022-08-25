@@ -12,7 +12,7 @@ const ConnectionsTab = () => {
   return (
     <span>
       <ApartmentOutlined />
-      CONNECTIONS
+      SUPERVISORS
     </span>
   );
 };
@@ -32,11 +32,11 @@ export const Connections = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Connections
+        Supervisors
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb
-          routes={[{ path: ROUTES.CONNECTIONS, breadcrumbName: "Connections" }]}
+          routes={[{ path: ROUTES.CONNECTIONS, breadcrumbName: "Supervisors" }]}
         />
         <Tabs defaultActiveKey="1">
           <TabPane tab={ConnectionsTab()} key="Connections">
