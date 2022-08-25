@@ -96,6 +96,13 @@ export const FlowDeviceTable = (props: any) => {
     setIsRestarting(false);
   };
 
+  const handleExport = () => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
+    setIsExportModalVisible(true);
+  };
+
   const getNavigationLink = (deviceUUID: string): string => {
     return ROUTES.POINTS.replace(":connUUID", connUUID)
       .replace(":locUUID", locUUID)
@@ -146,10 +153,7 @@ export const FlowDeviceTable = (props: any) => {
 
   return (
     <>
-      <RbExportButton
-        handleExport={() => setIsExportModalVisible(true)}
-        disabled={selectedUUIDs.length === 0}
-      />
+      <RbExportButton handleExport={handleExport} />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showCreateModal({} as Device)} />
