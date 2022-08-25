@@ -3,6 +3,7 @@ package store
 import (
 	"errors"
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -137,6 +138,13 @@ func (inst *Store) makeUserStorePath() error {
 //makeUserStorePath  => /hom/user/rubix/tmp
 func (inst *Store) makeUserPathTmp() error {
 	return inst.App.MakeDirectoryIfNotExists(fmt.Sprintf("%s/tmp", inst.getUserPath()), os.FileMode(FilePerm))
+}
+
+//makeUserStorePath  => /hom/user/rubix/tmp
+func (inst *Store) makeUserPathTmpDir() (string, error) {
+	dir := uuid.ShortUUID("tmp")
+	path := fmt.Sprintf("%s/tmp/%s", inst.getUserPath(), dir)
+	return path, inst.App.MakeDirectoryIfNotExists(path, os.FileMode(FilePerm))
 }
 
 //makeUserStorePath  => /hom/user/rubix/config

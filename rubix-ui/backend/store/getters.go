@@ -25,8 +25,3 @@ func (inst *Store) GetAppPathAndVersion(appName, version string) string {
 func (inst *Store) getAppPathAndVersion(appName, version string) string {
 	return filePath(fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appName, version))
 }
-
-// getAppPathAndVersion get the full app install path and version => /home/user/rubix/store/apps/wires-builds/v0.0.1
-func (inst *Store) getAppBuildPathAndVersion(appBuildName, version string) string {
-	return filePath(fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appBuildName, version))
-}
