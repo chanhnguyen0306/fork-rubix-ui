@@ -6,6 +6,7 @@ import {
   ImportOutlined,
   ExportOutlined,
   DownloadOutlined,
+  PlayCircleOutlined,
 } from "@ant-design/icons";
 
 const btn: React.CSSProperties = { margin: "5px", float: "right" };
@@ -79,7 +80,6 @@ export const RbExportButton = (props: any) => {
 
 export const RbDownloadButton = (props: any) => {
   const { handleClick, disabled } = props;
-
   return (
     <Button
       className="download-color white--text"
@@ -88,6 +88,21 @@ export const RbDownloadButton = (props: any) => {
       style={btn}
     >
       <DownloadOutlined /> Download
+    </Button>
+  );
+};
+
+export const RbRestartButton = (props: any) => {
+  const { handleClick, disabled, loading } = props;
+  return (
+    <Button
+      className="restart-color white--text"
+      onClick={handleClick}
+      disabled={disabled}
+      loading={loading}
+      style={btn}
+    >
+      <PlayCircleOutlined /> Restart
     </Button>
   );
 };

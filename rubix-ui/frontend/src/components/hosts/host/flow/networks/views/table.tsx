@@ -1,5 +1,4 @@
-import { Space, Button, Spin, notification } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { Space, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { main, model } from "../../../../../../../wailsjs/go/models";
@@ -10,6 +9,7 @@ import {
   RbImportButton,
   RbExportButton,
   RbRefreshButton,
+  RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { NETWORK_HEADERS } from "../../../../../../constants/headers";
@@ -37,6 +37,7 @@ export const FlowNetworkTable = () => {
   const [networks, setNetworks] = useState([] as Network[]);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
@@ -122,11 +123,13 @@ export const FlowNetworkTable = () => {
     if (selectedUUIDs.length === 0) {
       return openNotificationWithIcon("warning", `please select at least one`);
     }
+    setIsRestarting(true);
     const selectedNetworks = selectedUUIDs as Network[];
     const pluginUUIDs = selectedNetworks.map((net) => {
       return { name: net.plugin_name, uuid: net.plugin_conf_id };
     }) as PluginUUIDs[];
     await flowPluginFactory.RestartBulk(pluginUUIDs);
+    setIsRestarting(false);
   };
 
   const handleExport = () => {
@@ -151,13 +154,7 @@ export const FlowNetworkTable = () => {
   return (
     <>
       <div className="flow-networks-actions">
-        <Button
-          className="restart-color white--text"
-          onClick={handleRestart}
-          style={{ margin: "5px", float: "right" }}
-        >
-          <PlayCircleOutlined /> Restart
-        </Button>
+        <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
         <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
         <RbDeleteButton bulkDelete={bulkDelete} />
         <RbImportButton showModal={() => setIsImportModalVisible(true)} />
