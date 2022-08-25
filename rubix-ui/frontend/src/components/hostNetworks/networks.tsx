@@ -23,7 +23,7 @@ export const Networks = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: "Location Network",
+      breadcrumbName: "Group",
     },
   ];
 

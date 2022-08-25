@@ -256,7 +256,7 @@ export const HOST_NETWORK_HEADERS = [
     key: "description",
   },
   {
-    title: "Hosts number",
+    title: "Controllers number",
     dataIndex: "hosts",
     key: "hosts",
     render: (hosts: []) => <a>{hosts ? hosts.length : 0}</a>,

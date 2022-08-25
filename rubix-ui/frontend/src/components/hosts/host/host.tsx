@@ -39,27 +39,27 @@ export const Host = () => {
         ":connUUID",
         connUUID || ""
       ).replace(":locUUID", locUUID || ""),
-      breadcrumbName: "Location Network",
+      breadcrumbName: "Group",
     },
     {
       path: ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID),
-      breadcrumbName: "Hosts",
+      breadcrumbName: "Controllers",
     },
     {
       path: ROUTES.HOST.replace(":connUUID", connUUID || "")
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID || "")
         .replace(":hostUUID", hostUUID || ""),
-      breadcrumbName: "Flow Networks",
+      breadcrumbName: "Controller",
     },
   ];
 
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Flow Networks
+        Controllers
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
