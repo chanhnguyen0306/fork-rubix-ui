@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/git/pkg/git"
+	fileutils "github.com/NubeIO/lib-dirs/dirs"
+	"os"
+	"strings"
 )
 
 const flow = "flow-framework"
@@ -50,12 +53,62 @@ func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, realseVe
 	return app, nil
 }
 
+// UnPackWires wires build is different to the go-lang or python builds as its zipped in a 2nd folder
+// this will unzip and re-zip the build to match the other apps
+func (inst *Store) UnPackWires(version string) error {
+	path := inst.getAppPathAndVersion(rubixWires, version)
+	unzipPath := fmt.Sprintf("%s/%s", path, version)
+	f := fileutils.New()
+	tmpDir, err := inst.makeUserPathTmpDir()
+	if err != nil {
+		return err
+	}
+	_, err = f.UnZip(unzipPath, tmpDir, os.FileMode(FilePerm))
+	if err != nil {
+		return err
+	}
+	files, err := f.ListFiles(tmpDir)
+	if err != nil {
+		return err
+	}
+	var wiresDir string
+	for _, file := range files {
+		if strings.Contains(file, "NubeIO-wires") {
+			rubixPath := fmt.Sprintf("%s/%s", tmpDir, file)
+			files, err = f.ListFiles(rubixPath)
+			wiresDir = file
+			if err != nil {
+				return err
+			}
+			for _, file := range files {
+				if strings.Contains(file, "rubix-wires") {
+					reZipPath := fmt.Sprintf("%s/%s/%s", tmpDir, wiresDir, rubixWires)
+					err := f.RecursiveZip(reZipPath, unzipPath)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	err = f.RmRF(tmpDir)
+	if err != nil {
+		return err
+	}
+	return err
+
+}
+
 // DownloadWires download rubix-wires
 func (inst *Store) DownloadWires(token, version string, cleanDownload bool) (*App, error) {
 	app, err := inst.gitDownloadAsset(token, rubixWires, version, wiresBuilds, "", "", cleanDownload, false, git.DownloadOptions{
 		AssetName:     rubixWires,
 		DownloadFirst: true,
 	})
+	if err != nil {
+		return nil, err
+	}
+	err = inst.UnPackWires(version)
 	if err != nil {
 		return nil, err
 	}
