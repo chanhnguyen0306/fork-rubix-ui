@@ -72,6 +72,11 @@ func (inst *App) GetReleaseByVersion(version string) *store.Release {
 }
 
 func (inst *App) getReleaseByVersion(version string) (*store.Release, error) {
+	if len(version) > 0 {
+		if version[0:1] != "v" {
+			version = fmt.Sprintf("v%s", version)
+		}
+	}
 	v, err := inst.DB.GetReleaseByVersion(version)
 	if err != nil {
 		return nil, err

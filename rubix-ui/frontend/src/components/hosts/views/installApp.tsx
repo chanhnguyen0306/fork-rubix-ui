@@ -61,8 +61,7 @@ const InstallApp = (props: any) => {
             payload.connUUID,
             payload.hostUUID,
             payload.appName,
-            payload.appVersion,
-            payload.arch,
+            payload.appVersion, // https://github.com/NubeIO/rubix-ui/blob/a98b70c67ff11d67d73820f7cf596d9c55cec2f4/rubix-ui/frontend/src/components/hosts/views/installApp.tsx#L64
             payload.appVersion
           )
           .catch((err) => ({ payload, hasError: true, err: err }))

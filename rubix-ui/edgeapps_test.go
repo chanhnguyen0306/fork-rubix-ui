@@ -13,7 +13,7 @@ func TestApp_EdgeDeviceInfoAndApps(t *testing.T) {
 
 func TestApp_EdgeInstallApp(t *testing.T) {
 	app := NewApp()
-	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion, arch, releaseVersion)
+	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion, releaseVersion)
 	pprint.PrintJOSN(resp)
 }
 
