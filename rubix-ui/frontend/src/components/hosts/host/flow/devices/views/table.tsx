@@ -1,21 +1,22 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { main, model } from "../../../../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../../../../utils/utils";
-import { FlowDeviceFactory } from "../factory";
-import { ROUTES } from "../../../../../../constants/routes";
-import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { model, main } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
-  RbAddButton,
-  RbDeleteButton,
   RbExportButton,
   RbImportButton,
+  RbDeleteButton,
+  RbAddButton,
 } from "../../../../../../common/rb-table-actions";
-import { ExportModal, ImportModal } from "./import-export";
-import { EditModal } from "./edit";
+import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
+import { ROUTES } from "../../../../../../constants/routes";
+import { isObjectEmpty } from "../../../../../../utils/utils";
+import { FlowPluginFactory } from "../../plugins/factory";
+import { FlowDeviceFactory } from "../factory";
 import { CreateModal } from "./create";
+import { EditModal } from "./edit";
+import { ExportModal, ImportModal } from "./import-export";
 
 import Device = model.Device;
 
@@ -39,8 +40,10 @@ export const FlowDeviceTable = (props: any) => {
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
   const flowDeviceFactory = new FlowDeviceFactory();
-  flowDeviceFactory.connectionUUID = connUUID;
-  flowDeviceFactory.hostUUID = hostUUID;
+  const flowPluginFactory = new FlowPluginFactory();
+  flowDeviceFactory.connectionUUID = flowPluginFactory.connectionUUID =
+    connUUID;
+  flowDeviceFactory.hostUUID = flowPluginFactory.hostUUID = hostUUID;
 
   const columns = [
     ...FLOW_DEVICE_HEADERS,
@@ -131,6 +134,7 @@ export const FlowDeviceTable = (props: any) => {
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showCreateModal({} as Device)} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
