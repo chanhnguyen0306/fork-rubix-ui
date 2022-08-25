@@ -1,4 +1,4 @@
-import {assistmodel, assitcli, main, store} from "../../../wailsjs/go/models";
+import { assistmodel, assitcli, main } from "../../../wailsjs/go/models";
 import {
   AddHost,
   DeleteHost,
@@ -6,7 +6,7 @@ import {
   EditHost,
   GetHost,
   GetHosts,
-  GetHostSchema, GitListReleases,
+  GetHostSchema,
   PingHost,
 } from "../../../wailsjs/go/main/App";
 import { Helpers } from "../../helpers/checks";
@@ -20,13 +20,11 @@ export class HostsFactory {
   private _this!: assistmodel.Host;
   connectionUUID!: string;
 
-
-
   async Schema(): Promise<assistmodel.HostSchema> {
     return await GetHostSchema(this.connectionUUID);
   }
 
-  async PinHost(): Promise<boolean> {
+  async PingHost(): Promise<boolean> {
     return await PingHost(this.connectionUUID, this.uuid);
   }
 
@@ -43,7 +41,7 @@ export class HostsFactory {
   }
 
   async Update(): Promise<assistmodel.Host> {
-    return await EditHost(this.connectionUUID, this.uuid,this._this);
+    return await EditHost(this.connectionUUID, this.uuid, this._this);
   }
 
   async Delete(): Promise<assitcli.Response> {
@@ -55,7 +53,6 @@ export class HostsFactory {
   }
 
   async Ping(hostUUID: string): Promise<boolean> {
-    return true
+    return true;
   }
-
 }
