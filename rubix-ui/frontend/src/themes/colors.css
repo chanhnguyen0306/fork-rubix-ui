@@ -24,6 +24,10 @@
     color: var(--json-color) !important;
 }
 
+.restart-color--text {
+    color: var(--restart-color) !important;
+}
+
 .error--text {
     color: var(--error) !important;
 }
@@ -205,6 +209,30 @@
     color: unset;
     border-color: var(--json-color);
     background-color: var(--json-color);
+    text-shadow: none;
+    box-shadow: none;
+    opacity: 0.8;
+}
+
+.restart-color {
+    background-color: var(--restart-color);
+}
+
+.restart-color.ant-btn:hover,
+.restart-color.ant-btn:focus,
+.restart-color.ant-btn:active {
+    color: unset;
+    border-color: var(--restart-color);
+    background-color: var(--restart-color);
+}
+
+.restart-color.ant-btn[disabled],
+.restart-color.ant-btn[disabled]:hover,
+.restart-color.ant-btn[disabled]:focus,
+.restart-color.ant-btn[disabled]:active {
+    color: unset;
+    border-color: var(--restart-color);
+    background-color: var(--restart-color);
     text-shadow: none;
     box-shadow: none;
     opacity: 0.8;

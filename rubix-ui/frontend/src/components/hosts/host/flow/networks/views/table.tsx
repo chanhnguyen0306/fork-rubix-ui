@@ -1,23 +1,27 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { FlowNetworkFactory } from "../factory";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import { main, model } from "../../../../../../../wailsjs/go/models";
-import { ROUTES } from "../../../../../../constants/routes";
-import { NETWORK_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
-  RbExportButton,
   RbImportButton,
+  RbExportButton,
   RbRefreshButton,
+  RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
-import { CreateModal, EditModal } from "./create";
+import { openNotificationWithIcon } from "../../../../../../utils/utils";
+import { NETWORK_HEADERS } from "../../../../../../constants/headers";
+import { ROUTES } from "../../../../../../constants/routes";
+import { FlowPluginFactory } from "../../plugins/factory";
+import { FlowNetworkFactory } from "../factory";
+import { EditModal, CreateModal } from "./create";
 import { ExportModal, ImportModal } from "./import-export";
 import "./style.css";
 
 import UUIDs = main.UUIDs;
+import PluginUUIDs = main.PluginUUIDs;
 import Network = model.Network;
 
 export const FlowNetworkTable = () => {
@@ -33,14 +37,16 @@ export const FlowNetworkTable = () => {
   const [networks, setNetworks] = useState([] as Network[]);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
-  let networkFactory = new FlowNetworkFactory();
-  networkFactory.connectionUUID = connUUID;
-  networkFactory.hostUUID = hostUUID;
+  const networkFactory = new FlowNetworkFactory();
+  const flowPluginFactory = new FlowPluginFactory();
+  networkFactory.connectionUUID = flowPluginFactory.connectionUUID = connUUID;
+  networkFactory.hostUUID = flowPluginFactory.hostUUID = hostUUID;
 
   const columns = [
     ...NETWORK_HEADERS,
@@ -113,6 +119,26 @@ export const FlowNetworkTable = () => {
     setSelectedUUIDs([]);
   };
 
+  const handleRestart = async () => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
+    setIsRestarting(true);
+    const selectedNetworks = selectedUUIDs as Network[];
+    const pluginUUIDs = selectedNetworks.map((net) => {
+      return { name: net.plugin_name, uuid: net.plugin_conf_id };
+    }) as PluginUUIDs[];
+    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    setIsRestarting(false);
+  };
+
+  const handleExport = () => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
+    setIsExportModalVisible(true);
+  };
+
   const getNavigationLink = (
     networkUUID: string,
     pluginName: string
@@ -128,14 +154,11 @@ export const FlowNetworkTable = () => {
   return (
     <>
       <div className="flow-networks-actions">
+        <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
         <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
         <RbDeleteButton bulkDelete={bulkDelete} />
         <RbImportButton showModal={() => setIsImportModalVisible(true)} />
-        <RbExportButton
-          handleExport={() => setIsExportModalVisible(true)}
-          disabled={selectedUUIDs.length === 0}
-        />
-
+        <RbExportButton handleExport={handleExport} />
         <RbRefreshButton refreshList={fetchNetworks} />
       </div>
       <RbTable
