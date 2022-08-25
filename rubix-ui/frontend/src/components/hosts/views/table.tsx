@@ -313,6 +313,13 @@ export const HostsTable = (props: any) => {
       key: "actions",
       render: (_: any, host: Host) => (
         <Space size="middle">
+          <a
+            onClick={(e) => {
+              handlePing(host.uuid, e);
+            }}
+          >
+            Ping
+          </a>
           <Link
             to={ROUTES.HOST.replace(":connUUID", connUUID)
               .replace(":locUUID", locUUID)
@@ -322,8 +329,8 @@ export const HostsTable = (props: any) => {
             View Networks
           </Link>
           <a
-            onClick={() => {
-              showModal(host);
+            onClick={(e) => {
+              showModal(host, e);
             }}
           >
             Edit
@@ -336,7 +343,11 @@ export const HostsTable = (props: any) => {
             Install
           </a>
           <Tooltip title="Rubix-Wires and Backup">
-            <a onClick={() => showBackupModal(host)}>
+            <a
+              onClick={(e) => {
+                showBackupModal(host, e);
+              }}
+            >
               <MenuFoldOutlined />
             </a>
           </Tooltip>
@@ -379,12 +390,19 @@ export const HostsTable = (props: any) => {
     refreshList();
   };
 
+  const handlePing = async (uuid: string, e: any) => {
+    e.stopPropagation();
+    factory.uuid = uuid;
+    await factory.PingHost();
+  };
+
   const getNetworkNameByUUID = (uuid: string) => {
     const network = networks.find((l: Location) => l.uuid === uuid);
     return network ? network.name : "";
   };
 
-  const showModal = (host: assistmodel.Host) => {
+  const showModal = (host: Host, e: any) => {
+    e.stopPropagation();
     setCurrentHost(host);
     setIsModalVisible(true);
     if (isObjectEmpty(hostSchema)) {
@@ -394,10 +412,11 @@ export const HostsTable = (props: any) => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentHost({} as assistmodel.Host);
+    setCurrentHost({} as Host);
   };
 
-  const showBackupModal = (host: Host) => {
+  const showBackupModal = (host: Host, e: any) => {
+    e.stopPropagation();
     setCurrentHost(host);
     setIsBackupModalVisible(true);
   };
@@ -411,7 +430,7 @@ export const HostsTable = (props: any) => {
     <div>
       <div className="hosts-table-actions">
         <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbAddButton handleClick={() => showModal({} as assistmodel.Host)} />
+        <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
         <RbRefreshButton refreshList={refreshList} />
       </div>
       <RbTable
