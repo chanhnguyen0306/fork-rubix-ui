@@ -8,10 +8,14 @@ import {
   RbImportButton,
   RbDeleteButton,
   RbAddButton,
+  RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../constants/routes";
-import { isObjectEmpty } from "../../../../../../utils/utils";
+import {
+  isObjectEmpty,
+  openNotificationWithIcon,
+} from "../../../../../../utils/utils";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowDeviceFactory } from "../factory";
 import { CreateModal } from "./create";
@@ -19,9 +23,10 @@ import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 
 import Device = model.Device;
+import UUIDs = main.UUIDs;
+import PluginUUIDs = main.PluginUUIDs;
 
 export const FlowDeviceTable = (props: any) => {
-  const { data, isFetching, refreshList } = props;
   const {
     connUUID = "",
     locUUID = "",
@@ -30,12 +35,14 @@ export const FlowDeviceTable = (props: any) => {
     networkUUID = "",
     pluginName = "",
   } = useParams();
+  const { data, isFetching, refreshList, pluginUUID } = props;
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
@@ -73,8 +80,20 @@ export const FlowDeviceTable = (props: any) => {
   };
 
   const bulkDelete = async () => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
     await flowDeviceFactory.BulkDelete(selectedUUIDs);
     refreshList();
+  };
+
+  const handleRestart = async () => {
+    setIsRestarting(true);
+    const pluginUUIDs = [
+      { name: pluginName, uuid: pluginUUID },
+    ] as PluginUUIDs[];
+    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    setIsRestarting(false);
   };
 
   const getNavigationLink = (deviceUUID: string): string => {
@@ -134,6 +153,7 @@ export const FlowDeviceTable = (props: any) => {
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showCreateModal({} as Device)} />
+      <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
 
       <RbTable
         rowKey="uuid"
@@ -148,14 +168,14 @@ export const FlowDeviceTable = (props: any) => {
         isLoadingForm={isLoadingForm}
         schema={schema}
         onCloseModal={closeEditModal}
-        refreshList={refreshList}
+        refreshList={fetch}
       />
       <CreateModal
         isModalVisible={isCreateModalVisible}
         isLoadingForm={isLoadingForm}
         schema={schema}
         onCloseModal={closeCreateModal}
-        refreshList={refreshList}
+        refreshList={fetch}
       />
       <ExportModal
         isModalVisible={isExportModalVisible}
@@ -165,7 +185,7 @@ export const FlowDeviceTable = (props: any) => {
       <ImportModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
-        refreshList={refreshList}
+        refreshList={fetch}
       />
     </>
   );
