@@ -16,7 +16,7 @@ export const Consumers = () => {
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
-      breadcrumbName: "Connections",
+      breadcrumbName: "Supervisors",
     },
     {
       path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),

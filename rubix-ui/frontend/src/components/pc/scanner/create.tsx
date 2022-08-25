@@ -96,7 +96,7 @@ export const CreateModal = (props: any) => {
 
   return (
     <Modal
-      title="Add New Connections"
+      title="Add New Supervisors"
       visible={isModalVisible}
       onOk={() => handleSubmit(formData)}
       onCancel={handleClose}
@@ -133,7 +133,7 @@ export const AddButton = (props: any) => {
       onClick={() => showModal()}
       style={{ margin: "5px", float: "right" }}
     >
-      <PlusOutlined /> Connections
+      <PlusOutlined /> Supervisors
     </Button>
   );
 };

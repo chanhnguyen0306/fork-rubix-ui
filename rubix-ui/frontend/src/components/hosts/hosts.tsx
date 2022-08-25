@@ -75,7 +75,7 @@ export const Hosts = () => {
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
-      breadcrumbName: "Connections",
+      breadcrumbName: "Supervisors",
     },
     {
       path: ROUTES.LOCATIONS.replace(":connUUID", connUUID || ""),
