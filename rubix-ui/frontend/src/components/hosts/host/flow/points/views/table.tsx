@@ -90,8 +90,6 @@ export const FlowPointsTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
-      console.log(selectedRows);
-
       setSelectedUUIDs(selectedRows);
     },
   };
