@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
@@ -54,21 +53,37 @@ type EdgeInstallAppsBulk struct {
 
 func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList EdgeInstallAppsBulk) {
 	for _, app := range appsList.AppsList {
-		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, app.Arch, releaseVersion)
+		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, releaseVersion)
 	}
 
 }
 
 // EdgeInstallApp install an app
-func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion string) *installer.InstallResp {
+func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *installer.InstallResp {
+
 	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
+	var arch string
 	if getProduct != nil {
 		arch = getProduct.Arch
 	} else {
 		inst.crudMessage(false, fmt.Sprintf("failed to find device app:%s arch:%s", appName, arch))
 		return nil
 	}
-	pprint.PrintJOSN(getProduct)
+	log.Infof("start app install app:%s version:%s arch:%s", appName, appVersion, arch)
+	releaseVersion = getProduct.FlowVersion //TODO UI needs to pass this in
+
+	if releaseVersion == "" {
+		release, err := inst.getLatestRelease()
+		if release == "" || err != nil {
+			inst.crudMessage(false, fmt.Sprintf("failed to find a vaild relase version"))
+			return nil
+		}
+		fmt.Println(release, 999999)
+		releaseVersion = release
+		//releases, err := inst.getReleases()
+		//pprint.PrintJOSN(releases)
+	}
+
 	var lastStep = "5"
 	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -88,6 +103,10 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, r
 	}
 
 	release, err := inst.getReleaseByVersion(releaseVersion)
+	if release == nil {
+		inst.crudMessage(false, fmt.Sprintf("failed to find a vaild relase version:%s", releaseVersion))
+		return nil
+	}
 	var appHasPlugins bool
 	var releaseApp *store.Apps
 	for _, app := range release.Apps {

@@ -58,8 +58,8 @@ export class ReleasesFactory {
   // example if installing flow-framework the user needs to already have this downloaded on the PC via the app-store
   // appName = flow-framework,  appVersion = v0.6.0, arch = amd64, releaseVersion = v0.6.0
   // to get the releaseVersion use either GetRelease() or GetReleases()
-  async EdgeInstallApp(connUUID: string, hostUUID: string, appName: string, appVersion: string, arch: string, releaseVersion: string): Promise<installer.InstallResp> {
-    return await EdgeInstallApp(connUUID, hostUUID, appName, appVersion, arch, releaseVersion);
+  async EdgeInstallApp(connUUID: string, hostUUID: string, appName: string, appVersion: string, releaseVersion: string): Promise<installer.InstallResp> {
+    return await EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion);
   }
 
   async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) { // releaseVersion TODO Sanjeev to add this back in // let user select this to upgrade/downgrade GetReleases

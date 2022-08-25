@@ -177,7 +177,6 @@ const AppInstallInfo = (props: any) => {
       connUUID: connUUID,
       hostUUID: host.uuid,
       appName: item.app_name,
-      arch: "armv7",
       appVersion: item.latest_version,
     };
     releaseFactory
@@ -186,7 +185,6 @@ const AppInstallInfo = (props: any) => {
         payload.hostUUID,
         payload.appName,
         payload.appVersion,
-        payload.arch,
         payload.appVersion
       )
       .catch((err) => ({ payload, hasError: true, err: err }));
