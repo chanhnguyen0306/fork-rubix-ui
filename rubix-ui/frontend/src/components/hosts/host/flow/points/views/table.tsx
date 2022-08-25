@@ -1,35 +1,45 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { FlowPointFactory } from "../factory";
-import { main, model } from "../../../../../../../wailsjs/go/models";
-import { isObjectEmpty } from "../../../../../../utils/utils";
-import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { model, main } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
-  RbAddButton,
-  RbDeleteButton,
   RbExportButton,
   RbImportButton,
+  RbDeleteButton,
+  RbAddButton,
+  RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
-import { EditModal } from "./edit";
+import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
+import {
+  isObjectEmpty,
+  openNotificationWithIcon,
+} from "../../../../../../utils/utils";
+import { FlowNetworkFactory } from "../../networks/factory";
+import { FlowPluginFactory } from "../../plugins/factory";
+import { FlowPointFactory } from "../factory";
 import { CreateModal } from "./create";
+import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
+import { WritePointValueModal } from "./write-point-value";
 
 import Point = model.Point;
-import { WritePointValueModal } from "./write-point-value";
+import UUIDs = main.UUIDs;
+import PluginUUIDs = main.PluginUUIDs;
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
   const {
     connUUID = "",
+    networkUUID = "",
     hostUUID = "",
     deviceUUID = "",
     pluginName = "",
   } = useParams();
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [pluginUUID, setPluginUUID] = useState<any>();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -37,10 +47,19 @@ export const FlowPointsTable = (props: any) => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
     useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
 
   let flowPointFactory = new FlowPointFactory();
-  flowPointFactory.connectionUUID = connUUID;
-  flowPointFactory.hostUUID = hostUUID;
+  const flowNetworkFactory = new FlowNetworkFactory();
+  const flowPluginFactory = new FlowPluginFactory();
+  flowPointFactory.connectionUUID =
+    flowNetworkFactory.connectionUUID =
+    flowPluginFactory.connectionUUID =
+      connUUID;
+  flowPointFactory.hostUUID =
+    flowNetworkFactory.hostUUID =
+    flowPluginFactory.hostUUID =
+      hostUUID;
 
   const columns = [
     ...FLOW_POINT_HEADERS,
@@ -71,13 +90,40 @@ export const FlowPointsTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
+      console.log(selectedRows);
+
       setSelectedUUIDs(selectedRows);
     },
+  };
+
+  useEffect(() => {
+    setPlugin();
+  }, []);
+
+  const setPlugin = async () => {
+    const res = await flowNetworkFactory.GetOne(networkUUID, false);
+    setPluginUUID(res.plugin_conf_id);
   };
 
   const bulkDelete = async () => {
     await flowPointFactory.BulkDelete(selectedUUIDs);
     refreshList();
+  };
+
+  const handleRestart = async () => {
+    setIsRestarting(true);
+    const pluginUUIDs = [
+      { name: pluginName, uuid: pluginUUID },
+    ] as PluginUUIDs[];
+    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    setIsRestarting(false);
+  };
+
+  const handleExport = () => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
+    setIsExportModalVisible(true);
   };
 
   const getSchema = async (pluginName: string) => {
@@ -120,13 +166,12 @@ export const FlowPointsTable = (props: any) => {
 
   return (
     <>
-      <RbExportButton
-        handleExport={() => setIsExportModalVisible(true)}
-        disabled={selectedUUIDs.length === 0}
-      />
+      <RbExportButton handleExport={handleExport} />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={showCreateModal} />
+      <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
