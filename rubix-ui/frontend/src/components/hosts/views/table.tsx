@@ -18,6 +18,7 @@ import { ReleasesFactory } from "../../release/factory";
 import { HostsFactory } from "../factory";
 import InstallApp from "./installApp";
 import { BackupModal, CreateEditModal } from "./modals";
+import RbConfirmPopover from "../../../common/rb-confirm-popover";
 
 import "./style.css";
 
@@ -191,8 +192,9 @@ const AppInstallInfo = (props: any) => {
   };
 
   const fetchAppInfo = () => {
+    updateAppInfoMsg("");
     updateIsLoading(true);
-    const appInfo = releaseFactory
+    return releaseFactory
       .EdgeDeviceInfoAndApps(connUUID, host.uuid)
       .then((appInfo: any) => {
         if (!appInfo) {
@@ -217,7 +219,15 @@ const AppInstallInfo = (props: any) => {
   };
 
   if (appInfoMsg) {
-    return <span>{appInfoMsg}</span>;
+    return (
+      <span>
+        {appInfoMsg}
+        <span>
+          {" "}
+          <a onClick={fetchAppInfo}>Click here to refresh</a>
+        </span>
+      </span>
+    );
   }
 
   return (
@@ -233,9 +243,11 @@ const AppInstallInfo = (props: any) => {
               title={<span>{item.app_name}</span>}
               description={item.latest_version}
             />
-            <Button type="link" onClick={() => installApp(item)}>
-              Install
-            </Button>
+            <RbConfirmPopover
+              title="Install App"
+              buttonTitle="Install"
+              handleOk={() => installApp(item)}
+            ></RbConfirmPopover>
           </List.Item>
         )}
       />
@@ -252,10 +264,13 @@ const AppInstallInfo = (props: any) => {
               description={item.message}
             />
             <span
+              className="flex-1"
               style={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                alignItems: "flex-start",
+                borderLeft: '1px solid #dfdfdf',
+                padding: '0 2rem',
               }}
             >
               <span>
@@ -272,6 +287,7 @@ const AppInstallInfo = (props: any) => {
                 )}
               </Text>
             </span>
+            <span className="flex-1"></span>
           </List.Item>
         )}
       />
