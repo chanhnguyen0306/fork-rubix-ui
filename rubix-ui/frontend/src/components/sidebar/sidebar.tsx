@@ -86,14 +86,15 @@ const HeaderSider = (props: any) => {
 const AvatarDropdown = (props: any) => {
   const menu = (
     <Menu
+      _internalDisableMenuItemTitleTooltip
       items={[
         {
           key: "1",
-          label: TokenMenuItem(props),
+          label: SwitchThemeMenuItem(),
         },
         {
           key: "2",
-          label: SwitchThemeMenuItem(),
+          label: TokenMenuItem(props),
         },
         {
           key: "3",
@@ -108,7 +109,7 @@ const AvatarDropdown = (props: any) => {
       trigger={["click"]}
       overlayClassName="settings-dropdown"
     >
-      <a onClick={(e) => e.preventDefault()}>
+      <a onClick={(e) => e.stopPropagation()}>
         <Avatar icon={<UserOutlined />} className="avar" />
       </a>
     </Dropdown>
