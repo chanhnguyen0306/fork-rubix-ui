@@ -107,12 +107,12 @@ aside .active {
 }
 
 .settings-dropdown>ul>li:first-child {
-    min-height: 40px;
+    min-height: 50px;
     border-top: unset;
 }
 
 .settings-dropdown>ul>li {
-    min-height: 40px;
+    min-height: 50px;
     border-top: 1px solid var(--nube-light-grey);
 }
 
