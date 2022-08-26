@@ -17,7 +17,7 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 	if connection == nil {
 		return errors.New(fmt.Sprintf("connection not found :%s", connUUID))
 	}
-	client, err := inst.initConnectionAuth(&AssistClient{
+	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connection.UUID,
 	})
 	if err != nil {
@@ -62,7 +62,7 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 }
 
 func (inst *App) testProxy(connUUID, hostUUID string) error {
-	client, err := inst.initConnectionAuth(&AssistClient{
+	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	if err != nil {
@@ -76,7 +76,7 @@ func (inst *App) testProxy(connUUID, hostUUID string) error {
 }
 
 func (inst *App) edgeAddNetwork(connUUID, hostUUID string, body *model.Network, restartPlugin bool) (*model.Network, error) {
-	client, err := inst.initConnectionAuth(&AssistClient{
+	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	if err != nil {
@@ -88,7 +88,7 @@ func (inst *App) edgeAddNetwork(connUUID, hostUUID string, body *model.Network, 
 }
 
 func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
-	client, err := inst.initConnectionAuth(&AssistClient{
+	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	if err != nil {
@@ -125,7 +125,7 @@ func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []Plugi
 }
 
 func (inst *App) ffProxy(connUUID, hostUUID string) error {
-	client, err := inst.initConnectionAuth(&AssistClient{
+	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	if err != nil {
