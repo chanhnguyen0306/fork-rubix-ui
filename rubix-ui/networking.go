@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/rubix-ui/backend/edge"
-	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 
 // Update IP and networking on host/remote devices
@@ -29,23 +29,24 @@ Set Manual IP
 POST
 */
 
-func (inst *App) GetHostActiveNetworks(connUUID, hostUUID string) interface{} {
+func (inst *App) GetHostActiveNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
 	client, err := inst.initConnection(connUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	data, err := client.ProxyGET(hostUUID, "/api/networking/networks")
+	resp, err := client.ProxyGET(hostUUID, "/api/networking/networks")
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	if data.IsError() {
-		inst.crudMessage(false, fmt.Sprintf("error %s", data.Error()))
+	if resp.IsError() {
+		inst.crudMessage(false, fmt.Sprintf("error %s", resp.Error()))
 		return nil
 	}
-	d := humanize.ArrayOfMaps(data.Body())
-	return d
+	data := resp.Result().(*[]networking.NetworkInterfaces)
+	return *data
+
 }
 
 func (inst *App) GetHostInterfaces(connUUID, hostUUID string) *edge.InterfaceNames {
