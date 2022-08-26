@@ -1,4 +1,4 @@
-import { main, model, storage } from "../../../../../../wailsjs/go/models";
+import {main, model, storage, store} from "../../../../../../wailsjs/go/models";
 import {
   AddDevice, AddDevicesBulk, AddPointsBulk,
   DeleteDevice,
@@ -57,58 +57,32 @@ export class FlowDeviceFactory {
     return resp;
   }
 
+
   async GetNetworkDevices(networkUUID: string): Promise<Array<model.Device>> {
-    let resp: Promise<Array<model.Device>> = {} as Promise<Array<model.Device>>;
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID);
+  }
+
+
+  async Add(networkUUID: string, body: model.Device): Promise<model.Device> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     hasUUID(networkUUID);
-    await GetNetworkDevices(this.connectionUUID, this.hostUUID, networkUUID)
-      .then((res) => {
-        resp = res as unknown as Promise<Array<model.Device>>;
-      })
-      .catch((err) => {
-        return resp;
-      });
-    return resp;
+    body.network_uuid = networkUUID
+    return await AddDevice(this.connectionUUID, this.hostUUID, body);
   }
-
-  async Add(
-    networkUUID: string | undefined,
-    body: model.Device
-  ): Promise<model.Device> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    let resp: model.Device = {} as model.Device;
-    body.network_uuid = networkUUID;
-    await AddDevice(this.connectionUUID, this.hostUUID, body)
-      .then((res) => {
-        resp = res as model.Device;
-        this._this = resp;
-      })
-      .catch((err) => {
-        return resp;
-      });
-    return resp;
-  }
-
-  async AddBulk(devices: Array<model.Device>) {
-    return AddDevicesBulk(this.connectionUUID, this.hostUUID, devices);
-  }
-
 
   async Update(deviceUUID: string, body: model.Device): Promise<model.Device> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    let resp: model.Device = {} as model.Device;
-    await EditDevice(this.connectionUUID, this.hostUUID, deviceUUID, body)
-      .then((res) => {
-        resp = res as model.Device;
-        this._this = resp;
-      })
-      .catch((err) => {
-        return resp;
-      });
-    return resp;
+    return await EditDevice(this.connectionUUID, this.hostUUID, deviceUUID, body);
+  }
+
+  async AddBulk(devices: Array<model.Device>) {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return AddDevicesBulk(this.connectionUUID, this.hostUUID, devices);
   }
 
   async Delete(): Promise<model.Device> {

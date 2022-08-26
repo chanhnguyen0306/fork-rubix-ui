@@ -15,43 +15,39 @@ type UUIDs struct {
 	UUID string `json:"uuid"`
 }
 
-//func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-//	_, err := inst.resetHost(connUUID, hostUUID, true)
-//	if err != nil {
-//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-//		return nil
-//	}
-//	sch, err := inst.flow.NetworkSchema(pluginName)
-//	if err != nil {
-//		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-//		return nil
-//	}
-//	return sch
-//}
-
 func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	var addedCount int
+	var errorCount int
 	for _, net := range networkUUIDs {
-		msg := inst.DeleteNetwork(connUUID, hostUUID, net.UUID)
+		_, err := client.FFDeleteNetwork(hostUUID, net.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }
 
-func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool) ([]model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool, overrideUrl ...string) ([]model.Network, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return []model.Network{}, err
 	}
-	networks, err := inst.flow.GetNetworks(withDevice)
+	networks, err := client.FFGetNetworks(hostUUID, withDevice, overrideUrl...)
 	if err != nil {
 		return []model.Network{}, err
 	}
@@ -60,8 +56,8 @@ func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool) ([]mode
 
 func (inst *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	networks, err := inst.getNetworks(connUUID, hostUUID, withDevice)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -77,8 +73,8 @@ func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*mo
 
 func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {
 	networks, err := inst.addNetwork(connUUID, hostUUID, body)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -86,8 +82,8 @@ func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *mod
 
 func (inst *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
 	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -142,10 +138,6 @@ func (inst *App) ExportNetworksBulk(connUUID, hostUUID, userComment string, devi
 }
 
 func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, networkUUIDs []string) (*storage.Backup, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
 	var networkList []model.Network
 	var count int
 	network, err := inst.getNetworks(connUUID, hostUUID, true)
@@ -256,12 +248,12 @@ func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netw
 //}
 
 func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	networks, err := inst.flow.EditNetwork(networkUUID, body)
+	networks, err := client.FFEditNetwork(hostUUID, networkUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -269,12 +261,12 @@ func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model
 	return networks
 }
 func (inst *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteNetwork(networkUUID)
+	_, err = client.FFDeleteNetwork(hostUUID, networkUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -282,30 +274,37 @@ func (inst *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface
 	return "delete ok"
 }
 
-func (inst *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice bool, overrideUrl ...string) (*model.Network, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	networks, err := inst.flow.GetNetwork(networkUUID, withDevice)
+	networks, err := client.FFGetNetwork(hostUUID, networkUUID, withDevice, overrideUrl...)
 	if err != nil {
 		return nil, err
 	}
 	return networks, nil
 }
 
-func (inst *App) GetNetworkByPluginName(connUUID, hostUUID, networkName string, withDevice bool) *model.Network {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) getNetworkByPluginName(connUUID, hostUUID, pluginName string, withDevice bool) (*model.Network, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	network, err := client.FFGetNetworkByPluginName(hostUUID, pluginName)
+	if err != nil {
+		return nil, err
+	}
+	return network, nil
+}
+
+func (inst *App) GetNetworkByPluginName(connUUID, hostUUID, pluginName string, withDevice bool) *model.Network {
+	net, err := inst.getNetworkByPluginName(connUUID, hostUUID, pluginName, withDevice)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	network, err := inst.flow.GetNetworkByPluginName(networkName)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return network
+	return net
 }
 
 type NetworksList struct {
@@ -341,10 +340,19 @@ func (inst *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]Netw
 	return networksLists, nil
 }
 
+func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
+	url := fmt.Sprintf("/api/networks/?with_points=true")
+	networks, err := inst.getNetworks(connUUID, hostUUID, false, url)
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
+}
+
 func (inst *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
 	networks, err := inst.getNetworksWithPoints(connUUID, hostUUID)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -360,23 +368,8 @@ func (inst *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *m
 }
 
 func (inst *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
-	networks, err := inst.flow.GetNetworkWithPoints(networkUUID)
-	if err != nil {
-		return nil, err
-	}
-	return networks, nil
-}
-
-func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
-	networks, err := inst.flow.GetNetworksWithPoints()
+	url := fmt.Sprintf("/api/networks/%s/?with_points=true", networkUUID)
+	networks, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true, url)
 	if err != nil {
 		return nil, err
 	}

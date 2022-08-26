@@ -18,11 +18,6 @@ func TestApp_ffProxy(t *testing.T) {
 	app.ffProxy("cloud", "rc")
 }
 
-func TestApp_testProxy(t *testing.T) {
-	app := NewApp()
-	app.testProxy("cloud", "rc")
-}
-
 func TestApp_EdgeAddNetwork(t *testing.T) {
 	app := NewApp()
 	body := &model.Network{

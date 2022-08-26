@@ -15,7 +15,7 @@ func (inst *App) EdgeProductInfo(connUUID, hostUUID string) *installer.Product {
 }
 
 func (inst *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

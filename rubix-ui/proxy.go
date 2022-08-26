@@ -6,7 +6,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-auth-go/user"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-assist/service/clients/assistapi"
+	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
 func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
@@ -46,7 +46,7 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 			}
 		}
 	}
-	token, err := client.GenerateToken(resp.AccessToken, &assistapi.TokenCreate{
+	token, err := client.GenerateToken(resp.AccessToken, &assitcli.TokenCreate{
 		Name:    tokenName,
 		Blocked: nils.NewFalse(),
 	})
@@ -61,20 +61,6 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 	return nil
 }
 
-func (inst *App) testProxy(connUUID, hostUUID string) error {
-	client, err := inst.initConnection(&AssistClient{
-		ConnUUID: connUUID,
-	})
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
-	}
-	resp, err := client.EdgeSystemTime(hostUUID)
-	fmt.Println(err)
-	fmt.Println(resp)
-	return err
-}
-
 func (inst *App) edgeAddNetwork(connUUID, hostUUID string, body *model.Network, restartPlugin bool) (*model.Network, error) {
 	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
@@ -83,45 +69,31 @@ func (inst *App) edgeAddNetwork(connUUID, hostUUID string, body *model.Network, 
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, err
 	}
-	resp, err := client.EdgeAddNetwork(hostUUID, body, restartPlugin)
+	resp, err := client.FFAddNetwork(hostUUID, body, restartPlugin)
 	return resp, err
+}
+func (inst *App) errMsg(err error) error {
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	return nil
 }
 
 func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
 	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connUUID,
 	})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	url := fmt.Sprintf("/api/flow_networks/%s?streams=false", uuid)
-	if withStreams {
-		url = fmt.Sprintf("/api/flow_networks/%s?streams=true", uuid)
-	}
-	resp, err := client.FFProxyGET(hostUUID, url)
-	fmt.Println(resp.Status())
-	fmt.Println(resp.String())
-	body := &model.FlowNetwork{}
-	_, err = jsonToInterface(resp.Body(), body)
-	return body
-}
-
-func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	resp, err := client.GetFlowNetwork(hostUUID, uuid, withStreams)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, plg := range pluginUUID {
-		_, err := inst.flow.EnablePlugin(plg.UUID)
-		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("enable plugin fail: %s", plg.Name))
-		} else {
-			inst.crudMessage(true, fmt.Sprintf("enabled plugin:%s", plg.Name))
-		}
-	}
-	return "ok"
+	return resp
 }
 
 func (inst *App) ffProxy(connUUID, hostUUID string) error {

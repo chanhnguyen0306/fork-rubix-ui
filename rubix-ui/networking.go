@@ -30,7 +30,7 @@ POST
 */
 
 func (inst *App) GetHostActiveNetworks(connUUID, hostUUID string) interface{} {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -49,7 +49,7 @@ func (inst *App) GetHostActiveNetworks(connUUID, hostUUID string) interface{} {
 }
 
 func (inst *App) GetHostInterfaces(connUUID, hostUUID string) *edge.InterfaceNames {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -67,7 +67,7 @@ func (inst *App) GetHostInterfaces(connUUID, hostUUID string) *edge.InterfaceNam
 }
 
 func (inst *App) GetHostInternetIP(connUUID, hostUUID string) *edge.InternetIP {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -85,7 +85,7 @@ func (inst *App) GetHostInternetIP(connUUID, hostUUID string) *edge.InternetIP {
 }
 
 func (inst *App) HostRubixScan(connUUID, hostUUID string) interface{} {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

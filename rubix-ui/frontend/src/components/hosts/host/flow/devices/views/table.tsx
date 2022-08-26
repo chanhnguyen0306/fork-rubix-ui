@@ -172,14 +172,14 @@ export const FlowDeviceTable = (props: any) => {
         isLoadingForm={isLoadingForm}
         schema={schema}
         onCloseModal={closeEditModal}
-        refreshList={fetch}
+        refreshList={refreshList}
       />
       <CreateModal
         isModalVisible={isCreateModalVisible}
         isLoadingForm={isLoadingForm}
         schema={schema}
         onCloseModal={closeCreateModal}
-        refreshList={fetch}
+        refreshList={refreshList}
       />
       <ExportModal
         isModalVisible={isExportModalVisible}
@@ -189,7 +189,7 @@ export const FlowDeviceTable = (props: any) => {
       <ImportModal
         isModalVisible={isImportModalVisible}
         onClose={() => setIsImportModalVisible(false)}
-        refreshList={fetch}
+        refreshList={refreshList}
       />
     </>
   );

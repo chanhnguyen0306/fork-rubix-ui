@@ -107,33 +107,33 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 }
 
 func (inst *App) edgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin) (*assitcli.EdgeUploadResponse, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeUploadPlugin(hostUUID, body)
+	return client.UploadPlugin(hostUUID, body)
 }
 
 func (inst *App) edgeListPlugins(connUUID, hostUUID string) ([]appstore.Plugin, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeListPlugins(hostUUID)
+	return client.ListPlugins(hostUUID)
 }
 
 func (inst *App) edgeDeletePlugin(connUUID, hostUUID string, body *appstore.Plugin) (*edgecli.Message, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeDeletePlugin(hostUUID, body)
+	return client.DeletePlugin(hostUUID, body)
 }
 
 func (inst *App) edgeDeleteAllPlugins(connUUID, hostUUID string) (*edgecli.Message, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeDeleteAllPlugins(hostUUID)
+	return client.DeleteAllPlugins(hostUUID)
 }

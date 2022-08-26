@@ -1,4 +1,4 @@
-export namespace networking {
+export namespace edge {
 	
 	export class InterfaceNames {
 	    interface_names: string[];
@@ -10,6 +10,20 @@ export namespace networking {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.interface_names = source["interface_names"];
+	    }
+	}
+	export class InternetIP {
+	    ip_address: string;
+	    ok: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new InternetIP(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip_address = source["ip_address"];
+	        this.ok = source["ok"];
 	    }
 	}
 
@@ -211,6 +225,429 @@ export namespace assistmodel {
 
 }
 
+export namespace store {
+	
+	export class ReleaseList {
+	    name: string;
+	    path: string;
+	    url: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ReleaseList(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.path = source["path"];
+	        this.url = source["url"];
+	    }
+	}
+	
+	export class Services {
+	    name: string;
+	    service_name: string;
+	    description: string;
+	    port: number;
+	    transport: string;
+	    products: string[];
+	    arch: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Services(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.service_name = source["service_name"];
+	        this.description = source["description"];
+	        this.port = source["port"];
+	        this.transport = source["transport"];
+	        this.products = source["products"];
+	        this.arch = source["arch"];
+	    }
+	}
+	export class Plugins {
+	    name: string;
+	    plugin: string;
+	    description: string;
+	    products: string[];
+	    arch: string[];
+	    app_dependency: string[];
+	    plugin_dependency: string[];
+	    service_dependency: string[];
+	    port?: number;
+	    transport?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Plugins(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.plugin = source["plugin"];
+	        this.description = source["description"];
+	        this.products = source["products"];
+	        this.arch = source["arch"];
+	        this.app_dependency = source["app_dependency"];
+	        this.plugin_dependency = source["plugin_dependency"];
+	        this.service_dependency = source["service_dependency"];
+	        this.port = source["port"];
+	        this.transport = source["transport"];
+	    }
+	}
+	export class Apps {
+	    name: string;
+	    repo: string;
+	    description: string;
+	    port?: number;
+	    transport: string;
+	    app_specfic_exec_start: string;
+	    custom_service_exec_start?: string;
+	    service_working_directory: string;
+	    environment_vars: string[];
+	    products: string[];
+	    arch: string[];
+	    version: string;
+	    min_version?: string;
+	    max_version: string;
+	    flow_dependency: boolean;
+	    plugin_dependency: string[];
+	    service_dependency: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Apps(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.repo = source["repo"];
+	        this.description = source["description"];
+	        this.port = source["port"];
+	        this.transport = source["transport"];
+	        this.app_specfic_exec_start = source["app_specfic_exec_start"];
+	        this.custom_service_exec_start = source["custom_service_exec_start"];
+	        this.service_working_directory = source["service_working_directory"];
+	        this.environment_vars = source["environment_vars"];
+	        this.products = source["products"];
+	        this.arch = source["arch"];
+	        this.version = source["version"];
+	        this.min_version = source["min_version"];
+	        this.max_version = source["max_version"];
+	        this.flow_dependency = source["flow_dependency"];
+	        this.plugin_dependency = source["plugin_dependency"];
+	        this.service_dependency = source["service_dependency"];
+	    }
+	}
+	export class Release {
+	    uuid: string;
+	    release: string;
+	    apps: Apps[];
+	    plugins: Plugins[];
+	    services: Services[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Release(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.release = source["release"];
+	        this.apps = this.convertValues(source["apps"], Apps);
+	        this.plugins = this.convertValues(source["plugins"], Plugins);
+	        this.services = this.convertValues(source["services"], Services);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+
+}
+
+export namespace main {
+	
+	export class EdgeInstallAppBulk {
+	    app_name: string;
+	    version: string;
+	    arch: string;
+	    host_uuid: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new EdgeInstallAppBulk(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.app_name = source["app_name"];
+	        this.version = source["version"];
+	        this.arch = source["arch"];
+	        this.host_uuid = source["host_uuid"];
+	    }
+	}
+	export class EdgeInstallAppsBulk {
+	    apps_list: EdgeInstallAppBulk[];
+	
+	    static createFrom(source: any = {}) {
+	        return new EdgeInstallAppsBulk(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.apps_list = this.convertValues(source["apps_list"], EdgeInstallAppBulk);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Ip {
+	    type: string;
+	    title: string;
+	    default: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Ip(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
+	        this.title = source["title"];
+	        this.default = source["default"];
+	    }
+	}
+	export class ConnectionSchema {
+	    // Go type: schema.UUID
+	    uuid: any;
+	    // Go type: schema.Name
+	    name: any;
+	    // Go type: schema.Description
+	    description: any;
+	    // Go type: Ip
+	    ip: any;
+	    // Go type: schema.Port
+	    port: any;
+	    // Go type: schema.HTTPS
+	    https: any;
+	    // Go type: schema.Username
+	    username: any;
+	    // Go type: schema.Password
+	    password: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConnectionSchema(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = this.convertValues(source["uuid"], null);
+	        this.name = this.convertValues(source["name"], null);
+	        this.description = this.convertValues(source["description"], null);
+	        this.ip = this.convertValues(source["ip"], null);
+	        this.port = this.convertValues(source["port"], null);
+	        this.https = this.convertValues(source["https"], null);
+	        this.username = this.convertValues(source["username"], null);
+	        this.password = this.convertValues(source["password"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class NetworksList {
+	    name: string;
+	    point_uuid: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new NetworksList(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.point_uuid = source["point_uuid"];
+	    }
+	}
+	export class BulkAddResponse {
+	    message: string;
+	    added_count: number;
+	    error_count: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new BulkAddResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.message = source["message"];
+	        this.added_count = source["added_count"];
+	        this.error_count = source["error_count"];
+	    }
+	}
+	
+	export class UUIDs {
+	    name: string;
+	    uuid: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UUIDs(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.uuid = source["uuid"];
+	    }
+	}
+	export class PluginUUIDs {
+	    name: string;
+	    uuid: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new PluginUUIDs(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.uuid = source["uuid"];
+	    }
+	}
+	export class AppsAvailableForInstall {
+	    app_name?: string;
+	    latest_version?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AppsAvailableForInstall(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.app_name = source["app_name"];
+	        this.latest_version = source["latest_version"];
+	    }
+	}
+	export class InstalledApps {
+	    app_name?: string;
+	    version?: string;
+	    latest_version?: string;
+	    service_name?: string;
+	    app_version?: string;
+	    is_installed: boolean;
+	    message?: string;
+	    match?: boolean;
+	    downgrade_required?: boolean;
+	    upgrade_required?: boolean;
+	    state?: string;
+	    active_state?: string;
+	    sub_state?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new InstalledApps(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.app_name = source["app_name"];
+	        this.version = source["version"];
+	        this.latest_version = source["latest_version"];
+	        this.service_name = source["service_name"];
+	        this.app_version = source["app_version"];
+	        this.is_installed = source["is_installed"];
+	        this.message = source["message"];
+	        this.match = source["match"];
+	        this.downgrade_required = source["downgrade_required"];
+	        this.upgrade_required = source["upgrade_required"];
+	        this.state = source["state"];
+	        this.active_state = source["active_state"];
+	        this.sub_state = source["sub_state"];
+	    }
+	}
+	export class EdgeDeviceInfo {
+	    product?: installer.Product;
+	    installed_apps?: InstalledApps[];
+	    apps_available_for_install?: AppsAvailableForInstall[];
+	
+	    static createFrom(source: any = {}) {
+	        return new EdgeDeviceInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.product = this.convertValues(source["product"], installer.Product);
+	        this.installed_apps = this.convertValues(source["installed_apps"], InstalledApps);
+	        this.apps_available_for_install = this.convertValues(source["apps_available_for_install"], AppsAvailableForInstall);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+
+}
+
 export namespace assitcli {
 	
 	export class Response {
@@ -248,8 +685,531 @@ export namespace assitcli {
 
 }
 
+export namespace installer {
+	
+	export class CtlBody {
+	    app_name: string;
+	    service: string;
+	    action: string;
+	    timeout: number;
+	    service_names: string[];
+	    app_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new CtlBody(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.app_name = source["app_name"];
+	        this.service = source["service"];
+	        this.action = source["action"];
+	        this.timeout = source["timeout"];
+	        this.service_names = source["service_names"];
+	        this.app_names = source["app_names"];
+	    }
+	}
+	export class InstallResp {
+	    installed: string;
+	    daemon_reload: string;
+	    enabled: string;
+	    restarted: string;
+	    check_is_running: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new InstallResp(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.installed = source["installed"];
+	        this.daemon_reload = source["daemon_reload"];
+	        this.enabled = source["enabled"];
+	        this.restarted = source["restarted"];
+	        this.check_is_running = source["check_is_running"];
+	    }
+	}
+	export class OS {
+	    type?: string;
+	    windows: boolean;
+	    linux: boolean;
+	    darwin: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new OS(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
+	        this.windows = source["windows"];
+	        this.linux = source["linux"];
+	        this.darwin = source["darwin"];
+	    }
+	}
+	export class Product {
+	    edge_version: string;
+	    flow_version: string;
+	    image_version: string;
+	    product: string;
+	    arch: string;
+	    // Go type: OS
+	    os: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Product(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.edge_version = source["edge_version"];
+	        this.flow_version = source["flow_version"];
+	        this.image_version = source["image_version"];
+	        this.product = source["product"];
+	        this.arch = source["arch"];
+	        this.os = this.convertValues(source["os"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class InstalledServices {
+	    app_name?: string;
+	    service_name?: string;
+	    app_status?: systemctl.SystemState;
+	
+	    static createFrom(source: any = {}) {
+	        return new InstalledServices(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.app_name = source["app_name"];
+	        this.service_name = source["service_name"];
+	        this.app_status = this.convertValues(source["app_status"], systemctl.SystemState);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class RemoveRes {
+	    delete_app_dir: string;
+	    delete_app_install_dir: string;
+	    service_was_installed: string;
+	    remove_service_err?: string;
+	    stop: boolean;
+	    disable: boolean;
+	    daemon_reload: boolean;
+	    restart_failed: boolean;
+	    delete_service_file: boolean;
+	    delete_service_file_usr: boolean;
+	    error?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new RemoveRes(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.delete_app_dir = source["delete_app_dir"];
+	        this.delete_app_install_dir = source["delete_app_install_dir"];
+	        this.service_was_installed = source["service_was_installed"];
+	        this.remove_service_err = source["remove_service_err"];
+	        this.stop = source["stop"];
+	        this.disable = source["disable"];
+	        this.daemon_reload = source["daemon_reload"];
+	        this.restart_failed = source["restart_failed"];
+	        this.delete_service_file = source["delete_service_file"];
+	        this.delete_service_file_usr = source["delete_service_file_usr"];
+	        this.error = source["error"];
+	    }
+	}
+
+}
+
+export namespace dhcpd {
+	
+	export class SetStaticIP {
+	    ip: string;
+	    net_mask: string;
+	    i_face_name: string;
+	    gateway_ip: string;
+	    dns_ip: string;
+	    check_interface_exists: boolean;
+	    save_file: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new SetStaticIP(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip = source["ip"];
+	        this.net_mask = source["net_mask"];
+	        this.i_face_name = source["i_face_name"];
+	        this.gateway_ip = source["gateway_ip"];
+	        this.dns_ip = source["dns_ip"];
+	        this.check_interface_exists = source["check_interface_exists"];
+	        this.save_file = source["save_file"];
+	    }
+	}
+
+}
+
+export namespace edgecli {
+	
+	export class Message {
+	    message: any;
+	    data?: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Message(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.message = source["message"];
+	        this.data = source["data"];
+	    }
+	}
+
+}
+
+export namespace systemctl {
+	
+	export class SystemState {
+	    service_name?: string;
+	    state?: string;
+	    active_state?: string;
+	    sub_state?: string;
+	    active_enter_timestamp?: string;
+	    inactive_enter_timestamp?: string;
+	    restarts?: string;
+	    is_installed: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new SystemState(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.service_name = source["service_name"];
+	        this.state = source["state"];
+	        this.active_state = source["active_state"];
+	        this.sub_state = source["sub_state"];
+	        this.active_enter_timestamp = source["active_enter_timestamp"];
+	        this.inactive_enter_timestamp = source["inactive_enter_timestamp"];
+	        this.restarts = source["restarts"];
+	        this.is_installed = source["is_installed"];
+	    }
+	}
+	export class SystemResponse {
+	    ok: boolean;
+	    message: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new SystemResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ok = source["ok"];
+	        this.message = source["message"];
+	    }
+	}
+	export class MassSystemResponse {
+	    service: string;
+	    ok: boolean;
+	    message: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MassSystemResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.service = source["service"];
+	        this.ok = source["ok"];
+	        this.message = source["message"];
+	    }
+	}
+
+}
+
+export namespace networking {
+	
+	export class InterfaceNames {
+	    interface_names: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new InterfaceNames(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.interface_names = source["interface_names"];
+	    }
+	}
+
+}
+
 export namespace model {
 	
+	export class ConsumerHistory {
+	    uuid: string;
+	    consumer_uuid: string;
+	    producer_uuid: string;
+	    data_store: number[];
+	    // Go type: time.Time
+	    timestamp: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new ConsumerHistory(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.consumer_uuid = source["consumer_uuid"];
+	        this.producer_uuid = source["producer_uuid"];
+	        this.data_store = source["data_store"];
+	        this.timestamp = this.convertValues(source["timestamp"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Writer {
+	    uuid: string;
+	    sync_uuid: string;
+	    writer_thing_class?: string;
+	    writer_thing_type?: string;
+	    writer_thing_uuid?: string;
+	    writer_thing_name?: string;
+	    data_store?: number[];
+	    connection: string;
+	    message: string;
+	    // Go type: time.Time
+	    created_on?: any;
+	    // Go type: time.Time
+	    updated_on?: any;
+	    consumer_uuid?: string;
+	    present_value?: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Writer(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.sync_uuid = source["sync_uuid"];
+	        this.writer_thing_class = source["writer_thing_class"];
+	        this.writer_thing_type = source["writer_thing_type"];
+	        this.writer_thing_uuid = source["writer_thing_uuid"];
+	        this.writer_thing_name = source["writer_thing_name"];
+	        this.data_store = source["data_store"];
+	        this.connection = source["connection"];
+	        this.message = source["message"];
+	        this.created_on = this.convertValues(source["created_on"], null);
+	        this.updated_on = this.convertValues(source["updated_on"], null);
+	        this.consumer_uuid = source["consumer_uuid"];
+	        this.present_value = source["present_value"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Consumer {
+	    uuid: string;
+	    name: string;
+	    description?: string;
+	    enable?: boolean;
+	    sync_uuid: string;
+	    producer_uuid?: string;
+	    producer_thing_name?: string;
+	    producer_thing_uuid?: string;
+	    producer_thing_class?: string;
+	    producer_thing_type?: string;
+	    producer_thing_ref?: string;
+	    consumer_application?: string;
+	    current_writer_uuid?: string;
+	    stream_clone_uuid?: string;
+	    data_store?: number[];
+	    writers?: Writer[];
+	    consumer_histories?: ConsumerHistory[];
+	    tags?: Tag[];
+	    connection: string;
+	    message: string;
+	    // Go type: time.Time
+	    created_on?: any;
+	    // Go type: time.Time
+	    updated_on?: any;
+	
+	    static createFrom(source: any = {}) {
+	        return new Consumer(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.name = source["name"];
+	        this.description = source["description"];
+	        this.enable = source["enable"];
+	        this.sync_uuid = source["sync_uuid"];
+	        this.producer_uuid = source["producer_uuid"];
+	        this.producer_thing_name = source["producer_thing_name"];
+	        this.producer_thing_uuid = source["producer_thing_uuid"];
+	        this.producer_thing_class = source["producer_thing_class"];
+	        this.producer_thing_type = source["producer_thing_type"];
+	        this.producer_thing_ref = source["producer_thing_ref"];
+	        this.consumer_application = source["consumer_application"];
+	        this.current_writer_uuid = source["current_writer_uuid"];
+	        this.stream_clone_uuid = source["stream_clone_uuid"];
+	        this.data_store = source["data_store"];
+	        this.writers = this.convertValues(source["writers"], Writer);
+	        this.consumer_histories = this.convertValues(source["consumer_histories"], ConsumerHistory);
+	        this.tags = this.convertValues(source["tags"], Tag);
+	        this.connection = source["connection"];
+	        this.message = source["message"];
+	        this.created_on = this.convertValues(source["created_on"], null);
+	        this.updated_on = this.convertValues(source["updated_on"], null);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class StreamClone {
+	    uuid: string;
+	    sync_uuid: string;
+	    name: string;
+	    description?: string;
+	    enable?: boolean;
+	    // Go type: time.Time
+	    created_on?: any;
+	    // Go type: time.Time
+	    updated_on?: any;
+	    source_uuid: string;
+	    connection: string;
+	    message: string;
+	    flow_network_clone_uuid: string;
+	    consumers: Consumer[];
+	    tags: Tag[];
+	
+	    static createFrom(source: any = {}) {
+	        return new StreamClone(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.uuid = source["uuid"];
+	        this.sync_uuid = source["sync_uuid"];
+	        this.name = source["name"];
+	        this.description = source["description"];
+	        this.enable = source["enable"];
+	        this.created_on = this.convertValues(source["created_on"], null);
+	        this.updated_on = this.convertValues(source["updated_on"], null);
+	        this.source_uuid = source["source_uuid"];
+	        this.connection = source["connection"];
+	        this.message = source["message"];
+	        this.flow_network_clone_uuid = source["flow_network_clone_uuid"];
+	        this.consumers = this.convertValues(source["consumers"], Consumer);
+	        this.tags = this.convertValues(source["tags"], Tag);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class CommandGroup {
 	    uuid: string;
 	    name: string;
@@ -627,206 +1587,6 @@ export namespace model {
 		    return a;
 		}
 	}
-	export class Priority {
-	    point_uuid?: string;
-	    _1?: number;
-	    _2?: number;
-	    _3?: number;
-	    _4?: number;
-	    _5?: number;
-	    _6?: number;
-	    _7?: number;
-	    _8?: number;
-	    _9?: number;
-	    _10?: number;
-	    _11?: number;
-	    _12?: number;
-	    _13?: number;
-	    _14?: number;
-	    _15?: number;
-	    _16?: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new Priority(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.point_uuid = source["point_uuid"];
-	        this._1 = source["_1"];
-	        this._2 = source["_2"];
-	        this._3 = source["_3"];
-	        this._4 = source["_4"];
-	        this._5 = source["_5"];
-	        this._6 = source["_6"];
-	        this._7 = source["_7"];
-	        this._8 = source["_8"];
-	        this._9 = source["_9"];
-	        this._10 = source["_10"];
-	        this._11 = source["_11"];
-	        this._12 = source["_12"];
-	        this._13 = source["_13"];
-	        this._14 = source["_14"];
-	        this._15 = source["_15"];
-	        this._16 = source["_16"];
-	    }
-	}
-	export class Point {
-	    uuid: string;
-	    name: string;
-	    description?: string;
-	    enable?: boolean;
-	    // Go type: time.Time
-	    created_on?: any;
-	    // Go type: time.Time
-	    updated_on?: any;
-	    thing_class?: string;
-	    thing_reference?: string;
-	    thing_type?: string;
-	    fault?: boolean;
-	    message_level?: string;
-	    message_code?: string;
-	    message?: string;
-	    // Go type: time.Time
-	    last_ok?: any;
-	    // Go type: time.Time
-	    last_fail?: any;
-	    present_value?: number;
-	    original_value?: number;
-	    write_value?: number;
-	    write_value_original?: number;
-	    current_priority?: number;
-	    write_priority?: number;
-	    is_output?: boolean;
-	    is_type_bool?: boolean;
-	    in_sync?: boolean;
-	    fallback?: number;
-	    device_uuid?: string;
-	    writeable?: boolean;
-	    math_on_present_value?: string;
-	    math_on_write_value?: string;
-	    cov?: number;
-	    object_type?: string;
-	    object_id?: number;
-	    data_type?: string;
-	    object_encoding?: string;
-	    io_number?: string;
-	    io_type?: string;
-	    address_id?: number;
-	    address_length?: number;
-	    address_uuid?: string;
-	    use_next_available_address?: boolean;
-	    decimal?: number;
-	    multiplication_factor?: number;
-	    scale_enable?: boolean;
-	    scale_in_min?: number;
-	    scale_in_max?: number;
-	    scale_out_min?: number;
-	    scale_out_max?: number;
-	    offset?: number;
-	    unit_type?: string;
-	    unit?: string;
-	    unit_to?: string;
-	    is_producer?: boolean;
-	    is_consumer?: boolean;
-	    priority?: Priority;
-	    tags?: Tag[];
-	    value_updated_flag?: boolean;
-	    point_priority_use_type?: string;
-	    write_mode?: string;
-	    write_required?: boolean;
-	    read_required?: boolean;
-	    poll_priority: string;
-	    poll_rate: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Point(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.name = source["name"];
-	        this.description = source["description"];
-	        this.enable = source["enable"];
-	        this.created_on = this.convertValues(source["created_on"], null);
-	        this.updated_on = this.convertValues(source["updated_on"], null);
-	        this.thing_class = source["thing_class"];
-	        this.thing_reference = source["thing_reference"];
-	        this.thing_type = source["thing_type"];
-	        this.fault = source["fault"];
-	        this.message_level = source["message_level"];
-	        this.message_code = source["message_code"];
-	        this.message = source["message"];
-	        this.last_ok = this.convertValues(source["last_ok"], null);
-	        this.last_fail = this.convertValues(source["last_fail"], null);
-	        this.present_value = source["present_value"];
-	        this.original_value = source["original_value"];
-	        this.write_value = source["write_value"];
-	        this.write_value_original = source["write_value_original"];
-	        this.current_priority = source["current_priority"];
-	        this.write_priority = source["write_priority"];
-	        this.is_output = source["is_output"];
-	        this.is_type_bool = source["is_type_bool"];
-	        this.in_sync = source["in_sync"];
-	        this.fallback = source["fallback"];
-	        this.device_uuid = source["device_uuid"];
-	        this.writeable = source["writeable"];
-	        this.math_on_present_value = source["math_on_present_value"];
-	        this.math_on_write_value = source["math_on_write_value"];
-	        this.cov = source["cov"];
-	        this.object_type = source["object_type"];
-	        this.object_id = source["object_id"];
-	        this.data_type = source["data_type"];
-	        this.object_encoding = source["object_encoding"];
-	        this.io_number = source["io_number"];
-	        this.io_type = source["io_type"];
-	        this.address_id = source["address_id"];
-	        this.address_length = source["address_length"];
-	        this.address_uuid = source["address_uuid"];
-	        this.use_next_available_address = source["use_next_available_address"];
-	        this.decimal = source["decimal"];
-	        this.multiplication_factor = source["multiplication_factor"];
-	        this.scale_enable = source["scale_enable"];
-	        this.scale_in_min = source["scale_in_min"];
-	        this.scale_in_max = source["scale_in_max"];
-	        this.scale_out_min = source["scale_out_min"];
-	        this.scale_out_max = source["scale_out_max"];
-	        this.offset = source["offset"];
-	        this.unit_type = source["unit_type"];
-	        this.unit = source["unit"];
-	        this.unit_to = source["unit_to"];
-	        this.is_producer = source["is_producer"];
-	        this.is_consumer = source["is_consumer"];
-	        this.priority = this.convertValues(source["priority"], Priority);
-	        this.tags = this.convertValues(source["tags"], Tag);
-	        this.value_updated_flag = source["value_updated_flag"];
-	        this.point_priority_use_type = source["point_priority_use_type"];
-	        this.write_mode = source["write_mode"];
-	        this.write_required = source["write_required"];
-	        this.read_required = source["read_required"];
-	        this.poll_priority = source["poll_priority"];
-	        this.poll_rate = source["poll_rate"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	export class Device {
 	    uuid: string;
 	    name: string;
@@ -1101,129 +1861,120 @@ export namespace model {
 		    return a;
 		}
 	}
-	export class ConsumerHistory {
-	    uuid: string;
-	    consumer_uuid: string;
-	    producer_uuid: string;
-	    data_store: number[];
-	    // Go type: time.Time
-	    timestamp: any;
+	export class Priority {
+	    point_uuid?: string;
+	    _1?: number;
+	    _2?: number;
+	    _3?: number;
+	    _4?: number;
+	    _5?: number;
+	    _6?: number;
+	    _7?: number;
+	    _8?: number;
+	    _9?: number;
+	    _10?: number;
+	    _11?: number;
+	    _12?: number;
+	    _13?: number;
+	    _14?: number;
+	    _15?: number;
+	    _16?: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new ConsumerHistory(source);
+	        return new Priority(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.consumer_uuid = source["consumer_uuid"];
-	        this.producer_uuid = source["producer_uuid"];
-	        this.data_store = source["data_store"];
-	        this.timestamp = this.convertValues(source["timestamp"], null);
+	        this.point_uuid = source["point_uuid"];
+	        this._1 = source["_1"];
+	        this._2 = source["_2"];
+	        this._3 = source["_3"];
+	        this._4 = source["_4"];
+	        this._5 = source["_5"];
+	        this._6 = source["_6"];
+	        this._7 = source["_7"];
+	        this._8 = source["_8"];
+	        this._9 = source["_9"];
+	        this._10 = source["_10"];
+	        this._11 = source["_11"];
+	        this._12 = source["_12"];
+	        this._13 = source["_13"];
+	        this._14 = source["_14"];
+	        this._15 = source["_15"];
+	        this._16 = source["_16"];
 	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
 	}
-	export class Writer {
+	export class Point {
 	    uuid: string;
-	    sync_uuid: string;
-	    writer_thing_class?: string;
-	    writer_thing_type?: string;
-	    writer_thing_uuid?: string;
-	    writer_thing_name?: string;
-	    data_store?: number[];
-	    connection: string;
-	    message: string;
+	    name: string;
+	    description?: string;
+	    enable?: boolean;
 	    // Go type: time.Time
 	    created_on?: any;
 	    // Go type: time.Time
 	    updated_on?: any;
-	    consumer_uuid?: string;
+	    thing_class?: string;
+	    thing_reference?: string;
+	    thing_type?: string;
+	    fault?: boolean;
+	    message_level?: string;
+	    message_code?: string;
+	    message?: string;
+	    // Go type: time.Time
+	    last_ok?: any;
+	    // Go type: time.Time
+	    last_fail?: any;
 	    present_value?: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new Writer(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.sync_uuid = source["sync_uuid"];
-	        this.writer_thing_class = source["writer_thing_class"];
-	        this.writer_thing_type = source["writer_thing_type"];
-	        this.writer_thing_uuid = source["writer_thing_uuid"];
-	        this.writer_thing_name = source["writer_thing_name"];
-	        this.data_store = source["data_store"];
-	        this.connection = source["connection"];
-	        this.message = source["message"];
-	        this.created_on = this.convertValues(source["created_on"], null);
-	        this.updated_on = this.convertValues(source["updated_on"], null);
-	        this.consumer_uuid = source["consumer_uuid"];
-	        this.present_value = source["present_value"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class Consumer {
-	    uuid: string;
-	    name: string;
-	    description?: string;
-	    enable?: boolean;
-	    sync_uuid: string;
-	    producer_uuid?: string;
-	    producer_thing_name?: string;
-	    producer_thing_uuid?: string;
-	    producer_thing_class?: string;
-	    producer_thing_type?: string;
-	    producer_thing_ref?: string;
-	    consumer_application?: string;
-	    current_writer_uuid?: string;
-	    stream_clone_uuid?: string;
-	    data_store?: number[];
-	    writers?: Writer[];
-	    consumer_histories?: ConsumerHistory[];
+	    original_value?: number;
+	    write_value?: number;
+	    write_value_original?: number;
+	    current_priority?: number;
+	    write_priority?: number;
+	    is_output?: boolean;
+	    is_type_bool?: boolean;
+	    in_sync?: boolean;
+	    fallback?: number;
+	    device_uuid?: string;
+	    writeable?: boolean;
+	    math_on_present_value?: string;
+	    math_on_write_value?: string;
+	    cov?: number;
+	    object_type?: string;
+	    object_id?: number;
+	    data_type?: string;
+	    object_encoding?: string;
+	    io_number?: string;
+	    io_type?: string;
+	    address_id?: number;
+	    address_length?: number;
+	    address_uuid?: string;
+	    use_next_available_address?: boolean;
+	    decimal?: number;
+	    multiplication_factor?: number;
+	    scale_enable?: boolean;
+	    scale_in_min?: number;
+	    scale_in_max?: number;
+	    scale_out_min?: number;
+	    scale_out_max?: number;
+	    offset?: number;
+	    unit_type?: string;
+	    unit?: string;
+	    unit_to?: string;
+	    is_producer?: boolean;
+	    is_consumer?: boolean;
+	    priority?: Priority;
 	    tags?: Tag[];
-	    connection: string;
-	    message: string;
-	    // Go type: time.Time
-	    created_on?: any;
-	    // Go type: time.Time
-	    updated_on?: any;
+	    value_updated_flag?: boolean;
+	    point_priority_use_type?: string;
+	    write_mode?: string;
+	    write_required?: boolean;
+	    read_required?: boolean;
+	    poll_priority: string;
+	    poll_rate: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Consumer(source);
+	        return new Point(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -1232,24 +1983,64 @@ export namespace model {
 	        this.name = source["name"];
 	        this.description = source["description"];
 	        this.enable = source["enable"];
-	        this.sync_uuid = source["sync_uuid"];
-	        this.producer_uuid = source["producer_uuid"];
-	        this.producer_thing_name = source["producer_thing_name"];
-	        this.producer_thing_uuid = source["producer_thing_uuid"];
-	        this.producer_thing_class = source["producer_thing_class"];
-	        this.producer_thing_type = source["producer_thing_type"];
-	        this.producer_thing_ref = source["producer_thing_ref"];
-	        this.consumer_application = source["consumer_application"];
-	        this.current_writer_uuid = source["current_writer_uuid"];
-	        this.stream_clone_uuid = source["stream_clone_uuid"];
-	        this.data_store = source["data_store"];
-	        this.writers = this.convertValues(source["writers"], Writer);
-	        this.consumer_histories = this.convertValues(source["consumer_histories"], ConsumerHistory);
-	        this.tags = this.convertValues(source["tags"], Tag);
-	        this.connection = source["connection"];
-	        this.message = source["message"];
 	        this.created_on = this.convertValues(source["created_on"], null);
 	        this.updated_on = this.convertValues(source["updated_on"], null);
+	        this.thing_class = source["thing_class"];
+	        this.thing_reference = source["thing_reference"];
+	        this.thing_type = source["thing_type"];
+	        this.fault = source["fault"];
+	        this.message_level = source["message_level"];
+	        this.message_code = source["message_code"];
+	        this.message = source["message"];
+	        this.last_ok = this.convertValues(source["last_ok"], null);
+	        this.last_fail = this.convertValues(source["last_fail"], null);
+	        this.present_value = source["present_value"];
+	        this.original_value = source["original_value"];
+	        this.write_value = source["write_value"];
+	        this.write_value_original = source["write_value_original"];
+	        this.current_priority = source["current_priority"];
+	        this.write_priority = source["write_priority"];
+	        this.is_output = source["is_output"];
+	        this.is_type_bool = source["is_type_bool"];
+	        this.in_sync = source["in_sync"];
+	        this.fallback = source["fallback"];
+	        this.device_uuid = source["device_uuid"];
+	        this.writeable = source["writeable"];
+	        this.math_on_present_value = source["math_on_present_value"];
+	        this.math_on_write_value = source["math_on_write_value"];
+	        this.cov = source["cov"];
+	        this.object_type = source["object_type"];
+	        this.object_id = source["object_id"];
+	        this.data_type = source["data_type"];
+	        this.object_encoding = source["object_encoding"];
+	        this.io_number = source["io_number"];
+	        this.io_type = source["io_type"];
+	        this.address_id = source["address_id"];
+	        this.address_length = source["address_length"];
+	        this.address_uuid = source["address_uuid"];
+	        this.use_next_available_address = source["use_next_available_address"];
+	        this.decimal = source["decimal"];
+	        this.multiplication_factor = source["multiplication_factor"];
+	        this.scale_enable = source["scale_enable"];
+	        this.scale_in_min = source["scale_in_min"];
+	        this.scale_in_max = source["scale_in_max"];
+	        this.scale_out_min = source["scale_out_min"];
+	        this.scale_out_max = source["scale_out_max"];
+	        this.offset = source["offset"];
+	        this.unit_type = source["unit_type"];
+	        this.unit = source["unit"];
+	        this.unit_to = source["unit_to"];
+	        this.is_producer = source["is_producer"];
+	        this.is_consumer = source["is_consumer"];
+	        this.priority = this.convertValues(source["priority"], Priority);
+	        this.tags = this.convertValues(source["tags"], Tag);
+	        this.value_updated_flag = source["value_updated_flag"];
+	        this.point_priority_use_type = source["point_priority_use_type"];
+	        this.write_mode = source["write_mode"];
+	        this.write_required = source["write_required"];
+	        this.read_required = source["read_required"];
+	        this.poll_priority = source["poll_priority"];
+	        this.poll_rate = source["poll_rate"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -1270,64 +2061,6 @@ export namespace model {
 		    return a;
 		}
 	}
-	export class StreamClone {
-	    uuid: string;
-	    sync_uuid: string;
-	    name: string;
-	    description?: string;
-	    enable?: boolean;
-	    // Go type: time.Time
-	    created_on?: any;
-	    // Go type: time.Time
-	    updated_on?: any;
-	    source_uuid: string;
-	    connection: string;
-	    message: string;
-	    flow_network_clone_uuid: string;
-	    consumers: Consumer[];
-	    tags: Tag[];
-	
-	    static createFrom(source: any = {}) {
-	        return new StreamClone(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.sync_uuid = source["sync_uuid"];
-	        this.name = source["name"];
-	        this.description = source["description"];
-	        this.enable = source["enable"];
-	        this.created_on = this.convertValues(source["created_on"], null);
-	        this.updated_on = this.convertValues(source["updated_on"], null);
-	        this.source_uuid = source["source_uuid"];
-	        this.connection = source["connection"];
-	        this.message = source["message"];
-	        this.flow_network_clone_uuid = source["flow_network_clone_uuid"];
-	        this.consumers = this.convertValues(source["consumers"], Consumer);
-	        this.tags = this.convertValues(source["tags"], Tag);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	
-	
 	
 	
 	export class FlowNetworkClone {
@@ -1422,6 +2155,10 @@ export namespace model {
 		    return a;
 		}
 	}
+	
+	
+	
+	
 	export class Job {
 	    uuid: string;
 	    name: string;
@@ -1640,515 +2377,6 @@ export namespace model {
 	
 	
 	
-	
-	
-
-}
-
-export namespace main {
-	
-	export class UUIDs {
-	    name: string;
-	    uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new UUIDs(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.uuid = source["uuid"];
-	    }
-	}
-	export class Ip {
-	    type: string;
-	    title: string;
-	    default: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Ip(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.type = source["type"];
-	        this.title = source["title"];
-	        this.default = source["default"];
-	    }
-	}
-	export class ConnectionSchema {
-	    // Go type: schema.UUID
-	    uuid: any;
-	    // Go type: schema.Name
-	    name: any;
-	    // Go type: schema.Description
-	    description: any;
-	    // Go type: Ip
-	    ip: any;
-	    // Go type: schema.Port
-	    port: any;
-	    // Go type: schema.HTTPS
-	    https: any;
-	    // Go type: schema.Username
-	    username: any;
-	    // Go type: schema.Password
-	    password: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new ConnectionSchema(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = this.convertValues(source["uuid"], null);
-	        this.name = this.convertValues(source["name"], null);
-	        this.description = this.convertValues(source["description"], null);
-	        this.ip = this.convertValues(source["ip"], null);
-	        this.port = this.convertValues(source["port"], null);
-	        this.https = this.convertValues(source["https"], null);
-	        this.username = this.convertValues(source["username"], null);
-	        this.password = this.convertValues(source["password"], null);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	
-	export class BulkAddResponse {
-	    message: string;
-	    added_count: number;
-	    error_count: number;
-	
-	    static createFrom(source: any = {}) {
-	        return new BulkAddResponse(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.message = source["message"];
-	        this.added_count = source["added_count"];
-	        this.error_count = source["error_count"];
-	    }
-	}
-	
-	
-	export class PluginUUIDs {
-	    name: string;
-	    uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new PluginUUIDs(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.uuid = source["uuid"];
-	    }
-	}
-	export class AppsAvailableForInstall {
-	    app_name?: string;
-	    latest_version?: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new AppsAvailableForInstall(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.app_name = source["app_name"];
-	        this.latest_version = source["latest_version"];
-	    }
-	}
-	export class InstalledApps {
-	    app_name?: string;
-	    version?: string;
-	    latest_version?: string;
-	    service_name?: string;
-	    app_version?: string;
-	    is_installed: boolean;
-	    message?: string;
-	    match?: boolean;
-	    downgrade_required?: boolean;
-	    upgrade_required?: boolean;
-	    state?: string;
-	    active_state?: string;
-	    sub_state?: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new InstalledApps(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.app_name = source["app_name"];
-	        this.version = source["version"];
-	        this.latest_version = source["latest_version"];
-	        this.service_name = source["service_name"];
-	        this.app_version = source["app_version"];
-	        this.is_installed = source["is_installed"];
-	        this.message = source["message"];
-	        this.match = source["match"];
-	        this.downgrade_required = source["downgrade_required"];
-	        this.upgrade_required = source["upgrade_required"];
-	        this.state = source["state"];
-	        this.active_state = source["active_state"];
-	        this.sub_state = source["sub_state"];
-	    }
-	}
-	export class EdgeDeviceInfo {
-	    product?: installer.Product;
-	    installed_apps?: InstalledApps[];
-	    apps_available_for_install?: AppsAvailableForInstall[];
-	
-	    static createFrom(source: any = {}) {
-	        return new EdgeDeviceInfo(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.product = this.convertValues(source["product"], installer.Product);
-	        this.installed_apps = this.convertValues(source["installed_apps"], InstalledApps);
-	        this.apps_available_for_install = this.convertValues(source["apps_available_for_install"], AppsAvailableForInstall);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class EdgeInstallAppBulk {
-	    app_name: string;
-	    version: string;
-	    arch: string;
-	    host_uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new EdgeInstallAppBulk(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.app_name = source["app_name"];
-	        this.version = source["version"];
-	        this.arch = source["arch"];
-	        this.host_uuid = source["host_uuid"];
-	    }
-	}
-	export class EdgeInstallAppsBulk {
-	    apps_list: EdgeInstallAppBulk[];
-	
-	    static createFrom(source: any = {}) {
-	        return new EdgeInstallAppsBulk(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.apps_list = this.convertValues(source["apps_list"], EdgeInstallAppBulk);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class NetworksList {
-	    name: string;
-	    point_uuid: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new NetworksList(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.point_uuid = source["point_uuid"];
-	    }
-	}
-
-}
-
-export namespace installer {
-	
-	export class CtlBody {
-	    app_name: string;
-	    service: string;
-	    action: string;
-	    timeout: number;
-	    service_names: string[];
-	    app_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new CtlBody(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.app_name = source["app_name"];
-	        this.service = source["service"];
-	        this.action = source["action"];
-	        this.timeout = source["timeout"];
-	        this.service_names = source["service_names"];
-	        this.app_names = source["app_names"];
-	    }
-	}
-	export class InstallResp {
-	    installed: string;
-	    daemon_reload: string;
-	    enabled: string;
-	    restarted: string;
-	    check_is_running: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InstallResp(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.installed = source["installed"];
-	        this.daemon_reload = source["daemon_reload"];
-	        this.enabled = source["enabled"];
-	        this.restarted = source["restarted"];
-	        this.check_is_running = source["check_is_running"];
-	    }
-	}
-	export class OS {
-	    type?: string;
-	    windows: boolean;
-	    linux: boolean;
-	    darwin: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new OS(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.type = source["type"];
-	        this.windows = source["windows"];
-	        this.linux = source["linux"];
-	        this.darwin = source["darwin"];
-	    }
-	}
-	export class Product {
-	    edge_version: string;
-	    flow_version: string;
-	    image_version: string;
-	    product: string;
-	    arch: string;
-	    // Go type: OS
-	    os: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Product(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.edge_version = source["edge_version"];
-	        this.flow_version = source["flow_version"];
-	        this.image_version = source["image_version"];
-	        this.product = source["product"];
-	        this.arch = source["arch"];
-	        this.os = this.convertValues(source["os"], null);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class InstalledServices {
-	    app_name?: string;
-	    service_name?: string;
-	    app_status?: systemctl.SystemState;
-	
-	    static createFrom(source: any = {}) {
-	        return new InstalledServices(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.app_name = source["app_name"];
-	        this.service_name = source["service_name"];
-	        this.app_status = this.convertValues(source["app_status"], systemctl.SystemState);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class RemoveRes {
-	    delete_app_dir: string;
-	    delete_app_install_dir: string;
-	    service_was_installed: string;
-	    remove_service_err?: string;
-	    stop: boolean;
-	    disable: boolean;
-	    daemon_reload: boolean;
-	    restart_failed: boolean;
-	    delete_service_file: boolean;
-	    delete_service_file_usr: boolean;
-	    error?: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new RemoveRes(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.delete_app_dir = source["delete_app_dir"];
-	        this.delete_app_install_dir = source["delete_app_install_dir"];
-	        this.service_was_installed = source["service_was_installed"];
-	        this.remove_service_err = source["remove_service_err"];
-	        this.stop = source["stop"];
-	        this.disable = source["disable"];
-	        this.daemon_reload = source["daemon_reload"];
-	        this.restart_failed = source["restart_failed"];
-	        this.delete_service_file = source["delete_service_file"];
-	        this.delete_service_file_usr = source["delete_service_file_usr"];
-	        this.error = source["error"];
-	    }
-	}
-
-}
-
-export namespace edgecli {
-	
-	export class Message {
-	    message: any;
-	    data?: any;
-	
-	    static createFrom(source: any = {}) {
-	        return new Message(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.message = source["message"];
-	        this.data = source["data"];
-	    }
-	}
-
-}
-
-export namespace datelib {
-	
-	export class Time {
-	    // Go type: time.Time
-	    date_stamp: any;
-	    time_local: string;
-	    time_utc: string;
-	    current_day: string;
-	    current_day_utc: string;
-	    date_format_local: string;
-	    date_format_utc: string;
-	    system_time_zone: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Time(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.date_stamp = this.convertValues(source["date_stamp"], null);
-	        this.time_local = source["time_local"];
-	        this.time_utc = source["time_utc"];
-	        this.current_day = source["current_day"];
-	        this.current_day_utc = source["current_day_utc"];
-	        this.date_format_local = source["date_format_local"];
-	        this.date_format_utc = source["date_format_utc"];
-	        this.system_time_zone = source["system_time_zone"];
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 
 }
 
@@ -2168,224 +2396,6 @@ export namespace appstore {
 	        this.plugin_name = source["plugin_name"];
 	        this.arch = source["arch"];
 	        this.version = source["version"];
-	    }
-	}
-
-}
-
-export namespace systemctl {
-	
-	export class MassSystemResponse {
-	    service: string;
-	    ok: boolean;
-	    message: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new MassSystemResponse(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.service = source["service"];
-	        this.ok = source["ok"];
-	        this.message = source["message"];
-	    }
-	}
-	export class SystemState {
-	    service_name?: string;
-	    state?: string;
-	    active_state?: string;
-	    sub_state?: string;
-	    active_enter_timestamp?: string;
-	    inactive_enter_timestamp?: string;
-	    restarts?: string;
-	    is_installed: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new SystemState(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.service_name = source["service_name"];
-	        this.state = source["state"];
-	        this.active_state = source["active_state"];
-	        this.sub_state = source["sub_state"];
-	        this.active_enter_timestamp = source["active_enter_timestamp"];
-	        this.inactive_enter_timestamp = source["inactive_enter_timestamp"];
-	        this.restarts = source["restarts"];
-	        this.is_installed = source["is_installed"];
-	    }
-	}
-	export class SystemResponse {
-	    ok: boolean;
-	    message: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new SystemResponse(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ok = source["ok"];
-	        this.message = source["message"];
-	    }
-	}
-
-}
-
-export namespace store {
-	
-	export class Services {
-	    name: string;
-	    service_name: string;
-	    description: string;
-	    port: number;
-	    transport: string;
-	    products: string[];
-	    arch: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new Services(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.service_name = source["service_name"];
-	        this.description = source["description"];
-	        this.port = source["port"];
-	        this.transport = source["transport"];
-	        this.products = source["products"];
-	        this.arch = source["arch"];
-	    }
-	}
-	export class Plugins {
-	    name: string;
-	    plugin: string;
-	    description: string;
-	    products: string[];
-	    arch: string[];
-	    app_dependency: string[];
-	    plugin_dependency: string[];
-	    service_dependency: string[];
-	    port?: number;
-	    transport?: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new Plugins(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.plugin = source["plugin"];
-	        this.description = source["description"];
-	        this.products = source["products"];
-	        this.arch = source["arch"];
-	        this.app_dependency = source["app_dependency"];
-	        this.plugin_dependency = source["plugin_dependency"];
-	        this.service_dependency = source["service_dependency"];
-	        this.port = source["port"];
-	        this.transport = source["transport"];
-	    }
-	}
-	export class Apps {
-	    name: string;
-	    repo: string;
-	    description: string;
-	    port?: number;
-	    transport: string;
-	    app_specfic_exec_start: string;
-	    custom_service_exec_start?: string;
-	    service_working_directory: string;
-	    environment_vars: string[];
-	    products: string[];
-	    arch: string[];
-	    version: string;
-	    min_version?: string;
-	    max_version: string;
-	    flow_dependency: boolean;
-	    plugin_dependency: string[];
-	    service_dependency: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new Apps(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.repo = source["repo"];
-	        this.description = source["description"];
-	        this.port = source["port"];
-	        this.transport = source["transport"];
-	        this.app_specfic_exec_start = source["app_specfic_exec_start"];
-	        this.custom_service_exec_start = source["custom_service_exec_start"];
-	        this.service_working_directory = source["service_working_directory"];
-	        this.environment_vars = source["environment_vars"];
-	        this.products = source["products"];
-	        this.arch = source["arch"];
-	        this.version = source["version"];
-	        this.min_version = source["min_version"];
-	        this.max_version = source["max_version"];
-	        this.flow_dependency = source["flow_dependency"];
-	        this.plugin_dependency = source["plugin_dependency"];
-	        this.service_dependency = source["service_dependency"];
-	    }
-	}
-	export class Release {
-	    uuid: string;
-	    release: string;
-	    apps: Apps[];
-	    plugins: Plugins[];
-	    services: Services[];
-	
-	    static createFrom(source: any = {}) {
-	        return new Release(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.uuid = source["uuid"];
-	        this.release = source["release"];
-	        this.apps = this.convertValues(source["apps"], Apps);
-	        this.plugins = this.convertValues(source["plugins"], Plugins);
-	        this.services = this.convertValues(source["services"], Services);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
-	export class ReleaseList {
-	    name: string;
-	    path: string;
-	    url: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new ReleaseList(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.path = source["path"];
-	        this.url = source["url"];
 	    }
 	}
 
@@ -2493,31 +2503,52 @@ export namespace storage {
 
 }
 
-export namespace dhcpd {
+export namespace datelib {
 	
-	export class SetStaticIP {
-	    ip: string;
-	    net_mask: string;
-	    i_face_name: string;
-	    gateway_ip: string;
-	    dns_ip: string;
-	    check_interface_exists: boolean;
-	    save_file: boolean;
+	export class Time {
+	    // Go type: time.Time
+	    date_stamp: any;
+	    time_local: string;
+	    time_utc: string;
+	    current_day: string;
+	    current_day_utc: string;
+	    date_format_local: string;
+	    date_format_utc: string;
+	    system_time_zone: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new SetStaticIP(source);
+	        return new Time(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ip = source["ip"];
-	        this.net_mask = source["net_mask"];
-	        this.i_face_name = source["i_face_name"];
-	        this.gateway_ip = source["gateway_ip"];
-	        this.dns_ip = source["dns_ip"];
-	        this.check_interface_exists = source["check_interface_exists"];
-	        this.save_file = source["save_file"];
+	        this.date_stamp = this.convertValues(source["date_stamp"], null);
+	        this.time_local = source["time_local"];
+	        this.time_utc = source["time_utc"];
+	        this.current_day = source["current_day"];
+	        this.current_day_utc = source["current_day_utc"];
+	        this.date_format_local = source["date_format_local"];
+	        this.date_format_utc = source["date_format_utc"];
+	        this.system_time_zone = source["system_time_zone"];
 	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 
 }
@@ -2546,37 +2577,6 @@ export namespace system {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.message = source["message"];
-	    }
-	}
-
-}
-
-export namespace edge {
-	
-	export class InterfaceNames {
-	    interface_names: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new InterfaceNames(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.interface_names = source["interface_names"];
-	    }
-	}
-	export class InternetIP {
-	    ip_address: string;
-	    ok: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new InternetIP(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ip_address = source["ip_address"];
-	        this.ok = source["ok"];
 	    }
 	}
 

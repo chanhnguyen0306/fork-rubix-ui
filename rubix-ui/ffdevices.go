@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	pprint "github.com/NubeIO/lib-ufw/print"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/storage"
@@ -12,12 +13,12 @@ import (
 )
 
 func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	devices, err := inst.flow.GetDevices(withPoints)
+	devices, err := client.GetDevices(hostUUID, withPoints)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -50,11 +51,12 @@ func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*mode
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("device-%s", uuid.ShortUUID("")[5:10])
 	}
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	devices, err := inst.flow.AddDevice(body)
+	devices, err := client.AddDevice(hostUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -72,20 +74,25 @@ func (inst *App) AddDevice(connUUID, hostUUID string, body *model.Device) *model
 
 func (inst *App) GetNetworkDevices(connUUID, hostUUID, networkUUID string) []*model.Device {
 	net, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true)
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	return net.Devices
+	fmt.Println(1111, err)
+	pprint.PrintJOSN(net)
+
+	devices := net.Devices
+
+	return devices
 }
 
 func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.Device) *model.Device {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	devices, err := inst.flow.EditDevice(deviceUUID, body)
+	devices, err := client.EditDevice(hostUUID, deviceUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -94,29 +101,38 @@ func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.D
 }
 
 func (inst *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	var addedCount int
+	var errorCount int
 	for _, dev := range deviceUUIDs {
-		msg := inst.DeleteDevice(connUUID, hostUUID, dev.UUID)
+		_, err := client.DeleteDevice(hostUUID, dev.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete device error: %s %s", dev.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleted device: %s", dev.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }
 
 func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteDevice(deviceUUID)
+	_, err = client.DeleteDevice(hostUUID, deviceUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -125,11 +141,12 @@ func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{}
 }
 
 func (inst *App) getDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) (*model.Device, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	devices, err := inst.flow.GetDevice(deviceUUID, withPoints)
+	devices, err := client.GetDevice(hostUUID, deviceUUID, withPoints)
 	if err != nil {
 		return nil, err
 	}
@@ -207,10 +224,6 @@ func (inst *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID 
 }
 
 func (inst *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) (*storage.Backup, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
 	var pointsList []model.Device
 	var count int
 	network, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true)

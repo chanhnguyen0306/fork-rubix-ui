@@ -35,7 +35,7 @@ func (inst *App) edgeReplaceConfig(connUUID, hostUUID string, body *appstore.Edg
 	if err != nil {
 		return nil, err
 	}
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

@@ -91,7 +91,7 @@ func (inst *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.Ct
 	if body.Service == "" {
 		return nil, errors.New("service-name can not be empty")
 	}
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (inst *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBod
 }
 
 func (inst *App) edgeCtlStatus(connUUID, hostUUID string, body *installer.CtlBody) (*systemctl.SystemState, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (inst *App) EdgeServiceMassAction(connUUID, hostUUID string, body *installe
 }
 
 func (inst *App) edgeServiceMassAction(connUUID, hostUUID string, body *installer.CtlBody) ([]systemctl.MassSystemResponse, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (inst *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installe
 }
 
 func (inst *App) edgeServiceMassStatus(connUUID, hostUUID string, body *installer.CtlBody) ([]systemctl.SystemState, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

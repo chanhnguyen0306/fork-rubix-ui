@@ -206,10 +206,6 @@ export function DeleteWritersBulk(arg1, arg2, arg3) {
   return window['go']['main']['App']['DeleteWritersBulk'](arg1, arg2, arg3);
 }
 
-export function DisablePlugin(arg1, arg2, arg3) {
-  return window['go']['main']['App']['DisablePlugin'](arg1, arg2, arg3);
-}
-
 export function DisablePluginBulk(arg1, arg2, arg3) {
   return window['go']['main']['App']['DisablePluginBulk'](arg1, arg2, arg3);
 }
@@ -340,10 +336,6 @@ export function EditStream(arg1, arg2, arg3, arg4) {
 
 export function EditWriter(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['EditWriter'](arg1, arg2, arg3, arg4, arg5);
-}
-
-export function EnablePlugin(arg1, arg2, arg3) {
-  return window['go']['main']['App']['EnablePlugin'](arg1, arg2, arg3);
 }
 
 export function EnablePluginBulk(arg1, arg2, arg3) {

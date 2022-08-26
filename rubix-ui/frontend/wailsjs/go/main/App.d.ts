@@ -118,8 +118,6 @@ export function DeleteWriterCloneBulk(arg1:string,arg2:string,arg3:Array<main.UU
 
 export function DeleteWritersBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
-export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
-
 export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
@@ -185,8 +183,6 @@ export function EditProducer(arg1:string,arg2:string,arg3:string,arg4:model.Prod
 export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
 export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer,arg5:boolean):Promise<model.Writer>;
-
-export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 

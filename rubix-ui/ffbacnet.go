@@ -9,14 +9,6 @@ import (
 
 const bacnetMaster = "bacnetmaster"
 
-func (inst *App) bacnetNetwork(connUUID, hostUUID string) (*model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
-	return inst.flow.GetNetworkByPluginName(bacnetMaster)
-}
-
 func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 	if pluginName != bacnetMaster {
 		return errors.New(fmt.Sprintf("network:%s is not not bacnet-master", pluginName))
@@ -64,7 +56,7 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if err != nil {
 		return nil, err
 	}
-	network, err := inst.bacnetNetwork(connUUID, hostUUID)
+	network, err := inst.getNetworkByPluginName(connUUID, hostUUID, bacnetMaster, false)
 	if err != nil {
 		return nil, errors.New("no network is added, please add network")
 	}

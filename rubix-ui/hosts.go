@@ -10,7 +10,7 @@ import (
 )
 
 func (inst *App) GetHostSchema(connUUID string) *assistmodel.HostSchema {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -28,7 +28,7 @@ func (inst *App) AddHost(connUUID string, host *assistmodel.Host) *assistmodel.H
 		host.Name = fmt.Sprintf("host-%s", uuid.ShortUUID("")[5:10])
 	}
 	host.Port = 1661
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -60,7 +60,7 @@ func (inst *App) DeleteHostBulk(connUUID string, uuids []UUIDs) interface{} {
 }
 
 func (inst *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (inst *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, e
 }
 
 func (inst *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -82,7 +82,7 @@ func (inst *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
 }
 
 func (inst *App) getHost(connUUID string, uuid string) (*assistmodel.Host, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (inst *App) GetHost(connUUID string, uuid string) *assistmodel.Host {
 }
 
 func (inst *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) *assistmodel.Host {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -120,7 +120,7 @@ func (inst *App) EditHost(connUUID string, uuid string, host *assistmodel.Host) 
 
 func (inst *App) GetHosts(connUUID string) (resp []assistmodel.Host) {
 	resp = []assistmodel.Host{}
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
