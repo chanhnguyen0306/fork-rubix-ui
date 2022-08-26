@@ -9,6 +9,8 @@ import {
   Avatar,
   MenuProps,
   Spin,
+  Select,
+  Tooltip,
 } from "antd";
 import {
   ApartmentOutlined,
@@ -29,6 +31,7 @@ import { useConnections } from "../../hooks/useConnection";
 import logo from "../../assets/images/nube-frog-green.png";
 
 const { Sider } = Layout;
+const { Option } = Select;
 
 const DividerLock = (props: any) => {
   const { collapsed, collapseDisabled, setCollapseDisabled } = props;
@@ -81,30 +84,20 @@ const HeaderSider = (props: any) => {
 };
 
 const AvatarDropdown = (props: any) => {
-  const { setIsModalVisible } = props;
-  const [darkMode, setDarkMode] = useTheme();
   const menu = (
     <Menu
       items={[
         {
           key: "1",
-          label: (
-            <a className="my-2" onClick={() => setIsModalVisible(true)}>
-              <KeyOutlined /> Token Update
-            </a>
-          ),
+          label: TokenMenuItem(props),
         },
         {
           key: "2",
-          label: (
-            <Switch
-              className="my-2"
-              checkedChildren="🌙"
-              unCheckedChildren="☀"
-              checked={darkMode}
-              onChange={setDarkMode}
-            />
-          ),
+          label: SwitchThemeMenuItem(),
+        },
+        {
+          key: "3",
+          label: AutoRefreshPointsMenuItem(),
         },
       ]}
     />
@@ -119,6 +112,69 @@ const AvatarDropdown = (props: any) => {
         <Avatar icon={<UserOutlined />} className="avar" />
       </a>
     </Dropdown>
+  );
+};
+
+const TokenMenuItem = (props: any) => {
+  const { setIsModalVisible } = props;
+  return (
+    <a className="my-2" onClick={() => setIsModalVisible(true)}>
+      <KeyOutlined /> Token Update
+    </a>
+  );
+};
+
+const SwitchThemeMenuItem = () => {
+  const [darkMode, setDarkMode] = useTheme();
+  return (
+    <Switch
+      className="my-2"
+      checkedChildren="🌙"
+      unCheckedChildren="☀"
+      checked={darkMode}
+      onChange={setDarkMode}
+    />
+  );
+};
+
+const AutoRefreshPointsMenuItem = () => {
+  const [time, setTime] = useState("5");
+  const [isEnable, setIsEnable] = useState(false);
+
+  const handleChangeTime = (value: string) => {
+    setTime(value);
+    if (isEnable) {
+      const refreshTime = Number(time) * 1000;
+      //add enpoint refresh points here
+    }
+  };
+
+  const handleChangeEnable = (checked: boolean) => {
+    const refreshTime = Number(time) * 1000;
+    setIsEnable(checked);
+    //add enpoint refresh points here
+  };
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <Tooltip title="Auto Refresh Points">
+        <Switch
+          style={{ marginRight: "10px" }}
+          checked={isEnable}
+          onChange={handleChangeEnable}
+        />
+      </Tooltip>
+      <Select
+        style={{ width: 120 }}
+        value={time}
+        disabled={!isEnable}
+        onChange={handleChangeTime}
+      >
+        <Option value="5">5 sec</Option>
+        <Option value="15">15 sec</Option>
+        <Option value="30">30 sec</Option>
+      </Select>
+    </div>
   );
 };
 
@@ -182,6 +238,7 @@ export const MenuSidebar = () => {
       label: <NavLink to={link}>{name}</NavLink>,
     };
   });
+
   return (
     <Sider
       width={250}
