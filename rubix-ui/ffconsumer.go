@@ -6,30 +6,39 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (inst *App) DeleteConsumerBulk(connUUID, hostUUID string, streamUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteConsumerBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range streamUUIDs {
-		msg := inst.DeleteConsumer(connUUID, hostUUID, net.UUID)
+	var addedCount int
+	var errorCount int
+	for _, item := range uuids {
+		_, err := client.DeleteConsumer(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete stream %s %s", net.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed stream: %s", net.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }
 
 func (inst *App) GetConsumerClones(connUUID, hostUUID string) []model.Consumer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.Consumer{}
+		return nil
 	}
-	consumers, err := inst.flow.GetConsumers()
+	consumers, err := client.GetConsumers(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.Consumer{}
@@ -45,12 +54,12 @@ func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *m
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("con-%s", uuid.ShortUUID("")[5:10])
 	}
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	consumers, err := inst.flow.AddConsumer(body)
+	consumers, err := client.AddConsumer(hostUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -59,12 +68,12 @@ func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *m
 }
 
 func (inst *App) EditConsumer(connUUID, hostUUID, streamUUID string, body *model.Consumer) *model.Consumer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	consumers, err := inst.flow.EditConsumer(streamUUID, body)
+	consumers, err := client.EditConsumer(hostUUID, streamUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -72,12 +81,12 @@ func (inst *App) EditConsumer(connUUID, hostUUID, streamUUID string, body *model
 	return consumers
 }
 func (inst *App) DeleteConsumer(connUUID, hostUUID, streamUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteConsumer(streamUUID)
+	_, err = client.DeleteConsumer(hostUUID, streamUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -86,12 +95,12 @@ func (inst *App) DeleteConsumer(connUUID, hostUUID, streamUUID string) interface
 }
 
 func (inst *App) GetConsumers(connUUID, hostUUID string) []model.Consumer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	resp, err := inst.flow.GetConsumers()
+	resp, err := client.GetConsumers(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -100,11 +109,12 @@ func (inst *App) GetConsumers(connUUID, hostUUID string) []model.Consumer {
 }
 
 func (inst *App) getConsumer(connUUID, hostUUID, streamUUID string) (*model.Consumer, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	consumers, err := inst.flow.GetConsumer(streamUUID)
+	consumers, err := client.GetConsumer(hostUUID, streamUUID)
 	if err != nil {
 		return nil, err
 	}

@@ -5,22 +5,16 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
-	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
-	"github.com/NubeIO/rubix-ui/backend/flow"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 )
 
-const flowPort = 1660
-
 // App struct
 type App struct {
 	ctx   context.Context
 	DB    storage.Storage
-	flow  *ffclient.FlowClient
 	mutex sync.RWMutex
 	store *store.Store
 }
@@ -29,10 +23,6 @@ type App struct {
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
-	app.flow = flow.New(&ffclient.Connection{
-		Ip:   "0.0.0.0",
-		Port: 1662,
-	})
 	str := &store.Store{
 		Arch: "armv7",
 	}
@@ -42,26 +32,6 @@ func NewApp() *App {
 	}
 	app.store = appStore
 	return app
-}
-
-//resetHost will be used later to cache a host ip, port and token
-func (inst *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
-	host, err := inst.getHost(connUUID, hostUUID)
-	if err != nil {
-		log.Errorf("resetHost connUUID:%s hostUUID:%s", connUUID, hostUUID)
-		return nil, err
-	}
-	if resetFlow {
-		inst.resetFlow(host.IP, flowPort)
-	}
-	return host, err
-}
-
-func (inst *App) resetFlow(ip string, port int) {
-	inst.flow = flow.New(&ffclient.Connection{
-		Ip:   ip,
-		Port: port,
-	})
 }
 
 // startup is called when the app starts. The context is saved, so we can call the runtime methods

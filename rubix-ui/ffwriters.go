@@ -6,12 +6,12 @@ import (
 )
 
 func (inst *App) CreateWriter(connUUID, hostUUID string, body *model.Writer) *model.Writer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	resp, err := inst.flow.CreateWriter(body)
+	resp, err := client.CreateWriter(hostUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -20,12 +20,12 @@ func (inst *App) CreateWriter(connUUID, hostUUID string, body *model.Writer) *mo
 }
 
 func (inst *App) GetWriters(connUUID, hostUUID string) []model.Writer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.Writer{}
+		return nil
 	}
-	resp, err := inst.flow.GetWriters()
+	resp, err := client.GetWriters(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.Writer{}
@@ -34,12 +34,12 @@ func (inst *App) GetWriters(connUUID, hostUUID string) []model.Writer {
 }
 
 func (inst *App) EditWriter(connUUID, hostUUID, uuid string, body *model.Writer, updateProducer bool) *model.Writer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	resp, err := inst.flow.EditWriter(uuid, body, updateProducer)
+	resp, err := client.EditWriter(hostUUID, uuid, body, updateProducer)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -48,12 +48,12 @@ func (inst *App) EditWriter(connUUID, hostUUID, uuid string, body *model.Writer,
 }
 
 func (inst *App) DeleteWriter(connUUID, hostUUID, uuid string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteWriter(uuid)
+	_, err = client.DeleteWriter(hostUUID, uuid)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -62,18 +62,27 @@ func (inst *App) DeleteWriter(connUUID, hostUUID, uuid string) interface{} {
 }
 
 func (inst *App) DeleteWritersBulk(connUUID, hostUUID string, UUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	var addedCount int
+	var errorCount int
 	for _, item := range UUIDs {
-		msg := inst.DeleteWriter(connUUID, hostUUID, item.UUID)
+		_, err := client.DeleteStreamClone(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete writer %s %s", item.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed writer: %s", item.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }

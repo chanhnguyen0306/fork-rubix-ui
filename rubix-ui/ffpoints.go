@@ -34,10 +34,6 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	return points
 }
 
-type pointPriority struct {
-	Priority *model.Priority
-}
-
 func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Point {
 	pointValue, err := inst.writePointValue(connUUID, hostUUID, pointUUID, value)
 	if err != nil {
@@ -47,29 +43,13 @@ func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *mo
 	return pointValue
 }
 
-func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) (*model.Point, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil, err
-	}
+func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, body *model.Priority) (*model.Point, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, err
 	}
-
-	body := &pointPriority{
-		Priority: value,
-	}
-
-	url := fmt.Sprintf("ff/api/points/write/%s", pointUUID)
-	resp, err := client.ProxyPATCH(hostUUID, url, body)
-	if err != nil {
-		return nil, err
-	}
-	pnt := &model.Point{}
-	err = json.Unmarshal(resp.Body(), &pnt)
+	pnt, err := client.WritePointValue(hostUUID, pointUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -259,10 +239,6 @@ func (inst *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID str
 }
 
 func (inst *App) exportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) (*storage.Backup, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
 	var pointsList []model.Point
 	var count int
 	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
