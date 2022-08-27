@@ -32,6 +32,22 @@ func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs)
 	return nil
 }
 
+func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	resp, err := client.GetFlowNetwork(hostUUID, uuid, withStreams)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return resp
+}
+
 func (inst *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []model.FlowNetwork {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)

@@ -10,8 +10,8 @@ import (
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
 var releaseVersion = "v0.6.8"
-var appName = "rubix-wires" //flow-framework rubix-wires
-var appVersion = "v2.7.4"
+var appName = "flow-framework " //flow-framework rubix-wires
+var appVersion = "v0.6.8"
 var product = "Server"
 var arch = "amd64"
 

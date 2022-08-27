@@ -17,7 +17,6 @@ type UUIDs struct {
 
 func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
@@ -43,7 +42,6 @@ func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUI
 
 func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool, overrideUrl ...string) ([]model.Network, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	err = inst.errMsg(err)
 	if err != nil {
 		return []model.Network{}, err
 	}
@@ -56,7 +54,6 @@ func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool, overrid
 
 func (inst *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	networks, err := inst.getNetworks(connUUID, hostUUID, withDevice)
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
@@ -67,13 +64,13 @@ func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*mo
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("%s", body.PluginPath)
 	}
-	networks, err := inst.edgeAddNetwork(connUUID, hostUUID, body, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	networks, err := client.FFAddNetwork(hostUUID, body, true)
 	return networks, err
 }
 
 func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {
 	networks, err := inst.addNetwork(connUUID, hostUUID, body)
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
@@ -82,7 +79,6 @@ func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *mod
 
 func (inst *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
 	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID)
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
@@ -249,7 +245,6 @@ func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netw
 
 func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
@@ -262,7 +257,7 @@ func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model
 }
 func (inst *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{} {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	err = inst.errMsg(err)
+
 	if err != nil {
 		return nil
 	}
@@ -351,7 +346,7 @@ func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Netwo
 
 func (inst *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
 	networks, err := inst.getNetworksWithPoints(connUUID, hostUUID)
-	err = inst.errMsg(err)
+
 	if err != nil {
 		return nil
 	}

@@ -41,6 +41,7 @@ require (
 )
 
 require (
+	github.com/NubeIO/lib-command v0.0.2 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect

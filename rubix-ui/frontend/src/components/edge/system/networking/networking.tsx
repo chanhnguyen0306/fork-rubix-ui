@@ -1,6 +1,5 @@
 import {
-  EdgeDHCPPortExists, EdgeDHCPSetAsAuto, EdgeDHCPSetStaticIP,
-  GetHostActiveNetworks
+  EdgeDHCPPortExists, EdgeDHCPSetAsAuto, EdgeDHCPSetStaticIP, EdgeGetNetworks,
 } from "../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../helpers/checks";
 import {dhcpd, store, system} from "../../../../../wailsjs/go/models";
@@ -19,14 +18,14 @@ export class HostNetworking {
     public GetNetworks(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
-        return GetHostActiveNetworks(this.connectionUUID, this.hostUUID);
+        return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
     }
 
 
     public RubixScan(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
-        return GetHostActiveNetworks(this.connectionUUID, this.hostUUID);
+        return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
     }
 
 

@@ -54,16 +54,14 @@ func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, ad
 
 func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) ([]model.Device, error) {
 	err := inst.bacnetChecks(connUUID, hostUUID, pluginName)
-	if err != nil {
-		return nil, err
-	}
-
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
 	network, err := client.FFGetNetworkByPluginName(hostUUID, bacnetMaster, false)
 	if err != nil {
 		return nil, errors.New("no network is added, please add network")

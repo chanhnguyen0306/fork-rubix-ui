@@ -242,6 +242,10 @@ export function EdgeDeviceInfoAndApps(arg1, arg2, arg3) {
   return window['go']['main']['App']['EdgeDeviceInfoAndApps'](arg1, arg2, arg3);
 }
 
+export function EdgeGetNetworks(arg1, arg2) {
+  return window['go']['main']['App']['EdgeGetNetworks'](arg1, arg2);
+}
+
 export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['main']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4, arg5);
 }
@@ -256,6 +260,10 @@ export function EdgeListPlugins(arg1, arg2) {
 
 export function EdgeProductInfo(arg1, arg2) {
   return window['go']['main']['App']['EdgeProductInfo'](arg1, arg2);
+}
+
+export function EdgeRubixScan(arg1, arg2) {
+  return window['go']['main']['App']['EdgeRubixScan'](arg1, arg2);
 }
 
 export function EdgeServiceDisable(arg1, arg2, arg3, arg4) {
@@ -444,18 +452,6 @@ export function GetGitToken(arg1, arg2) {
 
 export function GetHost(arg1, arg2) {
   return window['go']['main']['App']['GetHost'](arg1, arg2);
-}
-
-export function GetHostActiveNetworks(arg1, arg2) {
-  return window['go']['main']['App']['GetHostActiveNetworks'](arg1, arg2);
-}
-
-export function GetHostInterfaces(arg1, arg2) {
-  return window['go']['main']['App']['GetHostInterfaces'](arg1, arg2);
-}
-
-export function GetHostInternetIP(arg1, arg2) {
-  return window['go']['main']['App']['GetHostInternetIP'](arg1, arg2);
 }
 
 export function GetHostNetwork(arg1, arg2) {
@@ -660,10 +656,6 @@ export function GitDownloadRelease(arg1, arg2) {
 
 export function GitListReleases(arg1) {
   return window['go']['main']['App']['GitListReleases'](arg1);
-}
-
-export function HostRubixScan(arg1, arg2) {
-  return window['go']['main']['App']['HostRubixScan'](arg1, arg2);
 }
 
 export function ImportBackup(arg1) {
