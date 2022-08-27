@@ -341,7 +341,7 @@ func (inst *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]Netw
 }
 
 func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
-	url := fmt.Sprintf("/api/networks/?with_points=true")
+	url := fmt.Sprintf("proxy/ff/api/networks?with_points=true")
 	networks, err := inst.getNetworks(connUUID, hostUUID, false, url)
 	if err != nil {
 		return nil, err
@@ -368,7 +368,7 @@ func (inst *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *m
 }
 
 func (inst *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
-	url := fmt.Sprintf("/api/networks/%s/?with_points=true", networkUUID)
+	url := fmt.Sprintf("proxy/ff/api/networks/%s?with_points=true", networkUUID)
 	networks, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true, url)
 	if err != nil {
 		return nil, err

@@ -642,6 +642,10 @@ export function GetStreams(arg1, arg2) {
   return window['go']['main']['App']['GetStreams'](arg1, arg2);
 }
 
+export function GetStreamsByFlowNetwork(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetStreamsByFlowNetwork'](arg1, arg2, arg3);
+}
+
 export function GetWriterClones(arg1, arg2) {
   return window['go']['main']['App']['GetWriterClones'](arg1, arg2);
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -48,11 +49,20 @@ func (inst *App) GetConsumerClones(connUUID, hostUUID string) []model.Consumer {
 
 func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *model.Consumer {
 	if body.ProducerUUID == "" {
-		inst.crudMessage(false, fmt.Sprintf("please select a producer, eg select a point"))
+		inst.crudMessage(false, fmt.Sprintf("please select a producer uuid"))
 		return nil
 	}
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("con-%s", uuid.ShortUUID("")[5:10])
+	}
+	if nils.BoolIsNil(body.Enable) {
+		body.Enable = nils.NewFalse()
+	}
+	if body.ProducerThingType == "" {
+		body.ProducerThingType = "point"
+	}
+	if body.ConsumerApplication == "" {
+		body.ConsumerApplication = "mapping"
 	}
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)

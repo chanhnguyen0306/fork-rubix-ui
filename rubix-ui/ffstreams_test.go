@@ -15,8 +15,7 @@ func TestApp_AddStream(t *testing.T) {
 			},
 		},
 	}
-	uuids := []string{"fln_acdbec73d4894bb9"}
-	bulk := app.AddStream("cloud", "hos_DABC722D420A", uuids, body)
+	bulk := app.AddStream("cloud", "hos_DABC722D420A", "flw_DABC722D420A", body)
 	pprint.PrintJOSN(bulk)
 
 }

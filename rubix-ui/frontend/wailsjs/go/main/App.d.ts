@@ -42,7 +42,7 @@ export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise
 
 export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
-export function AddStream(arg1:string,arg2:string,arg3:Array<string>,arg4:model.Stream):Promise<model.Stream>;
+export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
 
@@ -335,6 +335,8 @@ export function GetStream(arg1:string,arg2:string,arg3:string):Promise<model.Str
 export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.StreamClone>>;
 
 export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>;
+
+export function GetStreamsByFlowNetwork(arg1:string,arg2:string,arg3:string):Promise<Array<model.Stream>>;
 
 export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.WriterClone>>;
 

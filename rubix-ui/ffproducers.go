@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -48,11 +49,23 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 
 func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *model.Producer {
 	if body.ProducerThingUUID == "" {
-		inst.crudMessage(false, fmt.Sprintf("please select a select a point or a schedule"))
+		inst.crudMessage(false, fmt.Sprintf("producer uuid can not be empty"))
 		return nil
 	}
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("producer-%s", uuid.ShortUUID("")[5:10])
+	}
+	if body.ProducerThingType == "" {
+		body.ProducerThingType = "point"
+	}
+	if body.ProducerApplication == "" {
+		body.ProducerApplication = "mapping"
+	}
+	if nils.BoolIsNil(body.Enable) {
+		body.Enable = nils.NewFalse()
+	}
+	if nils.BoolIsNil(body.EnableHistory) {
+		body.EnableHistory = nils.NewFalse()
 	}
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
@@ -98,7 +111,7 @@ func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
-		return nil
+		return []model.Producer{}
 	}
 	resp, err := client.GetProducers(hostUUID)
 	if err != nil {

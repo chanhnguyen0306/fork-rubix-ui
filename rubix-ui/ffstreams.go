@@ -62,12 +62,26 @@ func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone 
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
-		return nil
+		return []model.StreamClone{}
 	}
 	streams, err := client.GetStreamClones(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.StreamClone{}
+	}
+	return streams
+}
+
+func (inst *App) GetStreamsByFlowNetwork(connUUID, hostUUID, flowUUID string) []*model.Stream {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	streams, err := client.GetStreamsByFlowNetwork(hostUUID, flowUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return nil
 	}
 	return streams
 }
@@ -86,36 +100,24 @@ func (inst *App) GetStreams(connUUID, hostUUID string) []model.Stream {
 	return streams
 }
 
-func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUIDS []string, body *model.Stream) *model.Stream {
+func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUID string, body *model.Stream) *model.Stream {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("stream-%s", uuid.ShortUUID("")[5:10])
 	}
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
+		return &model.Stream{}
+	}
+	if flowNetworkUUID == "" {
+		inst.crudMessage(false, fmt.Sprintf("flow-network uuid can not be empty"))
 		return nil
 	}
-	if len(flowNetworkUUIDS) == 0 {
-		inst.crudMessage(false, fmt.Sprintf("flow-network uuids can not be empty"))
-		return nil
-	}
-	var flowNetworks []*model.FlowNetwork
-	flowNetwork := &model.FlowNetwork{}
-	flowNetworks = append(flowNetworks, flowNetwork) //TODO fix this logic, it was done quick without thinking it through
-	for _, uuid := range flowNetworkUUIDS {
-		for _, network := range flowNetworks {
-			network.UUID = uuid
-		}
-	}
-	if len(flowNetworks) == 0 {
-		inst.crudMessage(false, fmt.Sprintf("flow-networks can not be empty"))
-		return nil
-	}
-	body.FlowNetworks = flowNetworks
-	streams, err := client.AddStream(hostUUID, body)
+
+	streams, err := client.AddStreamToExistingFlow(hostUUID, flowNetworkUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return &model.Stream{}
 	}
 	return streams
 }
@@ -123,7 +125,7 @@ func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.S
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
-		return nil
+		return &model.Stream{}
 	}
 	streams, err := client.EditStream(hostUUID, streamUUID, body)
 	if err != nil {
