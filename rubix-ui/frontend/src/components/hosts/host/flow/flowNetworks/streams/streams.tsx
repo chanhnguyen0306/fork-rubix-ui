@@ -66,7 +66,7 @@ export const Streams = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll();
+      const res = await factory.GetAll();  // This needs to be changed to this GetAllByFlowNetwork
       setStreams(res);
     } catch (error) {
       console.log(error);

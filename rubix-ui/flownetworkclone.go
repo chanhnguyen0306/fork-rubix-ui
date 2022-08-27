@@ -5,30 +5,39 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range networkUUIDs {
-		msg := inst.DeleteFlowNetworkClone(connUUID, hostUUID, net.UUID)
+	var addedCount int
+	var errorCount int
+	for _, item := range uuids {
+		_, err := client.DeleteFlowNetworkClone(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }
 
 func (inst *App) GetFlowNetworkClones(connUUID, hostUUID string, withDevice bool) []model.FlowNetworkClone {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.FlowNetworkClone{}
+		return nil
 	}
-	networks, err := inst.flow.GetFlowNetworkClones(withDevice)
+	networks, err := client.GetFlowNetworkClones(hostUUID, withDevice)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetworkClone{}
@@ -37,12 +46,12 @@ func (inst *App) GetFlowNetworkClones(connUUID, hostUUID string, withDevice bool
 }
 
 func (inst *App) DeleteFlowNetworkClone(connUUID, hostUUID, networkUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteFlowNetworkClone(networkUUID)
+	_, err = client.DeleteFlowNetworkClone(hostUUID, networkUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -51,11 +60,12 @@ func (inst *App) DeleteFlowNetworkClone(connUUID, hostUUID, networkUUID string) 
 }
 
 func (inst *App) getFlowNetworkClone(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.FlowNetworkClone, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := inst.flow.GetFlowNetworkClone(networkUUID, withDevice)
+	networks, err := client.GetFlowNetworkClone(hostUUID, networkUUID, withDevice)
 	if err != nil {
 		return nil, err
 	}

@@ -12,7 +12,6 @@ import {system} from '../models';
 import {dhcpd} from '../models';
 import {edgecli} from '../models';
 import {appstore} from '../models';
-import {edge} from '../models';
 import {networking} from '../models';
 import {datelib} from '../models';
 
@@ -42,7 +41,7 @@ export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise
 
 export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
-export function AddStream(arg1:string,arg2:string,arg3:Array<string>,arg4:model.Stream):Promise<model.Stream>;
+export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
 
@@ -118,8 +117,6 @@ export function DeleteWriterCloneBulk(arg1:string,arg2:string,arg3:Array<main.UU
 
 export function DeleteWritersBulk(arg1:string,arg2:string,arg3:Array<main.UUIDs>):Promise<any>;
 
-export function DisablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
-
 export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
@@ -138,6 +135,8 @@ export function EdgeDeletePlugin(arg1:string,arg2:string,arg3:appstore.Plugin):P
 
 export function EdgeDeviceInfoAndApps(arg1:string,arg2:string,arg3:string):Promise<main.EdgeDeviceInfo>;
 
+export function EdgeGetNetworks(arg1:string,arg2:string):Promise<Array<networking.NetworkInterfaces>>;
+
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<installer.InstallResp>;
 
 export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:main.EdgeInstallAppsBulk):void;
@@ -145,6 +144,8 @@ export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:main.EdgeInstal
 export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
 
 export function EdgeProductInfo(arg1:string,arg2:string):Promise<installer.Product>;
+
+export function EdgeRubixScan(arg1:string,arg2:string):Promise<any>;
 
 export function EdgeServiceDisable(arg1:string,arg2:string,arg3:string,arg4:number):Promise<systemctl.SystemResponse>;
 
@@ -185,8 +186,6 @@ export function EditProducer(arg1:string,arg2:string,arg3:string,arg4:model.Prod
 export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
 export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer,arg5:boolean):Promise<model.Writer>;
-
-export function EnablePlugin(arg1:string,arg2:string,arg3:string):Promise<any>;
 
 export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 
@@ -241,12 +240,6 @@ export function GetFlowPointSchema(arg1:string,arg2:string,arg3:string):Promise<
 export function GetGitToken(arg1:string,arg2:boolean):Promise<string>;
 
 export function GetHost(arg1:string,arg2:string):Promise<assistmodel.Host>;
-
-export function GetHostActiveNetworks(arg1:string,arg2:string):Promise<any>;
-
-export function GetHostInterfaces(arg1:string,arg2:string):Promise<edge.InterfaceNames>;
-
-export function GetHostInternetIP(arg1:string,arg2:string):Promise<edge.InternetIP>;
 
 export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Network>;
 
@@ -340,6 +333,8 @@ export function GetStreamClones(arg1:string,arg2:string):Promise<Array<model.Str
 
 export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>;
 
+export function GetStreamsByFlowNetwork(arg1:string,arg2:string,arg3:string):Promise<Array<model.Stream>>;
+
 export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.WriterClone>>;
 
 export function GetWriters(arg1:string,arg2:string):Promise<Array<model.Writer>>;
@@ -347,8 +342,6 @@ export function GetWriters(arg1:string,arg2:string):Promise<Array<model.Writer>>
 export function GitDownloadRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function GitListReleases(arg1:string):Promise<Array<store.ReleaseList>>;
-
-export function HostRubixScan(arg1:string,arg2:string):Promise<any>;
 
 export function ImportBackup(arg1:storage.Backup):Promise<string>;
 

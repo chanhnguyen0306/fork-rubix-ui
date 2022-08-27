@@ -29,8 +29,8 @@ export const CreateModal = (props: any) => {
 
   const handleSubmit = async (item: Device) => {
     setConfirmLoading(true);
-    await add(item);
-    refreshList();
+    await add(item)
+    refreshList()
     setConfirmLoading(false);
     handleClose();
   };

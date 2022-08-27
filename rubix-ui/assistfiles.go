@@ -8,7 +8,7 @@ import (
 )
 
 func (inst *App) assistUploadFile(connUUID, destination, path, fileName string) (*assitcli.EdgeUploadResponse, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

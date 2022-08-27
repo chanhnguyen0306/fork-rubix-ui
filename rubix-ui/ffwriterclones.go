@@ -6,12 +6,12 @@ import (
 )
 
 func (inst *App) GetWriterClones(connUUID, hostUUID string) []model.WriterClone {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.WriterClone{}
+		return nil
 	}
-	resp, err := inst.flow.GetWriterClones()
+	resp, err := client.GetWriterClones(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.WriterClone{}
@@ -20,12 +20,12 @@ func (inst *App) GetWriterClones(connUUID, hostUUID string) []model.WriterClone 
 }
 
 func (inst *App) DeleteWriterClone(connUUID, hostUUID, uuid string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteWriterClone(uuid)
+	_, err = client.DeleteWriterClone(hostUUID, uuid)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -34,18 +34,27 @@ func (inst *App) DeleteWriterClone(connUUID, hostUUID, uuid string) interface{} 
 }
 
 func (inst *App) DeleteWriterCloneBulk(connUUID, hostUUID string, UUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
+	var addedCount int
+	var errorCount int
 	for _, item := range UUIDs {
-		msg := inst.DeleteWriterClone(connUUID, hostUUID, item.UUID)
+		_, err := client.DeleteStreamClone(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete writer %s %s", item.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed writer: %s", item.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }

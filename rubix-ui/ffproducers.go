@@ -3,33 +3,43 @@ package main
 import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (inst *App) DeleteProducerBulk(connUUID, hostUUID string, streamUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteProducerBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range streamUUIDs {
-		msg := inst.DeleteProducer(connUUID, hostUUID, net.UUID)
+	var addedCount int
+	var errorCount int
+	for _, item := range uuids {
+		_, err := client.DeleteProducer(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete stream %s %s", net.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed stream: %s", net.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
 }
 
 func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.Producer{}
+		return nil
 	}
-	producers, err := inst.flow.GetProducers()
+	producers, err := client.GetProducers(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.Producer{}
@@ -39,18 +49,30 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 
 func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *model.Producer {
 	if body.ProducerThingUUID == "" {
-		inst.crudMessage(false, fmt.Sprintf("please select a select a point or a schedule"))
+		inst.crudMessage(false, fmt.Sprintf("producer uuid can not be empty"))
 		return nil
 	}
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("producer-%s", uuid.ShortUUID("")[5:10])
 	}
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	if body.ProducerThingType == "" {
+		body.ProducerThingType = "point"
+	}
+	if body.ProducerApplication == "" {
+		body.ProducerApplication = "mapping"
+	}
+	if nils.BoolIsNil(body.Enable) {
+		body.Enable = nils.NewFalse()
+	}
+	if nils.BoolIsNil(body.EnableHistory) {
+		body.EnableHistory = nils.NewFalse()
+	}
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	producers, err := inst.flow.AddProducer(body)
+	producers, err := client.AddProducer(hostUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -59,12 +81,12 @@ func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *m
 }
 
 func (inst *App) EditProducer(connUUID, hostUUID, streamUUID string, body *model.Producer) *model.Producer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	producers, err := inst.flow.EditProducer(streamUUID, body)
+	producers, err := client.EditProducer(hostUUID, streamUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -72,12 +94,12 @@ func (inst *App) EditProducer(connUUID, hostUUID, streamUUID string, body *model
 	return producers
 }
 func (inst *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteProducer(streamUUID)
+	_, err = client.DeleteProducer(hostUUID, streamUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -86,12 +108,12 @@ func (inst *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface
 }
 
 func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return []model.Producer{}
 	}
-	resp, err := inst.flow.GetProducers()
+	resp, err := client.GetProducers(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -100,11 +122,12 @@ func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
 }
 
 func (inst *App) getProducer(connUUID, hostUUID, streamUUID string) (*model.Producer, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	producers, err := inst.flow.GetProducer(streamUUID)
+	producers, err := client.GetProducer(hostUUID, streamUUID)
 	if err != nil {
 		return nil, err
 	}

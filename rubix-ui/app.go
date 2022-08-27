@@ -4,25 +4,28 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/clients/assistapi"
+	"github.com/NubeIO/nubeio-rubix-lib-auth-go/user"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"sync"
 
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
-	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
-	"github.com/NubeIO/rubix-ui/backend/flow"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 )
 
-const flowPort = 1660
+func (inst *App) errMsg(err error) error {
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	return nil
+}
 
 // App struct
 type App struct {
 	ctx   context.Context
 	DB    storage.Storage
-	flow  *ffclient.FlowClient
 	mutex sync.RWMutex
 	store *store.Store
 }
@@ -31,10 +34,6 @@ type App struct {
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
-	app.flow = flow.New(&ffclient.Connection{
-		Ip:   "0.0.0.0",
-		Port: 1662,
-	})
 	str := &store.Store{
 		Arch: "armv7",
 	}
@@ -44,26 +43,6 @@ func NewApp() *App {
 	}
 	app.store = appStore
 	return app
-}
-
-//resetHost will be used later to cache a host ip, port and token
-func (inst *App) resetHost(connUUID string, hostUUID string, resetFlow bool) (*assistmodel.Host, error) {
-	host, err := inst.getHost(connUUID, hostUUID)
-	if err != nil {
-		log.Errorf("resetHost connUUID:%s hostUUID:%s", connUUID, hostUUID)
-		return nil, err
-	}
-	if resetFlow {
-		inst.resetFlow(host.IP, flowPort)
-	}
-	return host, err
-}
-
-func (inst *App) resetFlow(ip string, port int) {
-	inst.flow = flow.New(&ffclient.Connection{
-		Ip:   ip,
-		Port: port,
-	})
 }
 
 // startup is called when the app starts. The context is saved, so we can call the runtime methods
@@ -82,76 +61,108 @@ func matchConnectionUUID(uuid string) bool {
 }
 
 //initRest get rest client
-func (inst *App) initConnection(connUUID string) (*assitcli.Client, error) {
+func (inst *App) initConnection(body *AssistClient) (*assitcli.Client, error) {
+	var err error
+	connUUID := body.ConnUUID
+	if connUUID == "" {
+		err = inst.errMsg(err)
+		return nil, errors.New("conn can not be empty")
+	}
 	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
 	defer inst.mutex.Unlock()
 	if connUUID == "" {
+		err = inst.errMsg(errors.New("conn can not be empty"))
 		return nil, errors.New("conn can not be empty")
 	}
-	var err error
+
 	connection := &storage.RubixConnection{}
 	if matchConnectionUUID(connUUID) {
 		connection, err = inst.DB.Select(connUUID)
 		if err != nil {
+			err = inst.errMsg(err)
 			return nil, err
 		}
 	} else {
 		connection, err = inst.DB.SelectByName(connUUID)
 		if err != nil {
+			err = inst.errMsg(err)
 			return nil, err
 		}
 	}
 	if connection == nil {
+		err = inst.errMsg(errors.New("failed to find a connection"))
 		return nil, errors.New("failed to find a connection")
 	}
 	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
-	return assitcli.New(connection.IP, connection.Port), nil
+	cli := assitcli.New(&assitcli.Client{
+		URL:         connection.IP,
+		Port:        connection.Port,
+		HTTPS:       false,
+		AssistToken: connection.AssistToken,
+	})
+	//token := connection.AssistToken
+	//if token == "" {
+	//	err := inst.assistGenerateToken(connUUID, true)
+	//	if err != nil {
+	//		err = inst.errMsg(err)
+	//	}
+	//}
+	//cli.AssistToken = token
+	return cli, nil
 }
 
 type AssistClient struct {
 	ConnUUID string
 }
 
-//initRest get rest client
-func (inst *App) initConnectionAuth(body *AssistClient) (*assistapi.Client, error) {
-	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
-	defer inst.mutex.Unlock()
-	connUUID := body.ConnUUID
-	if connUUID == "" {
-		return nil, errors.New("conn can not be empty")
-	}
-	var err error
-	connection := &storage.RubixConnection{}
-	if matchConnectionUUID(connUUID) {
-		connection, err = inst.DB.Select(connUUID)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		connection, err = inst.DB.SelectByName(connUUID)
-		if err != nil {
-			return nil, err
-		}
+func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
+	connection, err := inst.getConnection(connUUID)
+	if err != nil {
+		return errors.New(fmt.Sprintf("get connection err:%s", err.Error()))
 	}
 	if connection == nil {
-		return nil, errors.New("failed to find a connection")
+		return errors.New(fmt.Sprintf("connection not found :%s", connUUID))
 	}
-	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
-	cli := assistapi.NewAuth(&assistapi.Client{
-		URL:         connection.IP,
-		Port:        connection.Port,
-		HTTPS:       false,
-		AssistToken: connection.AssistToken,
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connection.UUID,
 	})
-	fmt.Println(11111, connection.AssistToken)
-	//token := connection.AssistToken
-	//if token == "" {
-	//	err := inst.assistGenerateToken(connUUID, true)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//}
-	//cli.AssistToken = token
-
-	return cli, nil
+	if err != nil {
+		return errors.New(fmt.Sprintf("assist-client init err:%s", err.Error()))
+	}
+	body := &user.User{Username: connection.Username, Password: connection.Password}
+	resp, err := client.Login(body)
+	if err != nil {
+		return errors.New(fmt.Sprintf("assist-login err:%s", err.Error()))
+	}
+	jwtToken := resp.AccessToken
+	tokens, err := client.GetTokens(jwtToken)
+	if err != nil {
+		return errors.New(fmt.Sprintf("assist-get-tokens err:%s", err.Error()))
+	}
+	tokenName := fmt.Sprintf("%s-%s", connection.UUID, connection.Name)
+	for _, token := range tokens {
+		if tokenName == token.Name {
+			if resetToken {
+				_, err := client.DeleteToken(jwtToken, token.UUID)
+				if err != nil {
+					return errors.New(fmt.Sprintf("assist-delete-token name:%s err:%s", token.Name, err.Error()))
+				}
+			} else {
+				return errors.New(fmt.Sprintf("a token for host:%s alreay exists", connection.Name))
+			}
+		}
+	}
+	token, err := client.GenerateToken(resp.AccessToken, &assitcli.TokenCreate{
+		Name:    tokenName,
+		Blocked: nils.NewFalse(),
+	})
+	if err != nil {
+		return errors.New(fmt.Sprintf("assist-generate token name:%s err:%s", tokenName, err.Error()))
+	}
+	connection.AssistToken = token.Token
+	_, err = inst.updateConnection(connection.UUID, connection)
+	if err != nil {
+		return errors.New(fmt.Sprintf("update connection token in local db err:%s", err.Error()))
+	}
+	return nil
 }

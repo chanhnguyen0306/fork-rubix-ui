@@ -13,12 +13,3 @@ func (inst *App) PingRubixAssist(connUUID string) bool {
 	}
 	return ping.Do(connection.IP, connection.Port)
 }
-
-func (inst *App) PingHost(connUUID, hostUUID string) bool {
-	host := inst.GetHost(connUUID, hostUUID)
-	if host == nil {
-		inst.crudMessage(false, fmt.Sprintf("failed to find host: %s", hostUUID))
-		return false
-	}
-	return ping.Do(host.IP, host.Port)
-}

@@ -11,7 +11,7 @@ import (
 
 // wiresUpload upload a flow to wires
 func (inst *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Ba
 }
 
 func (inst *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, errors.New(fmt.Sprintf("error %s", err.Error()))

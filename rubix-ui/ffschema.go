@@ -61,13 +61,8 @@ func jsonToInterface(body []byte, inter interface{}) (interface{}, error) {
 }
 
 func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
 	url, err := setPluginURL(pluginName, "network")
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -110,13 +105,8 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 }
 
 func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
 	url, err := setPluginURL(pluginName, "device")
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -159,13 +149,8 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 }
 
 func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
 	url, err := setPluginURL(pluginName, "point")
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

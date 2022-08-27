@@ -4,18 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-assist/service/clients/ffclient"
+	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
 const bacnetMaster = "bacnetmaster"
-
-func (inst *App) bacnetNetwork(connUUID, hostUUID string) (*model.Network, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
-	if err != nil {
-		return nil, err
-	}
-	return inst.flow.GetNetworkByPluginName(bacnetMaster)
-}
 
 func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 	if pluginName != bacnetMaster {
@@ -45,26 +37,32 @@ func (inst *App) GetBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, ad
 }
 
 func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) ([]model.Point, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	err := inst.bacnetChecks(connUUID, hostUUID, "bacnetmaster")
 	if err != nil {
 		return nil, err
 	}
-	err = inst.bacnetChecks(connUUID, hostUUID, "bacnetmaster")
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
 	if deviceUUID == "" {
 		return nil, errors.New("bacnet device uuid cant not be empty")
 	}
-	return inst.flow.BacnetDevicePoints(deviceUUID, addPoints, makeWriteable)
+	return client.BacnetDevicePoints(hostUUID, deviceUUID, addPoints, makeWriteable)
 }
 
 func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName string) ([]model.Device, error) {
 	err := inst.bacnetChecks(connUUID, hostUUID, pluginName)
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	network, err := inst.bacnetNetwork(connUUID, hostUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	network, err := client.FFGetNetworkByPluginName(hostUUID, bacnetMaster, false)
 	if err != nil {
 		return nil, errors.New("no network is added, please add network")
 	}
@@ -77,11 +75,10 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if netUUID == "" {
 		return nil, errors.New("flow network uuid can not be empty")
 	}
-	devices, err := inst.flow.BacnetWhoIs(&ffclient.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
+	devices, err := client.BacnetWhoIs(hostUUID, &assitcli.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
 	if err != nil {
 		return nil, err
 	}
-
 	return devices, nil
 }
 

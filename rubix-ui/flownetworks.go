@@ -6,30 +6,55 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUIDs) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	for _, net := range networkUUIDs {
-		msg := inst.DeleteFlowNetwork(connUUID, hostUUID, net.UUID)
+	var addedCount int
+	var errorCount int
+	for _, item := range uuids {
+		_, err := client.DeleteFlowNetwork(hostUUID, item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", net.Name, msg))
+			errorCount++
+			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", net.Name))
+			addedCount++
 		}
 	}
-	return "ok"
+	if addedCount > 0 {
+		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+	}
+	return nil
+}
+
+func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	resp, err := client.GetFlowNetwork(hostUUID, uuid, withStreams)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return resp
 }
 
 func (inst *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []model.FlowNetwork {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return []model.FlowNetwork{}
+		return nil
 	}
-	networks, err := inst.flow.GetFlowNetworks(withStream)
+	networks, err := client.GetFlowNetworks(hostUUID, withStream)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetwork{}
@@ -41,11 +66,12 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("flow-%s", uuid.ShortUUID("")[5:10])
 	}
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := inst.flow.AddFlowNetwork(body)
+	networks, err := client.AddFlowNetwork(hostUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -63,12 +89,12 @@ func (inst *App) AddFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 }
 
 func (inst *App) EditFlowNetwork(connUUID, hostUUID, networkUUID string, body *model.FlowNetwork) *model.FlowNetwork {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-	networks, err := inst.flow.EditFlowNetwork(networkUUID, body)
+	networks, err := client.EditFlowNetwork(hostUUID, networkUUID, body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -76,12 +102,12 @@ func (inst *App) EditFlowNetwork(connUUID, hostUUID, networkUUID string, body *m
 	return networks
 }
 func (inst *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) interface{} {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return err
+		return nil
 	}
-	_, err = inst.flow.DeleteFlowNetwork(networkUUID)
+	_, err = client.DeleteFlowNetwork(hostUUID, networkUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return err
@@ -90,11 +116,12 @@ func (inst *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) inter
 }
 
 func (inst *App) getFlowNetwork(connUUID, hostUUID, networkUUID string, withStream bool) (*model.FlowNetwork, error) {
-	_, err := inst.resetHost(connUUID, hostUUID, true)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
-	networks, err := inst.flow.GetFlowNetwork(networkUUID, withStream)
+	networks, err := client.GetFlowNetwork(hostUUID, networkUUID, withStream)
 	if err != nil {
 		return nil, err
 	}

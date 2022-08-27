@@ -25,14 +25,3 @@ func TestApp_addFlowNetwork(t *testing.T) {
 	pprint.PrintJOSN(bulk)
 
 }
-
-func TestApp_getNetworksWithPointsDisplay(t *testing.T) {
-	app := NewApp()
-	bulk, err := app.getNetworksWithPointsDisplay("cloud", "hos_0F226C392A55")
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	pprint.PrintJOSN(bulk)
-
-}

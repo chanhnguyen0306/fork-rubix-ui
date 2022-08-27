@@ -10,7 +10,7 @@ import (
 )
 
 func (inst *App) GetLocationSchema(connUUID string) interface{} {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -26,7 +26,7 @@ func (inst *App) GetLocationSchema(connUUID string) interface{} {
 }
 
 func (inst *App) GetLocationTableSchema(connUUID string) interface{} {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -42,7 +42,7 @@ func (inst *App) AddLocation(connUUID string, body *assistmodel.Location) *assis
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("loc-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -58,7 +58,7 @@ func (inst *App) AddLocation(connUUID string, body *assistmodel.Location) *assis
 
 func (inst *App) GetLocations(connUUID string) (resp []assistmodel.Location) {
 	resp = []assistmodel.Location{}
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -84,7 +84,7 @@ func (inst *App) DeleteLocationBulk(connUUID string, uuids []UUIDs) interface{} 
 }
 
 func (inst *App) deleteLocation(connUUID string, uuid string) (*assitcli.Response, error) {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (inst *App) deleteLocation(connUUID string, uuid string) (*assitcli.Respons
 }
 
 func (inst *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -111,7 +111,7 @@ func (inst *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response
 }
 
 func (inst *App) GetLocation(connUUID string, uuid string) *assistmodel.Location {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -125,7 +125,7 @@ func (inst *App) GetLocation(connUUID string, uuid string) *assistmodel.Location
 }
 
 func (inst *App) UpdateLocation(connUUID string, uuid string, host *assistmodel.Location) *assistmodel.Location {
-	client, err := inst.initConnection(connUUID)
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

@@ -21,6 +21,7 @@ export const CreateEditModal = (props: any) => {
   factory.connectionUUID = flowNetworkFactory.connectionUUID = connUUID;
   factory.hostUUID = flowNetworkFactory.hostUUID = hostUUID;
 
+
   useEffect(() => {
     setFormData(currentItem);
   }, [isModalVisible]);
@@ -49,10 +50,12 @@ export const CreateEditModal = (props: any) => {
           enable: {
             title: "enable",
             type: "boolean",
+            default:true,
           },
           enable_history: {
             title: "enable history",
             type: "boolean",
+            default:false,
           },
           producer_thing_class: {
             type: "string",

@@ -44,3 +44,9 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 	}
 	pprint.PrintJOSN(store)
 }
+
+func TestApp_EdgeGetNetworks(t *testing.T) {
+	app := NewApp()
+
+	app.EdgeGetNetworks("cloud", "rc")
+}
