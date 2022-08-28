@@ -154,7 +154,7 @@ export const FlowDevices = () => {
               <Button
                 type="primary"
                 onClick={runWhois}
-                style={{ margin: "5px", float: "right" }}
+                style={{ margin: "0 6px 10px 0", float: "left" }}
               >
                 <RedoOutlined /> WHO-IS
               </Button>

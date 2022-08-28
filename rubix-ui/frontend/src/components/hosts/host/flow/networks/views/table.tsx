@@ -153,14 +153,13 @@ export const FlowNetworkTable = () => {
 
   return (
     <>
-      <div className="flow-networks-actions">
-        <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
-        <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
-        <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbImportButton showModal={() => setIsImportModalVisible(true)} />
-        <RbExportButton handleExport={handleExport} />
-        <RbRefreshButton refreshList={fetchNetworks} />
-      </div>
+      <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
+      <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <RbExportButton handleExport={handleExport} />
+      <RbRefreshButton refreshList={fetchNetworks} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

@@ -77,7 +77,7 @@ function AppStore(props: AppStoreProps): React.ReactElement {
         <Col span={4}>
           <Select
             showSearch
-            style={{width: '100%'}}
+            style={{ width: "100%", marginBottom: "10px" }}
             placeholder="Select a version"
             optionFilterProp="children"
             onChange={onChange}

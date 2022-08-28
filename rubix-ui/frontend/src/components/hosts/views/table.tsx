@@ -269,8 +269,8 @@ const AppInstallInfo = (props: any) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
-                borderLeft: '1px solid #dfdfdf',
-                padding: '0 2rem',
+                borderLeft: "1px solid #dfdfdf",
+                padding: "0 2rem",
               }}
             >
               <span>
@@ -444,11 +444,10 @@ export const HostsTable = (props: any) => {
 
   return (
     <div>
-      <div className="hosts-table-actions">
-        <RbDeleteButton bulkDelete={bulkDelete} />
-        <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
-        <RbRefreshButton refreshList={refreshList} />
-      </div>
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
+      <RbRefreshButton refreshList={refreshList} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

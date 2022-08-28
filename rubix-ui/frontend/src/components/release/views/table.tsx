@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {Spin} from "antd";
+import React, { useEffect, useState } from "react";
+import { Spin } from "antd";
 import RbTable from "../../../common/rb-table";
-import {RbDownloadButton} from "../../../common/rb-table-actions";
+import { RbDownloadButton } from "../../../common/rb-table-actions";
 import DownloadForm from "./downloadForm";
-
 
 function tableSchemaBuilder() {
   return [
@@ -32,12 +31,11 @@ function tableSchemaBuilder() {
       dataIndex: "transport",
       key: "transport",
     },
-
   ];
 }
 
 function AppTable(props: any) {
-  const {token, selectedRelease} = props;
+  const { token, selectedRelease } = props;
   const [appDetails, updateAppDetails] = useState({} as any);
   // const [apps, updateApps] = useState(appDetails.apps);
   const [isFetching, updateIsFetching] = useState(false);
@@ -85,7 +83,7 @@ function AppTable(props: any) {
   }
   return (
     <div>
-      <RbDownloadButton disabled={!isSelected} handleClick={handleDownload}/>
+      <RbDownloadButton disabled={!isSelected} handleClick={handleDownload} />
 
       <DownloadForm
         isDownloadModalOpen={isDownloadModalOpen}
@@ -100,7 +98,7 @@ function AppTable(props: any) {
         dataSource={appDetails.apps}
         columns={tableSchema}
         rowSelection={rowSelection}
-        loading={{indicator: <Spin/>, spinning: isFetching}}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
       />
     </div>
   );

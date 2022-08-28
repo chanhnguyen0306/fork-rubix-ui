@@ -27,7 +27,11 @@ export const LogsTable = (props: any) => {
   return (
     <>
       <Popconfirm title="Delete" onConfirm={bulkDelete}>
-        <Button type="primary" danger style={{ margin: "5px", float: "right" }}>
+        <Button
+          type="primary"
+          danger
+          style={{ margin: "0 6px 10px 0", float: "left" }}
+        >
           <DeleteOutlined /> Delete
         </Button>
       </Popconfirm>
