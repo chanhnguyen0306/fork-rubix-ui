@@ -14,6 +14,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const bacnetServerDriver = "bacnet-server-driver"
+const bacnetMasterDriver = "bacnet-master-driver"
+const flowFramework = "flow-framework"
+const rubixWires = "rubix-wires"
+const wiresBuilds = "wires-builds"
+
 func (inst *App) errMsg(err error) error {
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

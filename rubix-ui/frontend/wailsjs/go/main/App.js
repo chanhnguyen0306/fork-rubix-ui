@@ -62,10 +62,6 @@ export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
 }
 
-export function ConfigBACnetServer(arg1) {
-  return window['go']['main']['App']['ConfigBACnetServer'](arg1);
-}
-
 export function CreateWriter(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateWriter'](arg1, arg2, arg3);
 }

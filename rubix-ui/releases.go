@@ -8,10 +8,6 @@ import (
 	"sort"
 )
 
-const flowFramework = "flow-framework"
-const rubixWires = "rubix-wires"
-const wiresBuilds = "wires-builds"
-
 func (inst *App) GetReleases() []store.Release {
 	out, err := inst.getReleases()
 	if err != nil {

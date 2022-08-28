@@ -45,8 +45,6 @@ export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream)
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
 
-export function ConfigBACnetServer(arg1:main.ConfigBACnetServer):Promise<Error>;
-
 export function CreateWriter(arg1:string,arg2:string,arg3:model.Writer):Promise<model.Writer>;
 
 export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
