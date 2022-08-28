@@ -53,3 +53,12 @@ func TestApp_edgeReadConfig(t *testing.T) {
 	}
 	pprint.PrintJOSN(data)
 }
+func TestApp_edgeReadBACnetConfig(t *testing.T) {
+	app := NewApp()
+	resp, err := app.edgeReadBACnetConfig("cloud", "rc")
+	fmt.Println(err)
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(resp)
+}

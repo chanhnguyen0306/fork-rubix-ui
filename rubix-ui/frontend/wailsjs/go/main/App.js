@@ -458,6 +458,10 @@ export function GetHostNetworks(arg1) {
   return window['go']['main']['App']['GetHostNetworks'](arg1);
 }
 
+export function GetHostPublicInfo(arg1, arg2) {
+  return window['go']['main']['App']['GetHostPublicInfo'](arg1, arg2);
+}
+
 export function GetHostSchema(arg1) {
   return window['go']['main']['App']['GetHostSchema'](arg1);
 }

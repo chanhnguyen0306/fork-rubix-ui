@@ -14,6 +14,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const configEnv = ".env"
+const configYml = "config.yml"
 const bacnetServerDriver = "bacnet-server-driver"
 const bacnetMasterDriver = "bacnet-master-driver"
 const flowFramework = "flow-framework"

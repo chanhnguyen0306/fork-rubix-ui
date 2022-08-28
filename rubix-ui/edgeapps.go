@@ -55,7 +55,6 @@ func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList E
 	for _, app := range appsList.AppsList {
 		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, releaseVersion)
 	}
-
 }
 
 // EdgeInstallApp install an app
@@ -70,6 +69,11 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 	log.Infof("start app install app:%s version:%s arch:%s", appName, appVersion, arch)
 	releaseVersion = getProduct.FlowVersion //TODO UI needs to pass this in
+
+	err := inst.writeAppConfig(connUUID, hostUUID, appName)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("write app config:%s", err.Error()))
+	}
 
 	if releaseVersion == "" {
 		release, err := inst.getLatestRelease()

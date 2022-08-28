@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,15 +20,34 @@ SECRET_KEY=__SECRET_KEY__
 	writeConfig := &appstore.EdgeConfig{
 		AppName:      rubixWires,
 		BodyAsString: config,
-		ConfigType:   ".env",
+		ConfigType:   configEnv,
 	}
 	return client.EdgeWriteConfigYml(hostUUID, writeConfig)
+}
+
+type ConfigBACnetServer struct {
+	ServerName string `json:"server_name" yaml:"server_name"`
+	DeviceId   int    `json:"device_id" yaml:"device_id"`
+	Iface      string `json:"iface" yaml:"iface"`
+	BiMax      int    `json:"bi_max" yaml:"bi_max"`
+	BoMax      int    `json:"bo_max" yaml:"bo_max"`
+	BvMax      int    `json:"bv_max" yaml:"bv_max"`
+	AiMax      int    `json:"ai_max" yaml:"ai_max"`
+	AoMax      int    `json:"ao_max" yaml:"ao_max"`
+	AvMax      int    `json:"av_max" yaml:"av_max"`
+	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
+	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
+	Debug      bool   `json:"debug" yaml:"debug"`
+	Enable     bool   `json:"enable" yaml:"enable"`
 }
 
 func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assitcli.Message, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
+	}
+	if config == nil {
+		return nil, errors.New("bacnet config cant not be empty")
 	}
 	if config.ServerName == "" {
 		config.ServerName = "Nube IO"
@@ -37,6 +58,9 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 	if config.DeviceId == 0 {
 		config.DeviceId = 2508
 	}
+
+	log.Infof("write bacnet config device-name:%s device-id:%d", config.ServerName, config.DeviceId)
+
 	_, err = yaml.Marshal(&config)
 	if err != nil {
 		return nil, err
@@ -44,7 +68,7 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 	writeConfig := &appstore.EdgeConfig{
 		AppName:    bacnetServerDriver,
 		Body:       config,
-		ConfigType: "config.yml",
+		ConfigType: configYml,
 	}
 	return client.EdgeWriteConfigYml(hostUUID, writeConfig)
 
@@ -62,18 +86,38 @@ func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) 
 	return resp, err
 }
 
-type ConfigBACnetServer struct {
-	ServerName string `json:"server_name" yaml:"server_name"`
-	DeviceId   int    `json:"device_id" yaml:"device_id"`
-	Iface      string `json:"iface" yaml:"iface"`
-	BiMax      int    `json:"bi_max" yaml:"bi_max"`
-	BoMax      int    `json:"bo_max" yaml:"bo_max"`
-	BvMax      int    `json:"bv_max" yaml:"bv_max"`
-	AiMax      int    `json:"ai_max" yaml:"ai_max"`
-	AoMax      int    `json:"ao_max" yaml:"ao_max"`
-	AvMax      int    `json:"av_max" yaml:"av_max"`
-	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
-	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
-	Debug      bool   `json:"debug" yaml:"debug"`
-	Enable     bool   `json:"enable" yaml:"enable"`
+func (inst *App) edgeReadBACnetConfig(connUUID, hostUUID string) (*ConfigBACnetServer, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.EdgeReadConfig(hostUUID, bacnetServerDriver, configYml)
+	if err != nil {
+		return nil, err
+	}
+	data := &ConfigBACnetServer{}
+	err = yaml.Unmarshal(resp.Data, &data)
+	return data, err
+}
+
+func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
+	if appName == bacnetServerDriver {
+		bacnetConfig, err := inst.edgeReadBACnetConfig(connUUID, hostUUID)
+		if err != nil {
+			return err
+		}
+		if bacnetConfig != nil {
+			log.Infof("read bacnet config device-name:%s device-id:%d", bacnetConfig.ServerName, bacnetConfig.DeviceId)
+		}
+		_, err = inst.edgeWriteBACnetConfig(connUUID, hostUUID, bacnetConfig)
+		if err != nil {
+			return err
+		}
+	}
+
+	if appName == rubixWires {
+
+	}
+	return nil
+
 }
