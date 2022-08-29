@@ -4,15 +4,32 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"github.com/NubeIO/git/pkg/git"
 	"github.com/google/go-github/v32/github"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
-func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git.DownloadOptions) (*git.DownloadResponse, error) {
+func intNil(b *int64) int64 {
+	if b == nil {
+		return 0
+	} else {
+		return *b
+	}
+}
+
+func stringIsNil(b *string) string {
+	if b == nil {
+		return ""
+	} else {
+		return *b
+	}
+}
+
+func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
-		return nil, errors.New("git token can not be empty")
+		return errors.New("git token can not be empty")
 	}
 	opts := &git.AssetOptions{
 		Owner: inst.Owner,
@@ -22,13 +39,20 @@ func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git
 	}
 	ctx := context.Background()
 	gitClient = git.NewClient(token, opts, ctx)
-	download, err := gitClient.Download(gitOptions)
+	assetInfo, err := gitClient.MatchAssetInfo(gitOptions)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	assetName := download.AssetName
+	assetName := stringIsNil(assetInfo.RepositoryRelease.Name)
+	dest := fmt.Sprintf("%s/%s", gitOptions.DownloadDestination, assetName)
+	dest = filePath(dest)
+	err = gitClient.DownloadRelease(opts.Owner, opts.Repo, dest, intNil(assetInfo.RepositoryRelease.ID))
+	if err != nil {
+		return err
+	}
+
 	log.Infof("git downloaded full asset name: %s", assetName)
-	return download, err
+	return err
 }
 
 func (inst *Store) GitListReleases(token string) ([]ReleaseList, error) {

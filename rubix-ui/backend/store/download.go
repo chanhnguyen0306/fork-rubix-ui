@@ -180,7 +180,7 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseV
 		}
 	}
 	if runDownload {
-		_, err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
 		if err != nil {
 			return nil, err
 		}
