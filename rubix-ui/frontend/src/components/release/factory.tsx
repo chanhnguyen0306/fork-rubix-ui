@@ -1,4 +1,4 @@
-import {installer, store} from "../../../wailsjs/go/models";
+import { installer, store } from "../../../wailsjs/go/models";
 import {
   EdgeInstallApp,
   GetRelease,
@@ -7,6 +7,9 @@ import {
   GitListReleases,
   StoreDownloadApp,
   EdgeDeviceInfoAndApps,
+  EdgeServiceStart,
+  EdgeServiceRestart,
+  EdgeServiceStop,
 } from "../../../wailsjs/go/main/App";
 
 export class ReleasesFactory {
@@ -22,7 +25,6 @@ export class ReleasesFactory {
   ): Promise<store.Release> {
     return await GitDownloadRelease(token, version);
   }
-
 
   // token, appName, releaseVersion, arch string, cleanDownload bool
   async StoreDownload(
@@ -58,11 +60,70 @@ export class ReleasesFactory {
   // example if installing flow-framework the user needs to already have this downloaded on the PC via the app-store
   // appName = flow-framework,  appVersion = v0.6.0, arch = amd64, releaseVersion = v0.6.0
   // to get the releaseVersion use either GetRelease() or GetReleases()
-  async EdgeInstallApp(connUUID: string, hostUUID: string, appName: string, appVersion: string, releaseVersion: string): Promise<installer.InstallResp> {
-    return await EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion);
+  async EdgeInstallApp(
+    connUUID: string,
+    hostUUID: string,
+    appName: string,
+    appVersion: string,
+    releaseVersion: string
+  ): Promise<installer.InstallResp> {
+    return await EdgeInstallApp(
+      connUUID,
+      hostUUID,
+      appName,
+      appVersion,
+      releaseVersion
+    );
   }
 
-  async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) { // releaseVersion TODO Sanjeev to add this back in // let user select this to upgrade/downgrade GetReleases
+  async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) {
+    // releaseVersion TODO Sanjeev to add this back in // let user select this to upgrade/downgrade GetReleases
     return await EdgeDeviceInfoAndApps(connUUID, hostUUID, "");
+  }
+
+  async EdgeServiceStart(connUUID: string, hostUUID: string, appName: string) {
+    return await EdgeServiceStart(connUUID, hostUUID, appName, 60);
+  }
+
+  async EdgeServiceStop(connUUID: string, hostUUID: string, appName: string) {
+    return await EdgeServiceStop(connUUID, hostUUID, appName, 60);
+  }
+
+  async EdgeServiceRestart(
+    connUUID: string,
+    hostUUID: string,
+    appName: string
+  ) {
+    return await EdgeServiceRestart(connUUID, hostUUID, appName, 60);
+  }
+
+  async EdgeServiceAction(
+    action: string,
+    payload: { connUUID: string; hostUUID: string; appName: string }
+  ) {
+
+    switch (action) {
+      case "start":
+        return this.EdgeServiceStart(
+          payload.connUUID,
+          payload.hostUUID,
+          payload.appName
+        );
+
+      case "stop":
+        return this.EdgeServiceStop(
+          payload.connUUID,
+          payload.hostUUID,
+          payload.appName
+        );
+
+      case "restart":
+        return this.EdgeServiceRestart(
+          payload.connUUID,
+          payload.hostUUID,
+          payload.appName
+        );
+    }
+    return Promise.reject(null);
   }
 }
