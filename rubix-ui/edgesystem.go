@@ -3,10 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-dhcpd/dhcpd"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/lib-systemctl-go/systemctl"
-	"github.com/NubeIO/rubix-edge/service/system"
 )
 
 func (inst *App) EdgeServiceStart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
@@ -163,52 +161,4 @@ func (inst *App) edgeServiceMassStatus(connUUID, hostUUID string, body *installe
 		return nil, err
 	}
 	return resp, err
-}
-
-func (inst *App) EdgeDHCPPortExists(connUUID, hostUUID string, body *system.NetworkingBody) *system.Message {
-	//client, err := inst.initConnectionAuth(&AssistClient{
-	//	ConnUUID: connUUID,
-	//})
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return  nil
-	//}
-	//resp, err := client.EdgeDHCPPortExists(hostUUID, body)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return  nil
-	//}
-	return nil
-}
-
-func (inst *App) EdgeDHCPSetAsAuto(connUUID, hostUUID string, body *system.NetworkingBody) *system.Message {
-	//client, err := inst.initConnectionAuth(&AssistClient{
-	//	ConnUUID: connUUID,
-	//})
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return nil
-	//}
-	//resp, err := client.EdgeDHCPSetAsAuto(hostUUID, body)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return  nil
-	//}
-	return nil
-}
-
-func (inst *App) EdgeDHCPSetStaticIP(connUUID, hostUUID string, body *dhcpd.SetStaticIP) string {
-	//client, err := inst.initConnectionAuth(&AssistClient{
-	//	ConnUUID: connUUID,
-	//})
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return ""
-	//}
-	//resp, err := client.EdgeDHCPSetStaticIP(hostUUID, body)
-	//if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-	//	return  ""
-	//}
-	return ""
 }

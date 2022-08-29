@@ -7,10 +7,10 @@ import (
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 )
 
-const bacnetMaster = "bacnetmaster"
+const bacnetMasterPlg = "bacnetmaster"
 
 func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
-	if pluginName != bacnetMaster {
+	if pluginName != bacnetMasterPlg {
 		return errors.New(fmt.Sprintf("network:%s is not not bacnet-master", pluginName))
 	}
 	plugin, err := inst.GetPluginByName(connUUID, hostUUID, pluginName)
@@ -62,7 +62,7 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if err != nil {
 		return nil, err
 	}
-	network, err := client.FFGetNetworkByPluginName(hostUUID, bacnetMaster, false)
+	network, err := client.FFGetNetworkByPluginName(hostUUID, bacnetMasterPlg, false)
 	if err != nil {
 		return nil, errors.New("no network is added, please add network")
 	}

@@ -1,5 +1,9 @@
 import {
-  EdgeDHCPPortExists, EdgeDHCPSetAsAuto, EdgeDHCPSetStaticIP, EdgeGetNetworks,
+  EdgeDHCPPortExists,
+  EdgeDHCPSetAsAuto,
+  EdgeDHCPSetStaticIP,
+  EdgeGetNetworks,
+  GetRcNetworkSchema,
 } from "../../../../../wailsjs/go/main/App";
 import {Helpers} from "../../../../helpers/checks";
 import {dhcpd, store, system} from "../../../../../wailsjs/go/models";
@@ -13,23 +17,26 @@ export class HostNetworking {
     connectionUUID!: string;
     hostUUID!: string;
 
-
-
     public GetNetworks(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
         return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
     }
 
+  public GetRcNetworkSchema(): Promise<any> {
+    hasUUID(this.connectionUUID);
+    hasUUID(this.hostUUID);
+    return GetRcNetworkSchema(this.connectionUUID, this.hostUUID);
+  }
 
-    public RubixScan(): Promise<any> {
+
+  public RubixScan(): Promise<any> {
         hasUUID(this.connectionUUID);
         hasUUID(this.hostUUID);
         return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
     }
 
-
-  async EdgeDHCPPortExists(body:system.NetworkingBody):Promise<system.Message> {
+  async EdgeDHCPPortExists(body:system.NetworkingBody):Promise<system.DHCPPortExists> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await EdgeDHCPPortExists(this.connectionUUID, this.hostUUID, body);

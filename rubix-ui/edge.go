@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 )
 
@@ -32,13 +31,37 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 	if err != nil {
 		return false
 	}
-	info, err := client.EdgePublicInfo(hostUUID)
+	host, err := inst.getHost(connUUID, hostUUID)
 	if err != nil {
-		host, err := inst.getHost(connUUID, hostUUID)
-		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("device not found"))
-			return false
-		}
+		inst.crudMessage(false, fmt.Sprintf("no device on ip:%s", host.IP))
+		return false
+	}
+	ping, err := client.AssistPing(hostUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("ping fail on ip:%s", host.IP))
+		return false
+	}
+	if ping {
+		inst.crudMessage(true, fmt.Sprintf("ping ok ip:%s", host.IP))
+	} else {
+		inst.crudMessage(false, fmt.Sprintf("ping fail on ip:%s", host.IP))
+	}
+
+	return ping
+}
+
+func (inst *App) GetHostPublicInfo(connUUID, hostUUID string) bool {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return false
+	}
+	info, err := client.EdgePublicInfo(hostUUID)
+	host, err := inst.getHost(connUUID, hostUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("device not found"))
+		return false
+	}
+	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("no found ip:%s", host.IP))
 		return false
 	}
@@ -46,10 +69,14 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 		for _, interfaces := range info.Networking {
 			if info.Device.DeviceName != "na" {
 				if info.Device.DeviceName != "" {
-					inst.crudMessage(true, fmt.Sprintf("device name:%s product:%s interface:%s ip:%s", info.Device.DeviceName, info.Product.Product, interfaces.Interface, interfaces.IP))
+					if host.IP == interfaces.IP {
+						inst.crudMessage(true, fmt.Sprintf("device name:%s product:%s interface:%s ip:%s", info.Device.DeviceName, info.Product.Product, interfaces.Interface, interfaces.IP))
+					}
 				}
 			} else {
-				inst.crudMessage(true, fmt.Sprintf("device:%s interface:%s ip:%s", info.Product.Product, interfaces.Interface, interfaces.IP))
+				if host.IP == interfaces.IP {
+					inst.crudMessage(true, fmt.Sprintf("device:%s interface:%s ip:%s", info.Product.Product, interfaces.Interface, interfaces.IP))
+				}
 			}
 		}
 	} else {
@@ -61,19 +88,6 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 		inst.crudMessage(false, fmt.Sprintf("no found ip:%s", host.IP))
 	}
 	return true
-}
-
-func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil
-	}
-	data, err := client.EdgeGetNetworks(hostUUID)
-	err = inst.errMsg(err)
-	if err != nil {
-		return nil
-	}
-	return data
 }
 
 func (inst *App) EdgeRubixScan(connUUID, hostUUID string) interface{} {

@@ -47,6 +47,6 @@ func TestApp_edgeListNubeServices(t *testing.T) {
 
 func TestApp_EdgeGetNetworks(t *testing.T) {
 	app := NewApp()
-
-	app.EdgeGetNetworks("cloud", "rc")
+	resp := app.EdgeGetNetworks("cloud", "rc")
+	pprint.PrintJOSN(resp)
 }

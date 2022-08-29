@@ -53,9 +53,9 @@
         "amd64",
         "armv7"
       ],
-      "version": "v0.0.12",
-      "min_version": "v0.0.12",
-      "max_version": "v0.0.12",
+      "version": "v0.0.16",
+      "min_version": "v0.0.16",
+      "max_version": "v0.0.16",
       "flow_dependency": true,
       "plugin_dependency": [
         "bacnetserver"
@@ -105,9 +105,9 @@
       "arch": [
         "armv7"
       ],
-      "version": "v0.0.1",
-      "min_version": "v0.0.1",
-      "max_version": "v0.0.1",
+      "version": "v1.0.0",
+      "min_version": "v1.0.0",
+      "max_version": "v1.0.0",
       "flow_dependency": true,
       "plugin_dependency": [
         "lora"

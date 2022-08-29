@@ -45,8 +45,6 @@ export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream)
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
 
-export function ConfigBACnetServer(arg1:main.ConfigBACnetServer):Promise<Error>;
-
 export function CreateWriter(arg1:string,arg2:string,arg3:model.Writer):Promise<model.Writer>;
 
 export function DeleteAllConnections():Promise<main.DeleteAllConnections>;
@@ -123,7 +121,7 @@ export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:st
 
 export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.CtlBody):Promise<systemctl.SystemState>;
 
-export function EdgeDHCPPortExists(arg1:string,arg2:string,arg3:system.NetworkingBody):Promise<system.Message>;
+export function EdgeDHCPPortExists(arg1:string,arg2:string,arg3:system.NetworkingBody):Promise<system.DHCPPortExists>;
 
 export function EdgeDHCPSetAsAuto(arg1:string,arg2:string,arg3:system.NetworkingBody):Promise<system.Message>;
 
@@ -245,6 +243,8 @@ export function GetHostNetwork(arg1:string,arg2:string):Promise<assistmodel.Netw
 
 export function GetHostNetworks(arg1:string):Promise<Array<assistmodel.Network>>;
 
+export function GetHostPublicInfo(arg1:string,arg2:string):Promise<boolean>;
+
 export function GetHostSchema(arg1:string):Promise<assistmodel.HostSchema>;
 
 export function GetHostTime(arg1:string,arg2:string):Promise<any>;
@@ -313,6 +313,8 @@ export function GetProducerClones(arg1:string,arg2:string):Promise<Array<model.P
 
 export function GetProducers(arg1:string,arg2:string):Promise<Array<model.Producer>>;
 
+export function GetRcNetworkSchema(arg1:string,arg2:string):Promise<any>;
+
 export function GetRelease(arg1:string):Promise<store.Release>;
 
 export function GetReleaseByVersion(arg1:string):Promise<store.Release>;
@@ -356,6 +358,8 @@ export function OpenURL(arg1:string):void;
 export function PingHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function PingRubixAssist(arg1:string):Promise<boolean>;
+
+export function RcSetNetworks(arg1:string,arg2:string,arg3:main.RcNetworkBody):void;
 
 export function RestartPluginBulk(arg1:string,arg2:string,arg3:Array<main.PluginUUIDs>):Promise<any>;
 

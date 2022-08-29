@@ -1,0 +1,279 @@
+package main
+
+import (
+	"fmt"
+	"github.com/NubeIO/lib-dhcpd/dhcpd"
+	"github.com/NubeIO/lib-networking/networking"
+	"github.com/NubeIO/lib-schema/schema"
+	"github.com/NubeIO/rubix-edge/service/system"
+)
+
+func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil
+	}
+	data, err := client.EdgeGetNetworks(hostUUID)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return data
+}
+
+type IpSettings struct {
+	Type     string   `json:"type" default:"string"`
+	Title    string   `json:"title" default:"ip setting"`
+	Options  []string `json:"enum" default:"[\"dhcp\",\"static\"]"`
+	EnumName []string `json:"enumNames" default:"[\"dhcp-dynamic\",\"static-fixed\"]"`
+	ReadOnly bool     `json:"readOnly" default:"false"`
+}
+
+type IpSettingState struct {
+	Type     string `json:"type" default:"string"`
+	Title    string `json:"title" default:"current network setting"`
+	Default  string `json:"default" default:"interface not found"`
+	ReadOnly bool   `json:"readOnly" default:"true"`
+}
+
+type Eth0 struct {
+	Eth0IpSettings      IpSettings       `json:"eth0_ip_settings"`
+	Eth0IpSettingsState IpSettingState   `json:"eth0_ip_settings_state"`
+	Eth0Interface       schema.Interface `json:"eth0_interface"`
+	Eth0Ip              schema.Ip        `json:"eth0_ip"`
+	Eth0Netmask         schema.Netmask   `json:"eth0_netmask"`
+	Eth0Gateway         schema.Ip        `json:"eth0_gateway"`
+}
+
+type Eth1 struct {
+	Eth1IpSettings      IpSettings       `json:"eth1_ip_settings"`
+	Eth1IpSettingsState IpSettingState   `json:"eth1_ip_settings_state"`
+	Eth1Interface       schema.Interface `json:"eth1_interface"`
+	Eth1Ip              schema.Ip        `json:"eth1_ip"`
+	Eth1Netmask         schema.Netmask   `json:"eth1_netmask"`
+	Eth1Gateway         schema.Ip        `json:"eth1_gateway"`
+}
+
+type RcNetwork struct {
+	Eth0 `json:"eth0"`
+	Eth1 `json:"eth1"`
+}
+
+type RcIONetwork struct {
+	Eth0 `json:"eth0"`
+}
+
+type RcNetworkBody struct {
+	Eth0IpSettings string `json:"eth0_ip_settings"`
+	Eth0Interface  string `json:"eth0_interface"`
+	Eth0Ip         string `json:"eth0_ip"`
+	Eth0Netmask    string `json:"eth0_netmask"`
+	Eth1IpSettings string `json:"eth1_ip_settings"`
+	Eth1Interface  string `json:"eth1_interface"`
+	Eth1Ip         string `json:"eth1_ip"`
+	Eth1Netmask    string `json:"eth1_netmask"`
+}
+
+func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetworkBody) {
+	info, err := inst.edgeProductInfo(connUUID, hostUUID)
+	if err != nil {
+		return
+	}
+	product := info.Product
+	if rcNetworkBody != nil {
+
+	}
+	//eth0IpSettings := rcNetworkBody.Eth0IpSettings
+	//eth1IpSettings := rcNetworkBody.Eth1IpSettings
+
+	if product == RubixCompute || product == RubixCompute5 {
+
+	}
+
+	if product == RubixComputeIO {
+
+	}
+}
+
+func (inst *App) setEth0(connUUID, hostUUID string, eth0Body networking.NetworkInterfaces) Eth0 {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	m := Eth0{}
+	eth0IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: eth0}) // if exists show the user if set to dhcp or static
+	if err != nil {
+		m.Eth0IpSettingsState.Default = fmt.Sprintf("eth0 err%s", err.Error())
+	}
+	// eth0
+	if eth0IsDHCP != nil {
+		if eth0IsDHCP.InterfaceExists {
+			if eth0IsDHCP.IsDHCP {
+				m.Eth0IpSettingsState.Default = "eth0 is set to dhcp"
+			} else {
+				m.Eth0IpSettingsState.Default = "eth0 is set to static"
+			}
+		}
+	}
+
+	if eth0Body.IP != "" {
+		m.Eth0Ip.Default = eth0Body.IP
+	} else {
+		m.Eth0Ip.Default = "192.168.15.10"
+	}
+	if eth0Body.NetMask != "" {
+		m.Eth0Netmask.Default = eth0Body.NetMask
+	} else {
+		m.Eth0Netmask.Default = "255.255.255.0"
+	}
+	if eth0Body.Gateway != "" {
+		m.Eth0Gateway.Default = eth0Body.Gateway
+	} else {
+		m.Eth0Gateway.Default = "192.168.15.1"
+	}
+	return m
+}
+
+func (inst *App) setEth1(connUUID, hostUUID string, eth1Body networking.NetworkInterfaces) Eth1 {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	m := Eth1{}
+	eth1IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: eth1}) // if exists show the user if set to dhcp or static
+	if err != nil {
+		m.Eth1IpSettingsState.Default = fmt.Sprintf("eth0 err%s", err.Error())
+	}
+	// eth1
+	if eth1IsDHCP != nil {
+		if eth1IsDHCP.InterfaceExists {
+			if eth1IsDHCP.IsDHCP {
+				m.Eth1IpSettingsState.Default = "eth1 is set to dhcp"
+			} else {
+				m.Eth1IpSettingsState.Default = "eth1 is set to static"
+			}
+		}
+	}
+	m.Eth1Interface.ReadOnly = true
+	m.Eth1Interface.Default = "eth1"
+	if eth1Body.IP != "" {
+		m.Eth1Ip.Default = eth1Body.IP
+	} else {
+		m.Eth1Ip.Default = "192.168.15.10"
+	}
+	if eth1Body.NetMask != "" {
+		m.Eth1Netmask.Default = eth1Body.NetMask
+	} else {
+		m.Eth1Netmask.Default = "255.255.255.0"
+	}
+	if eth1Body.Gateway != "" {
+		m.Eth1Gateway.Default = eth1Body.Gateway
+	} else {
+		m.Eth1Gateway.Default = "192.168.15.1"
+	}
+	return m
+}
+
+func (inst *App) GetRcNetworkSchema(connUUID, hostUUID string) interface{} {
+	resp, err := inst.buildNetworkSchema(connUUID, hostUUID)
+	if err != nil {
+		return nil
+	}
+	return resp
+}
+
+func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, error) {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+
+	info, err := client.EdgeProductInfo(hostUUID)
+	fmt.Println(info)
+	if err != nil {
+		return false, err
+	}
+
+	networks, err := client.EdgeGetNetworks(hostUUID)
+	fmt.Println(networks)
+	if err != nil {
+		return false, err
+	}
+
+	product := info.Product
+
+	eth0Body := networking.NetworkInterfaces{}
+	eth1Body := networking.NetworkInterfaces{}
+	for _, network := range networks {
+		if network.Interface == eth0 {
+			eth0Body = network
+		}
+		if network.Interface == eth1 {
+			eth1Body = network
+		}
+	}
+	m := &RcNetwork{}
+	if product == RubixCompute || product == RubixCompute5 {
+		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
+		m.Eth1 = inst.setEth1(connUUID, hostUUID, eth1Body)
+		schema.Set(m)
+		return m, nil
+	}
+	if product == RubixComputeIO {
+		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
+		schema.Set(m)
+		return m, nil
+	}
+
+	m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
+	schema.Set(m)
+	return m, nil
+
+}
+
+func (inst *App) edgeDHCPPortExists(connUUID, hostUUID string, body *system.NetworkingBody) (*system.DHCPPortExists, error) {
+	client, err := inst.initConnection(&AssistClient{
+		ConnUUID: connUUID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeDHCPPortExists(hostUUID, body)
+}
+
+func (inst *App) EdgeDHCPPortExists(connUUID, hostUUID string, body *system.NetworkingBody) *system.DHCPPortExists {
+	exists, err := inst.edgeDHCPPortExists(connUUID, hostUUID, body)
+	if err != nil {
+		return nil
+	}
+	return exists
+}
+
+func (inst *App) EdgeDHCPSetAsAuto(connUUID, hostUUID string, body *system.NetworkingBody) *system.Message {
+	//client, err := inst.initConnectionAuth(&AssistClient{
+	//	ConnUUID: connUUID,
+	//})
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return nil
+	//}
+	//resp, err := client.EdgeDHCPSetAsAuto(hostUUID, body)
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return  nil
+	//}
+	return nil
+}
+
+func (inst *App) EdgeDHCPSetStaticIP(connUUID, hostUUID string, body *dhcpd.SetStaticIP) string {
+	//client, err := inst.initConnectionAuth(&AssistClient{
+	//	ConnUUID: connUUID,
+	//})
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return ""
+	//}
+	//resp, err := client.EdgeDHCPSetStaticIP(hostUUID, body)
+	//if err != nil {
+	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	return  ""
+	//}
+	return ""
+}

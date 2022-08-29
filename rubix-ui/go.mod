@@ -2,8 +2,10 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
-//replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
+replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+
+replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
+
 //replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
 require (
@@ -12,7 +14,7 @@ require (
 	github.com/NubeIO/lib-dhcpd v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.8
 	github.com/NubeIO/lib-networking v0.0.7
-	github.com/NubeIO/lib-rubix-installer v0.1.8
+	github.com/NubeIO/lib-rubix-installer v0.1.9
 	github.com/NubeIO/lib-schema v0.1.4
 	github.com/NubeIO/lib-systemctl-go v0.1.0
 	github.com/NubeIO/lib-ufw v0.0.3
@@ -21,7 +23,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.4
 	github.com/NubeIO/rubix-assist v0.4.5
-	github.com/NubeIO/rubix-edge v0.1.8
+	github.com/NubeIO/rubix-edge v0.1.9
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0

@@ -62,10 +62,6 @@ export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
 }
 
-export function ConfigBACnetServer(arg1) {
-  return window['go']['main']['App']['ConfigBACnetServer'](arg1);
-}
-
 export function CreateWriter(arg1, arg2, arg3) {
   return window['go']['main']['App']['CreateWriter'](arg1, arg2, arg3);
 }
@@ -462,6 +458,10 @@ export function GetHostNetworks(arg1) {
   return window['go']['main']['App']['GetHostNetworks'](arg1);
 }
 
+export function GetHostPublicInfo(arg1, arg2) {
+  return window['go']['main']['App']['GetHostPublicInfo'](arg1, arg2);
+}
+
 export function GetHostSchema(arg1) {
   return window['go']['main']['App']['GetHostSchema'](arg1);
 }
@@ -598,6 +598,10 @@ export function GetProducers(arg1, arg2) {
   return window['go']['main']['App']['GetProducers'](arg1, arg2);
 }
 
+export function GetRcNetworkSchema(arg1, arg2) {
+  return window['go']['main']['App']['GetRcNetworkSchema'](arg1, arg2);
+}
+
 export function GetRelease(arg1) {
   return window['go']['main']['App']['GetRelease'](arg1);
 }
@@ -684,6 +688,10 @@ export function PingHost(arg1, arg2) {
 
 export function PingRubixAssist(arg1) {
   return window['go']['main']['App']['PingRubixAssist'](arg1);
+}
+
+export function RcSetNetworks(arg1, arg2, arg3) {
+  return window['go']['main']['App']['RcSetNetworks'](arg1, arg2, arg3);
 }
 
 export function RestartPluginBulk(arg1, arg2, arg3) {

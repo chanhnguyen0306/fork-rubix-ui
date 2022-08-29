@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"runtime"
 
@@ -17,8 +18,8 @@ import (
 var assets embed.FS
 
 func main() {
+	var err error
 	app := NewApp()
-
 	AppMenu := menu.NewMenu()
 
 	FileMenu := AppMenu.AddSubmenu("Options")
@@ -33,7 +34,7 @@ func main() {
 		app.quit()
 	})
 
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:       "rubix",
 		Width:       1300,
 		Height:      750,
@@ -45,9 +46,12 @@ func main() {
 			app,
 		},
 	})
-
+	err = app.gitDownloadAllRelease(true)
 	if err != nil {
-		println("Error:", err)
+		log.Errorln(err)
+	}
+	if err != nil {
+		log.Errorln("START-ERROR:", err)
 	}
 }
 

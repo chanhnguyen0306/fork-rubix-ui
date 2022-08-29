@@ -3,6 +3,7 @@ import { Input, Modal } from "antd";
 import { SettingsFactory } from "../factory";
 import { getDarkMode } from "../../../themes/use-theme";
 import { openNotificationWithIcon } from "../../../utils/utils";
+import {storage} from "../../../../wailsjs/go/models";
 
 export const TokenModal = (props: any) => {
   const { isModalVisible, onClose } = props;
@@ -36,7 +37,7 @@ export const TokenModal = (props: any) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const payload = { uuid: uuid,  theme: _darkMode ? "dark" : "light", git_token: token };
+      const payload = { uuid: uuid,  theme: _darkMode ? "dark" : "light", git_token: token} as storage.Settings;
       await factory.Update(uuid, payload);
       openNotificationWithIcon("success", "Update Token Successful!");
       onClose();
