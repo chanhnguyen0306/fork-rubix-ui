@@ -1,16 +1,16 @@
 import {
   Layout,
+  Select,
   Divider,
   Row,
   Menu,
-  Switch,
-  Image,
   Dropdown,
   Avatar,
+  Switch,
+  Tooltip,
   MenuProps,
   Spin,
-  Select,
-  Tooltip,
+  Image,
 } from "antd";
 import {
   ApartmentOutlined,
@@ -22,23 +22,27 @@ import {
   LockTwoTone,
   AppstoreOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, NavLink } from "react-router-dom";
-import { ROUTES } from "../../constants/routes";
-import { useTheme } from "../../themes/use-theme";
-import { TokenModal } from "../settings/views/token-modal";
-import { useConnections } from "../../hooks/useConnection";
 import logo from "../../assets/images/nube-frog-green.png";
+import { ROUTES } from "../../constants/routes";
+import { useConnections } from "../../hooks/useConnection";
+import { DARK_THEME, LIGHT_THEME, useTheme } from "../../themes/use-theme";
+import { SettingsFactory } from "../settings/factory";
+import { useSettings } from "../settings/use-settings";
+import { TokenModal } from "../settings/views/token-modal";
 
 const { Sider } = Layout;
 const { Option } = Select;
 
 const DividerLock = (props: any) => {
   const { collapsed, collapseDisabled, setCollapseDisabled } = props;
+
   const handleLockSider = (e: Event) => {
     e.stopPropagation();
     setCollapseDisabled(!collapseDisabled);
   };
+
   return (
     <Divider
       plain
@@ -65,12 +69,13 @@ const DividerLock = (props: any) => {
 
 const HeaderSider = (props: any) => {
   const { collapsed, collapseDisabled, setCollapsed } = props;
+
   return (
     <Row className="logo">
       <Image width={36} src={logo} preview={false} />
       {!collapsed ? (
         <div className="title">
-          Rubix Platform{" "}
+          Rubix Platform
           <LeftOutlined
             style={{ marginLeft: "2rem" }}
             onClick={() => {
@@ -103,6 +108,7 @@ const AvatarDropdown = (props: any) => {
       ]}
     />
   );
+
   return (
     <Dropdown
       overlay={menu}
@@ -118,6 +124,7 @@ const AvatarDropdown = (props: any) => {
 
 const TokenMenuItem = (props: any) => {
   const { setIsModalVisible } = props;
+
   return (
     <a className="my-2" onClick={() => setIsModalVisible(true)}>
       <KeyOutlined /> Token Update
@@ -126,34 +133,66 @@ const TokenMenuItem = (props: any) => {
 };
 
 const SwitchThemeMenuItem = () => {
-  const [darkMode, setDarkMode] = useTheme();
+  const [settings] = useSettings();
+  const [darkMode, setDarkMode] = useState(true);
+  const settingsFactory = new SettingsFactory();
+
+  useEffect(() => {
+    setDarkMode(settings.theme === DARK_THEME);
+  }, [settings.theme]);
+
+  const onChange = (checked: boolean) => {
+    const theme = checked ? DARK_THEME : LIGHT_THEME;
+    setDarkMode(checked);
+    const newSettings = { ...settings, theme };
+    settingsFactory.Update(settings.uuid, newSettings);
+    window.location.reload();
+  };
+
   return (
     <Switch
       className="my-2"
       checkedChildren="🌙"
       unCheckedChildren="☀"
       checked={darkMode}
-      onChange={setDarkMode}
+      onChange={onChange}
     />
   );
 };
 
 const AutoRefreshPointsMenuItem = () => {
-  const [time, setTime] = useState("5");
+  const [settings] = useSettings();
+  const [time, setTime] = useState("");
   const [isEnable, setIsEnable] = useState(false);
+
+  const settingsFactory = new SettingsFactory();
+
+  useEffect(() => {
+    setTime("" + settings.auto_refresh_rate);
+  }, [settings.auto_refresh_rate]);
+
+  useEffect(() => {
+    setIsEnable(settings.auto_refresh_enable);
+  }, [settings.auto_refresh_enable]);
+
+  const updateSettings = async (rate: string, enable: boolean) => {
+    const refreshTime = Number(rate);
+    const newSettings = {
+      ...settings,
+      auto_refresh_enable: enable,
+      auto_refresh_rate: refreshTime,
+    };
+    await settingsFactory.Update(settings.uuid, newSettings);
+  };
 
   const handleChangeTime = (value: string) => {
     setTime(value);
-    if (isEnable) {
-      const refreshTime = Number(time) * 1000;
-      //add enpoint refresh points here
-    }
+    updateSettings(value, isEnable);
   };
 
   const handleChangeEnable = (checked: boolean) => {
-    const refreshTime = Number(time) * 1000;
     setIsEnable(checked);
-    //add enpoint refresh points here
+    updateSettings(time, checked);
   };
 
   return (
@@ -171,9 +210,9 @@ const AutoRefreshPointsMenuItem = () => {
         disabled={!isEnable}
         onChange={handleChangeTime}
       >
-        <Option value="5">5 sec</Option>
-        <Option value="15">15 sec</Option>
-        <Option value="30">30 sec</Option>
+        <Option value="5000">5 sec</Option>
+        <Option value="15000">15 sec</Option>
+        <Option value="30000">30 sec</Option>
       </Select>
     </div>
   );
@@ -182,8 +221,9 @@ const AutoRefreshPointsMenuItem = () => {
 export const MenuSidebar = () => {
   const location = useLocation();
   const { routeData, isFetching } = useConnections();
-  const [collapsed, setCollapsed] = useState(false);
-  const [collapseDisabled, setCollapseDisabled] = useState(false);
+  const [isBlockMenu, setIsBlockMenu, isMiniMenu, setIsMiniMenu] = useTheme();
+  const [collapsed, setCollapsed] = useState(isMiniMenu);
+  const [collapseDisabled, setCollapseDisabled] = useState(isBlockMenu);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const sidebarItems = [
@@ -240,13 +280,23 @@ export const MenuSidebar = () => {
     };
   });
 
+  const handleCollapse = (value: boolean) => {
+    setCollapsed(value);
+    setIsMiniMenu(value);
+  };
+
+  const handleBlock = (value: boolean) => {
+    setCollapseDisabled(value);
+    setIsBlockMenu(value);
+  };
+
   return (
     <Sider
       width={250}
       style={{ minHeight: "100vh" }}
       collapsed={collapsed}
       onClick={() => {
-        if (collapsed && !collapseDisabled) setCollapsed(false);
+        if (collapsed && !collapseDisabled) handleCollapse(false);
       }}
     >
       {isFetching ? (
@@ -256,12 +306,12 @@ export const MenuSidebar = () => {
           <HeaderSider
             collapsed={collapsed}
             collapseDisabled={collapseDisabled}
-            setCollapsed={setCollapsed}
+            setCollapsed={handleCollapse}
           />
           <DividerLock
             collapsed={collapsed}
             collapseDisabled={collapseDisabled}
-            setCollapseDisabled={setCollapseDisabled}
+            setCollapseDisabled={handleBlock}
           />
           <Menu
             mode="inline"

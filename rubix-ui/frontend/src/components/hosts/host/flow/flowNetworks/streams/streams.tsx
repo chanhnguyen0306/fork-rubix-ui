@@ -17,6 +17,7 @@ export const Streams = () => {
     locUUID = "",
     netUUID = "",
     hostUUID = "",
+    flNetworkUUID = "",
   } = useParams();
   const [streams, setStreams] = useState([] as Stream[]);
   const [isFetching, setIsFetching] = useState(false);
@@ -66,7 +67,7 @@ export const Streams = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll();  // This needs to be changed to this GetAllByFlowNetwork
+      const res = await factory.GetAllByFlowNetwork(flNetworkUUID);
       setStreams(res);
     } catch (error) {
       console.log(error);

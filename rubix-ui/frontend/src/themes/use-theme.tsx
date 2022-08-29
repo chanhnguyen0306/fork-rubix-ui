@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react";
 
-const DARK_MODE = "dark-mode";
-const _darkMode = JSON.parse("" + localStorage.getItem(DARK_MODE)) || false;
+export const DARK_THEME = "dark";
+export const LIGHT_THEME = "light";
 
-export const getDarkMode = () => _darkMode;
+const BLOCK_MENU = "block_menu";
+const MINI_MENU = "mini_menu";
+
+const _blockMenu = JSON.parse("" + localStorage.getItem(BLOCK_MENU)) || false;
+const _miniMenu = JSON.parse("" + localStorage.getItem(MINI_MENU)) || false;
+
+export const getBlockMenu = () => _blockMenu;
+export const getMinimenu = () => _miniMenu;
 
 export const useTheme = () => {
-  const [darkMode, setDarkMode] = useState(getDarkMode);
+  const [isBlockMenu, setIsBlockMenu] = useState(getBlockMenu);
+  const [isMiniMenu, setIsMiniMenu] = useState(getMinimenu);
 
   useEffect(() => {
-    const initialValue = getDarkMode();
-    if (initialValue !== darkMode) {
-      localStorage.setItem(DARK_MODE, darkMode.toString());
-      window.location.reload();
-    }
-  }, [darkMode]);
+    const initBlockValue = getBlockMenu();
+    const initMiniValue = getMinimenu();
 
-  return [darkMode, setDarkMode];
+    if (initBlockValue !== isBlockMenu) {
+      localStorage.setItem(BLOCK_MENU, isBlockMenu.toString());
+    }
+    if (initMiniValue !== isMiniMenu) {
+      localStorage.setItem(MINI_MENU, isMiniMenu.toString());
+    }
+  }, [isBlockMenu, isMiniMenu]);
+
+  return [isBlockMenu, setIsBlockMenu, isMiniMenu, setIsMiniMenu];
 };
