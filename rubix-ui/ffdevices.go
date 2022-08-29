@@ -1,15 +1,11 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
-	pprint "github.com/NubeIO/lib-ufw/print"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
-	log "github.com/sirupsen/logrus"
 )
 
 func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
@@ -78,11 +74,7 @@ func (inst *App) GetNetworkDevices(connUUID, hostUUID, networkUUID string) []*mo
 	if err != nil {
 		return nil
 	}
-	fmt.Println(1111, err)
-	pprint.PrintJOSN(net)
-
 	devices := net.Devices
-
 	return devices
 }
 
@@ -163,55 +155,12 @@ func (inst *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints boo
 }
 
 func (inst *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) *BulkAddResponse {
-	resp, err := inst.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID)
+	resp, err := inst.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID, true)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
-}
-
-func (inst *App) importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) (*BulkAddResponse, error) {
-	if networkUUID == "" {
-		return nil, errors.New("network uuid cant not be empty")
-	}
-	backup, err := inst.getBackup(backupUUID)
-	if err != nil {
-		return nil, err
-	}
-	application := fmt.Sprintf("%s", logstore.FlowFramework)
-	subApplication := fmt.Sprintf("%s", logstore.FlowFrameworkDevice)
-	if backup.Application != application {
-		return nil, errors.New(fmt.Sprintf("no match for application:%s", application))
-	}
-	if backup.SubApplication != subApplication {
-		return nil, errors.New(fmt.Sprintf("no match for subApplication:%s", subApplication))
-	}
-	b, err := json.Marshal(backup.Data)
-	var devices []model.Device
-	if err := json.Unmarshal(b, &devices); err != nil {
-		return nil, errors.New("failed to parse devices from backup")
-	}
-	var message string
-	var addedCount int
-	var errorCount int
-	for _, device := range devices {
-		device.NetworkUUID = networkUUID
-		newDev, err := inst.addDevice(connUUID, hostUUID, &device)
-		if err != nil {
-			log.Errorf(fmt.Sprintf("add device err:%s", err.Error()))
-			message = fmt.Sprintf("last error on add device err:%s", err.Error())
-			errorCount++
-		} else {
-			log.Infof(fmt.Sprintf("add device: %s", newDev.Name))
-			addedCount++
-		}
-	}
-	return &BulkAddResponse{
-		Message:    message,
-		AddedCount: addedCount,
-		ErrorCount: errorCount,
-	}, err
 }
 
 func (inst *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) *storage.Backup {
@@ -226,7 +175,7 @@ func (inst *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID 
 func (inst *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) (*storage.Backup, error) {
 	var pointsList []model.Device
 	var count int
-	network, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true)
+	network, err := inst.getNetworkWithPoints(connUUID, hostUUID, networkUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -243,7 +192,7 @@ func (inst *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID 
 	back.HostUUID = hostUUID
 	back.Application = fmt.Sprintf("%s", logstore.FlowFramework)
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkDevice)
-	back.UserComment = fmt.Sprintf("comment:%s network-name:%s", userComment, network.Name)
+	back.UserComment = userComment
 	back.Data = pointsList
 	backup, err := inst.addBackup(back)
 	if err != nil {
