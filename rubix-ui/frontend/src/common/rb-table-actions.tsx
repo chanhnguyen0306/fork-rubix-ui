@@ -26,13 +26,13 @@ export const RbAddButton = (props: any) => {
 };
 
 export const RbRefreshButton = (props: any) => {
-  const { refreshList, disabled } = props;
+  const { refreshList, disabled, style = {} } = props;
   return (
     <Button
       className="nube-primary white--text"
       onClick={refreshList}
       disabled={disabled}
-      style={btn}
+      style={{ ...btn, ...style }}
     >
       <RedoOutlined /> Refresh
     </Button>

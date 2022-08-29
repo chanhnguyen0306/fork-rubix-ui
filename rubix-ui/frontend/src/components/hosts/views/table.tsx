@@ -1,7 +1,19 @@
-import { Typography, Tag, List, Button, Space, Spin, Tooltip } from "antd";
+import {
+  Typography,
+  Tag,
+  List,
+  Button,
+  Space,
+  Spin,
+  Tooltip,
+  Popover,
+  Dropdown,
+  Menu,
+} from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { EllipsisOutlined } from "@ant-design/icons";
 import { assistmodel, storage, main } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
@@ -27,7 +39,7 @@ import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = main.UUIDs;
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
@@ -230,8 +242,51 @@ const AppInstallInfo = (props: any) => {
     );
   }
 
+  const onMenuClick = (value: any, item: any) => {
+    return releaseFactory.EdgeServiceAction(value.key, {
+      connUUID: connUUID,
+      hostUUID: host.uuid,
+      appName: item.app_name,
+    });
+  };
+
+  const menu = (item: any) => (
+    <Menu
+      onClick={(v) => onMenuClick(v, item)}
+      items={[
+        {
+          key: "start",
+          label: "Start",
+        },
+        {
+          key: "restart",
+          label: "Restart",
+        },
+        {
+          key: "stop",
+          label: "Stop",
+        },
+      ]}
+    />
+  );
+
   return (
     <div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          padding: "10px 0",
+          borderBottom: "1px solid #dfdfdf",
+        }}
+      >
+        <Title level={5}>App details</Title>
+        <RbRefreshButton
+          style={{ marginLeft: 10 }}
+          refreshList={fetchAppInfo}
+        />
+      </div>
+
       <List
         itemLayout="horizontal"
         loading={isLoading}
@@ -287,7 +342,9 @@ const AppInstallInfo = (props: any) => {
                 )}
               </Text>
             </span>
-            <span className="flex-1"></span>
+            <span className="flex-1" style={{ textAlign: "right" }}>
+              <Dropdown.Button overlay={() => menu(item)}></Dropdown.Button>
+            </span>
           </List.Item>
         )}
       />
