@@ -598,6 +598,10 @@ export function GetProducers(arg1, arg2) {
   return window['go']['main']['App']['GetProducers'](arg1, arg2);
 }
 
+export function GetRcNetworkSchema(arg1, arg2) {
+  return window['go']['main']['App']['GetRcNetworkSchema'](arg1, arg2);
+}
+
 export function GetRelease(arg1) {
   return window['go']['main']['App']['GetRelease'](arg1);
 }
@@ -684,6 +688,10 @@ export function PingHost(arg1, arg2) {
 
 export function PingRubixAssist(arg1) {
   return window['go']['main']['App']['PingRubixAssist'](arg1);
+}
+
+export function RcSetNetworks(arg1, arg2, arg3) {
+  return window['go']['main']['App']['RcSetNetworks'](arg1, arg2, arg3);
 }
 
 export function RestartPluginBulk(arg1, arg2, arg3) {

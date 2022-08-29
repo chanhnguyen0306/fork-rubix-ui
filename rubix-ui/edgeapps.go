@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
 )
@@ -108,19 +107,15 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		return nil
 	}
 	var appHasPlugins bool
-	var releaseApp *store.Apps
+	var pluginName string
 	for _, app := range release.Apps {
 		if app.Name == appName {
-			releaseApp = &app
 			for _, plg := range app.PluginDependency {
 				appHasPlugins = true
-				inst.crudMessage(true, fmt.Sprintf("app and plugin will be installed (app:%s plugin%s)", app.Name, plg))
+				pluginName = plg
+				inst.crudMessage(true, fmt.Sprintf("plugin will be installed (plugin:%s)", plg))
 			}
 		}
-	}
-
-	if releaseApp != nil {
-
 	}
 
 	err = inst.StoreCheckAppExists(appName)
@@ -171,15 +166,12 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 
 	if appHasPlugins {
-		for _, plg := range releaseApp.PluginDependency {
-			appHasPlugins = true
-			inst.crudMessage(true, fmt.Sprintf("start upload and install of plugin (app:%s plugin%s)", appName, plg))
-			inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
-				PluginName: plg,
-				Arch:       arch,
-				Version:    appVersion,
-			}, false)
-		}
+		inst.crudMessage(true, fmt.Sprintf("start upload and install of plugin (app:%s plugin%s)", appName, pluginName))
+		inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
+			PluginName: pluginName,
+			Arch:       arch,
+			Version:    releaseVersion,
+		}, false)
 		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err:%s", err.Error()))

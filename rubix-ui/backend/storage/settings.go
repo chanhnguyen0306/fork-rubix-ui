@@ -8,10 +8,17 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
+type AutoRefresh struct {
+	Enable bool `json:"enable"`
+	Rate   int  `json:"rate"`
+}
+
 type Settings struct {
-	UUID     string `json:"uuid"`
-	Theme    string `json:"theme"` // light, dark
-	GitToken string `json:"git_token"`
+	UUID              string `json:"uuid"`
+	Theme             string `json:"theme"` // light, dark
+	GitToken          string `json:"git_token"`
+	AutoRefreshEnable bool   `json:"auto_refresh_enable"`
+	AutoRefreshRate   int    `json:"auto_refresh_rate"`
 }
 
 func (inst *db) AddSettings(body *Settings) (*Settings, error) {

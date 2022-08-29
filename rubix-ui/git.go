@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-ui/backend/store"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -38,6 +39,29 @@ func (inst *App) GitDownloadRelease(token, version string) *store.Release {
 		return nil
 	}
 	return out
+}
+
+func (inst *App) gitDownloadAllRelease(runDownloads bool) error {
+	if !runDownloads {
+		return nil
+	}
+	gitToken, err := inst.getGitToken("set_123456789ABC", false)
+	if err != nil {
+		return err
+	}
+	releases, err := inst.gitListReleases(gitToken)
+	if err != nil {
+		return err
+	}
+	for _, release := range releases {
+		downloadRelease, err := inst.gitDownloadRelease(gitToken, release.Path)
+		if err != nil {
+			return err
+		}
+		log.Infof("git downloaded release:%s", downloadRelease.Release)
+	}
+	return nil
+
 }
 
 //gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow

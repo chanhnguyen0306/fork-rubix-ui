@@ -114,9 +114,12 @@ func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
 			return err
 		}
 	}
-
 	if appName == rubixWires {
-
+		_, err := inst.edgeWriteWiresConfig(connUUID, hostUUID)
+		if err != nil {
+			return err
+		}
+		log.Infof("wrote bacnet config file")
 	}
 	return nil
 

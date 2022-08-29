@@ -14,6 +14,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const eth0 = "eth0"
+const eth1 = "eth1"
+const RubixCompute = "RubixCompute"
+const RubixCompute5 = "RubixCompute5"
+const RubixComputeIO = "RubixComputeIO"
+const Cloud = "Cloud"
 const configEnv = ".env"
 const configYml = "config.yml"
 const bacnetServerDriver = "bacnet-server-driver"

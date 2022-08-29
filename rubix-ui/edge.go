@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 )
 
@@ -89,19 +88,6 @@ func (inst *App) GetHostPublicInfo(connUUID, hostUUID string) bool {
 		inst.crudMessage(false, fmt.Sprintf("no found ip:%s", host.IP))
 	}
 	return true
-}
-
-func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil
-	}
-	data, err := client.EdgeGetNetworks(hostUUID)
-	err = inst.errMsg(err)
-	if err != nil {
-		return nil
-	}
-	return data
 }
 
 func (inst *App) EdgeRubixScan(connUUID, hostUUID string) interface{} {

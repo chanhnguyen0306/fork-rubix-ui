@@ -10,8 +10,8 @@ import (
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
 var releaseVersion = "v0.6.8"
-var appName = "flow-framework " //flow-framework rubix-wires
-var appVersion = "v0.6.8"
+var appName = bacnetServerDriver //flow-framework rubix-wires
+var appVersion = "v0.0.12"
 var product = "Server"
 var arch = "amd64"
 
@@ -61,7 +61,7 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
 	app := NewApp()
-	downloaded := app.StoreDownloadApp(token, "edge-28-driver", "v0.6.1", "armv7", false)
+	downloaded := app.StoreDownloadApp(token, "lora-driver", "v0.6.8", "armv7", true)
 	pprint.PrintJOSN(downloaded)
 }
 
