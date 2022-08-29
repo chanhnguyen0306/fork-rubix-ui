@@ -9,7 +9,7 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 
-const btn: React.CSSProperties = { margin: "5px", float: "right" };
+const btn: React.CSSProperties = { margin: "0 6px 10px 0", float: "left" };
 
 export const RbAddButton = (props: any) => {
   const { handleClick, disabled, label } = props;

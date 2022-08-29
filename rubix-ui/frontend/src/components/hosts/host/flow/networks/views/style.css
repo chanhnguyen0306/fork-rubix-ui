@@ -7,11 +7,6 @@
     height: 60px;
 }
 
-.flow-networks-actions {
-    display: flex;
-    justify-content: end;
-}
-
 .flow-networks {
     display: flex;
 }

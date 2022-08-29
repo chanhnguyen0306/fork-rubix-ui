@@ -94,21 +94,21 @@ export const FlowPluginsTable = (props: any) => {
       <Button
         type="primary"
         onClick={enable}
-        style={{ margin: "5px", float: "right" }}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
       >
         <PlayCircleOutlined /> Enable Plugins
       </Button>
       <Button
         type="ghost"
         onClick={disable}
-        style={{ margin: "5px", float: "right" }}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
       >
         <StopOutlined /> Disable Plugins
       </Button>
       <Button
         type="ghost"
         onClick={showModal}
-        style={{ margin: "5px", float: "right" }}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
       >
         <PlusOutlined /> Add Network
       </Button>

@@ -149,7 +149,7 @@ export const FlowPoints = () => {
               <Button
                 type="primary"
                 onClick={runDiscover}
-                style={{ margin: "5px", float: "right" }}
+                style={{ margin: "0 6px 10px 0", float: "left" }}
               >
                 <RedoOutlined /> Discover
               </Button>

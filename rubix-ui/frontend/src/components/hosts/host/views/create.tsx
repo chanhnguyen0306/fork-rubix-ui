@@ -13,7 +13,7 @@ export const AddButton = (props: any) => {
     <Button
       type="primary"
       onClick={() => showModal({} as assistmodel.Host)}
-      style={{ margin: "5px", float: "right" }}
+      style={{ margin: "0 6px 10px 0", float: "left" }}
     >
       <PlusOutlined /> Host
     </Button>
