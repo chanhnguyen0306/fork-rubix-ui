@@ -25,7 +25,7 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
-import { DARK_THEME, LIGHT_THEME } from "../../themes/use-theme";
+import { DARK_THEME, LIGHT_THEME, useTheme } from "../../themes/use-theme";
 import { TokenModal } from "../settings/views/token-modal";
 import { useConnections } from "../../hooks/useConnection";
 import logo from "../../assets/images/nube-frog-green.png";
@@ -215,10 +215,10 @@ const AutoRefreshPointsMenuItem = () => {
 export const MenuSidebar = () => {
   const location = useLocation();
   const { routeData, isFetching } = useConnections();
-  const [collapsed, setCollapsed] = useState(false);
-  const [collapseDisabled, setCollapseDisabled] = useState(false);
+  const [isBlockMenu, setIsBlockMenu, isMiniMenu, setIsMiniMenu] = useTheme();
+  const [collapsed, setCollapsed] = useState(isMiniMenu);
+  const [collapseDisabled, setCollapseDisabled] = useState(isBlockMenu);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const sidebarItems = [
     { name: "Supervisors", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
     { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
@@ -273,13 +273,23 @@ export const MenuSidebar = () => {
     };
   });
 
+  const handleCollapse = (value: boolean) => {
+    setCollapsed(value);
+    setIsMiniMenu(value);
+  };
+
+  const handleBlock = (value: boolean) => {
+    setCollapseDisabled(value);
+    setIsBlockMenu(value);
+  };
+
   return (
     <Sider
       width={250}
       style={{ minHeight: "100vh" }}
       collapsed={collapsed}
       onClick={() => {
-        if (collapsed && !collapseDisabled) setCollapsed(false);
+        if (collapsed && !collapseDisabled) handleCollapse(false);
       }}
     >
       {isFetching ? (
@@ -289,12 +299,12 @@ export const MenuSidebar = () => {
           <HeaderSider
             collapsed={collapsed}
             collapseDisabled={collapseDisabled}
-            setCollapsed={setCollapsed}
+            setCollapsed={handleCollapse}
           />
           <DividerLock
             collapsed={collapsed}
             collapseDisabled={collapseDisabled}
-            setCollapseDisabled={setCollapseDisabled}
+            setCollapseDisabled={handleBlock}
           />
           <Menu
             mode="inline"

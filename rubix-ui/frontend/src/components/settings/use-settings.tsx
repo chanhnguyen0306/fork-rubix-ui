@@ -21,8 +21,6 @@ export const useSettings = () => {
   }, [settings.uuid]);
 
   const fetch = async (uuid: string) => {
-    console.log(11111);
-
     try {
       const res = await factory.Get(uuid);
       setSettings(res);
