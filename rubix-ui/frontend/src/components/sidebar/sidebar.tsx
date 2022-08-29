@@ -22,13 +22,15 @@ import {
   LockTwoTone,
   AppstoreOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
-import { useTheme } from "../../themes/use-theme";
+import { DARK_THEME, LIGHT_THEME } from "../../themes/use-theme";
 import { TokenModal } from "../settings/views/token-modal";
 import { useConnections } from "../../hooks/useConnection";
 import logo from "../../assets/images/nube-frog-green.png";
+import { useSettings } from "../settings/use-settings";
+import { SettingsFactory } from "../settings/factory";
 
 const { Sider } = Layout;
 const { Option } = Select;
@@ -126,14 +128,29 @@ const TokenMenuItem = (props: any) => {
 };
 
 const SwitchThemeMenuItem = () => {
-  const [darkMode, setDarkMode] = useTheme();
+  const [settings] = useSettings();
+  const [darkMode, setDarkMode] = useState(settings.theme === DARK_THEME);
+
+  useEffect(() => {
+    setDarkMode(settings.theme === DARK_THEME);
+  }, [settings.theme]);
+
+  const settingsFactory = new SettingsFactory();
+
+  const onChange = (checked: boolean) => {
+    const theme = checked ? DARK_THEME : LIGHT_THEME;
+    setDarkMode(checked);
+    const newSettings = { ...settings, theme };
+    settingsFactory.Update(settings.uuid, newSettings);
+  };
+
   return (
     <Switch
       className="my-2"
       checkedChildren="🌙"
       unCheckedChildren="☀"
       checked={darkMode}
-      onChange={setDarkMode}
+      onChange={onChange}
     />
   );
 };

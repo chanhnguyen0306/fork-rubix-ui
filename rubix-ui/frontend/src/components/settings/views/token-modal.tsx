@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import { Input, Modal } from "antd";
 import { SettingsFactory } from "../factory";
-import { getDarkMode } from "../../../themes/use-theme";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import {storage} from "../../../../wailsjs/go/models";
+import { storage } from "../../../../wailsjs/go/models";
+import { useSettings } from "../use-settings";
 
 export const TokenModal = (props: any) => {
   const { isModalVisible, onClose } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [token, setToken] = useState("");
-  const _darkMode = getDarkMode();
+  const [settings, setSettings] = useSettings();
+
   const factory = new SettingsFactory();
 
-  const uuid = "set_123456789ABC"
-
   useEffect(() => {
-    GetSetting();
+    getToken();
   }, [isModalVisible]);
 
   const onChange = (
@@ -24,9 +23,9 @@ export const TokenModal = (props: any) => {
     setToken(e.target.value);
   };
 
-  const GetSetting = async () => {
+  const getToken = async () => {
     try {
-      const gitToken = await factory.GitToken(uuid);
+      const gitToken = await factory.GitToken(settings.uuid);
       gitToken ? setToken(gitToken) : setToken("");
     } catch (error) {
       console.log(error);
@@ -37,8 +36,12 @@ export const TokenModal = (props: any) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const payload = { uuid: uuid,  theme: _darkMode ? "dark" : "light", git_token: token} as storage.Settings;
-      await factory.Update(uuid, payload);
+      const payload = {
+        ...settings,
+        git_token: token,
+      } as storage.Settings;
+      const res = await factory.Update(settings.uuid, payload);
+      setSettings(res);
       openNotificationWithIcon("success", "Update Token Successful!");
       onClose();
     } catch (error) {

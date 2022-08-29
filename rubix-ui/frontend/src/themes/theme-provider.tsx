@@ -1,11 +1,13 @@
-import { lazy, Suspense } from "react";
-import { useTheme } from "./use-theme";
+import { lazy, Suspense, useEffect } from "react";
+import { useSettings } from "../components/settings/use-settings";
+import { DARK_THEME } from "./use-theme";
 
 const DarkTheme = lazy(() => import("./dark-theme"));
 const LightTheme = lazy(() => import("./light-theme"));
 
 export const ThemeProvider = ({ children }: any) => {
-  const [darkMode] = useTheme();
+  const [settings] = useSettings();
+  const darkMode = settings.theme === DARK_THEME;
 
   return (
     <>
