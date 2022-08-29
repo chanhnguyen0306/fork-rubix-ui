@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
+
 export const DARK_THEME = "dark";
 export const LIGHT_THEME = "light";
-
-import { useEffect, useState } from "react";
 
 const BLOCK_MENU = "block_menu";
 const MINI_MENU = "mini_menu";

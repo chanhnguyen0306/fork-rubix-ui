@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { useSettings } from "../components/settings/use-settings";
 import { DARK_THEME } from "./use-theme";
 

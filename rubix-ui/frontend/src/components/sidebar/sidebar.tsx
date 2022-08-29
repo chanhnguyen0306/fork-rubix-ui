@@ -1,16 +1,16 @@
 import {
   Layout,
+  Select,
   Divider,
   Row,
   Menu,
-  Switch,
-  Image,
   Dropdown,
   Avatar,
+  Switch,
+  Tooltip,
   MenuProps,
   Spin,
-  Select,
-  Tooltip,
+  Image,
 } from "antd";
 import {
   ApartmentOutlined,
@@ -22,25 +22,27 @@ import {
   LockTwoTone,
   AppstoreOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, NavLink } from "react-router-dom";
-import { ROUTES } from "../../constants/routes";
-import { DARK_THEME, LIGHT_THEME, useTheme } from "../../themes/use-theme";
-import { TokenModal } from "../settings/views/token-modal";
-import { useConnections } from "../../hooks/useConnection";
 import logo from "../../assets/images/nube-frog-green.png";
-import { useSettings } from "../settings/use-settings";
+import { ROUTES } from "../../constants/routes";
+import { useConnections } from "../../hooks/useConnection";
+import { DARK_THEME, LIGHT_THEME, useTheme } from "../../themes/use-theme";
 import { SettingsFactory } from "../settings/factory";
+import { useSettings } from "../settings/use-settings";
+import { TokenModal } from "../settings/views/token-modal";
 
 const { Sider } = Layout;
 const { Option } = Select;
 
 const DividerLock = (props: any) => {
   const { collapsed, collapseDisabled, setCollapseDisabled } = props;
+
   const handleLockSider = (e: Event) => {
     e.stopPropagation();
     setCollapseDisabled(!collapseDisabled);
   };
+
   return (
     <Divider
       plain
@@ -67,6 +69,7 @@ const DividerLock = (props: any) => {
 
 const HeaderSider = (props: any) => {
   const { collapsed, collapseDisabled, setCollapsed } = props;
+
   return (
     <Row className="logo">
       <Image width={36} src={logo} preview={false} />
@@ -105,6 +108,7 @@ const AvatarDropdown = (props: any) => {
       ]}
     />
   );
+
   return (
     <Dropdown
       overlay={menu}
@@ -120,6 +124,7 @@ const AvatarDropdown = (props: any) => {
 
 const TokenMenuItem = (props: any) => {
   const { setIsModalVisible } = props;
+
   return (
     <a className="my-2" onClick={() => setIsModalVisible(true)}>
       <KeyOutlined /> Token Update
@@ -159,6 +164,7 @@ const AutoRefreshPointsMenuItem = () => {
   const [settings] = useSettings();
   const [time, setTime] = useState("");
   const [isEnable, setIsEnable] = useState(false);
+
   const settingsFactory = new SettingsFactory();
 
   useEffect(() => {
@@ -219,6 +225,7 @@ export const MenuSidebar = () => {
   const [collapsed, setCollapsed] = useState(isMiniMenu);
   const [collapseDisabled, setCollapseDisabled] = useState(isBlockMenu);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const sidebarItems = [
     { name: "Supervisors", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
     { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
