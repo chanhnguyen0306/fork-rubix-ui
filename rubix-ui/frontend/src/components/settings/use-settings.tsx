@@ -3,7 +3,7 @@ import { SettingsFactory } from "./factory";
 
 const _settings = {
   auto_refresh_enable: false,
-  auto_refresh_rate: 0,
+  auto_refresh_rate: 5000,
   git_token: "",
   theme: "dark",
   uuid: "set_123456789ABC",
@@ -18,9 +18,11 @@ export const useSettings = () => {
 
   useEffect(() => {
     fetch(settings.uuid);
-  }, []);
+  }, [settings.uuid]);
 
   const fetch = async (uuid: string) => {
+    console.log(11111);
+
     try {
       const res = await factory.Get(uuid);
       setSettings(res);

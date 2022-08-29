@@ -129,19 +129,19 @@ const TokenMenuItem = (props: any) => {
 
 const SwitchThemeMenuItem = () => {
   const [settings] = useSettings();
-  const [darkMode, setDarkMode] = useState(settings.theme === DARK_THEME);
+  const [darkMode, setDarkMode] = useState(true);
+  const settingsFactory = new SettingsFactory();
 
   useEffect(() => {
     setDarkMode(settings.theme === DARK_THEME);
   }, [settings.theme]);
-
-  const settingsFactory = new SettingsFactory();
 
   const onChange = (checked: boolean) => {
     const theme = checked ? DARK_THEME : LIGHT_THEME;
     setDarkMode(checked);
     const newSettings = { ...settings, theme };
     settingsFactory.Update(settings.uuid, newSettings);
+    window.location.reload();
   };
 
   return (
@@ -156,21 +156,37 @@ const SwitchThemeMenuItem = () => {
 };
 
 const AutoRefreshPointsMenuItem = () => {
-  const [time, setTime] = useState("5");
+  const [settings] = useSettings();
+  const [time, setTime] = useState("");
   const [isEnable, setIsEnable] = useState(false);
+  const settingsFactory = new SettingsFactory();
+
+  useEffect(() => {
+    setTime("" + settings.auto_refresh_rate);
+  }, [settings.auto_refresh_rate]);
+
+  useEffect(() => {
+    setIsEnable(settings.auto_refresh_enable);
+  }, [settings.auto_refresh_enable]);
+
+  const updateSettings = async (rate: string, enable: boolean) => {
+    const refreshTime = Number(rate);
+    const newSettings = {
+      ...settings,
+      auto_refresh_enable: enable,
+      auto_refresh_rate: refreshTime,
+    };
+    await settingsFactory.Update(settings.uuid, newSettings);
+  };
 
   const handleChangeTime = (value: string) => {
     setTime(value);
-    if (isEnable) {
-      const refreshTime = Number(time) * 1000;
-      //add enpoint refresh points here
-    }
+    updateSettings(value, isEnable);
   };
 
   const handleChangeEnable = (checked: boolean) => {
-    const refreshTime = Number(time) * 1000;
     setIsEnable(checked);
-    //add enpoint refresh points here
+    updateSettings(time, checked);
   };
 
   return (
@@ -188,9 +204,9 @@ const AutoRefreshPointsMenuItem = () => {
         disabled={!isEnable}
         onChange={handleChangeTime}
       >
-        <Option value="5">5 sec</Option>
-        <Option value="15">15 sec</Option>
-        <Option value="30">30 sec</Option>
+        <Option value="5000">5 sec</Option>
+        <Option value="15000">15 sec</Option>
+        <Option value="30000">30 sec</Option>
       </Select>
     </div>
   );
