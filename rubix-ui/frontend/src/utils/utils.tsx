@@ -8,14 +8,32 @@ import postgresLogo from "../assets/images/postgresql.png";
 import historyLogo from "../assets/images/history.png";
 import edge28 from "../assets/images/Edge-iO-28.png";
 import rubixIO from "../assets/images/RC-IO.png";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 type NotificationType = "success" | "info" | "warning" | "error";
 
 export const openNotificationWithIcon = (type: NotificationType, data: any) => {
+  const getColor = (): string => {
+    switch (type) {
+      case "success":
+        return "green";
+      case "error":
+        return "red";
+      case "warning":
+        return "yellow";
+    }
+    return "blue";
+  };
   notification[type]({
-    message: "",
+    message: type.charAt(0).toUpperCase() + type.slice(1),
     description: data,
+    duration: 4000,
     placement: "bottomRight",
+    icon: (
+      <InfoCircleOutlined
+        style={{ marginLeft: "-180px", color: getColor() }}
+      />
+    ),
   });
 };
 
@@ -25,7 +43,7 @@ export const isObjectEmpty = (obj: Object) => {
 
 export function pluginLogo(plugin: string): string {
   let image = nubeLogo;
-  ``;
+
   if (plugin == "bacnetmaster") {
     image = bacnetLogo;
   }
