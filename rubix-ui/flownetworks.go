@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 )
 
 func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
@@ -67,10 +68,10 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 		body.Name = fmt.Sprintf("flow-%s", uuid.ShortUUID("")[5:10])
 	}
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
 	}
+	pprint.PrintJOSN(body)
 	networks, err := client.AddFlowNetwork(hostUUID, body)
 	if err != nil {
 		return nil, err

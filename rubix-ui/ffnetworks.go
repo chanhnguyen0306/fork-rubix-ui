@@ -162,7 +162,6 @@ func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model
 }
 func (inst *App) DeleteNetwork(connUUID, hostUUID, networkUUID string) interface{} {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-
 	if err != nil {
 		return nil
 	}

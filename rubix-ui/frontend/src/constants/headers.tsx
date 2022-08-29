@@ -17,6 +17,18 @@ export const FLOW_NETWORKS_HEADERS = [
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
+    key: "flow_ip",
+    title: "ip",
+    dataIndex: "flow_ip",
+    sorter: (a: any, b: any) => a.flow_ip.localeCompare(b.flow_ip),
+  },
+  {
+    key: "flow_port",
+    title: "port",
+    dataIndex: "flow_port",
+    sorter: (a: any, b: any) => a.flow_port.localeCompare(b.flow_port),
+  },
+  {
     key: "client_name",
     title: "client name",
     dataIndex: "client_name",
@@ -659,14 +671,14 @@ export const FLOW_NETWORKS_SCHEMA = {
   flow_ip: {
     type: "string",
     title: "flow ip",
-    default: "0.0.0.0",
+    default: "192.168.15.10",
   },
   flow_port: {
     type: "number",
     title: "flow port",
     minLength: 2,
     maxLength: 65535,
-    default: 1662,
+    default: 1660,
     readOnly: false,
   },
   flow_https: {
@@ -674,10 +686,16 @@ export const FLOW_NETWORKS_SCHEMA = {
     title: "enable https",
     readOnly: false,
   },
+  is_remote: {
+    type: "boolean",
+    title: "is remote network",
+    readOnly: false,
+  },
   flow_username: {
     maxLength: 50,
     minLength: 2,
     title: "flow username",
+    default: "admin",
     type: "string",
   },
   flow_password: {
