@@ -192,7 +192,7 @@ func (inst *App) exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID 
 	back.HostUUID = hostUUID
 	back.Application = fmt.Sprintf("%s", logstore.FlowFramework)
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkDevice)
-	back.UserComment = fmt.Sprintf("comment:%s network-name:%s", userComment, network.Name)
+	back.UserComment = userComment
 	back.Data = pointsList
 	backup, err := inst.addBackup(back)
 	if err != nil {

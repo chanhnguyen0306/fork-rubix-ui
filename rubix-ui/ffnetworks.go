@@ -123,7 +123,7 @@ func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netw
 	back.HostUUID = hostUUID
 	back.Application = fmt.Sprintf("%s", logstore.FlowFramework)
 	back.SubApplication = fmt.Sprintf("%s", logstore.FlowFrameworkNetwork)
-	back.UserComment = fmt.Sprintf("comment:%s", userComment)
+	back.UserComment = userComment
 	back.Data = networkList
 	backup, err := inst.addBackup(back)
 	if err != nil {

@@ -27,3 +27,14 @@ func TestApp_getNetwork(t *testing.T) {
 	}
 	pprint.PrintJOSN(network)
 }
+
+func TestApp_getNetworksWithPoints(t *testing.T) {
+
+	//net_8e292db59d7e4ad8
+	app := NewApp()
+	network, err := app.getNetworksWithPoints("cloud", "rc")
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(network)
+}
