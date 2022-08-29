@@ -72,7 +72,7 @@ const HeaderSider = (props: any) => {
       <Image width={36} src={logo} preview={false} />
       {!collapsed ? (
         <div className="title">
-          Rubix Platform{" "}
+          Rubix Platform
           <LeftOutlined
             style={{ marginLeft: "2rem" }}
             onClick={() => {
