@@ -1,13 +1,10 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
-	log "github.com/sirupsen/logrus"
 )
 
 type UUIDs struct {
@@ -38,6 +35,18 @@ func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUI
 		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
 	}
 	return nil
+}
+
+func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return []model.Network{}, err
+	}
+	networks, err := client.FFGetNetworksWithPoints(hostUUID)
+	if err != nil {
+		return []model.Network{}, err
+	}
+	return networks, nil
 }
 
 func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool, overrideUrl ...string) ([]model.Network, error) {
@@ -78,50 +87,11 @@ func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *mod
 }
 
 func (inst *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
-	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID)
+	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID, true)
 	if err != nil {
 		return nil
 	}
 	return resp
-}
-
-func (inst *App) importNetworksBulk(connUUID, hostUUID, backupUUID string) (*BulkAddResponse, error) {
-	backup, err := inst.getBackup(backupUUID)
-	if err != nil {
-		return nil, err
-	}
-	application := fmt.Sprintf("%s", logstore.FlowFramework)
-	subApplication := fmt.Sprintf("%s", logstore.FlowFrameworkNetwork)
-	if backup.Application != application {
-		return nil, errors.New(fmt.Sprintf("no match for application:%s", application))
-	}
-	if backup.SubApplication != subApplication {
-		return nil, errors.New(fmt.Sprintf("no match for subApplication:%s", subApplication))
-	}
-	b, err := json.Marshal(backup.Data)
-	var networks []model.Network
-	if err := json.Unmarshal(b, &networks); err != nil {
-		return nil, errors.New("failed to parse devices from backup")
-	}
-	var message string
-	var addedCount int
-	var errorCount int
-	for _, net := range networks {
-		newDev, err := inst.addNetwork(connUUID, hostUUID, &net)
-		if err != nil {
-			log.Errorf(fmt.Sprintf("add network err:%s", err.Error()))
-			message = fmt.Sprintf("last error on add network err:%s", err.Error())
-			errorCount++
-		} else {
-			log.Infof(fmt.Sprintf("add network: %s", newDev.Name))
-			addedCount++
-		}
-	}
-	return &BulkAddResponse{
-		Message:    message,
-		AddedCount: addedCount,
-		ErrorCount: errorCount,
-	}, err
 }
 
 func (inst *App) ExportNetworksBulk(connUUID, hostUUID, userComment string, deviceUUIDs []string) *storage.Backup {
@@ -136,7 +106,7 @@ func (inst *App) ExportNetworksBulk(connUUID, hostUUID, userComment string, devi
 func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, networkUUIDs []string) (*storage.Backup, error) {
 	var networkList []model.Network
 	var count int
-	network, err := inst.getNetworks(connUUID, hostUUID, true)
+	network, err := inst.getNetworksWithPoints(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -163,85 +133,20 @@ func (inst *App) exportNetworksBulk(connUUID, hostUUID, userComment string, netw
 }
 
 //
-//func (app *App) importNewNetwork(connUUID, hostUUID string, body *model.Network) {
-//	devices := body.Devices
-//	if devices != nil {
-//		for _, device := range devices {
-//			device.NetworkUUID = body.UUID
-//			app.AddDevice(connUUID, hostUUID, device)
-//			points := device.Points
-//			for _, point := range points {
-//				point.DeviceUUID = device.UUID
-//				app.AddPoint(connUUID, hostUUID, point)
-//			}
-//		}
-//	}
-//}
-//
-//func (app *App) importEditNetwork(connUUID, hostUUID string, body *model.Network) {
-//	devices := body.Devices
-//	if devices != nil {
-//		for _, device := range devices {
-//			device.NetworkUUID = body.UUID
-//			dev := app.EditDevice(connUUID, hostUUID, device.UUID, device)
-//			if dev == nil { //device was not found so now try and add it
-//				dev = app.AddDevice(connUUID, hostUUID, device)
-//				if dev == nil { // device must exist with same name (this would happen from an older backup and then device was already remade, so it has a new uuid)
-//					network, err := app.getNetwork(connUUID, hostUUID, device.NetworkUUID, true)
-//					if err == nil {
-//						for _, d := range network.Devices {
-//							if d.Name == device.Name {
-//								points := device.Points
-//								for _, point := range points {
-//									point.DeviceUUID = d.UUID // update the device uuid
-//									app.AddPoint(connUUID, hostUUID, point)
-//								}
-//							}
-//						}
-//					}
-//				} else {
-//					points := device.Points
-//					for _, point := range points {
-//						point.DeviceUUID = device.UUID
-//						app.AddPoint(connUUID, hostUUID, point)
-//					}
-//				}
-//			} else { // device did exists
-//				points := device.Points
-//				for _, point := range points {
-//					point.DeviceUUID = device.UUID
-//					pnt := app.EditPoint(connUUID, hostUUID, point.UUID, point)
-//					if pnt == nil { // point did not exist so now add it
-//						app.AddPoint(connUUID, hostUUID, point)
-//					}
-//				}
-//			}
-//
-//		}
-//	}
-//}
-//
-//// ImportNetwork to be used when user wants to import and make a new network or edit an existing network
-//func (app *App) ImportNetwork(connUUID, hostUUID string, newImport, createAllChild bool, body *model.Network) *model.Network {
-//	_, err := app.resetHost(connUUID, hostUUID, true)
-//	if err != nil {
-//		app.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-//		return nil
-//	}
-//	var net *model.Network
-//	if newImport {
-//		net = app.AddNetwork(connUUID, hostUUID, body)
-//		if createAllChild {
-//			app.importNewNetwork(connUUID, hostUUID, body)
-//		}
-//	} else {
-//		net = app.EditNetwork(connUUID, hostUUID, body.UUID, body)
-//		if createAllChild {
-//			app.importEditNetwork(connUUID, hostUUID, body)
-//		}
-//	}
-//	return net
-//}
+func (inst *App) importNewNetwork(connUUID, hostUUID string, body *model.Network) {
+	devices := body.Devices
+	if devices != nil {
+		for _, device := range devices {
+			device.NetworkUUID = body.UUID
+			inst.AddDevice(connUUID, hostUUID, device)
+			points := device.Points
+			for _, point := range points {
+				point.DeviceUUID = device.UUID
+				inst.AddPoint(connUUID, hostUUID, point)
+			}
+		}
+	}
+}
 
 func (inst *App) EditNetwork(connUUID, hostUUID, networkUUID string, body *model.Network) *model.Network {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
@@ -275,6 +180,18 @@ func (inst *App) getNetwork(connUUID, hostUUID, networkUUID string, withDevice b
 		return nil, err
 	}
 	networks, err := client.FFGetNetwork(hostUUID, networkUUID, withDevice, overrideUrl...)
+	if err != nil {
+		return nil, err
+	}
+	return networks, nil
+}
+
+func (inst *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
+	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	networks, err := client.FFGetNetworkWithPoints(hostUUID, networkUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -335,15 +252,6 @@ func (inst *App) getNetworksWithPointsDisplay(connUUID, hostUUID string) ([]Netw
 	return networksLists, nil
 }
 
-func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
-	url := fmt.Sprintf("proxy/ff/api/networks?with_points=true")
-	networks, err := inst.getNetworks(connUUID, hostUUID, false, url)
-	if err != nil {
-		return nil, err
-	}
-	return networks, nil
-}
-
 func (inst *App) GetNetworksWithPoints(connUUID, hostUUID string) []model.Network {
 	networks, err := inst.getNetworksWithPoints(connUUID, hostUUID)
 
@@ -360,15 +268,6 @@ func (inst *App) GetNetworkWithPoints(connUUID, hostUUID, networkUUID string) *m
 		return nil
 	}
 	return networks
-}
-
-func (inst *App) getNetworkWithPoints(connUUID, hostUUID, networkUUID string) (*model.Network, error) {
-	url := fmt.Sprintf("proxy/ff/api/networks/%s?with_points=true", networkUUID)
-	networks, err := inst.getNetwork(connUUID, hostUUID, networkUUID, true, url)
-	if err != nil {
-		return nil, err
-	}
-	return networks, nil
 }
 
 func (inst *App) GetNetwork(connUUID, hostUUID, networkUUID string, withDevice bool) *model.Network {

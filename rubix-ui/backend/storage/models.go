@@ -13,6 +13,7 @@ type Backup struct {
 	HostName       string      `json:"host_name"`
 	BackupInfo     string      `json:"backup_info"`
 	Time           time.Time   `json:"time"`
+	Timestamp      string      `json:"timestamp"`
 	Application    string      `json:"application"`     // RubixWires
 	SubApplication string      `json:"sub_application"` //WiresFlow
 	Data           interface{} `json:"data,omitempty"`

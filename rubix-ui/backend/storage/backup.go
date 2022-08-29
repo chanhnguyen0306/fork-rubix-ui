@@ -50,13 +50,14 @@ func (inst *db) AddBackup(body *Backup) (*Backup, error) {
 		return nil, errors.New("host name can not be empty")
 	}
 	body.Time = ttime.New().Now()
+	body.Timestamp = body.Time.Format(time.RFC822)
 	body.UUID = uuid.ShortUUID("bac")
 	body.UserComment = strip(body.UserComment)
 	if body.UserComment == "" {
-		body.UserComment = fmt.Sprintf("%s backup- %s", body.HostName, body.UserComment)
+		body.UserComment = fmt.Sprintf(body.UserComment)
 	}
 	if body.BackupInfo == "" {
-		body.BackupInfo = fmt.Sprintf("host-%s connection-%s comment-%s date- %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+		body.BackupInfo = fmt.Sprintf("host-%s connection-%s", body.HostName, body.HostName)
 	}
 	data, err := json.Marshal(body)
 	if err != nil {

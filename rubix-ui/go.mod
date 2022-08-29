@@ -2,7 +2,8 @@ module github.com/NubeIO/rubix-ui
 
 go 1.17
 
-//replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+replace github.com/NubeIO/rubix-assist => /home/aidan/code/go/nube/rubix-assist
+
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 //replace github.com/NubeIO/lib-rubix-installer => /home/aidan/code/go/nube/lib/lib-rubix-installer
 
@@ -15,7 +16,6 @@ require (
 	github.com/NubeIO/lib-rubix-installer v0.2.0
 	github.com/NubeIO/lib-schema v0.1.4
 	github.com/NubeIO/lib-systemctl-go v0.1.0
-	github.com/NubeIO/lib-ufw v0.0.3
 	github.com/NubeIO/lib-uuid v0.0.2
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
@@ -41,6 +41,7 @@ require (
 
 require (
 	github.com/NubeIO/lib-command v0.0.2 // indirect
+	github.com/NubeIO/lib-ufw v0.0.3 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
