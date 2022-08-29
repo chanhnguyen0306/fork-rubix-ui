@@ -27,7 +27,6 @@ export const openNotificationWithIcon = (type: NotificationType, data: any) => {
   notification[type]({
     message: type.charAt(0).toUpperCase() + type.slice(1),
     description: data,
-    duration: 4000,
     placement: "bottomRight",
     icon: (
       <InfoCircleOutlined
