@@ -70,7 +70,7 @@
       "description": "rubix compute io service",
       "port": 5001,
       "transport": "http",
-      "app_specfic_exec_start": "",
+      "app_specfic_exec_start": "app -p 5001 -r /data -a rubix-io-driver -d data -c config --prod server",
       "service_working_directory": "",
       "environment_vars":[],
       "products": [
@@ -95,7 +95,7 @@
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
       "transport": "serial",
-      "app_specfic_exec_start": "",
+      "app_specfic_exec_start": "app -p <port> -g /data/lora-driver -d data -c config -i <identifier> -s config.json -l logging.conf --prod",
       "service_working_directory": "",
       "environment_vars":[],
       "products": [

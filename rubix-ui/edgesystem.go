@@ -8,6 +8,43 @@ import (
 )
 
 func (inst *App) EdgeServiceStart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	ctl, err := inst.edgeServiceEnable(connUUID, hostUUID, appOrService, timeout)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	ctl, err = inst.edgeServiceStart(connUUID, hostUUID, appOrService, timeout)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return ctl
+}
+
+func (inst *App) EdgeServiceStop(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	ctl, err := inst.edgeServiceDisable(connUUID, hostUUID, appOrService, timeout)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	ctl, err = inst.edgeServiceStop(connUUID, hostUUID, appOrService, timeout)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return ctl
+}
+
+func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+	ctl, err := inst.edgeServiceRestart(connUUID, hostUUID, appOrService, timeout)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	return ctl
+}
+
+func (inst *App) edgeServiceStart(connUUID, hostUUID, appOrService string, timeout int) (*systemctl.SystemResponse, error) {
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "start",
@@ -15,13 +52,12 @@ func (inst *App) EdgeServiceStart(connUUID, hostUUID, appOrService string, timeo
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
-func (inst *App) EdgeServiceStop(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+func (inst *App) edgeServiceStop(connUUID, hostUUID, appOrService string, timeout int) (*systemctl.SystemResponse, error) {
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "stop",
@@ -29,13 +65,12 @@ func (inst *App) EdgeServiceStop(connUUID, hostUUID, appOrService string, timeou
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
-func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+func (inst *App) edgeServiceRestart(connUUID, hostUUID, appOrService string, timeout int) (*systemctl.SystemResponse, error) {
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "restart",
@@ -43,13 +78,12 @@ func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appOrService string, tim
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
-func (inst *App) EdgeServiceEnable(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+func (inst *App) edgeServiceEnable(connUUID, hostUUID, appOrService string, timeout int) (*systemctl.SystemResponse, error) {
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "enable",
@@ -57,13 +91,12 @@ func (inst *App) EdgeServiceEnable(connUUID, hostUUID, appOrService string, time
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
-func (inst *App) EdgeServiceDisable(connUUID, hostUUID, appOrService string, timeout int) *systemctl.SystemResponse {
+func (inst *App) edgeServiceDisable(connUUID, hostUUID, appOrService string, timeout int) (*systemctl.SystemResponse, error) {
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "disable",
@@ -71,10 +104,9 @@ func (inst *App) EdgeServiceDisable(connUUID, hostUUID, appOrService string, tim
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
 
 func (inst *App) edgeRestartFlowFramework(connUUID, hostUUID string) (*systemctl.SystemResponse, error) {
