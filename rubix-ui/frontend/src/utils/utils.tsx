@@ -29,9 +29,7 @@ export const openNotificationWithIcon = (type: NotificationType, data: any) => {
     description: data,
     placement: "bottomRight",
     icon: (
-      <InfoCircleOutlined
-        style={{ marginLeft: "-180px", color: getColor() }}
-      />
+      <InfoCircleOutlined style={{ marginLeft: "-180px", color: getColor() }} />
     ),
   });
 };

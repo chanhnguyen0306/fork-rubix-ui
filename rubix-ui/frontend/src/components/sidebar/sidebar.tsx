@@ -31,6 +31,7 @@ import { DARK_THEME, LIGHT_THEME, useTheme } from "../../themes/use-theme";
 import { SettingsFactory } from "../settings/factory";
 import { useSettings } from "../settings/use-settings";
 import { TokenModal } from "../settings/views/token-modal";
+import { openNotificationWithIcon } from "../../utils/utils";
 
 const { Sider } = Layout;
 const { Option } = Select;
@@ -182,6 +183,7 @@ const AutoRefreshPointsMenuItem = () => {
       auto_refresh_enable: enable,
       auto_refresh_rate: refreshTime,
     };
+    openNotificationWithIcon("info", "Please refresh page to apply"); //only works when put above the api call
     await settingsFactory.Update(settings.uuid, newSettings);
   };
 
