@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { assistmodel } from "../../../../../wailsjs/go/models";
 import { HostNetworking } from "../../../edge/system/networking/hostNetworking";
-import { HostTime } from "../../../edge/system/time/time";
+import { HostTime } from "../../../edge/system/time/hostTime";
 import { HostsFactory } from "../../factory";
 
 import Host = assistmodel.Host;
