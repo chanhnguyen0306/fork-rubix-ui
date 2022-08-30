@@ -1,8 +1,6 @@
-import { Spin } from "antd";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import RbTable from "../../../../common/rb-table";
-import { NETWORKING_HEADERS } from "../../../../constants/headers";
+import { ScannerTable } from "../../../pc/networking/networking";
 import { HostNetworkingFactory } from "./factory";
 
 export const HostNetworking = () => {
@@ -40,15 +38,5 @@ export const HostNetworking = () => {
     }
   };
 
-  return (
-    <>
-      <RbTable
-        rowKey="id"
-        rowSelection={rowSelection}
-        dataSource={data}
-        columns={NETWORKING_HEADERS}
-        loading={{ indicator: <Spin />, spinning: isFetching }}
-      />
-    </>
-  );
+  return <ScannerTable data={data} isFetching={isFetching} rowKey="id" />;
 };
