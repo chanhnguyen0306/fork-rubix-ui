@@ -251,6 +251,8 @@ export function GetHostTime(arg1:string,arg2:string):Promise<any>;
 
 export function GetHosts(arg1:string):Promise<Array<assistmodel.Host>>;
 
+export function GetLocalStorage(arg1:string,arg2:string):Promise<model.LocalStorageFlowNetwork>;
+
 export function GetLocation(arg1:string,arg2:string):Promise<assistmodel.Location>;
 
 export function GetLocationSchema(arg1:string):Promise<any>;
@@ -372,6 +374,8 @@ export function StoreCheckAppExists(arg1:string):Promise<Error>;
 export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
 
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
+
+export function UpdateLocalStorage(arg1:string,arg2:string,arg3:model.LocalStorageFlowNetwork):Promise<model.LocalStorageFlowNetwork>;
 
 export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location):Promise<assistmodel.Location>;
 

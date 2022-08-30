@@ -106,8 +106,9 @@ export const ConsumersTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={fetch} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showModal({} as Consumer)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

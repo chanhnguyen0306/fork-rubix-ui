@@ -474,6 +474,10 @@ export function GetHosts(arg1) {
   return window['go']['main']['App']['GetHosts'](arg1);
 }
 
+export function GetLocalStorage(arg1, arg2) {
+  return window['go']['main']['App']['GetLocalStorage'](arg1, arg2);
+}
+
 export function GetLocation(arg1, arg2) {
   return window['go']['main']['App']['GetLocation'](arg1, arg2);
 }
@@ -716,6 +720,10 @@ export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
 
 export function UpdateConnection(arg1, arg2) {
   return window['go']['main']['App']['UpdateConnection'](arg1, arg2);
+}
+
+export function UpdateLocalStorage(arg1, arg2, arg3) {
+  return window['go']['main']['App']['UpdateLocalStorage'](arg1, arg2, arg3);
 }
 
 export function UpdateLocation(arg1, arg2, arg3) {

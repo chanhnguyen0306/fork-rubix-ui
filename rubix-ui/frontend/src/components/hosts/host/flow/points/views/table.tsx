@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { model, main } from "../../../../../../../wailsjs/go/models";
+import { model, main, storage } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbExportButton,
@@ -15,6 +15,7 @@ import {
   isObjectEmpty,
   openNotificationWithIcon,
 } from "../../../../../../utils/utils";
+import { useSettings } from "../../../../../settings/use-settings";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
@@ -26,6 +27,7 @@ import { WritePointValueModal } from "./write-point-value";
 import Point = model.Point;
 import UUIDs = main.UUIDs;
 import PluginUUIDs = main.PluginUUIDs;
+import Settings = storage.Settings;
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -36,10 +38,12 @@ export const FlowPointsTable = (props: any) => {
     deviceUUID = "",
     pluginName = "",
   } = useParams();
+  const [settings] = useSettings();
   const [pluginUUID, setPluginUUID] = useState<any>();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [intervalId, setIntervalId] = useState<any>();
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -49,7 +53,7 @@ export const FlowPointsTable = (props: any) => {
     useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
 
-  let flowPointFactory = new FlowPointFactory();
+  const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
   const flowPluginFactory = new FlowPluginFactory();
   flowPointFactory.connectionUUID =
@@ -97,6 +101,28 @@ export const FlowPointsTable = (props: any) => {
   useEffect(() => {
     setPlugin();
   }, []);
+
+  useEffect(() => {
+    const interval = startInterval();
+    return () => stopInterval(interval);
+  }, [settings.auto_refresh_enable, settings.auto_refresh_rate]);
+
+  const startInterval = () => {
+    if (
+      settings.auto_refresh_enable &&
+      settings.auto_refresh_rate &&
+      settings.auto_refresh_rate !== 0
+    ) {
+      const intervalId = setInterval(() => {
+        refreshList();
+      }, settings.auto_refresh_rate);
+      return intervalId;
+    }
+  };
+
+  const stopInterval = (intervalId: any) => {
+    clearInterval(intervalId);
+  };
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
@@ -164,11 +190,11 @@ export const FlowPointsTable = (props: any) => {
 
   return (
     <>
-      <RbExportButton handleExport={handleExport} />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton handleClick={showCreateModal} />
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
+      <RbAddButton handleClick={showCreateModal} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <RbExportButton handleExport={handleExport} />
 
       <RbTable
         rowKey="uuid"

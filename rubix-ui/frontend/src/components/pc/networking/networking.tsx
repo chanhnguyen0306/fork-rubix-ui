@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Spin } from "antd";
+import { Spin, Typography } from "antd";
 import {
   GetPcGetNetworks,
   GetPcGetNetworksSchema,
@@ -7,45 +7,42 @@ import {
 import RbTable from "../../../common/rb-table";
 import { RbRefreshButton } from "../../../common/rb-table-actions";
 
+const { Title } = Typography;
+
 export const PcNetworking = () => {
   const [data, setData] = useState([] as []);
-  const [schema, setSchema] = useState([] as []);
-  const [isFetching, setIsFetching] = useState(true);
-  const fetch = async () => {
-    setIsFetching(true);
-    const res = await GetPcGetNetworks();
-    setData(res);
-    setIsFetching(false);
-  };
-  const fetchSchema = async () => {
-    const res = await GetPcGetNetworksSchema();
-    setSchema(res);
-  };
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    setIsFetching(false);
     fetch();
-    fetchSchema();
   }, []);
 
-  const refreshList = () => {
-    fetch()
-      .then()
-      .catch((err) => {
-        console.log(err);
-      });
+  const fetch = async () => {
+    try {
+      setIsFetching(true);
+      const res = await GetPcGetNetworks();
+      setData(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
+
   return (
     <>
-      <h1>Rubix Scanner</h1>
-      <RbRefreshButton refreshList={refreshList} />
-      <ScannerTable data={data} schema={schema} isFetching={isFetching} />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Rubix Scanner
+      </Title>
+      <RbRefreshButton refreshList={fetch} />
+      <ScannerTable data={data} isFetching={isFetching} />
     </>
   );
 };
 
-const ScannerTable = (props: any) => {
-  let { data, isFetching, schema } = props;
+export const ScannerTable = (props: any) => {
+  let { data, isFetching, rowKey } = props;
+  const [schema, setSchema] = useState([]);
   if (!data) return <></>;
 
   const columns = schema.sort((a: any, b: any) => {
@@ -70,10 +67,19 @@ const ScannerTable = (props: any) => {
     },
   };
 
+  useEffect(() => {
+    fetchSchema();
+  }, []);
+
+  const fetchSchema = async () => {
+    const res = await GetPcGetNetworksSchema();
+    setSchema(res);
+  };
+
   return (
     <div>
       <RbTable
-        rowKey={"interface"}
+        rowKey={rowKey ? rowKey : "interface"}
         rowSelection={rowSelection}
         dataSource={data}
         columns={columns}

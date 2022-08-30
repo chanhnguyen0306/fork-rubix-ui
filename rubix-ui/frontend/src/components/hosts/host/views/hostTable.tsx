@@ -1,16 +1,25 @@
-import { Descriptions, Spin } from "antd";
+import { Descriptions, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { assistmodel } from "../../../../../wailsjs/go/models";
+import { HostNetworking } from "../../../edge/system/networking/hostNetworking";
+import { HostTime } from "../../../edge/system/time/time";
 import { HostsFactory } from "../../factory";
 
 import Host = assistmodel.Host;
-export const HostTable = (props: any) => {
+
+const { TabPane } = Tabs;
+
+const info = "INFO";
+const networking = "NETWORKING";
+const time = "TIME";
+
+export const HostTable = () => {
   let { connUUID = "", hostUUID = "" } = useParams();
   const [host, setHost] = useState({} as Host);
   const [isFetching, setIsFetching] = useState(false);
 
-  let hostFactory = new HostsFactory();
+  const hostFactory = new HostsFactory();
   hostFactory.connectionUUID = connUUID;
   hostFactory.uuid = hostUUID;
 
@@ -21,7 +30,7 @@ export const HostTable = (props: any) => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      let res = await hostFactory.GetOne();
+      const res = await hostFactory.GetOne();
       setHost(res);
     } catch (error) {
       console.log(error);
@@ -32,10 +41,20 @@ export const HostTable = (props: any) => {
 
   return (
     <Spin spinning={isFetching}>
-      <Descriptions title="Host Info">
-        <Descriptions.Item label="uuid">{host.uuid}</Descriptions.Item>
-        <Descriptions.Item label="name">{host.name}</Descriptions.Item>
-      </Descriptions>
+      <Tabs defaultActiveKey={info}>
+        <TabPane tab={info} key={info}>
+          <Descriptions>
+            <Descriptions.Item label="uuid">{host.uuid}</Descriptions.Item>
+            <Descriptions.Item label="name">{host.name}</Descriptions.Item>
+          </Descriptions>
+        </TabPane>
+        <TabPane tab={networking} key={networking}>
+          <HostNetworking />
+        </TabPane>
+        <TabPane tab={time} key={time}>
+          <HostTime />
+        </TabPane>
+      </Tabs>
     </Spin>
   );
 };

@@ -1,21 +1,37 @@
-import { GetHostTime } from "../../../../../wailsjs/go/main/App";
-import { Helpers } from "../../../../helpers/checks";
+import { Spin } from "antd";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { HostTimeFactory } from "./factory";
 
-function hasUUID(uuid: string): Error {
-  return Helpers.IsUndefined(uuid, "get host time has uuid") as Error;
-}
+export const HostTime = () => {
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const [data, setData] = useState([] as Array<any>);
+  const [isFetching, setIsFetching] = useState(false);
 
-export class HostTime {
-  connectionUUID!: string;
-  hostUUID!: string;
+  const factory = new HostTimeFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
-  private callTime(): Promise<any> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    return GetHostTime(this.connectionUUID, this.hostUUID);
-  }
+  useEffect(() => {
+    fetch();
+  }, []);
 
-  public GetHostTime(): Promise<any> {
-    return this.callTime();
-  }
-}
+  const fetch = async () => {
+    try {
+      setIsFetching(true);
+      const res = await factory.GetHostTime();
+      setData(res);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  return (
+    <>
+      <Spin spinning={isFetching}> {data}</Spin>
+    </>
+  );
+};
