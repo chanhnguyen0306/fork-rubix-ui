@@ -2,7 +2,8 @@ import { Descriptions, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { assistmodel } from "../../../../../wailsjs/go/models";
-import { Networking } from "../../../edge/system/networking/networking";
+import { HostNetworking } from "../../../edge/system/networking/networking";
+import { HostTime } from "../../../edge/system/time/time";
 import { HostsFactory } from "../../factory";
 
 import Host = assistmodel.Host;
@@ -29,7 +30,7 @@ export const HostTable = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      let res = await hostFactory.GetOne();
+      const res = await hostFactory.GetOne();
       setHost(res);
     } catch (error) {
       console.log(error);
@@ -48,13 +49,10 @@ export const HostTable = () => {
           </Descriptions>
         </TabPane>
         <TabPane tab={networking} key={networking}>
-          <Networking />
+          <HostNetworking />
         </TabPane>
         <TabPane tab={time} key={time}>
-          <Descriptions>
-            <Descriptions.Item label="uuid">{host.uuid}</Descriptions.Item>
-            <Descriptions.Item label="name">{host.name}</Descriptions.Item>
-          </Descriptions>
+          <HostTime />
         </TabPane>
       </Tabs>
     </Spin>

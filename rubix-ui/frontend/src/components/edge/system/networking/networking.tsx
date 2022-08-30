@@ -5,7 +5,7 @@ import RbTable from "../../../../common/rb-table";
 import { NETWORKING_HEADERS } from "../../../../constants/headers";
 import { HostNetworkingFactory } from "./factory";
 
-export const Networking = () => {
+export const HostNetworking = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [data, setData] = useState([] as Array<any>);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<any>);
