@@ -660,6 +660,39 @@ export const SCANNER_HEADERS = [
   },
 ];
 
+export const NETWORKING_HEADERS = [
+  {
+    title: "Gateway",
+    key: "gateway",
+    dataIndex: "gateway",
+  },
+  {
+    title: "Interface",
+    key: "interface",
+    dataIndex: "interface",
+  },
+  {
+    title: "Ip",
+    key: "ip",
+    dataIndex: "ip",
+  },
+  {
+    title: "Ip And Mask",
+    key: "ip_and_mask",
+    dataIndex: "ip_and_mask",
+  },
+  {
+    title: "Mac Address",
+    key: "mac_address",
+    dataIndex: "mac_address",
+  },
+  {
+    title: "Netmask",
+    key: "netmask",
+    dataIndex: "netmask",
+  },
+];
+
 //--------------schema-------------//
 export const FLOW_NETWORKS_SCHEMA = {
   name: {

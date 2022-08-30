@@ -1,57 +1,54 @@
-import {
-  EdgeDHCPPortExists,
-  EdgeDHCPSetAsAuto,
-  EdgeDHCPSetStaticIP,
-  EdgeGetNetworks,
-  GetRcNetworkSchema,
-} from "../../../../../wailsjs/go/main/App";
-import {Helpers} from "../../../../helpers/checks";
-import {dhcpd, store, system} from "../../../../../wailsjs/go/models";
+import { Spin } from "antd";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import RbTable from "../../../../common/rb-table";
+import { NETWORKING_HEADERS } from "../../../../constants/headers";
+import { HostNetworkingFactory } from "./factory";
 
-function hasUUID(uuid: string): Error {
-    return Helpers.IsUndefined(uuid, "get networking info host time has uuid") as Error
-}
+export const Networking = () => {
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const [data, setData] = useState([] as Array<any>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<any>);
+  const [isFetching, setIsFetching] = useState(false);
 
+  const factory = new HostNetworkingFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
-export class HostNetworking {
-    connectionUUID!: string;
-    hostUUID!: string;
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      setSelectedUUIDs(selectedRows);
+    },
+  };
 
-    public GetNetworks(): Promise<any> {
-        hasUUID(this.connectionUUID);
-        hasUUID(this.hostUUID);
-        return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
+    try {
+      setIsFetching(true);
+      let res = await factory.GetNetworks();
+      res = res.map((network: any, index: number) => {
+        return { ...network, id: index };
+      });
+      setData(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetching(false);
     }
+  };
 
-  public GetRcNetworkSchema(): Promise<any> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    return GetRcNetworkSchema(this.connectionUUID, this.hostUUID);
-  }
-
-
-  public RubixScan(): Promise<any> {
-        hasUUID(this.connectionUUID);
-        hasUUID(this.hostUUID);
-        return EdgeGetNetworks(this.connectionUUID, this.hostUUID);
-    }
-
-  async EdgeDHCPPortExists(body:system.NetworkingBody):Promise<system.DHCPPortExists> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    return await EdgeDHCPPortExists(this.connectionUUID, this.hostUUID, body);
-  }
-
-  async EdgeDHCPSetAsAuto(body:system.NetworkingBody):Promise<system.Message> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    return await EdgeDHCPSetAsAuto(this.connectionUUID, this.hostUUID, body);
-  }
-
-  async EdgeDHCPSetStaticIP(body:dhcpd.SetStaticIP):Promise<string> {
-    hasUUID(this.connectionUUID);
-    hasUUID(this.hostUUID);
-    return await EdgeDHCPSetStaticIP(this.connectionUUID, this.hostUUID, body);
-  }
-
-}
+  return (
+    <>
+      <RbTable
+        rowKey="id"
+        rowSelection={rowSelection}
+        dataSource={data}
+        columns={NETWORKING_HEADERS}
+        loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+    </>
+  );
+};

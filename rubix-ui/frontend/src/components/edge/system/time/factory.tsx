@@ -5,7 +5,7 @@ function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "get host time has uuid") as Error;
 }
 
-export class HostTime {
+export class HostTimeFactory {
   connectionUUID!: string;
   hostUUID!: string;
 
