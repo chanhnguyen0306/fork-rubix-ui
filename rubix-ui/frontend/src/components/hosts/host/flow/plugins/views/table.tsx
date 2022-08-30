@@ -66,7 +66,7 @@ export const FlowPluginsTable = (props: any) => {
   const getSchema = async () => {
     setIsLoadingForm(true);
     if (pluginsUUIDs.length > 0) {
-      let plg = pluginsUUIDs.at(0) as unknown as PluginConf;
+      const plg = pluginsUUIDs.at(0) as unknown as PluginConf;
       setPluginName(plg.name);
       const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
       const jsonSchema = {
@@ -80,7 +80,7 @@ export const FlowPluginsTable = (props: any) => {
   const fetchPlugins = async () => {
     try {
       setIsFetching(true);
-      let res = (await factory.GetAll()) || [];
+      const res = await factory.GetAll();
       setPlugins(res);
     } catch (error) {
       console.log(error);

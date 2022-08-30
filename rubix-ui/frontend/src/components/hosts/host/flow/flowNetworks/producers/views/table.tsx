@@ -106,8 +106,9 @@ export const ProducersTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={fetch} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showModal({} as Producer)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

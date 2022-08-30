@@ -97,8 +97,8 @@ export const FlowNetworksTable = (props: any) => {
   return (
     <>
       <RbRefreshButton refreshList={refreshList} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbAddButton handleClick={() => showModal({} as FlowNetwork)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

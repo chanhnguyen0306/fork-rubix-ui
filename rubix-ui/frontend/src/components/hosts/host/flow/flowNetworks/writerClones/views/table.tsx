@@ -56,6 +56,7 @@ export const WriterClonesTable = (props: any) => {
     <>
       <RbRefreshButton refreshList={fetch} />
       <RbDeleteButton bulkDelete={bulkDelete} />
+
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

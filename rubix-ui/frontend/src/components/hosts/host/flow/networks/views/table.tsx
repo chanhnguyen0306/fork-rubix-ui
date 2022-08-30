@@ -84,7 +84,7 @@ export const FlowNetworkTable = () => {
   const fetchNetworks = async () => {
     try {
       setIsFetching(true);
-      let res = (await networkFactory.GetAll(false)) || [];
+      const res = await networkFactory.GetAll(false);
       setNetworks(res);
     } catch (error) {
     } finally {
@@ -153,12 +153,12 @@ export const FlowNetworkTable = () => {
 
   return (
     <>
+      <RbRefreshButton refreshList={fetchNetworks} />
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
       <RbAddButton handleClick={() => setIsCreateModalVisible(true)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbExportButton handleExport={handleExport} />
-      <RbRefreshButton refreshList={fetchNetworks} />
 
       <RbTable
         rowKey="uuid"

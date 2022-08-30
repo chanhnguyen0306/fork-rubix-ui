@@ -501,9 +501,9 @@ export const HostsTable = (props: any) => {
 
   return (
     <div>
-      <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
       <RbRefreshButton refreshList={refreshList} />
+      <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
 
       <RbTable
         rowKey="uuid"

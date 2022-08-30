@@ -164,11 +164,11 @@ export const FlowPointsTable = (props: any) => {
 
   return (
     <>
-      <RbExportButton handleExport={handleExport} />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
-      <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbAddButton handleClick={showCreateModal} />
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
+      <RbAddButton handleClick={showCreateModal} />
+      <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <RbExportButton handleExport={handleExport} />
 
       <RbTable
         rowKey="uuid"
