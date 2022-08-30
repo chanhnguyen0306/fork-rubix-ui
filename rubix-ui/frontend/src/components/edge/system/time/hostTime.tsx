@@ -21,7 +21,6 @@ export const HostTime = () => {
       setIsFetching(true);
       const res = await factory.GetHostTime();
       setData(res);
-      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
