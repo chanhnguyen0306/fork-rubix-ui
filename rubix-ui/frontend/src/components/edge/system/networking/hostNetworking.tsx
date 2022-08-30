@@ -6,18 +6,11 @@ import { HostNetworkingFactory } from "./factory";
 export const HostNetworking = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [data, setData] = useState([] as Array<any>);
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<any>);
   const [isFetching, setIsFetching] = useState(false);
 
   const factory = new HostNetworkingFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: any) => {
-      setSelectedUUIDs(selectedRows);
-    },
-  };
 
   useEffect(() => {
     fetch();
