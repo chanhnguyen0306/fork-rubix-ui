@@ -737,6 +737,18 @@ export const FLOW_NETWORKS_SCHEMA = {
     title: "flow password",
     type: "string",
   },
+  flow_token_local: {
+    maxLength: 200,
+    minLength: 2,
+    title: "this device token",
+    type: "string",
+  },
+  flow_token: {
+    maxLength: 200,
+    minLength: 2,
+    title: "external device token",
+    type: "string",
+  },
   uuid: {
     readOnly: true,
     title: "uuid",

@@ -27,6 +27,27 @@ func stringIsNil(b *string) string {
 	}
 }
 
+func (inst *Store) GitDownloadWires(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+	if token == "" {
+		return errors.New("git token can not be empty")
+	}
+	opts := &git.AssetOptions{
+		Owner: inst.Owner,
+		Repo:  repo,
+		Tag:   version,
+		Arch:  arch,
+	}
+	ctx := context.Background()
+	gitClient = git.NewClient(token, opts, ctx)
+	download, err := gitClient.Download(gitOptions)
+	if err != nil {
+		return err
+	}
+	assetName := download.AssetName
+	log.Infof("git downloaded-wires full asset name: %s", assetName)
+	return err
+}
+
 func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
@@ -42,6 +63,12 @@ func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git
 	assetInfo, err := gitClient.MatchAssetInfo(gitOptions)
 	if err != nil {
 		return err
+	}
+	if assetInfo == nil {
+		return errors.New("asset info was empty")
+	}
+	if assetInfo.RepositoryRelease == nil {
+		return errors.New("store-download-app failed to match info")
 	}
 	assetName := stringIsNil(assetInfo.RepositoryRelease.Name)
 	dest := fmt.Sprintf("%s/%s", gitOptions.DownloadDestination, assetName)

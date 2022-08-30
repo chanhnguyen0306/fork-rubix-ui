@@ -180,7 +180,11 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseV
 		}
 	}
 	if runDownload {
-		err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		if appName == rubixWires {
+			err = inst.GitDownloadWires(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		} else {
+			err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		}
 		if err != nil {
 			return nil, err
 		}
