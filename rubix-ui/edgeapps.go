@@ -57,6 +57,8 @@ func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList E
 }
 
 // EdgeInstallApp install an app
+// if app is FF then we need to upgrade all the plugins
+// if app has plugins to upload the plugins and restart FF
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *installer.InstallResp {
 	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
 	var arch string
@@ -107,26 +109,27 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		return nil
 	}
 	var appHasPlugins bool
-	var pluginName string
 	for _, app := range release.Apps {
 		if app.Name == appName {
 			for _, plg := range app.PluginDependency {
 				appHasPlugins = true
-				pluginName = plg
 				inst.crudMessage(true, fmt.Sprintf("plugin will be installed (plugin:%s)", plg))
 			}
 		}
 	}
-
-	err = inst.StoreCheckAppExists(appName)
+	err = inst.StoreCheckAppAndVersionExists(appName, appVersion) // check if app is in the store and if not then try and download it
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	err = inst.StoreCheckAppAndVersionExists(appName, appVersion)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
-		return nil
+		inst.crudMessage(true, fmt.Sprintf("app:%s not found in store so download", appName))
+		token, err := inst.getGitToken(gitToken, false)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("failed to get git token %s", err.Error()))
+			return nil
+		}
+		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("%s", err.Error()))
+			return nil
+		}
 	}
 	product := getProduct.Product
 	log.Errorln(" INSTALL-APP add check to make its correct arch and product")
@@ -165,20 +168,41 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		return nil
 	}
 
-	if appHasPlugins {
-		inst.crudMessage(true, fmt.Sprintf("start upload and install of plugin (app:%s plugin%s)", appName, pluginName))
-		inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
-			PluginName: pluginName,
-			Arch:       arch,
-			Version:    releaseVersion,
-		}, false)
+	if appHasPlugins { // install the plugins
+		for _, app := range release.Apps {
+			if app.Name == appName {
+				for _, plg := range app.PluginDependency {
+					appHasPlugins = true
+					inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
+						PluginName: plg,
+						Arch:       arch,
+						Version:    releaseVersion,
+					}, false)
+				}
+			}
+		}
 		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err:%s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("(step 4 of %s)  restart flow-framework msg:%s", lastStep, restart.Message))
+			inst.crudMessage(true, fmt.Sprintf("restart flow-framework msg:%s", restart.Message))
 		}
 	}
+
+	if appName == flowFramework { // if app is FF then update all the plgins
+		inst.crudMessage(true, fmt.Sprintf("update all plugins for flow-framework"))
+		_, err := inst.EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion)
+		if err != nil {
+			return nil
+		}
+		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
+		if err != nil {
+			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err:%s", err.Error()))
+		} else {
+			inst.crudMessage(true, fmt.Sprintf("restart flow-framework msg:%s", restart.Message))
+		}
+	}
+
 	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app rubix-edge %s name:%s", lastStep, installEdgeService.Install, appName))
 	return installEdgeService
 }

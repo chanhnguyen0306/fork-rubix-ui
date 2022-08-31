@@ -68,10 +68,12 @@ type RcNetworkBody struct {
 	Eth0Interface  string `json:"eth0_interface"`
 	Eth0Ip         string `json:"eth0_ip"`
 	Eth0Netmask    string `json:"eth0_netmask"`
+	Eth0Gateway    string `json:"eth0_gateway"`
 	Eth1IpSettings string `json:"eth1_ip_settings"`
 	Eth1Interface  string `json:"eth1_interface"`
 	Eth1Ip         string `json:"eth1_ip"`
 	Eth1Netmask    string `json:"eth1_netmask"`
+	Eth1Gateway    string `json:"eth1_gateway"`
 }
 
 func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetworkBody) {

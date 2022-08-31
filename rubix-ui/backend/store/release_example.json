@@ -194,11 +194,34 @@
       ]
     },
     {
+      "name": "history",
+      "plugin": "history",
+      "description": "used for storing histories",
+      "transport": "na",
+      "products": [
+        "Server",
+        "RubixCompute",
+        "RubixCompute5",
+        "RubixComputeIO"
+      ],
+      "arch": [
+        "amd64",
+        "armv7"
+      ],
+      "app_dependency": [
+      ],
+      "plugin_dependency": [
+        "history"
+      ],
+      "service_dependency": [
+      ]
+    },
+    {
       "name": "postgres",
       "plugin": "postgres",
       "port": 5432,
       "transport": "tcp",
-      "description": "",
+      "description": "used to sync flow-framework data into postgres database",
       "products": [
         "Server",
         "RubixCompute",
@@ -243,7 +266,7 @@
     },
     {
       "name": "bacnet-server",
-      "plugin": "bacnet-server",
+      "plugin": "bacnetserver",
       "description": "nube bacnet server",
       "port": 47809,
       "transport": "udp",

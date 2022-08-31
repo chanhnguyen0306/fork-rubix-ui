@@ -34,6 +34,41 @@ func (inst *App) EdgeDeleteAllPlugins(connUUID, hostUUID string) *edgecli.Messag
 	return resp
 }
 
+// EdgeUpgradePlugins upgrade all the plugins
+func (inst *App) EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion string) (*assitcli.EdgeUploadResponse, error) {
+
+	plugins, err := inst.edgeListPlugins(connUUID, hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(111, plugins)
+	if len(plugins) == 0 {
+		inst.crudMessage(false, fmt.Sprintf("there are no plugins to be upgraded"))
+		return nil, err
+	} else {
+		_, err = inst.edgeDeleteAllPlugins(connUUID, hostUUID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for _, plugin := range plugins {
+		inst.crudMessage(false, fmt.Sprintf("start upgrade of plugin:%s", plugin.PluginName))
+	}
+
+	for _, plugin := range plugins {
+		if plugin.Version == "" {
+			plugin.Version = releaseVersion
+		}
+		inst.EdgeUploadPlugin(connUUID, hostUUID, &plugin, false)
+	}
+	_, err = inst.edgeRestartFlowFramework(connUUID, hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
 func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin, restartFlow bool) *assitcli.EdgeUploadResponse {
 	var lastStep = "4"
 	var matchedName bool
@@ -55,7 +90,7 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 		inst.crudMessage(false, fmt.Sprintf("plugin version cant be empty"))
 		return nil
 	}
-	inst.crudMessage(false, fmt.Sprintf("(step 1 of %s) check plugin is in downloads plugin:%s version:%s arch:%s", lastStep, body.PluginName, body.Version, body.Arch))
+	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) check plugin is in downloads plugin:%s version:%s arch:%s", lastStep, body.PluginName, body.Version, body.Arch))
 	_, checkPlugin, err := inst.storeGetPlugin(body)
 	if checkPlugin == nil || err != nil {
 		inst.crudMessage(false, fmt.Sprintf("failed to find plugin:%s version:%s arch:%s", body.PluginName, body.Version, body.Arch))

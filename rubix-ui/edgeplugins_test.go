@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
@@ -37,5 +38,12 @@ func TestApp_EdgeDeletePlugin(t *testing.T) {
 func TestApp_EdgeDeleteAllPlugins(t *testing.T) {
 	app := NewApp()
 	resp := app.EdgeDeleteAllPlugins(connection, "rc")
+	pprint.PrintJOSN(resp)
+}
+
+func TestApp_EdgeUpgradePlugins(t *testing.T) {
+	app := NewApp()
+	resp, err := app.EdgeUpgradePlugins(connection, "rc", releaseVersion)
+	fmt.Println(err)
 	pprint.PrintJOSN(resp)
 }

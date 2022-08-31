@@ -11,9 +11,21 @@ func TestApp_EdgeDeviceInfoAndApps(t *testing.T) {
 	pprint.PrintJOSN(resp)
 }
 
+func TestApp_EdgeInstallAppFlow(t *testing.T) {
+	app := NewApp()
+	resp := app.EdgeInstallApp(connection, "rc", flowFramework, releaseVersion, releaseVersion)
+	pprint.PrintJOSN(resp)
+}
+
 func TestApp_EdgeInstallApp(t *testing.T) {
 	app := NewApp()
 	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion, releaseVersion)
+	pprint.PrintJOSN(resp)
+}
+
+func TestApp_EdgeInstallAppBacnet(t *testing.T) {
+	app := NewApp()
+	resp := app.EdgeInstallApp(connection, "rc", bacnetServerDriver, "v0.0.16", releaseVersion)
 	pprint.PrintJOSN(resp)
 }
 
