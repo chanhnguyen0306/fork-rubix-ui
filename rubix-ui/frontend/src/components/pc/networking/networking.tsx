@@ -41,11 +41,11 @@ export const PcNetworking = () => {
 };
 
 export const ScannerTable = (props: any) => {
-  let { data, isFetching, rowKey } = props;
+  let { data, isFetching, rowKey, extraColumns } = props;
   const [schema, setSchema] = useState([]);
   if (!data) return <></>;
 
-  const columns = schema.sort((a: any, b: any) => {
+  let columns = schema.sort((a: any, b: any) => {
     if (a.key < b.key) {
       return -1;
     }
@@ -54,6 +54,10 @@ export const ScannerTable = (props: any) => {
     }
     return 0;
   });
+
+  if (extraColumns && extraColumns.length > 0) {
+    columns = columns.concat(extraColumns);
+  }
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
