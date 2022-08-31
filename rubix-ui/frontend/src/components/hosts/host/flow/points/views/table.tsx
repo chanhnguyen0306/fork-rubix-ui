@@ -27,7 +27,6 @@ import { WritePointValueModal } from "./write-point-value";
 import Point = model.Point;
 import UUIDs = main.UUIDs;
 import PluginUUIDs = main.PluginUUIDs;
-import Settings = storage.Settings;
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -38,12 +37,10 @@ export const FlowPointsTable = (props: any) => {
     deviceUUID = "",
     pluginName = "",
   } = useParams();
-  const [settings] = useSettings();
   const [pluginUUID, setPluginUUID] = useState<any>();
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [intervalId, setIntervalId] = useState<any>();
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -101,28 +98,6 @@ export const FlowPointsTable = (props: any) => {
   useEffect(() => {
     setPlugin();
   }, []);
-
-  useEffect(() => {
-    const interval = startInterval();
-    return () => stopInterval(interval);
-  }, [settings.auto_refresh_enable, settings.auto_refresh_rate]);
-
-  const startInterval = () => {
-    if (
-      settings.auto_refresh_enable &&
-      settings.auto_refresh_rate &&
-      settings.auto_refresh_rate !== 0
-    ) {
-      const intervalId = setInterval(() => {
-        refreshList();
-      }, settings.auto_refresh_rate);
-      return intervalId;
-    }
-  };
-
-  const stopInterval = (intervalId: any) => {
-    clearInterval(intervalId);
-  };
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);

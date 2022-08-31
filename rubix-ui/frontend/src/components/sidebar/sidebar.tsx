@@ -183,8 +183,8 @@ const AutoRefreshPointsMenuItem = () => {
       auto_refresh_enable: enable,
       auto_refresh_rate: refreshTime,
     };
-    openNotificationWithIcon("info", "Please refresh page to apply"); //only works when put above the api call
     await settingsFactory.Update(settings.uuid, newSettings);
+    openNotificationWithIcon("info", "Please refresh page to apply");
   };
 
   const handleChangeTime = (value: string) => {

@@ -11,10 +11,11 @@ import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
 import { FLOW_POINT_HEADERS } from "../../../../../constants/headers";
 import { PLUGINS } from "../../../../../constants/plugins";
 import { RbRefreshButton } from "../../../../../common/rb-table-actions";
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
+import { BacnetWhoIsTable } from "../bacnet/table";
 import { FlowPointsTable } from "./views/table";
 
 import Point = model.Point;
+import { useSettings } from "../../../../settings/use-settings";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -23,10 +24,6 @@ const points = "POINTS";
 const discover = "DISCOVER";
 
 export const FlowPoints = () => {
-  const [data, setDevices] = useState([] as Point[]);
-  const [discoveries, setDiscoveries] = useState([] as Point[]);
-  const [isFetching, setIsFetching] = useState(false);
-  const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
   const {
     locUUID = "",
     netUUID = "",
@@ -36,6 +33,11 @@ export const FlowPoints = () => {
     pluginName = "",
     networkUUID = "",
   } = useParams();
+  const [settings] = useSettings();
+  const [data, setDevices] = useState([] as Point[]);
+  const [discoveries, setDiscoveries] = useState([] as Point[]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
 
   const flowPointFactory = new FlowPointFactory();
   const bacnetFactory = new BacnetFactory();
@@ -89,6 +91,28 @@ export const FlowPoints = () => {
   useEffect(() => {
     fetch();
   }, []);
+
+  useEffect(() => {
+    const interval = startInterval();
+    return () => stopInterval(interval);
+  }, [settings.auto_refresh_enable, settings.auto_refresh_rate]); //handle auto refresh points
+
+  const startInterval = () => {
+    if (
+      settings.auto_refresh_enable &&
+      settings.auto_refresh_rate &&
+      settings.auto_refresh_rate !== 0
+    ) {
+      const intervalId = setInterval(() => {
+        fetch();
+      }, settings.auto_refresh_rate);
+      return intervalId;
+    }
+  };
+
+  const stopInterval = (intervalId: any) => {
+    clearInterval(intervalId);
+  };
 
   const fetch = async () => {
     try {

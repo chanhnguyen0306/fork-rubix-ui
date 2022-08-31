@@ -22,7 +22,10 @@ export const useSettings = () => {
 
   const fetch = async (uuid: string) => {
     try {
-      const res = await factory.Get(uuid);
+      let res = await factory.Get(uuid);
+      if (!res) {
+        res = getSettings();
+      }
       setSettings(res);
     } catch (error) {
       console.log(error);

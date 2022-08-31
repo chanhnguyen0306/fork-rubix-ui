@@ -9,7 +9,7 @@ import { PLUGINS } from "../../../../../constants/plugins";
 import { ROUTES } from "../../../../../constants/routes";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
+import { BacnetWhoIsTable } from "../bacnet/table";
 import { BacnetFactory } from "../bacnet/factory";
 import { FlowNetworkFactory } from "../networks/factory";
 import { FlowDeviceFactory } from "./factory";
