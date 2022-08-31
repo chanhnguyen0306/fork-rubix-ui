@@ -6,7 +6,7 @@ import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
 import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clones";
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
-import { HostTable } from "./views/hostTable";
+import { HostTable } from "./views/table";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;

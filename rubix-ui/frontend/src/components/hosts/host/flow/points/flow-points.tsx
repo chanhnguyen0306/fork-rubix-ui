@@ -1,54 +1,46 @@
-import { Tabs, Typography, Card, Button } from "antd";
+import { Typography, Card, Tabs, Button } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { model } from "../../../../../../wailsjs/go/models";
-import { RbRefreshButton } from "../../../../../common/rb-table-actions";
-import { BACNET_HEADERS } from "../../../../../constants/headers";
-import { PLUGINS } from "../../../../../constants/plugins";
+import { FlowPointFactory } from "./factory";
+import { BacnetFactory } from "../bacnet/factory";
 import { ROUTES } from "../../../../../constants/routes";
+import { model } from "../../../../../../wailsjs/go/models";
 import { openNotificationWithIcon } from "../../../../../utils/utils";
 import RbxBreadcrumb from "../../../../breadcrumbs/breadcrumbs";
-import { BacnetWhoIsTable } from "../bacnet/bacnetTable";
-import { BacnetFactory } from "../bacnet/factory";
-import { FlowNetworkFactory } from "../networks/factory";
-import { FlowDeviceFactory } from "./factory";
-import { FlowDeviceTable } from "./views/table";
+import { FLOW_POINT_HEADERS } from "../../../../../constants/headers";
+import { PLUGINS } from "../../../../../constants/plugins";
+import { RbRefreshButton } from "../../../../../common/rb-table-actions";
+import { BacnetWhoIsTable } from "../bacnet/table";
+import { FlowPointsTable } from "./views/table";
 
-import Device = model.Device;
+import Point = model.Point;
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const devices = "DEVICES";
-const bacnet = "BACNET";
+const points = "POINTS";
+const discover = "DISCOVER";
 
-export const FlowDevices = () => {
+export const FlowPoints = () => {
+  const [data, setDevices] = useState([] as Point[]);
+  const [discoveries, setDiscoveries] = useState([] as Point[]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
   const {
-    connUUID = "",
-    hostUUID = "",
-    networkUUID = "",
     locUUID = "",
     netUUID = "",
+    connUUID = "",
+    hostUUID = "",
+    deviceUUID = "",
     pluginName = "",
+    networkUUID = "",
   } = useParams();
-  const [pluginUUID, setPluginUUID] = useState<any>();
-  const [data, setDevices] = useState([] as Device[]);
-  const [whoIs, setWhoIs] = useState([] as Device[]);
-  const [isFetching, setIsFetching] = useState(false);
-  const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
 
+  const flowPointFactory = new FlowPointFactory();
   const bacnetFactory = new BacnetFactory();
-  const flowDeviceFactory = new FlowDeviceFactory();
-  const flowNetworkFactory = new FlowNetworkFactory();
-  flowDeviceFactory.connectionUUID =
-    bacnetFactory.connectionUUID =
-    flowNetworkFactory.connectionUUID =
-      connUUID;
-  flowDeviceFactory.hostUUID =
-    bacnetFactory.hostUUID =
-    flowNetworkFactory.hostUUID =
-      hostUUID;
+  flowPointFactory.connectionUUID = bacnetFactory.connectionUUID = connUUID;
+  flowPointFactory.hostUUID = bacnetFactory.hostUUID = hostUUID;
 
   const routes = [
     {
@@ -77,7 +69,7 @@ export const FlowDevices = () => {
         .replace(":locUUID", locUUID || "")
         .replace(":netUUID", netUUID || "")
         .replace(":hostUUID", hostUUID || ""),
-      breadcrumbName: "Controller",
+      breadcrumbName: "Controllers",
     },
     {
       path: ROUTES.DEVICES.replace(":connUUID", connUUID || "")
@@ -88,6 +80,10 @@ export const FlowDevices = () => {
         .replace(":networkUUID", networkUUID || ""),
       breadcrumbName: "Devices",
     },
+    {
+      path: "",
+      breadcrumbName: "Points",
+    },
   ];
 
   useEffect(() => {
@@ -97,10 +93,8 @@ export const FlowDevices = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await flowNetworkFactory.GetOne(networkUUID, true);
-      const devices = res.devices as Device[];
-      setDevices(devices);
-      setPluginUUID(res.plugin_conf_id);
+      const res = await flowPointFactory.GetPointsForDevice(deviceUUID);
+      setDevices(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -108,63 +102,64 @@ export const FlowDevices = () => {
     }
   };
 
-  const runWhois = async () => {
+  const runDiscover = async () => {
     try {
-      setIsFetchingWhoIs(true);
-      const res = await bacnetFactory.Whois(networkUUID, pluginName);
+      setIsFetchingDiscoveries(true);
+      const res = await bacnetFactory.DiscoverDevicePoints(
+        deviceUUID,
+        false,
+        false
+      );
       if (res) {
-        openNotificationWithIcon(
-          "success",
-          `device count found: ${res.length}`
-        );
+        openNotificationWithIcon("success", `discoveries: ${res.length}`);
       }
-      setWhoIs(res);
+      setDiscoveries(res);
     } catch (error) {
       console.log(error);
       openNotificationWithIcon("error", `discovery error: ${error}`);
     } finally {
-      setIsFetchingWhoIs(false);
+      setIsFetchingDiscoveries(false);
     }
   };
 
-  const addDevices = async (selectedUUIDs: Array<Device>) => {
-    await flowDeviceFactory.AddBulk(selectedUUIDs);
+  const addPoints = async (selectedUUIDs: Array<Point>) => {
+    await flowPointFactory.AddBulk(selectedUUIDs);
     fetch();
   };
 
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Flow Devices
+        Points
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
-        <Tabs defaultActiveKey={devices}>
-          <TabPane tab={devices} key={devices}>
+        <Tabs defaultActiveKey={points}>
+          <TabPane tab={points} key={points}>
             <RbRefreshButton refreshList={fetch} />
-            <FlowDeviceTable
+            <FlowPointsTable
               data={data}
-              pluginUUID={pluginUUID}
               isFetching={isFetching}
               refreshList={fetch}
+              pluginName={pluginName}
             />
           </TabPane>
           {pluginName === PLUGINS.bacnetmaster ? (
-            <TabPane tab={bacnet} key={bacnet}>
+            <TabPane tab={discover} key={discover}>
               <Button
                 type="primary"
-                onClick={runWhois}
+                onClick={runDiscover}
                 style={{ margin: "0 6px 10px 0", float: "left" }}
               >
-                <RedoOutlined /> WHO-IS
+                <RedoOutlined /> Discover
               </Button>
               <BacnetWhoIsTable
                 refreshDeviceList={fetch}
-                data={whoIs}
-                isFetching={isFetchingWhoIs}
-                handleAdd={addDevices}
-                addBtnText="Create Devices"
-                headers={BACNET_HEADERS}
+                data={discoveries}
+                isFetching={isFetchingDiscoveries}
+                handleAdd={addPoints}
+                addBtnText="Create Points"
+                headers={FLOW_POINT_HEADERS}
               />
             </TabPane>
           ) : null}
