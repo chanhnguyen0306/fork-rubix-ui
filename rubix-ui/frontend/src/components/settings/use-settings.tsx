@@ -18,11 +18,14 @@ export const useSettings = () => {
 
   useEffect(() => {
     fetch(settings.uuid);
-  }, [settings.uuid]);
+  }, []);
 
   const fetch = async (uuid: string) => {
     try {
-      const res = await factory.Get(uuid);
+      let res = await factory.Get(uuid);
+      if (!res) {
+        res = getSettings();
+      }
       setSettings(res);
     } catch (error) {
       console.log(error);
