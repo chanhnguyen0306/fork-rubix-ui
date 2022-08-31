@@ -18,7 +18,7 @@ export const useSettings = () => {
 
   useEffect(() => {
     fetch(settings.uuid);
-  }, []);
+  }, [settings.uuid]);
 
   const fetch = async (uuid: string) => {
     try {

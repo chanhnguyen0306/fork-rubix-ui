@@ -43,7 +43,6 @@ export const FlowPointsTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
-  const [intervalId, setIntervalId] = useState<any>();
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
