@@ -21,7 +21,10 @@ func main() {
 	var err error
 	app := NewApp()
 	AppMenu := menu.NewMenu()
-
+	err = app.gitDownloadAllRelease(true)
+	if err != nil {
+		log.Errorln(err)
+	}
 	FileMenu := AppMenu.AddSubmenu("Options")
 	FileMenu.AddSeparator()
 	FileMenu.AddText("Reload", keys.CmdOrCtrl("r"), func(_ *menu.CallbackData) {
@@ -46,10 +49,7 @@ func main() {
 			app,
 		},
 	})
-	err = app.gitDownloadAllRelease(true)
-	if err != nil {
-		log.Errorln(err)
-	}
+
 	if err != nil {
 		log.Errorln("START-ERROR:", err)
 	}

@@ -135,9 +135,9 @@ func (inst *db) GetGitToken(uuid string, previewToken bool) (string, error) {
 
 func (inst *db) GetSettings() ([]Settings, error) {
 	var resp []Settings
-	var data Settings
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data Settings
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false
