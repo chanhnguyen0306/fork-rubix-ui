@@ -1,20 +1,22 @@
-import { Modal, Spin } from "antd";
+import { Modal } from "antd";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { main } from "../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../common/json-schema-form";
+import { HostNetworkingFactory } from "../factory";
+
+import RcNetworkBody = main.RcNetworkBody;
 
 export const EditModal = (props: any) => {
-  const {
-    currentItem,
-    isModalVisible,
-    isLoadingForm,
-    connUUID,
-    hostUUID,
-    schema,
-    onCloseModal,
-    refreshList,
-  } = props;
+  const { currentItem, isModalVisible, schema, onCloseModal, refreshList } =
+    props;
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
+
+  const factory = new HostNetworkingFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
   useEffect(() => {
     setFormData(currentItem);
@@ -25,7 +27,9 @@ export const EditModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = async (item: any) => {
+  const handleSubmit = async (item: RcNetworkBody) => {
+    const res = await factory.RcSetNetworks(item);
+    console.log(res);
     refreshList();
   };
 
@@ -41,14 +45,12 @@ export const EditModal = (props: any) => {
         maskClosable={false}
         style={{ textAlign: "start" }}
       >
-        <Spin spinning={isLoadingForm}>
-          <JsonForm
-            formData={formData}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            jsonSchema={schema}
-          />
-        </Spin>
+        <JsonForm
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          jsonSchema={schema}
+        />
       </Modal>
     </>
   );
