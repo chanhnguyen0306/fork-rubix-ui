@@ -68,10 +68,12 @@ type RcNetworkBody struct {
 	Eth0Interface  string `json:"eth0_interface"`
 	Eth0Ip         string `json:"eth0_ip"`
 	Eth0Netmask    string `json:"eth0_netmask"`
+	Eth0Gateway    string `json:"eth0_gateway"`
 	Eth1IpSettings string `json:"eth1_ip_settings"`
 	Eth1Interface  string `json:"eth1_interface"`
 	Eth1Ip         string `json:"eth1_ip"`
 	Eth1Netmask    string `json:"eth1_netmask"`
+	Eth1Gateway    string `json:"eth1_gateway"`
 }
 
 func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetworkBody) {
@@ -81,8 +83,16 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	}
 	product := info.Product
 	if rcNetworkBody != nil {
+		inst.crudMessage(false, fmt.Sprintf("body can not be empty"))
 
 	}
+	if rcNetworkBody.Eth0Ip != "" {
+		inst.crudMessage(true, fmt.Sprintf("update eth0 ip address:%s", rcNetworkBody.Eth0Ip))
+	}
+	if rcNetworkBody.Eth1Ip != "" {
+		inst.crudMessage(true, fmt.Sprintf("update eth0 ip address:%s", rcNetworkBody.Eth1Ip))
+	}
+
 	//eth0IpSettings := rcNetworkBody.Eth0IpSettings
 	//eth1IpSettings := rcNetworkBody.Eth1IpSettings
 

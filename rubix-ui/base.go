@@ -14,6 +14,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const gitToken = "set_123456789ABC"
 const eth0 = "eth0"
 const eth1 = "eth1"
 const RubixCompute = "RubixCompute"
