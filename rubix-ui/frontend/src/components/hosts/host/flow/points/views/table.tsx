@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { model, main, storage } from "../../../../../../../wailsjs/go/models";
+import { model, main } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbExportButton,
@@ -15,7 +15,6 @@ import {
   isObjectEmpty,
   openNotificationWithIcon,
 } from "../../../../../../utils/utils";
-import { useSettings } from "../../../../../settings/use-settings";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";

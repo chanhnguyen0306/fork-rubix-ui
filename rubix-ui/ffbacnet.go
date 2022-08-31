@@ -17,6 +17,9 @@ func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 	if err != nil {
 		return err
 	}
+	if plugin == nil {
+		return errors.New("failed to find plugin")
+	}
 	if !plugin.Enabled {
 		return errors.New("bacnet plugin is not enabled, please enable the plugin")
 	}

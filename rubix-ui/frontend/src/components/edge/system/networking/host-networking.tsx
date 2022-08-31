@@ -3,12 +3,17 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ScannerTable } from "../../../pc/networking/scanner-table";
 import { HostNetworkingFactory } from "./factory";
+import { EditModal } from "./views/edit";
 
 export const HostNetworking = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [data, setData] = useState([] as Array<any>);
+  const [currentItem, setCurrentItem] = useState({});
+  const [rcSchema, setRCSchema] = useState({} as any);
+  const [schema, setSchema] = useState({} as any);
+  const [prefix, setPrefix] = useState("");
   const [isFetching, setIsFetching] = useState(false);
-  const [rcSchema, setRCSchema] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const factory = new HostNetworkingFactory();
   factory.connectionUUID = connUUID;
@@ -21,31 +26,40 @@ export const HostNetworking = () => {
       key: "actions",
       render: (_: any, item: any) => (
         <Space size="middle">
-          <a
-            onClick={() => {
-              showModal(item);
-            }}
-          >
-            Edit
-          </a>
+          {item.editable ? (
+            <a
+              onClick={() => {
+                showModal(item);
+              }}
+            >
+              Edit
+            </a>
+          ) : null}
         </Space>
       ),
     },
   ] as never[];
 
   useEffect(() => {
-    fetch();
     fetchRCSchema();
   }, []);
+
+  useEffect(() => {
+    fetch();
+  }, [Object.keys(rcSchema).length]);
 
   const fetch = async () => {
     try {
       setIsFetching(true);
-      let res = await factory.GetNetworks();
-      res = res.map((network: any, index: number) => {
-        return { ...network, id: index };
+      let networks = await factory.GetNetworks();
+      networks = networks.map((network: any, index: number) => {
+        return {
+          ...network,
+          editable: Object.keys(rcSchema).includes(network.interface),
+          id: index,
+        };
       });
-      setData(res);
+      setData(networks);
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,24 +69,50 @@ export const HostNetworking = () => {
 
   const fetchRCSchema = async () => {
     try {
-      const res = await factory.GetRcNetworkSchema();
-      setRCSchema(res);
+      const rcSchema = await factory.GetRcNetworkSchema();
+      setRCSchema(rcSchema);
     } catch (error) {
       console.log(error);
     }
   };
 
   const showModal = (net: any) => {
-    console.log("rcSchema", rcSchema);
-    console.log("net", net);
+    handleConvertSchema(net);
+    setCurrentItem(net);
+    setIsModalVisible(true);
+  };
+
+  const handleConvertSchema = (net: any) => {
+    let schema = {};
+    const prefix = Object.keys(rcSchema[net.interface])[0].split("_")[0] + "_";
+    Object.keys(rcSchema[net.interface]).forEach((key) => {
+      const newKey = key.replace(prefix, "");
+      schema = { ...schema, [newKey]: rcSchema[net.interface][key] };
+    });
+    schema = {
+      properties: schema,
+    };
+    setSchema(schema);
+    setPrefix(prefix);
   };
 
   return (
-    <ScannerTable
-      data={data}
-      isFetching={isFetching}
-      rowKey="id"
-      extraColumns={extraColumns}
-    />
+    <>
+      <ScannerTable
+        data={data}
+        isFetching={isFetching}
+        rowKey="id"
+        extraColumns={extraColumns}
+      />
+
+      <EditModal
+        currentItem={currentItem}
+        isModalVisible={isModalVisible}
+        schema={schema}
+        prefix={prefix}
+        onCloseModal={() => setIsModalVisible(false)}
+        refreshList={fetch}
+      />
+    </>
   );
 };
