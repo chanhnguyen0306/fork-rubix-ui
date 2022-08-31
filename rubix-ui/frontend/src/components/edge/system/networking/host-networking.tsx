@@ -1,7 +1,7 @@
 import { Space } from "antd";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { ScannerTable } from "../../../pc/networking/networking";
+import { ScannerTable } from "../../../pc/networking/scanner-table";
 import { HostNetworkingFactory } from "./factory";
 
 export const HostNetworking = () => {
