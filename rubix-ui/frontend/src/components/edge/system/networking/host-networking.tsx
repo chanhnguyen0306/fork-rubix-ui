@@ -11,6 +11,7 @@ export const HostNetworking = () => {
   const [currentItem, setCurrentItem] = useState({});
   const [rcSchema, setRCSchema] = useState({} as any);
   const [schema, setSchema] = useState({} as any);
+  const [prefix, setPrefix] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -76,18 +77,23 @@ export const HostNetworking = () => {
   };
 
   const showModal = (net: any) => {
+    handleConvertSchema(net);
+    setCurrentItem(net);
+    setIsModalVisible(true);
+  };
+
+  const handleConvertSchema = (net: any) => {
     let schema = {};
+    const prefix = Object.keys(rcSchema[net.interface])[0].split("_")[0] + "_";
     Object.keys(rcSchema[net.interface]).forEach((key) => {
-      const prefix = key.split("_")[0] + "_";
       const newKey = key.replace(prefix, "");
       schema = { ...schema, [newKey]: rcSchema[net.interface][key] };
     });
     schema = {
       properties: schema,
     };
-    setCurrentItem(net);
     setSchema(schema);
-    setIsModalVisible(true);
+    setPrefix(prefix);
   };
 
   return (
@@ -103,6 +109,7 @@ export const HostNetworking = () => {
         currentItem={currentItem}
         isModalVisible={isModalVisible}
         schema={schema}
+        prefix={prefix}
         onCloseModal={() => setIsModalVisible(false)}
         refreshList={fetch}
       />

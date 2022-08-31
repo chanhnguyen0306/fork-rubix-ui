@@ -8,8 +8,14 @@ import { HostNetworkingFactory } from "../factory";
 import RcNetworkBody = main.RcNetworkBody;
 
 export const EditModal = (props: any) => {
-  const { currentItem, isModalVisible, schema, onCloseModal, refreshList } =
-    props;
+  const {
+    currentItem,
+    isModalVisible,
+    schema,
+    onCloseModal,
+    refreshList,
+    prefix,
+  } = props;
   const { connUUID = "", hostUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
@@ -28,9 +34,26 @@ export const EditModal = (props: any) => {
   };
 
   const handleSubmit = async (item: RcNetworkBody) => {
-    const res = await factory.RcSetNetworks(item);
-    console.log(res);
-    refreshList();
+    try {
+      setConfirmLoading(true);
+      const payload = handleConvertBody(item) as RcNetworkBody;
+      await factory.RcSetNetworks(payload);
+      refreshList();
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  const handleConvertBody = (item: any) => {
+    let body = {};
+    Object.keys(item).forEach((key) => {
+      const newKey = prefix + key;
+      body = { ...body, [newKey]: item[key] };
+    });
+    return body;
   };
 
   return (
