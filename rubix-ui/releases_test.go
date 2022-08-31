@@ -61,7 +61,7 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
 	app := NewApp()
-	downloaded := app.StoreDownloadApp(token, rubixWires, "v0.6.6", "armv7", true)
+	downloaded := app.StoreDownloadApp(token, flowFramework, "v0.6.6", "amd64", false)
 	pprint.PrintJOSN(downloaded)
 }
 

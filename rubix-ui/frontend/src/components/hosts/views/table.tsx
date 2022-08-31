@@ -13,7 +13,7 @@ import {
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, DownCircleOutlined } from "@ant-design/icons";
 import { assistmodel, storage, main } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
@@ -38,11 +38,13 @@ import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = main.UUIDs;
+import UpdateApp from "./updateApp";
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
+const UPDATE_DIALOG = "UPDATE_DIALOG";
 
 interface BadgeDetailI {
   [name: string]: {
@@ -176,11 +178,16 @@ const ExpandedRow = (props: any) => {
 const AppInstallInfo = (props: any) => {
   const [product, updateProduct] = useState({});
   const [isLoading, updateIsLoading] = useState(false);
+  const [isUpdating, updateIsUpdading] = useState(false);
   const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
   const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
   const [appInfoMsg, updateAppInfoMsg] = useState("");
   const { host } = props;
   const { connUUID = "" } = useParams();
+  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
+    UPDATE_DIALOG,
+  ]);
+
   useEffect(() => {
     fetchAppInfo();
   }, []);
@@ -203,11 +210,11 @@ const AppInstallInfo = (props: any) => {
       .catch((err) => ({ payload, hasError: true, err: err }));
   };
 
-  const fetchAppInfo = () => {
+  const fetchAppInfo = (releaseVersion: string = "") => {
     updateAppInfoMsg("");
     updateIsLoading(true);
     return releaseFactory
-      .EdgeDeviceInfoAndApps(connUUID, host.uuid)
+      .EdgeDeviceInfoAndApps(connUUID, host.uuid, releaseVersion)
       .then((appInfo: any) => {
         if (!appInfo) {
           return updateAppInfoMsg("Apps are not downloaded yet.");
@@ -220,6 +227,9 @@ const AppInstallInfo = (props: any) => {
         }
         if (appInfo.apps_available_for_install) {
           updateAvailableApps(appInfo.apps_available_for_install);
+        }
+        if (releaseVersion) {
+          closeDialog(UPDATE_DIALOG);
         }
       })
       .catch((err) => {
@@ -236,17 +246,18 @@ const AppInstallInfo = (props: any) => {
         {appInfoMsg}
         <span>
           {" "}
-          <a onClick={fetchAppInfo}>Click here to refresh</a>
+          <a onClick={() => fetchAppInfo()}>Click here to refresh</a>
         </span>
       </span>
     );
   }
 
   const onMenuClick = (value: any, item: any) => {
+    console.log('>>>>>item', item);
     return releaseFactory.EdgeServiceAction(value.key, {
       connUUID: connUUID,
       hostUUID: host.uuid,
-      appName: item.app_name,
+      appName: item.service_name,
     });
   };
 
@@ -270,8 +281,19 @@ const AppInstallInfo = (props: any) => {
     />
   );
 
+  const openUpdateApp = () => {
+    openDialog(UPDATE_DIALOG, { host: host, connUUID });
+  };
+
   return (
     <div>
+      <UpdateApp
+        isOpen={isOpen(UPDATE_DIALOG)}
+        isLoading={isLoading}
+        dialogData={dialogData[UPDATE_DIALOG]}
+        closeDialog={() => closeDialog(UPDATE_DIALOG)}
+        handleUpdate={(releaseVersion: string) => fetchAppInfo(releaseVersion)}
+      />
       <div
         style={{
           display: "flex",
@@ -281,9 +303,19 @@ const AppInstallInfo = (props: any) => {
         }}
       >
         <Title level={5}>App details</Title>
+
+        <Button
+          className="restart-color white--text"
+          onClick={openUpdateApp}
+          loading={isUpdating}
+          style={{ margin: "0 6px 10px 0", float: "left", marginLeft: 10 }}
+        >
+          <DownCircleOutlined /> Update
+        </Button>
+
         <RbRefreshButton
           style={{ marginLeft: 10 }}
-          refreshList={fetchAppInfo}
+          refreshList={() => fetchAppInfo()}
         />
       </div>
 

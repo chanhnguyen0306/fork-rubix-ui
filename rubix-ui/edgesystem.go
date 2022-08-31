@@ -48,7 +48,6 @@ func (inst *App) edgeServiceStart(connUUID, hostUUID, appOrService string, timeo
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "start",
-		Timeout: timeout,
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
@@ -61,7 +60,6 @@ func (inst *App) edgeServiceStop(connUUID, hostUUID, appOrService string, timeou
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "stop",
-		Timeout: timeout,
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
@@ -74,7 +72,6 @@ func (inst *App) edgeServiceRestart(connUUID, hostUUID, appOrService string, tim
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "restart",
-		Timeout: timeout,
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
@@ -87,7 +84,6 @@ func (inst *App) edgeServiceEnable(connUUID, hostUUID, appOrService string, time
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "enable",
-		Timeout: timeout,
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {
@@ -100,7 +96,6 @@ func (inst *App) edgeServiceDisable(connUUID, hostUUID, appOrService string, tim
 	body := &installer.CtlBody{
 		Service: appOrService,
 		Action:  "disable",
-		Timeout: timeout,
 	}
 	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
 	if err != nil {

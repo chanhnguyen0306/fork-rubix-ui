@@ -28,6 +28,7 @@ SECRET_KEY=__SECRET_KEY__
 type ConfigBACnetServer struct {
 	ServerName string `json:"server_name" yaml:"server_name"`
 	DeviceId   int    `json:"device_id" yaml:"device_id"`
+	Port       int    `json:"port" yaml:"port"`
 	Iface      string `json:"iface" yaml:"iface"`
 	BiMax      int    `json:"bi_max" yaml:"bi_max"`
 	BoMax      int    `json:"bo_max" yaml:"bo_max"`
@@ -39,6 +40,27 @@ type ConfigBACnetServer struct {
 	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
 	Debug      bool   `json:"debug" yaml:"debug"`
 	Enable     bool   `json:"enable" yaml:"enable"`
+}
+
+type bacnetBroker struct {
+	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
+	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
+	Debug      bool   `json:"debug" yaml:"debug"`
+	Enable     bool   `json:"enable" yaml:"enable"`
+}
+
+type configBACnetServer struct {
+	ServerName   string       `json:"server_name" yaml:"server_name"`
+	DeviceId     int          `json:"device_id" yaml:"device_id"`
+	Port         int          `json:"port" yaml:"port"`
+	Iface        string       `json:"iface" yaml:"iface"`
+	BiMax        int          `json:"bi_max" yaml:"bi_max"`
+	BoMax        int          `json:"bo_max" yaml:"bo_max"`
+	BvMax        int          `json:"bv_max" yaml:"bv_max"`
+	AiMax        int          `json:"ai_max" yaml:"ai_max"`
+	AoMax        int          `json:"ao_max" yaml:"ao_max"`
+	AvMax        int          `json:"av_max" yaml:"av_max"`
+	BacnetBroker bacnetBroker `json:"mqtt" yaml:"mqtt"`
 }
 
 func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assitcli.Message, error) {
@@ -61,13 +83,32 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 
 	log.Infof("write bacnet config device-name:%s device-id:%d", config.ServerName, config.DeviceId)
 
-	_, err = yaml.Marshal(&config)
+	bacnetConfig := &configBACnetServer{
+		ServerName: config.ServerName,
+		DeviceId:   config.DeviceId,
+		Port:       config.Port,
+		Iface:      config.Iface,
+		BiMax:      config.BiMax,
+		BoMax:      config.BoMax,
+		BvMax:      config.BvMax,
+		AiMax:      config.AiMax,
+		AoMax:      config.AoMax,
+		AvMax:      config.AvMax,
+		BacnetBroker: bacnetBroker{
+			BrokerIp:   config.BrokerIp,
+			BrokerPort: config.BrokerPort,
+			Debug:      config.Debug,
+			Enable:     config.Enable,
+		},
+	}
+
+	_, err = yaml.Marshal(&bacnetConfig)
 	if err != nil {
 		return nil, err
 	}
 	writeConfig := &appstore.EdgeConfig{
 		AppName:    bacnetServerDriver,
-		Body:       config,
+		Body:       bacnetConfig,
 		ConfigType: configYml,
 	}
 	return client.EdgeWriteConfigYml(hostUUID, writeConfig)
