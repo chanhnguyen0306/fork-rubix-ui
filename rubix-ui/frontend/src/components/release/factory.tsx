@@ -9,7 +9,8 @@ import {
   EdgeDeviceInfoAndApps,
   EdgeServiceStart,
   EdgeServiceRestart,
-  EdgeServiceStop, EdgeUnInstallApp,
+  EdgeServiceStop,
+  EdgeUnInstallApp,
 } from "../../../wailsjs/go/main/App";
 
 export class ReleasesFactory {
@@ -76,15 +77,24 @@ export class ReleasesFactory {
     );
   }
 
-
-  async EdgeUnInstallApp(connUUID: string, hostUUID: string, appName: string):Promise<installer.RemoveRes> {
+  async EdgeUnInstallApp(
+    connUUID: string,
+    hostUUID: string,
+    appName: string
+  ): Promise<installer.RemoveRes> {
     return await EdgeUnInstallApp(connUUID, hostUUID, appName);
   }
 
-
-  async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) {
-    // releaseVersion TODO Sanjeev to add this back in // let user select this to upgrade/downgrade GetReleases
-    return await EdgeDeviceInfoAndApps(connUUID, hostUUID, "");
+  async EdgeDeviceInfoAndApps(
+    connUUID: string,
+    hostUUID: string,
+    releaseVersion?: string
+  ) {
+    return await EdgeDeviceInfoAndApps(
+      connUUID,
+      hostUUID,
+      releaseVersion || ""
+    );
   }
 
   async EdgeServiceStart(connUUID: string, hostUUID: string, appName: string) {
@@ -107,7 +117,6 @@ export class ReleasesFactory {
     action: string,
     payload: { connUUID: string; hostUUID: string; appName: string }
   ) {
-
     switch (action) {
       case "start":
         return this.EdgeServiceStart(

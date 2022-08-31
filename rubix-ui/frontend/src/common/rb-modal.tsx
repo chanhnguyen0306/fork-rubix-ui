@@ -6,19 +6,29 @@ interface RbModalProps {
   children: React.ReactElement;
   isOpen: boolean;
   close: () => any;
-  isLoading: boolean;
+  isLoading?: boolean;
   handleOk: () => any;
-  disabled: boolean;
+  disabled?: boolean;
+  cancelText?: string;
 }
 
 function RbModal(props: RbModalProps) {
-  const { title, children, isOpen, close, isLoading, handleOk, disabled } =
-    props;
+  const {
+    title,
+    children,
+    isOpen,
+    close,
+    isLoading,
+    handleOk,
+    disabled,
+    cancelText = "Cancel",
+  } = props;
   return (
     <Modal
       title={title}
       visible={isOpen}
       onCancel={close}
+      cancelText={cancelText}
       onOk={handleOk}
       confirmLoading={isLoading}
       style={{ textAlign: "start" }}
