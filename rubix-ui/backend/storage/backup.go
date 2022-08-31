@@ -116,9 +116,9 @@ func (inst *db) GetBackup(uuid string) (*Backup, error) {
 
 func (inst *db) GetBackupsByHostUUID(uuid string) ([]Backup, error) {
 	var resp []Backup
-	var data Backup
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data Backup
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false
@@ -145,9 +145,10 @@ func (inst *db) GetBackupsByHostUUID(uuid string) ([]Backup, error) {
 
 func (inst *db) GetBackups() ([]Backup, error) {
 	var resp []Backup
-	var data Backup
+
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data Backup
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false

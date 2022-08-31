@@ -93,16 +93,15 @@ func (inst *db) GetReleaseByVersion(version string) (*store.Release, error) {
 
 func (inst *db) GetReleases() ([]store.Release, error) {
 	var resp []store.Release
-	var data store.Release
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data store.Release
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false
 			}
 			if matchReleaseUUID(data.Uuid) {
-				resp = append(resp, data)
-				//fmt.Printf("key: %s, value: %s\n", key, value)
+				resp = append(resp, data) // put into arry
 			}
 			return true
 		})

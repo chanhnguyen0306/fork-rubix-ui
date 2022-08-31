@@ -54,11 +54,12 @@ func (inst *App) gitDownloadAllRelease(runDownloads bool) error {
 		return err
 	}
 	for _, release := range releases {
-		downloadRelease, err := inst.gitDownloadRelease(gitToken, release.Path)
+		downloadRelease, err := inst.addRelease(gitToken, release.Path)
 		if err != nil {
+			log.Infof("GIT downloaded error:%s", err.Error())
 			return err
 		}
-		log.Infof("git downloaded release:%s", downloadRelease.Release)
+		log.Infof("GIT downloaded release:%s  path:%s name:%s", downloadRelease.Release, release.Path, release.Name)
 	}
 	return nil
 

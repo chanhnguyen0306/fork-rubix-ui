@@ -270,10 +270,13 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 		if err != nil {
 			return nil, err
 		}
-		_, err = inst.gitDownloadRelease(token, releaseVersion)
+		getVersion, err = inst.gitDownloadRelease(token, releaseVersion)
 		if err != nil {
 			return nil, err
 		}
+	}
+	if getVersion == nil {
+		return nil, errors.New(fmt.Sprintf("failed to find a valid release:%s", releaseVersion))
 	}
 	err = nil
 	var appsList []InstalledApps

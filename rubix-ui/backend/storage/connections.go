@@ -133,9 +133,9 @@ func (inst *db) SelectByName(name string) (*RubixConnection, error) {
 
 func (inst *db) SelectAll() ([]RubixConnection, error) {
 	var resp []RubixConnection
-	var data RubixConnection
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data RubixConnection
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false

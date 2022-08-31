@@ -26,24 +26,6 @@ func TestApp_ListReleases(t *testing.T) { //downloads from GitHub and stores in 
 	pprint.PrintJOSN(release)
 }
 
-func TestApp_getReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
-
-	app := NewApp()
-	resp, err := app.getReleases()
-	fmt.Println(err)
-	pprint.PrintJOSN(resp)
-
-}
-
-func TestApp_dropReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
-
-	app := NewApp()
-	err := app.dropReleases()
-	if err != nil {
-		return
-	}
-}
-
 func TestApp_AddRelease(t *testing.T) { //downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
@@ -69,6 +51,38 @@ func TestApp_getLatestRelease(t *testing.T) {
 	release, err := NewApp().getLatestRelease()
 	fmt.Println(release)
 	fmt.Println(err)
+	if err != nil {
+		return
+	}
+}
+
+func TestApp_gitDownloadAllRelease(t *testing.T) { //downloads from GitHub and stores in local json DB
+	app := NewApp()
+	err := app.gitDownloadAllRelease(true)
+	fmt.Println(err)
+	if err != nil {
+		return
+	}
+
+}
+
+func TestApp_getReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
+
+	app := NewApp()
+	resp, err := app.getReleases()
+	for _, release := range resp {
+		pprint.Print(release)
+		//pprint.PrintJOSN(release)
+	}
+
+	fmt.Println(err)
+
+}
+
+func TestApp_dropReleases(t *testing.T) { //downloads from GitHub and stores in local json DB
+
+	app := NewApp()
+	err := app.dropReleases()
 	if err != nil {
 		return
 	}

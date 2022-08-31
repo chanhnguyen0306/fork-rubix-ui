@@ -42,9 +42,9 @@ func (inst *db) AddLog(body *Log) (*Log, error) {
 
 func (inst *db) GetLogs() ([]Log, error) {
 	var resp []Log
-	var data Log
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data Log
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false
@@ -69,9 +69,9 @@ func (inst *db) GetLogs() ([]Log, error) {
 
 func (inst *db) GetLogsByConnection(uuid string) ([]Log, error) {
 	var resp []Log
-	var data Log
 	err := inst.DB.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("", func(key, value string) bool {
+			var data Log
 			err := json.Unmarshal([]byte(value), &data)
 			if err != nil {
 				return false
