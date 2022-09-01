@@ -7,7 +7,11 @@ const RbTable = (props: any) => (
   <Table
     {...props}
     scroll={{ x: DISPLAY_MAX_WIDTH }}
-    pagination={{ position: ["bottomLeft"] }}
+    pagination={{
+      position: ["bottomLeft"],
+      showSizeChanger: true,
+      pageSizeOptions: [10, 50],
+    }}
   />
 );
 
