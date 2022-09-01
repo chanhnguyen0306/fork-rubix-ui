@@ -89,7 +89,7 @@ export const FlowPoints = () => {
   ];
 
   useEffect(() => {
-    fetch();
+    refresh();
   }, []);
 
   useEffect(() => {
@@ -116,12 +116,9 @@ export const FlowPoints = () => {
 
   const fetch = async () => {
     try {
-      setIsFetching(true);
       const res = await flowPointFactory.GetPointsForDevice(deviceUUID);
       setDevices(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
+    } catch {
       setIsFetching(false);
     }
   };
@@ -151,6 +148,12 @@ export const FlowPoints = () => {
     fetch();
   };
 
+  const refresh = async () => {
+    setIsFetching(true);
+    await fetch();
+    setIsFetching(false);
+  };
+
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
@@ -160,11 +163,11 @@ export const FlowPoints = () => {
         <RbxBreadcrumb routes={routes} />
         <Tabs defaultActiveKey={points}>
           <TabPane tab={points} key={points}>
-            <RbRefreshButton refreshList={fetch} />
+            <RbRefreshButton refreshList={refresh} />
             <FlowPointsTable
               data={data}
               isFetching={isFetching}
-              refreshList={fetch}
+              refreshList={refresh}
               pluginName={pluginName}
             />
           </TabPane>
