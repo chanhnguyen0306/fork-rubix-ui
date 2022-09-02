@@ -8,7 +8,8 @@ import { ROUTES } from "../../constants/routes";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { PcScanner } from "../pc/scanner/table";
 import { HostsTable } from "./views/table";
-
+import useTitlePrefix from "../../hooks/usePrefixedTitle";
+import { NetworksFactory } from "../hostNetworks/factory";
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
@@ -29,22 +30,34 @@ const DiscoverTab = () => {
     </span>
   );
 };
+const networksFactory = new NetworksFactory();
 
 export const Hosts = () => {
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const [hosts, setHosts] = useState([] as assistmodel.Host[]);
   const [networks, setNetworks] = useState([] as assistmodel.Network[]);
   const [isFetching, setIsFetching] = useState(false);
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Controllers");
+
+  networksFactory.uuid = netUUID;
+  networksFactory.connectionUUID = connUUID;
 
   useEffect(() => {
     if (networks.length === 0) {
       fetchNetworks();
     }
+    fetchCurrentLocatio();
   }, []);
 
   useEffect(() => {
     fetchList();
   }, [netUUID]);
+
+  const fetchCurrentLocatio = () => {
+    networksFactory.GetOne().then((network) => {
+      addPrefix(network.name);
+    });
+  };
 
   const fetchList = async () => {
     try {
@@ -99,7 +112,7 @@ export const Hosts = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Controllers
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />

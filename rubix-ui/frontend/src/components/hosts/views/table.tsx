@@ -253,7 +253,6 @@ const AppInstallInfo = (props: any) => {
   }
 
   const onMenuClick = (value: any, item: any) => {
-    console.log('>>>>>item', item);
     return releaseFactory.EdgeServiceAction(value.key, {
       connUUID: connUUID,
       hostUUID: host.uuid,
@@ -277,6 +276,10 @@ const AppInstallInfo = (props: any) => {
           key: "stop",
           label: "Stop",
         },
+        {
+          key: 'uninstall',
+          label: "Uninstall",
+        }
       ]}
     />
   );
