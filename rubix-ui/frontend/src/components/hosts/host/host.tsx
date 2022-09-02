@@ -7,6 +7,9 @@ import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clo
 import { FlowNetworkTable } from "./flow/networks/views/table";
 import { FlowPluginsTable } from "./flow/plugins/views/table";
 import { HostTable } from "./views/table";
+import useTitlePrefix from "../../../hooks/usePrefixedTitle";
+import { useEffect } from "react";
+import { HostsFactory } from "../factory";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -16,6 +19,7 @@ const networksKey = "DRIVERS";
 const pluginsKey = "MODULES";
 const flownetworksKey = "NETWORKS";
 const flownetworkClonesKey = "REMOTE/MAPPING NETWORK";
+const hostFactory = new HostsFactory();
 
 export const Host = () => {
   let {
@@ -24,7 +28,9 @@ export const Host = () => {
     locUUID = "",
     netUUID = "",
   } = useParams();
-
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Controller");
+  hostFactory.uuid = hostUUID;
+  hostFactory.connectionUUID = connUUID;
   const routes = [
     {
       path: ROUTES.CONNECTIONS,
@@ -56,10 +62,16 @@ export const Host = () => {
     },
   ];
 
+  useEffect(() => {
+    hostFactory.GetOne().then((host) => {
+      addPrefix(host.name);
+    });
+  }, []);
+
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Controllers
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />

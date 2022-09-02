@@ -10,6 +10,7 @@ import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { LocationFactory } from "./factory";
 import { CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
+import useTitlePrefix from "../../hooks/usePrefixedTitle";
 
 import Location = assistmodel.Location;
 import RubixConnection = storage.RubixConnection;
@@ -18,6 +19,7 @@ const { Title } = Typography;
 
 export const Locations = () => {
   const { connUUID } = useParams();
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Locations");
   const [locations, setLocations] = useState([] as Location[]);
   const [currentLocation, setCurrentLocation] = useState({} as Location);
   const [locationSchema, setLocationSchema] = useState({});
@@ -56,6 +58,7 @@ export const Locations = () => {
     try {
       const res = await GetConnection(locationFactory.connectionUUID);
       setConnection(res);
+      addPrefix(res.name);
     } catch (error) {
       console.log(error);
     }
@@ -151,7 +154,7 @@ export const Locations = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Locations
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />

@@ -1,13 +1,30 @@
 import { Typography, Card } from "antd";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
+import { LocationFactory } from "../locations/factory";
 import { NetworksTable } from "./views/table";
+import useTitlePrefix from "../../hooks/usePrefixedTitle";
 
 const { Title } = Typography;
+let locationFactory = new LocationFactory();
 
 export const Networks = () => {
   const { connUUID = "", locUUID = "" } = useParams();
+  const [currentLocation, updateCurrentLocation] = useState({});
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Locations");
+  locationFactory.connectionUUID = connUUID;
+  locationFactory.uuid = locUUID;
+
+  useEffect(() => {
+    locationFactory.GetOne().then((location) => {
+      updateCurrentLocation(location);
+      if (location) {
+        addPrefix(location.name);
+      }
+    });
+  }, []);
 
   const routes = [
     {
@@ -30,7 +47,7 @@ export const Networks = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Networks
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
