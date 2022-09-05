@@ -138,6 +138,13 @@ export class ReleasesFactory {
           payload.hostUUID,
           payload.appName
         );
+
+      case "uninstall":
+        return this.EdgeUnInstallApp(
+          payload.connUUID,
+          payload.hostUUID,
+          payload.appName
+        );
     }
     return Promise.reject(null);
   }

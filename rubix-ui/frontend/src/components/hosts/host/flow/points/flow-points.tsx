@@ -13,9 +13,12 @@ import { PLUGINS } from "../../../../../constants/plugins";
 import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 import { BacnetWhoIsTable } from "../bacnet/table";
 import { FlowPointsTable } from "./views/table";
-
+import { FlowDeviceFactory } from "../devices/factory";
 import Point = model.Point;
 import { useSettings } from "../../../../settings/use-settings";
+import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+
+const flowDeviceFactory = new FlowDeviceFactory();
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -33,6 +36,7 @@ export const FlowPoints = () => {
     pluginName = "",
     networkUUID = "",
   } = useParams();
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Points");
   const [settings] = useSettings();
   const [data, setDevices] = useState([] as Point[]);
   const [discoveries, setDiscoveries] = useState([] as Point[]);
@@ -43,6 +47,9 @@ export const FlowPoints = () => {
   const bacnetFactory = new BacnetFactory();
   flowPointFactory.connectionUUID = bacnetFactory.connectionUUID = connUUID;
   flowPointFactory.hostUUID = bacnetFactory.hostUUID = hostUUID;
+  flowDeviceFactory.connectionUUID = connUUID;
+  flowDeviceFactory.hostUUID = hostUUID;
+  flowDeviceFactory.uuid = deviceUUID;
 
   const routes = [
     {
@@ -90,6 +97,9 @@ export const FlowPoints = () => {
 
   useEffect(() => {
     refresh();
+    flowDeviceFactory.GetOne(false).then((flowDevice) => {
+      addPrefix(flowDevice.name);
+    });
   }, []);
 
   useEffect(() => {
@@ -136,7 +146,6 @@ export const FlowPoints = () => {
       }
       setDiscoveries(res);
     } catch (error) {
-      console.log(error);
       openNotificationWithIcon("error", `discovery error: ${error}`);
     } finally {
       setIsFetchingDiscoveries(false);
@@ -157,7 +166,7 @@ export const FlowPoints = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Points
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />

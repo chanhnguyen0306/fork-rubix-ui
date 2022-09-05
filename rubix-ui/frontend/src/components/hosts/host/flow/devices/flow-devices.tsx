@@ -16,6 +16,7 @@ import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 
 import Device = model.Device;
+import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -37,6 +38,7 @@ export const FlowDevices = () => {
   const [whoIs, setWhoIs] = useState([] as Device[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
+  const { prefixedTitle, addPrefix } = useTitlePrefix("Flow Devices");
 
   const bacnetFactory = new BacnetFactory();
   const flowDeviceFactory = new FlowDeviceFactory();
@@ -101,6 +103,7 @@ export const FlowDevices = () => {
       const devices = res.devices as Device[];
       setDevices(devices);
       setPluginUUID(res.plugin_conf_id);
+      addPrefix(res.name);
     } catch (error) {
       console.log(error);
     } finally {
@@ -135,7 +138,7 @@ export const FlowDevices = () => {
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
-        Flow Devices
+        {prefixedTitle}
       </Title>
       <Card bordered={false}>
         <RbxBreadcrumb routes={routes} />
