@@ -409,6 +409,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.object_type.localeCompare(b.object_type),
   },
   {
     title: "object id",
@@ -420,6 +421,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{object_id}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.object_id - b.object_id,
   },
   {
     title: "io type",
@@ -432,6 +434,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.io_type.localeCompare(b.io_type),
   },
   {
     title: "present value",
