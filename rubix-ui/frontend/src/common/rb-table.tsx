@@ -14,6 +14,7 @@ const RbTable = (props: any) => {
         pageSizeOptions: [10, 50, 100, 1000],
         locale: { items_per_page: "" },
       }}
+      showSorterTooltip={false}
     />
   );
 };
