@@ -6,17 +6,6 @@ import imageEdge28 from "../assets/images/Edge-iO-28.png";
 
 export const FLOW_NETWORKS_HEADERS = [
   {
-    key: "uuid",
-    title: "uuid",
-    dataIndex: "uuid",
-  },
-  {
-    key: "name",
-    title: "name",
-    dataIndex: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     key: "flow_ip",
     title: "ip",
     dataIndex: "flow_ip",
@@ -51,14 +40,14 @@ export const FLOW_NETWORKS_HEADERS = [
     dataIndex: "connection",
     sorter: (a: any, b: any) => a.connection.localeCompare(b.connection),
   },
-];
-
-export const STREAM_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
   },
+];
+
+export const STREAM_HEADERS = [
   {
     key: "name",
     title: "name",
@@ -80,14 +69,14 @@ export const STREAM_HEADERS = [
     },
     sorter: (a: any, b: any) => a.enable - b.enable,
   },
-];
-
-export const CONSUMER_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
   },
+];
+
+export const CONSUMER_HEADERS = [
   {
     key: "name",
     title: "name",
@@ -127,6 +116,11 @@ export const CONSUMER_HEADERS = [
     dataIndex: "producer_thing_name",
     sorter: (a: any, b: any) =>
       a.producer_thing_name.localeCompare(b.producer_thing_name),
+  },
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
   },
 ];
 
@@ -346,12 +340,6 @@ export const NETWORK_HEADERS = [
     sorter: (a: any, b: any) => a.plugin_name.localeCompare(b.plugin_name),
   },
   {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
@@ -360,12 +348,6 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
@@ -373,18 +355,6 @@ export const FLOW_DEVICE_HEADERS = [
 ];
 
 export const FLOW_POINT_HEADERS = [
-  // {
-  //   title: "name",
-  //   dataIndex: "name",
-  //   key: "name",
-  //   render(name: string) {
-  //     if (name != undefined) {
-  //       let colour = "#4d4dff";
-  //       return <Tag color={colour}>{name}</Tag>;
-  //     }
-  //   },
-  //   sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  // },
   {
     title: "io number",
     dataIndex: "io_number",

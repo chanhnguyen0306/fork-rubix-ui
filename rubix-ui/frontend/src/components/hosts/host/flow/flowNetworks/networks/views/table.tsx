@@ -1,5 +1,5 @@
 import { Space, Spin } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FlowFrameworkNetworkFactory } from "../factory";
 import { main, model } from "../../../../../../../../wailsjs/go/models";
@@ -14,6 +14,7 @@ import {
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
 import RbTable from "../../../../../../../common/rb-table";
+import RbTableFilterNameInput from "../../../../../../../common/rb-table-filter-name-input";
 import { CreateEditModal } from "./create";
 
 import UUIDs = main.UUIDs;
@@ -28,6 +29,7 @@ export const FlowNetworksTable = (props: any) => {
     locUUID = "",
   } = useParams();
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [dataSource, setDataSource] = useState(data);
   const [schema, setSchema] = useState({});
   const [currentNetwork, setCurrentNetwork] = useState({} as FlowNetwork);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -37,6 +39,20 @@ export const FlowNetworksTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
+    {
+      key: "name",
+      title: "name",
+      dataIndex: "name",
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      filterDropdown: () => {
+        return (
+          <RbTableFilterNameInput
+            defaultData={data}
+            setFilteredData={setDataSource}
+          />
+        );
+      },
+    },
     ...FLOW_NETWORKS_HEADERS,
     {
       title: "actions",
@@ -62,6 +78,10 @@ export const FlowNetworksTable = (props: any) => {
       setSelectedUUIDs(selectedRows);
     },
   };
+
+  useEffect(() => {
+    return setDataSource(data);
+  }, [data.length]);
 
   const bulkDelete = async () => {
     await factory.BulkDelete(selectedUUIDs);
@@ -102,7 +122,7 @@ export const FlowNetworksTable = (props: any) => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={data}
+        dataSource={dataSource}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />

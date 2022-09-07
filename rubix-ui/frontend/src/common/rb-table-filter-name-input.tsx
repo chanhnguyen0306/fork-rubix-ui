@@ -1,9 +1,13 @@
 import { Input } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const RbTableFilterNameInput = (props: any) => {
   const { defaultData, setFilteredData } = props;
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    return setValue("");
+  }, [defaultData.length]);
 
   return (
     <Input

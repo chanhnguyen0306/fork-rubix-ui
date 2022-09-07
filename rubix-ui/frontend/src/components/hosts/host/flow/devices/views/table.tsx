@@ -1,5 +1,5 @@
 import { Space, Spin } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { model, main } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
@@ -10,6 +10,7 @@ import {
   RbAddButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
+import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../constants/routes";
 import {
@@ -39,6 +40,7 @@ export const FlowDeviceTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [dataSource, setDataSource] = useState(data);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -53,6 +55,20 @@ export const FlowDeviceTable = (props: any) => {
   flowDeviceFactory.hostUUID = flowPluginFactory.hostUUID = hostUUID;
 
   const columns = [
+    {
+      title: "name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      filterDropdown: () => {
+        return (
+          <RbTableFilterNameInput
+            defaultData={data}
+            setFilteredData={setDataSource}
+          />
+        );
+      },
+    },
     ...FLOW_DEVICE_HEADERS,
     {
       title: "Actions",
@@ -78,6 +94,10 @@ export const FlowDeviceTable = (props: any) => {
       setSelectedUUIDs(selectedRows);
     },
   };
+
+  useEffect(() => {
+    return setDataSource(data);
+  }, [data.length]);
 
   const bulkDelete = async () => {
     if (selectedUUIDs.length === 0) {
@@ -162,7 +182,7 @@ export const FlowDeviceTable = (props: any) => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={data}
+        dataSource={dataSource}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
