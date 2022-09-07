@@ -373,18 +373,18 @@ export const FLOW_DEVICE_HEADERS = [
 ];
 
 export const FLOW_POINT_HEADERS = [
-  {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    render(name: string) {
-      if (name != undefined) {
-        let colour = "#4d4dff";
-        return <Tag color={colour}>{name}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
+  // {
+  //   title: "name",
+  //   dataIndex: "name",
+  //   key: "name",
+  //   render(name: string) {
+  //     if (name != undefined) {
+  //       let colour = "#4d4dff";
+  //       return <Tag color={colour}>{name}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  // },
   {
     title: "io number",
     dataIndex: "io_number",

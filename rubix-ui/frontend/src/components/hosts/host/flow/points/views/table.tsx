@@ -1,4 +1,5 @@
-import { Input, Space, Spin } from "antd";
+import { Input, Space, Spin, Tag } from "antd";
+import { ColumnType } from "antd/lib/table";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, main } from "../../../../../../../wailsjs/go/models";
@@ -49,7 +50,7 @@ export const FlowPointsTable = (props: any) => {
     useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const [value, setValue] = useState("");
-  const [dataSource, setDataSource] = useState([] as Point[]);
+  const [dataSource, setDataSource] = useState(data);
 
   const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
@@ -65,26 +66,38 @@ export const FlowPointsTable = (props: any) => {
 
   const FilterByNameInput = (
     <Input
-      placeholder="Search Name"
+      placeholder="Search name"
       value={value}
       onChange={(e) => {
         const currValue = e.target.value;
         setValue(currValue);
         const filteredData = data.filter((p: Point) =>
-          p.name.includes(currValue)
+          p.name.toUpperCase().includes(currValue.toUpperCase())
         );
-        console.log("filteredData", filteredData);
-
         setDataSource(filteredData);
       }}
     />
   );
 
+  const nameSearchProps = (): ColumnType<Point> => ({
+    filterDropdown: () => {
+      return FilterByNameInput;
+    },
+  });
+
   const columns = [
     {
-      title: FilterByNameInput,
+      title: "name",
       dataIndex: "name",
-      key: "1",
+      key: "name",
+      render(name: string) {
+        if (name != undefined) {
+          let colour = "#4d4dff";
+          return <Tag color={colour}>{name}</Tag>;
+        }
+      },
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      ...nameSearchProps(),
     },
     ...FLOW_POINT_HEADERS,
     {
@@ -121,6 +134,10 @@ export const FlowPointsTable = (props: any) => {
   useEffect(() => {
     setPlugin();
   }, []);
+
+  useEffect(() => {
+    return setDataSource(data);
+  }, [data.length]);
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
