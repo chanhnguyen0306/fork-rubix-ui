@@ -11,6 +11,7 @@ import {
   RbAddButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
+import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
 import {
   isObjectEmpty,
@@ -41,16 +42,15 @@ export const FlowPointsTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [dataSource, setDataSource] = useState(data);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
     useState(false);
-  const [isRestarting, setIsRestarting] = useState(false);
-  const [value, setValue] = useState("");
-  const [dataSource, setDataSource] = useState(data);
 
   const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
@@ -64,27 +64,6 @@ export const FlowPointsTable = (props: any) => {
     flowPluginFactory.hostUUID =
       hostUUID;
 
-  const FilterByNameInput = (
-    <Input
-      placeholder="Search name"
-      value={value}
-      onChange={(e) => {
-        const currValue = e.target.value;
-        setValue(currValue);
-        const filteredData = data.filter((p: Point) =>
-          p.name.toUpperCase().includes(currValue.toUpperCase())
-        );
-        setDataSource(filteredData);
-      }}
-    />
-  );
-
-  const nameSearchProps = (): ColumnType<Point> => ({
-    filterDropdown: () => {
-      return FilterByNameInput;
-    },
-  });
-
   const columns = [
     {
       title: "name",
@@ -97,7 +76,14 @@ export const FlowPointsTable = (props: any) => {
         }
       },
       sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-      ...nameSearchProps(),
+      filterDropdown: () => {
+        return (
+          <RbTableFilterNameInput
+            defaultData={data}
+            setFilteredData={setDataSource}
+          />
+        );
+      },
     },
     ...FLOW_POINT_HEADERS,
     {
