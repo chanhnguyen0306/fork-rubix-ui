@@ -1,4 +1,4 @@
-import { Space, Spin } from "antd";
+import { Input, Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, main } from "../../../../../../../wailsjs/go/models";
@@ -48,6 +48,8 @@ export const FlowPointsTable = (props: any) => {
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
     useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
+  const [value, setValue] = useState("");
+  const [dataSource, setDataSource] = useState([] as Point[]);
 
   const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
@@ -61,7 +63,29 @@ export const FlowPointsTable = (props: any) => {
     flowPluginFactory.hostUUID =
       hostUUID;
 
+  const FilterByNameInput = (
+    <Input
+      placeholder="Search Name"
+      value={value}
+      onChange={(e) => {
+        const currValue = e.target.value;
+        setValue(currValue);
+        const filteredData = data.filter((p: Point) =>
+          p.name.includes(currValue)
+        );
+        console.log("filteredData", filteredData);
+
+        setDataSource(filteredData);
+      }}
+    />
+  );
+
   const columns = [
+    {
+      title: FilterByNameInput,
+      dataIndex: "name",
+      key: "1",
+    },
     ...FLOW_POINT_HEADERS,
     {
       title: "Actions",
@@ -173,7 +197,7 @@ export const FlowPointsTable = (props: any) => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={data}
+        dataSource={dataSource}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
