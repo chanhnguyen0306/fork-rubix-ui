@@ -2,6 +2,7 @@ import { Space, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { main, model } from "../../../../../../../wailsjs/go/models";
+import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -35,6 +36,7 @@ export const FlowNetworkTable = () => {
   const [networkSchema, setNetworkSchema] = useState({});
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [networks, setNetworks] = useState([] as Network[]);
+  const [dataSource, setDataSource] = useState(networks);
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
@@ -49,6 +51,20 @@ export const FlowNetworkTable = () => {
   networkFactory.hostUUID = flowPluginFactory.hostUUID = hostUUID;
 
   const columns = [
+    {
+      title: "name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      filterDropdown: () => {
+        return (
+          <RbTableFilterNameInput
+            defaultData={networks}
+            setFilteredData={setDataSource}
+          />
+        );
+      },
+    },
     ...NETWORK_HEADERS,
     {
       title: "actions",
@@ -80,6 +96,10 @@ export const FlowNetworkTable = () => {
   useEffect(() => {
     fetchNetworks();
   }, []);
+
+  useEffect(() => {
+    setDataSource(networks);
+  }, [networks.length]);
 
   const fetchNetworks = async () => {
     try {
@@ -163,7 +183,7 @@ export const FlowNetworkTable = () => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={networks}
+        dataSource={dataSource}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />

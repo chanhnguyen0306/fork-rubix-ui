@@ -6,17 +6,6 @@ import imageEdge28 from "../assets/images/Edge-iO-28.png";
 
 export const FLOW_NETWORKS_HEADERS = [
   {
-    key: "uuid",
-    title: "uuid",
-    dataIndex: "uuid",
-  },
-  {
-    key: "name",
-    title: "name",
-    dataIndex: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     key: "flow_ip",
     title: "ip",
     dataIndex: "flow_ip",
@@ -51,14 +40,14 @@ export const FLOW_NETWORKS_HEADERS = [
     dataIndex: "connection",
     sorter: (a: any, b: any) => a.connection.localeCompare(b.connection),
   },
-];
-
-export const STREAM_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
   },
+];
+
+export const STREAM_HEADERS = [
   {
     key: "name",
     title: "name",
@@ -80,14 +69,14 @@ export const STREAM_HEADERS = [
     },
     sorter: (a: any, b: any) => a.enable - b.enable,
   },
-];
-
-export const CONSUMER_HEADERS = [
   {
     key: "uuid",
     title: "uuid",
     dataIndex: "uuid",
   },
+];
+
+export const CONSUMER_HEADERS = [
   {
     key: "name",
     title: "name",
@@ -127,6 +116,11 @@ export const CONSUMER_HEADERS = [
     dataIndex: "producer_thing_name",
     sorter: (a: any, b: any) =>
       a.producer_thing_name.localeCompare(b.producer_thing_name),
+  },
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
   },
 ];
 
@@ -199,11 +193,6 @@ export const PRODUCER_HEADERS = [
 
 export const WRITER_HEADERS = [
   {
-    key: "uuid",
-    title: "uuid",
-    dataIndex: "uuid",
-  },
-  {
     key: "writer_thing_class",
     title: "writer thing class",
     dataIndex: "writer_thing_class",
@@ -216,6 +205,11 @@ export const WRITER_HEADERS = [
     dataIndex: "writer_thing_name",
     sorter: (a: any, b: any) =>
       a.writer_thing_name.localeCompare(b.writer_thing_name),
+  },
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
   },
 ];
 
@@ -346,12 +340,6 @@ export const NETWORK_HEADERS = [
     sorter: (a: any, b: any) => a.plugin_name.localeCompare(b.plugin_name),
   },
   {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
@@ -360,12 +348,6 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
-  {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
@@ -373,18 +355,6 @@ export const FLOW_DEVICE_HEADERS = [
 ];
 
 export const FLOW_POINT_HEADERS = [
-  {
-    title: "name",
-    dataIndex: "name",
-    key: "name",
-    render(name: string) {
-      if (name != undefined) {
-        let colour = "#4d4dff";
-        return <Tag color={colour}>{name}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-  },
   {
     title: "io number",
     dataIndex: "io_number",
@@ -409,6 +379,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.object_type.localeCompare(b.object_type),
   },
   {
     title: "object id",
@@ -420,6 +391,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{object_id}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.object_id - b.object_id,
   },
   {
     title: "io type",
@@ -432,6 +404,7 @@ export const FLOW_POINT_HEADERS = [
         return <Tag color={colour}>{text}</Tag>;
       }
     },
+    sorter: (a: any, b: any) => a.io_type.localeCompare(b.io_type),
   },
   {
     title: "present value",
@@ -561,39 +534,32 @@ export const BACNET_HEADERS = [
 ];
 
 export const LOG_HEADERS = [
-  [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "Timestamp",
-      dataIndex: "time",
-      key: "time",
-      sorter: (a: any, b: any) => a.time.localeCompare(b.time),
-    },
-    {
-      title: "Table",
-      dataIndex: "function",
-      key: "function",
-      sorter: (a: any, b: any) => a.function.localeCompare(b.function),
-    },
-    {
-      title: "Action Type",
-      dataIndex: "type",
-      key: "type",
-      sorter: (a: any, b: any) => a.type.localeCompare(b.type),
-    },
-  ],
-];
-
-export const BACKUP_HEADERS = [
+  {
+    title: "Timestamp",
+    dataIndex: "time",
+    key: "time",
+    sorter: (a: any, b: any) => a.time.localeCompare(b.time),
+  },
+  {
+    title: "Table",
+    dataIndex: "function",
+    key: "function",
+    sorter: (a: any, b: any) => a.function.localeCompare(b.function),
+  },
+  {
+    title: "Action Type",
+    dataIndex: "type",
+    key: "type",
+    sorter: (a: any, b: any) => a.type.localeCompare(b.type),
+  },
   {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
   },
+];
+
+export const BACKUP_HEADERS = [
   {
     title: "connection name",
     dataIndex: "connection_name",
@@ -639,6 +605,11 @@ export const BACKUP_HEADERS = [
     title: "Comments",
     dataIndex: "user_comment",
     key: "user_comment",
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 
