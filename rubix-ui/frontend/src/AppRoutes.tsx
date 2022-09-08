@@ -19,6 +19,7 @@ import { StreamClones } from "./components/hosts/host/flow/flowNetworks/streamCl
 import { Consumers } from "./components/hosts/host/flow/flowNetworks/consumers/consumers";
 import { Writers } from "./components/hosts/host/flow/flowNetworks/writers/writers";
 import { WriterClones } from "./components/hosts/host/flow/flowNetworks/writerClones/writer-clones";
+import { RubixFlow } from "./components/rubix-flow/rubix-flow";
 
 function AppRoutes() {
   return (
@@ -33,6 +34,8 @@ function AppRoutes() {
       <Route path={routes.LOGS} element={<Logs />} />
       <Route path={routes.BACKUPS} element={<Backups />} />
       <Route path={routes.NETWORKING} element={<PcNetworking />} />
+      <Route path={routes.RUBIX_FLOW} element={<RubixFlow />} />
+
       <Route path={routes.CONNECTIONS} element={<ConnectionPage />}>
         <Route
           key={routes.CONNECTIONS}
