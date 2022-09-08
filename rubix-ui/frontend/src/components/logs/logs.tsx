@@ -18,11 +18,10 @@ export const Logs = () => {
 
   const fetch = async () => {
     try {
-      let res = await logFactory.GetAll();
+      let res = (await logFactory.GetAll()) || [];
       setLogs(res);
     } catch (error) {
       console.log(error);
-      setLogs([]);
     } finally {
       setIsFetching(false);
     }

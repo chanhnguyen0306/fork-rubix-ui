@@ -1,4 +1,5 @@
-import { Space, Spin } from "antd";
+import { Input, Space, Spin, Tag } from "antd";
+import { ColumnType } from "antd/lib/table";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, main } from "../../../../../../../wailsjs/go/models";
@@ -10,6 +11,7 @@ import {
   RbAddButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
+import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
 import {
   isObjectEmpty,
@@ -40,14 +42,15 @@ export const FlowPointsTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [dataSource, setDataSource] = useState(data);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
     useState(false);
-  const [isRestarting, setIsRestarting] = useState(false);
 
   const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
@@ -62,6 +65,26 @@ export const FlowPointsTable = (props: any) => {
       hostUUID;
 
   const columns = [
+    {
+      title: "name",
+      dataIndex: "name",
+      key: "name",
+      render(name: string) {
+        if (name != undefined) {
+          let colour = "#4d4dff";
+          return <Tag color={colour}>{name}</Tag>;
+        }
+      },
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      filterDropdown: () => {
+        return (
+          <RbTableFilterNameInput
+            defaultData={data}
+            setFilteredData={setDataSource}
+          />
+        );
+      },
+    },
     ...FLOW_POINT_HEADERS,
     {
       title: "Actions",
@@ -97,6 +120,10 @@ export const FlowPointsTable = (props: any) => {
   useEffect(() => {
     setPlugin();
   }, []);
+
+  useEffect(() => {
+    return setDataSource(data);
+  }, [data.length]);
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
@@ -173,7 +200,7 @@ export const FlowPointsTable = (props: any) => {
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
-        dataSource={data}
+        dataSource={dataSource}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
