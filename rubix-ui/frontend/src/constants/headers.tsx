@@ -193,11 +193,6 @@ export const PRODUCER_HEADERS = [
 
 export const WRITER_HEADERS = [
   {
-    key: "uuid",
-    title: "uuid",
-    dataIndex: "uuid",
-  },
-  {
     key: "writer_thing_class",
     title: "writer thing class",
     dataIndex: "writer_thing_class",
@@ -210,6 +205,11 @@ export const WRITER_HEADERS = [
     dataIndex: "writer_thing_name",
     sorter: (a: any, b: any) =>
       a.writer_thing_name.localeCompare(b.writer_thing_name),
+  },
+  {
+    key: "uuid",
+    title: "uuid",
+    dataIndex: "uuid",
   },
 ];
 
@@ -534,39 +534,32 @@ export const BACNET_HEADERS = [
 ];
 
 export const LOG_HEADERS = [
-  [
-    {
-      title: "uuid",
-      dataIndex: "uuid",
-      key: "uuid",
-    },
-    {
-      title: "Timestamp",
-      dataIndex: "time",
-      key: "time",
-      sorter: (a: any, b: any) => a.time.localeCompare(b.time),
-    },
-    {
-      title: "Table",
-      dataIndex: "function",
-      key: "function",
-      sorter: (a: any, b: any) => a.function.localeCompare(b.function),
-    },
-    {
-      title: "Action Type",
-      dataIndex: "type",
-      key: "type",
-      sorter: (a: any, b: any) => a.type.localeCompare(b.type),
-    },
-  ],
-];
-
-export const BACKUP_HEADERS = [
+  {
+    title: "Timestamp",
+    dataIndex: "time",
+    key: "time",
+    sorter: (a: any, b: any) => a.time.localeCompare(b.time),
+  },
+  {
+    title: "Table",
+    dataIndex: "function",
+    key: "function",
+    sorter: (a: any, b: any) => a.function.localeCompare(b.function),
+  },
+  {
+    title: "Action Type",
+    dataIndex: "type",
+    key: "type",
+    sorter: (a: any, b: any) => a.type.localeCompare(b.type),
+  },
   {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",
   },
+];
+
+export const BACKUP_HEADERS = [
   {
     title: "connection name",
     dataIndex: "connection_name",
@@ -612,6 +605,11 @@ export const BACKUP_HEADERS = [
     title: "Comments",
     dataIndex: "user_comment",
     key: "user_comment",
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
   },
 ];
 

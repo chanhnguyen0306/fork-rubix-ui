@@ -31,6 +31,12 @@ export const NetworkClonesTable = (props: any) => {
   factory.hostUUID = hostUUID;
 
   const columns = [
+    {
+      key: "name",
+      title: "name",
+      dataIndex: "name",
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+    },
     ...FLOW_NETWORKS_HEADERS,
     {
       title: "actions",
