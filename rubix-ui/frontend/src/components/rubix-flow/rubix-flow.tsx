@@ -164,8 +164,6 @@ export const RubixFlow = () => {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      if (nodes.length > 0) return;
-
       if (connection.source === null) return;
       if (connection.target === null) return;
 
