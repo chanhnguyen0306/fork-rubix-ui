@@ -76,11 +76,12 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
     >
       <textarea
         autoFocus
-        className="border border-gray-300 w-full p-2 h-32 align-top"
+        className="border border-gray-300 p-2 align-top"
         placeholder="Paste JSON here"
         value={value}
         onChange={(e) => setValue(e.currentTarget.value)}
-      ></textarea>
+        style={{ height: "50vh", width: "500px" }}
+      />
       <div className="p-4 text-center text-gray-800">or</div>
       <select
         className="bg-gray-50 border border-gray-300 text-gray-900 rounded block w-full p-3"
