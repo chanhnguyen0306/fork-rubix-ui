@@ -6,6 +6,7 @@ import { MenuSidebar } from "./components/sidebar/sidebar";
 import { ThemeProvider } from "./themes/theme-provider";
 import { openNotificationWithIcon } from "./utils/utils";
 import "./App.css";
+import "./index.css";
 
 const { Content } = Layout;
 

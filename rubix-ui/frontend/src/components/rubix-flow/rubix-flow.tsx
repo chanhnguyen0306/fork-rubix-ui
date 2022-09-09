@@ -159,13 +159,8 @@ export const RubixFlow = () => {
     useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  useEffect(() => {
-    console.log(nodes);
-    console.log(edges);
-  }, [initialNodes.length]);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -258,42 +253,39 @@ export const RubixFlow = () => {
   };
 
   return (
-    <div style={{ height: "90vh" }}>
-      <ReactFlowProvider>
-        <ReactFlow
-          nodeTypes={customNodeTypes}
-          edgeTypes={edgeTypes}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onConnectStart={handleStartConnect}
-          onConnectStop={handleStopConnect}
-          fitView
-          fitViewOptions={{ maxZoom: 1 }}
-          onPaneClick={handlePaneClick}
-          onPaneContextMenu={handlePaneContextMenu}
-        >
-          {/* <MiniMap /> */}
-          <Controls />
-          <Background
-            variant={BackgroundVariant.Lines}
-            color="#353639"
-            style={{ backgroundColor: "#1E1F22" }}
+    <ReactFlowProvider>
+      <ReactFlow
+        nodeTypes={customNodeTypes}
+        edgeTypes={edgeTypes}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onConnectStart={handleStartConnect}
+        onConnectStop={handleStopConnect}
+        fitViewOptions={{ maxZoom: 1 }}
+        onPaneClick={handlePaneClick}
+        onPaneContextMenu={handlePaneContextMenu}
+        fitView
+      >
+        <Controls />
+        <Background
+          variant={BackgroundVariant.Lines}
+          color="#353639"
+          style={{ backgroundColor: "#1E1F22" }}
+        />
+        <BehaveControls />
+        {nodePickerVisibility && (
+          <NodePicker
+            position={nodePickerVisibility}
+            filters={getNodePickerFilters(nodes, lastConnectStart)}
+            onPickNode={handleAddNode}
+            onClose={closeNodePicker}
           />
-          <BehaveControls />
-          {nodePickerVisibility && (
-            <NodePicker
-              position={nodePickerVisibility}
-              filters={getNodePickerFilters(nodes, lastConnectStart)}
-              onPickNode={handleAddNode}
-              onClose={closeNodePicker}
-            />
-          )}
-        </ReactFlow>
-      </ReactFlowProvider>
-    </div>
+        )}
+      </ReactFlow>
+    </ReactFlowProvider>
   );
 };
 

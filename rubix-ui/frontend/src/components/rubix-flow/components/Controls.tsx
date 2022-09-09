@@ -40,41 +40,41 @@ const Controls = () => {
 
   return (
     <>
-      <div className="absolute top-4 right-4 bg-white z-10 text-sm flex">
+      <div className="absolute top-4 right-4 bg-white z-10 flex">
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Help"
           onClick={() => setHelpModalOpen(true)}
         >
-          <QuestionCircleOutlined className="w-3 p-2 text-gray-700 align-middle" />
+          <QuestionCircleOutlined className="p-2 text-gray-700 align-middle" />
         </div>
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Load"
           onClick={() => setLoadModalOpen(true)}
         >
-          <UploadOutlined className="w-3 p-2 text-gray-700 align-middle" />
+          <UploadOutlined className="p-2 text-gray-700 align-middle" />
         </div>
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Save"
           onClick={() => setSaveModalOpen(true)}
         >
-          <DownloadOutlined className="w-3 p-2 text-gray-700 align-middle" />
+          <DownloadOutlined className="p-2 text-gray-700 align-middle" />
         </div>
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Clear"
           onClick={() => setClearModalOpen(true)}
         >
-          <RestOutlined className="w-3 p-2 text-gray-700 align-middle" />
+          <RestOutlined className="p-2 text-gray-700 align-middle" />
         </div>
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Run"
           onClick={() => handleRun()}
         >
-          <PlayCircleOutlined className="w-3 p-2 text-gray-700 align-middle" />
+          <PlayCircleOutlined className="p-2 text-gray-700 align-middle" />
         </div>
       </div>
       <LoadModal open={loadModalOpen} onClose={() => setLoadModalOpen(false)} />
