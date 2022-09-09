@@ -83,7 +83,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
       ></textarea>
       <div className="p-4 text-center text-gray-800">or</div>
       <select
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded block w-full p-3"
+        className="bg-gray-50 border border-gray-300 text-gray-900 rounded block w-full p-3"
         onChange={(e) => setSelected(e.target.value)}
         value={selected}
       >

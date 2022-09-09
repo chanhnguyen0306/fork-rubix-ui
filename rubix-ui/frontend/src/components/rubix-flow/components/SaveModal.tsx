@@ -38,9 +38,10 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
     >
       <textarea
         ref={ref}
-        className="border border-gray-300 w-full p-2 h-32"
+        className="border border-gray-300  p-2"
         defaultValue={jsonString}
-      ></textarea>
+        style={{ height: "50vh", width: "500px" }}
+      />
     </Modal>
   );
 };

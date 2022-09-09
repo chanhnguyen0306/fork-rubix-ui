@@ -34,12 +34,15 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
       <div
         className="z-[19] fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
         onClick={onClose}
-      ></div>
-      <div className="z-20 relative top-20 mx-auto border w-96 shadow-lg bg-white text-sm rounded-md">
+      />
+      <div
+        className="z-20 relative top-20 mx-auto border shadow-lg bg-white rounded-md"
+        style={{ minWidth: "400px", width: "fit-content" }}
+      >
         <div className="p-3 border-b">
-          <h2 className="text-lg text-center font-bold">{title}</h2>
+          <h2 className="text-3xl text-center font-bold title">{title}</h2>
         </div>
-        <div className="p-3">{children}</div>
+        <div className="p-3 text-start">{children}</div>
         <div className="flex gap-3 p-3 border-t">
           {actions.map((action, ix) => (
             <button

@@ -1,5 +1,7 @@
 @import 'antd/dist/antd.css';
 @import './assets/styles/bootstrap.css';
+@import './react-flow.css';
+
 
 #app {
     height: 100vh;
