@@ -23,15 +23,15 @@ export const NodeContainer = ({
   return (
     <div
       className={cx(
-        "rounded text-white text-sm bg-gray-800 min-w-[120px]",
+        "rounded text-white bg-gray-800 min-w-[130px] text-start",
         selected && "outline outline-1"
       )}
     >
-      <div className={`${backgroundColor} ${textColor} px-2 py-1 rounded-t`}>
+      <div className={`${backgroundColor} ${textColor} px-3 py-1 rounded-t`}>
         {title}
       </div>
       <div
-        className={`flex flex-col gap-2 py-2 border-l border-r border-b ${borderColor} `}
+        className={`flex flex-col gap-2 py-3 border-l border-r border-b ${borderColor} `}
       >
         {children}
       </div>

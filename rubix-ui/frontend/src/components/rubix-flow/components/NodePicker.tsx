@@ -47,7 +47,7 @@ const NodePicker = ({
 
   return (
     <div
-      className="node-picker absolute z-10 text-sm text-white bg-gray-800 border rounded border-gray-500"
+      className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
       style={{ top: position.y, left: position.x }}
     >
       <div className="bg-gray-500 p-2">Add Node</div>
