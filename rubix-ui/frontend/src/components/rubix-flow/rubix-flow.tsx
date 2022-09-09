@@ -141,9 +141,9 @@ export const RubixFlow = () => {
         onConnect={onConnect}
         onConnectStart={handleStartConnect}
         onConnectStop={handleStopConnect}
-        fitViewOptions={{ maxZoom: 1 }}
         onPaneClick={handlePaneClick}
         onPaneContextMenu={handlePaneContextMenu}
+        fitViewOptions={{ maxZoom: 1 }}
         fitView
       >
         <Controls />

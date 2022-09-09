@@ -28,6 +28,7 @@ const NodePicker = ({
 }: NodePickerProps) => {
   const [search, setSearch] = useState("");
   const instance = useReactFlow();
+  const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
   useOnPressKey("Escape", onClose);
 
@@ -48,7 +49,7 @@ const NodePicker = ({
   return (
     <div
       className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-      style={{ top: position.y, left: position.x }}
+      style={{ top: mousePosition.y, left: mousePosition.x }}
     >
       <div className="bg-gray-500 p-2">Add Node</div>
       <div className="p-2">
@@ -61,12 +62,17 @@ const NodePicker = ({
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <div className="max-h-48 overflow-y-scroll">
+      <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
         {filtered.map(({ type }) => (
           <div
             key={type}
             className="p-2 cursor-pointer border-b border-gray-600"
-            onClick={() => onPickNode(type, instance.project(position))}
+            onClick={() =>
+              onPickNode(
+                type,
+                instance.project({ x: mousePosition.x, y: mousePosition.y })
+              )
+            }
           >
             {type}
           </div>
