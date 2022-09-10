@@ -26,7 +26,14 @@ export const HelpModal: FC<HelpModalProps> = ({ open = false, onClose }) => {
       <List
         size="small"
         dataSource={noteList}
-        renderItem={(item) => <List.Item>{item}</List.Item>}
+        renderItem={(item) => (
+          <List.Item
+            className="black--text"
+            style={{ borderBottom: "1px solid #f0f0f0" }}
+          >
+            {item}
+          </List.Item>
+        )}
       />
     </Modal>
   );

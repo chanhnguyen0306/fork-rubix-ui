@@ -40,9 +40,11 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
         style={{ minWidth: "400px", width: "fit-content" }}
       >
         <div className="p-3 border-b">
-          <h2 className="text-3xl text-center font-bold title">{title}</h2>
+          <h2 className="text-3xl text-center font-bold title black--text">
+            {title}
+          </h2>
         </div>
-        <div className="p-3 text-start">{children}</div>
+        <div className="p-3 text-start black--text">{children}</div>
         <div className="flex gap-3 p-3 border-t">
           {actions.map((action, ix) => (
             <button
