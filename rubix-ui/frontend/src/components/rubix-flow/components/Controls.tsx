@@ -40,7 +40,7 @@ const Controls = () => {
 
   return (
     <>
-      <div className="absolute top-4 right-4 bg-white z-10 flex">
+      <div className="absolute top-4 right-4 bg-white z-10 flex black--text">
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Help"
