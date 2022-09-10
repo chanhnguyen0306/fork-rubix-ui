@@ -145,6 +145,7 @@ export const RubixFlow = () => {
         onPaneContextMenu={handlePaneContextMenu}
         fitViewOptions={{ maxZoom: 1 }}
         fitView
+        deleteKeyCode={["Delete"]}
       >
         <Controls />
         <Background
