@@ -1,9 +1,10 @@
 export type NodeCategory =
-  | 'Action'
-  | 'Query'
-  | 'Logic'
-  | 'Event'
-  | 'State'
-  | 'Flow'
-  | 'Time'
-  | 'None';
+  | "Action"
+  | "Query"
+  | "Logic"
+  | "Event"
+  | "State"
+  | "Flow"
+  | "Time"
+  | "Math"
+  | "None";
