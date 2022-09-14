@@ -1180,19 +1180,19 @@
     "category": "Math",
     "inputs": [
       {
-        "name": "a",
+        "name": "in1",
         "defaultValue": 0,
         "valueType": "number"
       },
       {
-        "name": "b",
+        "name": "in2",
         "defaultValue": 0,
         "valueType": "number"
       }
     ],
     "outputs": [
       {
-        "name": "result",
+        "name": "out1",
         "valueType": "number"
       }
     ]
@@ -1202,14 +1202,14 @@
     "category": "Math",
     "inputs": [
       {
-        "name": "a",
+        "name": "in1",
         "defaultValue": 0,
         "valueType": "number"
       }
     ],
     "outputs": [
       {
-        "name": "result",
+        "name": "out1",
         "valueType": "number"
       }
     ]

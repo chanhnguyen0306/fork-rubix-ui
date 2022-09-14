@@ -24,24 +24,44 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
     nodes.push(node);
 
     if (nodeJSON.inputs) {
-      for (const [inputKey, input] of Object.entries(nodeJSON.inputs)) {
-        if (input.links !== undefined) {
-          input.links.forEach((link) => {
+      if (nodeJSON.inputs.links) {
+        for (const [inputKey, input] of Object.entries(nodeJSON.inputs.links)) {
+          const { nodeId, socket, value } = input as any;
+          if (nodeId !== undefined) {
             edges.push({
               id: generateUuid(),
-              source: link.nodeId,
-              sourceHandle: link.socket,
+              source: nodeId,
+              sourceHandle: socket,
               target: nodeJSON.id,
               targetHandle: inputKey,
             });
-          });
+          }
+          if (value !== undefined) {
+            node.data[inputKey] = value;
+          }
         }
-        if (input.value !== undefined) {
-          node.data[inputKey] = input.value;
+      } else {
+        for (const [inputKey, input] of Object.entries(nodeJSON.inputs)) {
+          if (input.links !== undefined) {
+            (input.links as any).forEach((link: any) => {
+              edges.push({
+                id: generateUuid(),
+                source: link.nodeId,
+                sourceHandle: link.socket,
+                target: nodeJSON.id,
+                targetHandle: inputKey,
+              });
+            });
+          }
+          if (input.value !== undefined) {
+            node.data[inputKey] = input.value;
+          }
         }
       }
     }
   });
+  console.log("edges", edges);
+  console.log("nodes", nodes);
 
   return [nodes, edges];
 };
