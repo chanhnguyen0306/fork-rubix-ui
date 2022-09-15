@@ -10,7 +10,6 @@ import ReactFlow, {
   XYPosition,
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
-import rawGraphJSON from "./graph.json";
 import NodePicker from "./components/NodePicker";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import { calculateNewEdge } from "./util/calculateNewEdge";
@@ -21,7 +20,7 @@ import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
 
-const graphJSON = rawGraphJSON as GraphJSON;
+const graphJSON: GraphJSON = { nodes: [] };
 
 const [initialNodes, initialEdges] = behaveToFlow(graphJSON);
 
