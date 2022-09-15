@@ -1176,23 +1176,45 @@
     ]
   },
   {
-    "type": "math/add",
+    "type": "math/subtract",
     "category": "Math",
     "inputs": [
       {
-        "name": "in1",
+        "name": "a",
         "defaultValue": 0,
         "valueType": "number"
       },
       {
-        "name": "in2",
+        "name": "b",
         "defaultValue": 0,
         "valueType": "number"
       }
     ],
     "outputs": [
       {
-        "name": "out1",
+        "name": "result",
+        "valueType": "number"
+      }
+    ]
+  },
+  {
+    "type": "math/add",
+    "category": "Math",
+    "inputs": [
+      {
+        "name": "a",
+        "defaultValue": 0,
+        "valueType": "number"
+      },
+      {
+        "name": "b",
+        "defaultValue": 0,
+        "valueType": "number"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "result",
         "valueType": "number"
       }
     ]
@@ -1202,14 +1224,14 @@
     "category": "Math",
     "inputs": [
       {
-        "name": "in1",
+        "name": "in",
         "defaultValue": 0,
         "valueType": "number"
       }
     ],
     "outputs": [
       {
-        "name": "out1",
+        "name": "out",
         "valueType": "number"
       }
     ]
