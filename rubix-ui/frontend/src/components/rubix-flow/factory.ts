@@ -5,7 +5,7 @@ export class FlowFactory {
     return await NodePallet();
   }
 
-  async DownloadFlow(encodedNodes: NodeList[], restartFlow: boolean) {
+  async DownloadFlow(encodedNodes: any, restartFlow: boolean) {
     return await DownloadFlow(encodedNodes, restartFlow);
   }
 }

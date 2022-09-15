@@ -7,6 +7,7 @@ import { flowToBehave } from "../transformers/flowToBehave";
 import { useReactFlow } from "react-flow-renderer/nocss";
 import {
   GraphEvaluator,
+  GraphJSON,
   GraphRegistry,
   readGraphFromJSON,
   registerGenericNodes,
@@ -19,6 +20,7 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
+import rawGraphJSON from "../graph.json";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
@@ -42,9 +44,9 @@ const Controls = () => {
   };
 
   const download = async () => {
-    const nodes = instance.getNodes();
-    const res = await factory.DownloadFlow(nodes, true);
-    console.log("nodes", nodes);
+    const graphJSON = rawGraphJSON as GraphJSON;
+    const res = await factory.DownloadFlow(graphJSON, true);
+    console.log("graphJson", graphJSON);
     console.log("res", res);
   };
 

@@ -60,8 +60,6 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
       }
     }
   });
-  console.log("edges", edges);
-  console.log("nodes", nodes);
 
   return [nodes, edges];
 };
