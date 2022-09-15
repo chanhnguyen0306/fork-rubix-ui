@@ -6,13 +6,6 @@ import { SaveModal } from "./SaveModal";
 import { flowToBehave } from "../transformers/flowToBehave";
 import { useReactFlow } from "react-flow-renderer/nocss";
 import {
-  GraphEvaluator,
-  GraphJSON,
-  GraphRegistry,
-  readGraphFromJSON,
-  registerGenericNodes,
-} from "../lib";
-import {
   QuestionCircleOutlined,
   DownloadOutlined,
   RestOutlined,
@@ -20,7 +13,6 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
-import rawGraphJSON from "../graph.json";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
@@ -31,24 +23,11 @@ const Controls = () => {
 
   const factory = new FlowFactory();
 
-  const handleRun = () => {
-    const registry = new GraphRegistry();
-    registerGenericNodes(registry.nodes);
+  const download = async () => {
     const nodes = instance.getNodes();
     const edges = instance.getEdges();
     const graphJson = flowToBehave(nodes, edges);
-    const graph = readGraphFromJSON(graphJson, registry);
-    const evaluator = new GraphEvaluator(graph);
-    evaluator.triggerEvents("event/start");
-    evaluator.executeAllAsync();
-  };
-
-  const download = async () => {
-    const nodes = instance.getNodes();
-    const graphJSON = { nodes };
-    const res = await factory.DownloadFlow(graphJSON, true);
-    console.log("encodeNodes", graphJSON);
-    console.log("res", res);
+    await factory.DownloadFlow(graphJson, true);
   };
 
   return (
