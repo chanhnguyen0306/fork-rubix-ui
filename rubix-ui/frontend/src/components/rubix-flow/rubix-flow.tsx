@@ -61,8 +61,6 @@ export const RubixFlow = () => {
 
   const handleAddNode = useCallback(
     (nodeType: string, position: XYPosition) => {
-      console.log("position", position);
-
       closeNodePicker();
       const newNode = {
         id: generateUuid(),
@@ -123,8 +121,6 @@ export const RubixFlow = () => {
   const handlePaneClick = () => closeNodePicker();
 
   const handlePaneContextMenu = (e: ReactMouseEvent) => {
-    console.log("ReactMouseEvent", e);
-
     e.preventDefault();
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
   };

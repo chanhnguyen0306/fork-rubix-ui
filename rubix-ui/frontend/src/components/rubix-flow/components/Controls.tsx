@@ -44,9 +44,10 @@ const Controls = () => {
   };
 
   const download = async () => {
-    const graphJSON = rawGraphJSON as GraphJSON;
+    const nodes = instance.getNodes();
+    const graphJSON = { nodes };
     const res = await factory.DownloadFlow(graphJSON, true);
-    console.log("graphJson", graphJSON);
+    console.log("encodeNodes", graphJSON);
     console.log("res", res);
   };
 
