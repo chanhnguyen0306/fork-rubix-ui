@@ -18,6 +18,7 @@ import {
   UploadOutlined,
   PlayCircleOutlined,
 } from "@ant-design/icons";
+import { FlowFactory } from "../factory";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
@@ -25,6 +26,8 @@ const Controls = () => {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const instance = useReactFlow();
+
+  const factory = new FlowFactory();
 
   const handleRun = () => {
     const registry = new GraphRegistry();
@@ -36,6 +39,13 @@ const Controls = () => {
     const evaluator = new GraphEvaluator(graph);
     evaluator.triggerEvents("event/start");
     evaluator.executeAllAsync();
+  };
+
+  const download = async () => {
+    const nodes = instance.getNodes();
+    const res = await factory.DownloadFlow(nodes, true);
+    console.log("nodes", nodes);
+    console.log("res", res);
   };
 
   return (
@@ -72,7 +82,7 @@ const Controls = () => {
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Run"
-          onClick={() => handleRun()}
+          onClick={() => download()}
         >
           <PlayCircleOutlined className="p-2 text-gray-700 align-middle" />
         </div>

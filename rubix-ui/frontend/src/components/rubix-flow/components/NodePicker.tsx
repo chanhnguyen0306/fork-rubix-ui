@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
+import { NodePallet } from "../../../../wailsjs/go/main/App";
+import { nodes } from "../../../../wailsjs/go/models";
+import { FlowFactory } from "../factory";
 import { useOnPressKey } from "../hooks/useOnPressKey";
 import { NodeSpecJSON } from "../lib";
 import specJson from "../lib/node-spec.json";
 
-const specJSON = specJson as NodeSpecJSON[];
-
-const nodes = specJSON;
+// const specJSON = specJson as NodeSpecJSON[];
 
 export type NodePickerFilters = {
   handleType: "source" | "target";
@@ -27,10 +28,22 @@ const NodePicker = ({
   filters,
 }: NodePickerProps) => {
   const [search, setSearch] = useState("");
+  const [nodes, setNodes] = useState([] as NodeSpecJSON[]);
   const instance = useReactFlow();
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
+  const factory = new FlowFactory();
+
   useOnPressKey("Escape", onClose);
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
+    const res = (await factory.NodePallet()) as NodeSpecJSON[];
+    setNodes(res);
+  };
 
   let filtered = nodes;
   if (filters !== undefined) {
