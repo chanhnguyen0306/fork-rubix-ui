@@ -2663,9 +2663,9 @@
   "version" "2.0.4"
 
 "react-flow-renderer@^10.3.16":
-  "integrity" "sha512-QNvM/W1eurDd4gDK47wBLNE4GfK6Gx+JeygI00JsanNIDKEL/cxNdXcP2fwYgJme72AxuaLXc5xliHGaGmy+Jw=="
-  "resolved" "https://registry.npmjs.org/react-flow-renderer/-/react-flow-renderer-10.3.16.tgz"
-  "version" "10.3.16"
+  "integrity" "sha512-bywiqVErlh5kCDqw3x0an5Ur3mT9j9CwJsDwmhmz4i1IgYM1a0SPqqEhClvjX+s5pU4nHjmVaGXWK96pwsiGcQ=="
+  "resolved" "https://registry.npmjs.org/react-flow-renderer/-/react-flow-renderer-10.3.17.tgz"
+  "version" "10.3.17"
   dependencies:
     "@babel/runtime" "^7.18.9"
     "@types/d3" "^7.4.0"
