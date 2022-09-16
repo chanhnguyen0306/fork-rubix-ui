@@ -6,20 +6,6 @@ import { hasPositionMetaData } from "../util/hasPositionMetaData";
 import { Modal } from "./Modal";
 import { GraphJSON } from "../lib";
 
-import Branch from "../examples/basics/Branch.json";
-import Delay from "../examples/basics/Delay.json";
-import HelloWorld from "../examples/basics/HelloWorld.json";
-import Math from "../examples/basics/Math.json";
-import State from "../examples/basics/State.json";
-
-const examples = {
-  branch: Branch,
-  delay: Delay,
-  helloWorld: HelloWorld,
-  math: Math,
-  state: State,
-} as Record<string, GraphJSON>;
-
 export type LoadModalProps = {
   open?: boolean;
   onClose: () => void;
@@ -27,7 +13,6 @@ export type LoadModalProps = {
 
 export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
   const [value, setValue] = useState<string>();
-  const [selected, setSelected] = useState("");
 
   const instance = useReactFlow();
 
@@ -35,10 +20,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
     let graph;
     if (value !== undefined) {
       graph = JSON.parse(value) as GraphJSON;
-    } else if (selected !== "") {
-      graph = examples[selected];
     }
-
     if (graph === undefined) return;
 
     const [nodes, edges] = behaveToFlow(graph);
@@ -60,7 +42,6 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
 
   const handleClose = () => {
     setValue(undefined);
-    setSelected("");
     onClose();
   };
 
@@ -82,21 +63,6 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
         onChange={(e) => setValue(e.currentTarget.value)}
         style={{ height: "50vh", width: "500px" }}
       />
-      <div className="p-4 text-center text-gray-800">or</div>
-      <select
-        className="bg-gray-50 border border-gray-300 text-gray-900 rounded block w-full p-3"
-        onChange={(e) => setSelected(e.target.value)}
-        value={selected}
-      >
-        <option disabled value="">
-          Select an example
-        </option>
-        <option value="branch">Branch</option>
-        <option value="delay">Delay</option>
-        <option value="helloWorld">Hello World</option>
-        <option value="math">Math</option>
-        <option value="state">State</option>
-      </select>
     </Modal>
   );
 };
