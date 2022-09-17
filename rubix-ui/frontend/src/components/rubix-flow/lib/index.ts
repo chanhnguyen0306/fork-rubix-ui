@@ -24,6 +24,7 @@ export { writeNodeSpecsToJSON } from "./Graphs/IO/writeNodeSpecsToJSON";
 export { default as NodeTypeRegistry } from "./Nodes/NodeTypeRegistry";
 export { default as ValueTypeRegistry } from "./Values/ValueTypeRegistry";
 export { default as GraphRegistry } from "./Graphs/GraphRegistry";
+export { registerGenericNodes } from "./Nodes/Generic/GenericNodes";
 
 // graph validation
 export { validateDirectedAcyclicGraph } from "./Graphs/Validation/validateDirectedAcyclicGraph";
