@@ -25,10 +25,10 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
       if (behaveNode.inputs === undefined) {
         behaveNode.inputs = {};
       }
-      behaveNode.inputs.links = {
-        ...behaveNode.inputs.links,
+      behaveNode.inputs = {
+        ...behaveNode.inputs,
         [key]: { value: value as string },
-      };
+      } as any;
     });
 
     edges
