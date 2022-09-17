@@ -7,4 +7,10 @@ export type NodeCategory =
   | "Flow"
   | "Time"
   | "Math"
+  | "math"
+  | "logic"
+  | "compare"
+  | "statistics"
+  | "time"
+  | "mqtt"
   | "None";

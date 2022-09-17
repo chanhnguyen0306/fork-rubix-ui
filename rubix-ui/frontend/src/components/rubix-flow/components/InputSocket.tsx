@@ -29,6 +29,7 @@ export const InputSocket = ({
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
   const [backgroundColor, borderColor] = colors[colorName];
+
   return (
     <div className="flex grow items-center justify-start h-7">
       {showFlowIcon && (
@@ -51,8 +52,10 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="number"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={String(value) ?? defaultValue ?? ""}
-                  onChange={(e) => onChange(name, e.currentTarget.value)}
+                  value={Number(value) ?? defaultValue ?? null}
+                  onChange={(e) =>
+                    onChange(name, Number(e.currentTarget.value))
+                  }
                 />
               )}
               {valueType === "boolean" && (

@@ -40,27 +40,30 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
       category={spec.category}
       selected={selected}
     >
-      {pairs.map(([input, output], ix) => (
-        <div
-          key={ix}
-          className="flex flex-row justify-between gap-8 relative px-2"
-        >
-          {input && (
-            <InputSocket
-              {...input}
-              value={data[input.name] ?? input.defaultValue}
-              onChange={handleChange}
-              connected={isHandleConnected(edges, id, input.name, "target")}
-            />
-          )}
-          {output && (
-            <OutputSocket
-              {...output}
-              connected={isHandleConnected(edges, id, output.name, "source")}
-            />
-          )}
-        </div>
-      ))}
+      {pairs.map(([input, output], ix) => {
+        if (input && !data[input.name]) data[input.name] = input.defaultValue;
+        return (
+          <div
+            key={ix}
+            className="flex flex-row justify-between gap-8 relative px-2"
+          >
+            {input && (
+              <InputSocket
+                {...input}
+                value={data[input.name] ?? input.defaultValue}
+                onChange={handleChange}
+                connected={isHandleConnected(edges, id, input.name, "target")}
+              />
+            )}
+            {output && (
+              <OutputSocket
+                {...output}
+                connected={isHandleConnected(edges, id, output.name, "source")}
+              />
+            )}
+          </div>
+        );
+      })}
     </NodeContainer>
   );
 };

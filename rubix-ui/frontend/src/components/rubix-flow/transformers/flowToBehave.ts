@@ -26,6 +26,7 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
         behaveNode.inputs = {};
       }
       behaveNode.inputs.links = {
+        ...behaveNode.inputs.links,
         [key]: { value: value as string },
       };
     });
