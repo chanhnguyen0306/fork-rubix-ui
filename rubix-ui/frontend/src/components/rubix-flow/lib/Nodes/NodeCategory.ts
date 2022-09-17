@@ -1,8 +1,10 @@
 export type NodeCategory =
-  | "math"
-  | "logic"
-  | "compare"
-  | "statistics"
-  | "time"
-  | "mqtt"
+  | "Action"
+  | "Query"
+  | "Logic"
+  | "Event"
+  | "State"
+  | "Flow"
+  | "Time"
+  | "Math"
   | "None";

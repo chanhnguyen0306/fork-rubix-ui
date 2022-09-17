@@ -34,7 +34,6 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
   const pairs = getPairs(spec.inputs, spec.outputs);
-
   return (
     <NodeContainer
       title={getTitle(spec.type)}

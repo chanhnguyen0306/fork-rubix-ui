@@ -1,15 +1,9 @@
-import {
-  MouseEvent as ReactMouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
   Connection,
   Controls,
-  NodeTypes,
   OnConnectStartParams,
   useEdgesState,
   useNodesState,
@@ -19,13 +13,12 @@ import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import { calculateNewEdge } from "./util/calculateNewEdge";
+import { customNodeTypes } from "./util/customNodeTypes";
 import { getNodePickerFilters } from "./util/getPickerFilters";
-import { GraphJSON, NodeSpecJSON } from "./lib";
+import { GraphJSON } from "./lib";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-import { useNodesSpec } from "./use-nodes-spec";
-import { Node } from "./components/Node";
 
 const graphJSON: GraphJSON = { nodes: [] };
 
@@ -42,15 +35,6 @@ export const RubixFlow = () => {
     useState<OnConnectStartParams>();
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
-  const [specJson, setSpecJson] = useState([] as NodeSpecJSON[]);
-  const [nodesSpec] = useNodesSpec();
-
-  useEffect(() => {
-    if (nodesSpec.length > 0) {
-      const specJson = nodesSpec as NodeSpecJSON[];
-      return setSpecJson(specJson);
-    }
-  }, [nodesSpec]);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -139,11 +123,6 @@ export const RubixFlow = () => {
     e.preventDefault();
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
   };
-
-  const customNodeTypes = specJson.reduce((nodes, node) => {
-    nodes[node.type] = (props: any) => <Node spec={node} {...props} />;
-    return nodes;
-  }, {} as NodeTypes);
 
   return (
     <ReactFlowProvider>
