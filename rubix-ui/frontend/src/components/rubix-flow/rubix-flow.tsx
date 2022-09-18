@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -11,30 +16,59 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
-import { behaveToFlow } from "./transformers/behaveToFlow";
 import { calculateNewEdge } from "./util/calculateNewEdge";
 import { customNodeTypes } from "./util/customNodeTypes";
 import { getNodePickerFilters } from "./util/getPickerFilters";
-import { GraphJSON } from "./lib";
+import { NodeSpecJSON } from "./lib";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-
-const graphJSON: GraphJSON = { nodes: [] };
-
-const [initialNodes, initialEdges] = behaveToFlow(graphJSON);
+import { useNodesSpec } from "./use-nodes-spec";
 
 const edgeTypes = {
   default: CustomEdge,
 };
 
 export const RubixFlow = () => {
+  const [nodesSpec] = useNodesSpec();
+  const [nodes, , onNodesChange] = useNodesState([]);
+  const [edges, , onEdgesChange] = useEdgesState([]);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  const [specJSON, setSpecJSON] = useState([] as NodeSpecJSON[]);
+
+  useEffect(() => {
+    let specJSON = [];
+    if (nodesSpec.length > 0) {
+      specJSON = (nodesSpec as any).map((node: NodeSpecJSON) => {
+        if (node.inputs && node.inputs.length > 0) {
+          node.inputs = node.inputs.map((input) => {
+            let defaultValue = null;
+            switch (input?.valueType) {
+              case "number":
+                defaultValue = 0;
+                break;
+              case "string":
+                defaultValue = "";
+                break;
+              case "boolean":
+                defaultValue = false;
+                break;
+            }
+            return {
+              name: input.name,
+              defaultValue: defaultValue as any,
+              valueType: input.valueType,
+            };
+          });
+        }
+        return node;
+      });
+      setSpecJSON(specJSON);
+    }
+  }, [nodesSpec.length]);
 
   const onConnect = useCallback(
     (connection: Connection) => {

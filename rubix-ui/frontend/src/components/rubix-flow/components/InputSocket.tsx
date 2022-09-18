@@ -44,7 +44,7 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="text"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={String(value) ?? defaultValue ?? ""}
+                  value={value}
                   onChange={(e) => onChange(name, e.currentTarget.value)}
                 />
               )}
@@ -52,7 +52,7 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="number"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={Number(value) ?? defaultValue ?? null}
+                  value={value}
                   onChange={(e) =>
                     onChange(name, Number(e.currentTarget.value))
                   }
@@ -62,7 +62,7 @@ export const InputSocket = ({
                 <input
                   type="checkbox"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={String(value) ?? defaultValue ?? ""}
+                  value={value}
                   onChange={(e) => onChange(name, e.currentTarget.checked)}
                 />
               )}

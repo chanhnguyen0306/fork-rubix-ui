@@ -1,9 +1,7 @@
 import { Connection, ReactFlowInstance } from "react-flow-renderer/nocss";
 import { NodeSpecJSON } from "../lib";
 import { getSocketsByNodeTypeAndHandleType } from "./getSocketsByNodeTypeAndHandleType";
-import specJson from "../lib/node-spec.json";
-
-const specJSON = specJson as NodeSpecJSON[];
+import { useNodesSpec } from "../use-nodes-spec";
 
 export const isValidConnection = (
   connection: Connection,
@@ -16,6 +14,8 @@ export const isValidConnection = (
 
   if (sourceNode === undefined || targetNode === undefined) return false;
 
+  const [nodesSpec] = useNodesSpec();
+  const specJSON = nodesSpec as NodeSpecJSON[];
   const sourceSockets = getSocketsByNodeTypeAndHandleType(
     specJSON,
     sourceNode.type,

@@ -11,7 +11,7 @@ export const useNodesSpec = () => {
   }, []);
 
   const fetch = async () => {
-    const res = ((await factory.NodePallet()) as NodeSpecJSON[]) || [];
+    const res = ((await factory.NodePallet()) || []) as NodeSpecJSON[];
     setNodesSpec(res);
   };
 
