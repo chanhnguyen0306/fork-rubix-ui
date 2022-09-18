@@ -23,5 +23,6 @@ export const categoryColorMap: Record<NodeSpecJSON["category"], string> = {
   statistics: "red",
   time: "gray",
   mqtt: "blue",
+  debug: "blue",
   None: "gray",
 };
