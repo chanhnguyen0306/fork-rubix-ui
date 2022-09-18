@@ -13,4 +13,5 @@ export type NodeCategory =
   | "statistics"
   | "time"
   | "mqtt"
+  | "debug"
   | "None";
