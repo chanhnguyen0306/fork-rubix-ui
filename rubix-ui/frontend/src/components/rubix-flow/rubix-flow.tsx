@@ -161,7 +161,7 @@ export const RubixFlow = () => {
   return (
     <ReactFlowProvider>
       <ReactFlow
-        nodeTypes={customNodeTypes}
+        nodeTypes={customNodeTypes(specJSON)}
         edgeTypes={edgeTypes}
         nodes={nodes}
         edges={edges}
