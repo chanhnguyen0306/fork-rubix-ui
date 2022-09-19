@@ -37,38 +37,6 @@ export const RubixFlow = () => {
     useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
-  const [specJSON, setSpecJSON] = useState([] as NodeSpecJSON[]);
-
-  useEffect(() => {
-    let specJSON = [];
-    if (nodesSpec.length > 0) {
-      specJSON = (nodesSpec as any).map((node: NodeSpecJSON) => {
-        if (node.inputs && node.inputs.length > 0) {
-          node.inputs = node.inputs.map((input) => {
-            let defaultValue = null;
-            switch (input?.valueType) {
-              case "number":
-                defaultValue = 0;
-                break;
-              case "string":
-                defaultValue = "";
-                break;
-              case "boolean":
-                defaultValue = false;
-                break;
-            }
-            return {
-              name: input.name,
-              defaultValue: defaultValue as any,
-              valueType: input.valueType,
-            };
-          });
-        }
-        return node;
-      });
-      setSpecJSON(specJSON);
-    }
-  }, [nodesSpec.length]);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -161,7 +129,7 @@ export const RubixFlow = () => {
   return (
     <ReactFlowProvider>
       <ReactFlow
-        nodeTypes={customNodeTypes(specJSON)}
+        nodeTypes={customNodeTypes(nodesSpec as NodeSpecJSON[])}
         edgeTypes={edgeTypes}
         nodes={nodes}
         edges={edges}
