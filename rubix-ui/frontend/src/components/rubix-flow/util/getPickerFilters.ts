@@ -2,7 +2,10 @@ import { Node, OnConnectStartParams } from "react-flow-renderer/nocss";
 import { NodePickerFilters } from "../components/NodePicker";
 import { getSocketsByNodeTypeAndHandleType } from "./getSocketsByNodeTypeAndHandleType";
 import { NodeSpecJSON } from "../lib";
-import { useNodesSpec } from "../use-nodes-spec";
+
+const specJSON = JSON.parse(
+  localStorage.getItem("spec-json")?.toString() || ""
+) as NodeSpecJSON[];
 
 export const getNodePickerFilters = (
   nodes: Node[],
@@ -13,8 +16,6 @@ export const getNodePickerFilters = (
   const originNode = nodes.find((node) => node.id === params.nodeId);
   if (originNode === undefined) return;
 
-  const [nodesSpec] = useNodesSpec();
-  const specJSON = nodesSpec as NodeSpecJSON[];
   const sockets = getSocketsByNodeTypeAndHandleType(
     specJSON,
     originNode.type,

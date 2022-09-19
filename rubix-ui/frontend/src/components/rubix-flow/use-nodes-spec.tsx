@@ -37,6 +37,7 @@ export const useNodesSpec = () => {
       return node;
     });
     setNodesSpec(specJSON);
+    localStorage.setItem("spec-json", JSON.stringify(specJSON));
   };
 
   return [nodesSpec, setNodesSpec];
