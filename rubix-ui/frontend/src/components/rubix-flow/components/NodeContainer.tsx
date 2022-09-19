@@ -15,7 +15,7 @@ export const NodeContainer = ({
   selected,
   children,
 }: PropsWithChildren<NodeProps>) => {
-  const colorName = categoryColorMap[category];
+  const colorName = categoryColorMap[category] || "gray";
   let [backgroundColor, borderColor, textColor] = colors[colorName];
   if (selected) {
     borderColor = "border-gray-800";
