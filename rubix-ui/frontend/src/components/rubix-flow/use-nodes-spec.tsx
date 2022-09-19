@@ -29,7 +29,9 @@ export const useNodesSpec = () => {
           }
           return {
             name: input.name,
-            defaultValue: defaultValue as any,
+            defaultValue: input?.defaultValue
+              ? input.defaultValue
+              : (defaultValue as any),
             valueType: input.valueType,
           };
         });
