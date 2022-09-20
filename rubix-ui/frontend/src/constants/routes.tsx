@@ -11,9 +11,9 @@ export const ROUTES: ROUTE = {
   DOCS_DIPS: "/switch",
   APP_STORE: "/app-store",
   NETWORKING: "/networking",
+  RUBIX_FLOW: "/rubix-flow",
   FLOW_DEVICES: "/flow/networks/:networkUUID",
   FLOW_POINTS: "/flow/devices/:deviceUUID",
-
   CONNECTIONS: "/connections",
   LOCATIONS: "/connections/:connUUID/locations",
   LOCATION_NETWORKS: "/connections/:connUUID/locations/:locUUID/networks",

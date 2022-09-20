@@ -21,6 +21,7 @@ import {
   LeftOutlined,
   LockTwoTone,
   AppstoreOutlined,
+  CloudServerOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useLocation, NavLink } from "react-router-dom";
@@ -229,9 +230,14 @@ export const MenuSidebar = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const sidebarItems = [
-    { name: "Supervisors", icon: ApartmentOutlined, link: ROUTES.CONNECTIONS },
+    {
+      name: "Supervisors",
+      icon: CloudServerOutlined,
+      link: ROUTES.CONNECTIONS,
+    },
     { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
     { name: "Tools", icon: ToolOutlined, link: "" },
+    { name: "Flow", icon: ApartmentOutlined, link: ROUTES.RUBIX_FLOW },
   ];
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
