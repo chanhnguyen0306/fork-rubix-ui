@@ -12,7 +12,7 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
-import { Node } from "./components/Node";
+import { Node as NodePanel } from "./components/Node";
 import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
@@ -20,7 +20,7 @@ import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
-import { NodeSpecJSON } from "./lib";
+import { Node, NodeSpecJSON } from "./lib";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -32,6 +32,7 @@ const Flow = (props: any) => {
   const [edges, , onEdgesChange] = useEdgesState([]);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
+  const [nodePanelVisibility, setNodePanelVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
 
@@ -123,6 +124,11 @@ const Flow = (props: any) => {
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
   };
 
+  const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
+    e.preventDefault();
+    setNodePanelVisibility({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <ReactFlowProvider>
       <ReactFlow
@@ -137,6 +143,7 @@ const Flow = (props: any) => {
         onConnectStop={handleStopConnect}
         onPaneClick={handlePaneClick}
         onPaneContextMenu={handlePaneContextMenu}
+        onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
       >
@@ -155,6 +162,18 @@ const Flow = (props: any) => {
             onClose={closeNodePicker}
           />
         )}
+        {nodePanelVisibility && (
+          <div
+            className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
+            style={{
+              top: nodePanelVisibility.y - 20,
+              left: nodePanelVisibility.x - 125,
+            }}
+          >
+            <div className="bg-gray-500 p-2">Node Settings</div>
+            <div className="p-2">aaaaaaaa</div>
+          </div>
+        )}
       </ReactFlow>
     </ReactFlowProvider>
   );
@@ -165,7 +184,7 @@ export const RubixFlow = () => {
 
   const customNodeTypes = (nodesSpec as NodeSpecJSON[]).reduce(
     (nodes, node) => {
-      nodes[node.type] = (props: any) => <Node {...props} spec={node} />;
+      nodes[node.type] = (props: any) => <NodePanel {...props} spec={node} />;
       return nodes;
     },
     {} as NodeTypes
