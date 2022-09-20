@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"github.com/NubeIO/git/pkg/git"
 	"github.com/google/go-github/v32/github"
 	log "github.com/sirupsen/logrus"
+	"path"
 	"strings"
 )
 
@@ -71,8 +71,7 @@ func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git
 		return errors.New("store-download-app failed to match info")
 	}
 	assetName := stringIsNil(assetInfo.RepositoryRelease.Name)
-	dest := fmt.Sprintf("%s/%s", gitOptions.DownloadDestination, assetName)
-	dest = filePath(dest)
+	dest := path.Join(gitOptions.DownloadDestination, assetName)
 	err = gitClient.DownloadRelease(opts.Owner, opts.Repo, dest, intNil(assetInfo.RepositoryRelease.ID))
 	if err != nil {
 		return err

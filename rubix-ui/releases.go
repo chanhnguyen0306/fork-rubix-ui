@@ -38,7 +38,7 @@ func (inst *App) getLatestRelease() (string, error) {
 	// After this, the versions are properly sorted
 	sort.Sort(version.Collection(versions))
 	if len(versions) > 0 {
-		return versions[len(versions)-1].String(), nil
+		return fmt.Sprintf("v%s", versions[len(versions)-1].String()), nil
 	} else {
 		return "", nil
 	}

@@ -114,7 +114,7 @@ func (inst *App) storeGetPlugin(body *appstore.Plugin) (f *os.File, flowPlugin *
 
 func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flowPlugin *installer.BuildDetails, err error) {
 	var pluginPath string
-	var name = body.PluginName
+	var name = body.Name
 	var version = body.Version
 	var arch = body.Arch
 	if arch == "amd64" {
@@ -123,8 +123,8 @@ func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flo
 			return "", nil, err
 		}
 		for _, plg := range plugins {
-			if plg.MatchedName == name {
-				if plg.MatchedArch == arch {
+			if plg.Name == name {
+				if plg.Arch == arch {
 					pluginPath = fmt.Sprintf("%s/%s", path, plg.ZipName)
 					flowPlugin = &plg
 				}
@@ -137,7 +137,7 @@ func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flo
 			return "", nil, err
 		}
 		for _, plg := range plugins {
-			if plg.MatchedArch == arch {
+			if plg.Arch == arch {
 				pluginPath = fmt.Sprintf("%s/%s", path, plg.ZipName)
 				flowPlugin = &plg
 			}

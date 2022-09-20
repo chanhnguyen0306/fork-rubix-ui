@@ -65,8 +65,6 @@ github.com/NubeDev/flow-eng v0.0.4 h1:WKVNt7ofN59dQHlSYo3bFEBLc20Mi8bY+I6IvOYxbS
 github.com/NubeDev/flow-eng v0.0.4/go.mod h1:rd/AlPgj10Ml4fVE+IgiXDi1h31BIn1e+j+wofyLYKU=
 github.com/NubeIO/git v0.0.6 h1:BEmKKXOtWtbgRfw1TbDZlKlbaJXf9OFJe7IzJQ0uXeE=
 github.com/NubeIO/git v0.0.6/go.mod h1:ZjlhXM823d9sKQjv8d4pRugK9z6xJvPqLLX1onCVTbQ=
-github.com/NubeIO/lib-command v0.0.2 h1:jTg8YRSffIBsPAbU9X1Dn+L4bQ8e7PY2p7zJEcrTjrY=
-github.com/NubeIO/lib-command v0.0.2/go.mod h1:Qjl490ti7E47AhftOOvUfhAsM6NhZpBAeZlNfmy6Cd0=
 github.com/NubeIO/lib-date v0.0.6 h1:88Ki7UIOvDEKyd3vKJ7r4fiUeX25Q5iyMO5d0125wrA=
 github.com/NubeIO/lib-date v0.0.6/go.mod h1:VvpSwdwcVCaOgTN+Ad96nHBkFDWTt3VekG933QCtGtc=
 github.com/NubeIO/lib-dhcpd v0.0.2 h1:DC2qcVi3tsRkYlmmlTiZTvsHdFI9/HqSohVj131Pl4I=
@@ -77,12 +75,12 @@ github.com/NubeIO/lib-files v0.1.1 h1:sgqQ78VpFhbagawKCQglw0Y9o2Vww/c8nFPefDPFYf
 github.com/NubeIO/lib-files v0.1.1/go.mod h1:xi4mqMscDl6319i10LFowq5QvwChJLjqHCIJGkGa4RI=
 github.com/NubeIO/lib-networking v0.0.7 h1:8aN4gLs2SORtFanr0NuQ0n22HEY3KbGiMuAWV4daKr4=
 github.com/NubeIO/lib-networking v0.0.7/go.mod h1:wO04Ul6Wdr5w/7s8UMZzV1/HMXuVSVFzqq7h5A3Vl6k=
-github.com/NubeIO/lib-rubix-installer v0.2.2 h1:ex+PHubSmyxbp9PPiR4ygn9JqzKEbhCTDWeBUUwZ7IA=
-github.com/NubeIO/lib-rubix-installer v0.2.2/go.mod h1:dAhJ99dbXwDNXF4AAvIcbeDCJNir4JhJHa31lvFdPTY=
+github.com/NubeIO/lib-rubix-installer v0.3.0 h1:ovttVQhVSDNd/ZxydUP4tbf8yCQJJoa/kTD9KoBiQa4=
+github.com/NubeIO/lib-rubix-installer v0.3.0/go.mod h1:Ibvs0eGhYD77xp+qkPoAP1RSxos+JONHm3tXJ08S2kA=
 github.com/NubeIO/lib-schema v0.1.4 h1:/jq+cW3ZSIoEF5Ccoi42xoRJMDocJGDyGXCFfs50yGs=
 github.com/NubeIO/lib-schema v0.1.4/go.mod h1:TGKDA6IIWHDwr5Aabawj6FF7NXUWXqu4ozWfph/hIjw=
-github.com/NubeIO/lib-systemctl-go v0.1.2 h1:EcupXYDiuYBQF+byl8iAh1e0q38lCXm3U8zpsmMbf4E=
-github.com/NubeIO/lib-systemctl-go v0.1.2/go.mod h1:P/Ij5pgTtjNnp/TQhsvwipk8sv+5cbZdtuvHiPAYXCE=
+github.com/NubeIO/lib-systemctl-go v0.2.0 h1:Ch4UmA8LH+YoNVM02tfmb3olCyjmo+qKc7wCtxbq/aM=
+github.com/NubeIO/lib-systemctl-go v0.2.0/go.mod h1:P/Ij5pgTtjNnp/TQhsvwipk8sv+5cbZdtuvHiPAYXCE=
 github.com/NubeIO/lib-ufw v0.0.3 h1:dHzhUFyG6AJ9g+iQ18cYJNU6qO5Ad6dAaXKIRoGDa28=
 github.com/NubeIO/lib-ufw v0.0.3/go.mod h1:DC6oevpW1CH8WrJJm0trAKWonGUvV/wKrxAp3Y/peYI=
 github.com/NubeIO/lib-uuid v0.0.3 h1:OkjJWXLOLmEZozBYESsqXZUy9JJ3YKAfxpb2v9rDg6k=
@@ -94,10 +92,12 @@ github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7/go.mod h1:oLI6n9wuko0KIEzrL
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.0.4/go.mod h1:A1BPuc3UpE1EF3ugdf+8QIIKTT8s3eK+pfUcheJX2JM=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7 h1:gXg9rTIkV5kRQftSngiidUH/3wGcZghqLY8kATSyqx8=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
-github.com/NubeIO/rubix-assist v0.4.9 h1:J9Xa36INMNbJeQobItYjNNnIjN8GI1kDmh3bSjyugL0=
-github.com/NubeIO/rubix-assist v0.4.9/go.mod h1:heptrLDDOPg10+5dAZuWSiKYM+8zjCmBqMAaFIuEmvg=
-github.com/NubeIO/rubix-edge v0.2.0 h1:JqQazObYlunzqPGbGU/SivsBlm+Qv1zMed3uPecxLnk=
-github.com/NubeIO/rubix-edge v0.2.0/go.mod h1:6OVfQH8xXtevoMNRlM3jNrC+fiRHYA7XGeMoar73y+s=
+github.com/NubeIO/rubix-assist v0.5.0 h1:WNeedZXa0R5J5TuYsNvixxMkNwed8CTAWxgl6IGuTRo=
+github.com/NubeIO/rubix-assist v0.5.0/go.mod h1:Sr8mUU8/O6IEcZ5PGqdsntXUTnV91LGScteVXnYUqxE=
+github.com/NubeIO/rubix-edge v0.3.0 h1:RtstvcmTVNr6JJGga3FFBnkLedz/NZBxeUDD71oy/E4=
+github.com/NubeIO/rubix-edge v0.3.0/go.mod h1:FvJeLD52UpBDCxQdDqtTyw9LYI30dri2hNIL7heo+P4=
+github.com/NubeIO/rubix-registry-go v0.0.1 h1:CRCuE/2FxutuffFFePz9abmOoT/QVYJj6uyez7KARk4=
+github.com/NubeIO/rubix-registry-go v0.0.1/go.mod h1:nz/USWqKNI5Gp6hTNW5V8/Md284fo4ii88gMnqQ7Y2E=
 github.com/NubeIO/rubix-rules v0.0.1 h1:LgOg1eEejmr9Z350xgUUCbq3HOaiDjNIYsaJMGp6MDc=
 github.com/NubeIO/rubix-rules v0.0.1/go.mod h1:cWJzNGiBjhKW6rjpHrcJqI1vXalozKJmAvBDVLDDneg=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
@@ -123,6 +123,8 @@ github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZx
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
+github.com/bep/debounce v1.2.1 h1:v67fRdBA9UQu2NhLFXrSg0Brw7CexQekrBwDMM8bzeY=
+github.com/bep/debounce v1.2.1/go.mod h1:H8yggRPQKLUhUoqrJC1bO2xNya7vanpDl7xR3ISbCJ0=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/carlmjohnson/errutil v0.21.5/go.mod h1:DMNW3MBHsaV/EPm8pjs4sA/gNjNsG4rUzbAfOh++gSM=
 github.com/carlmjohnson/exitcode v0.20.2/go.mod h1:MZ6ThCDx517DQcrpYnnns1pLh8onjFl+B/AsrOrdmpc=
@@ -199,7 +201,6 @@ github.com/go-kit/log v0.1.0/go.mod h1:zbhenjAZHb184qTLMA9ZjW7ThYL0H2mk7Q6pNt4vb
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
-github.com/go-ole/go-ole v1.2.4/go.mod h1:XCwSNxSkXRo4vlyPy93sltvi/qJq0jqQhjqQNIwKuxM=
 github.com/go-ole/go-ole v1.2.6 h1:/Fpf6oFPoeFik9ty7siob0G6Ke8QvQEuVcuChpwXzpY=
 github.com/go-ole/go-ole v1.2.6/go.mod h1:pprOEPIfldk/42T2oK7lQ4v4JSDwmV0As9GaiUsvbm0=
 github.com/go-resty/resty/v2 v2.7.0 h1:me+K9p3uhSmXtrBZ4k9jcEAfJmuC8IivWHwaLZwPrFY=
@@ -296,7 +297,6 @@ github.com/google/pprof v0.0.0-20210601050228-01bbb1931b22/go.mod h1:kpwsk12EmLe
 github.com/google/pprof v0.0.0-20210609004039-a478d1d731e9/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/pprof v0.0.0-20210720184732-4bb14d4b1be1/go.mod h1:kpwsk12EmLew5upagYY7GY0pfYCcupk39gWOCRROcvE=
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
-github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
@@ -449,8 +449,6 @@ github.com/leaanthony/debme v1.2.1 h1:9Tgwf+kjcrbMQ4WnPcEIUcQuIZYqdWftzZkBr+i/oO
 github.com/leaanthony/debme v1.2.1/go.mod h1:3V+sCm5tYAgQymvSOfYQ5Xx2JCr+OXiD9Jkw3otUjiA=
 github.com/leaanthony/go-ansi-parser v1.0.1 h1:97v6c5kYppVsbScf4r/VZdXyQ21KQIfeQOk2DgKxGG4=
 github.com/leaanthony/go-ansi-parser v1.0.1/go.mod h1:7arTzgVI47srICYhvgUV4CGd063sGEeoSlych5yeSPM=
-github.com/leaanthony/go-common-file-dialog v1.0.3 h1:O0uGjKnWtdEADGrkg+TyAAbZylykMwwx/MNEXn9fp+Y=
-github.com/leaanthony/go-common-file-dialog v1.0.3/go.mod h1:TGhEc9eSJgRsupZ+iH1ZgAOnEo9zp05cRH2j08RPrF0=
 github.com/leaanthony/gosod v1.0.3 h1:Fnt+/B6NjQOVuCWOKYRREZnjGyvg+mEhd1nkkA04aTQ=
 github.com/leaanthony/gosod v1.0.3/go.mod h1:BJ2J+oHsQIyIQpnLPjnqFGTMnOZXDbvWtRCSG7jGxs4=
 github.com/leaanthony/slicer v1.5.0 h1:aHYTN8xbCCLxJmkNKiLB6tgcMARl4eWmH9/F+S/0HtY=
@@ -654,8 +652,8 @@ github.com/valyala/fasttemplate v1.2.1 h1:TVEnxayobAdVkhQfrfes2IzOB6o+z4roRkPF52
 github.com/valyala/fasttemplate v1.2.1/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
 github.com/wailsapp/mimetype v1.4.1 h1:pQN9ycO7uo4vsUUuPeHEYoUkLVkaRntMnHJxVwYhwHs=
 github.com/wailsapp/mimetype v1.4.1/go.mod h1:9aV5k31bBOv5z6u+QP8TltzvNGJPmNJD4XlAL3U+j3o=
-github.com/wailsapp/wails/v2 v2.0.0-beta.37 h1:LQpw4vXUl8v1tOyqIwbMVivclruUKpnYu8fRHIwcPkI=
-github.com/wailsapp/wails/v2 v2.0.0-beta.37/go.mod h1:dPVZfCu+SSg6HddAATME5Wj1ObXhSGIYDS7K88P383c=
+github.com/wailsapp/wails/v2 v2.0.0-beta.43 h1:k3XGylH7GYuMSFXPuCEtBbJIVIVHfcTdoXH1sR5u6LA=
+github.com/wailsapp/wails/v2 v2.0.0-beta.43/go.mod h1:GplgLNVum9fEKu7Y4nq289pxHs7Htbp/UG7uhPr5zD0=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
