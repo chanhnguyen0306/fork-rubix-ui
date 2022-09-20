@@ -1,11 +1,9 @@
 import { Node, OnConnectStartParams } from "react-flow-renderer/nocss";
 import { getSocketsByNodeTypeAndHandleType } from "./getSocketsByNodeTypeAndHandleType";
-import { NodeSpecJSON } from "../lib";
 import { generateUuid } from "../lib/generateUuid";
+import { getSpecJson } from "../use-nodes-spec";
 
-const specJSON = JSON.parse(
-  localStorage.getItem("spec-json")?.toString() || ""
-) as NodeSpecJSON[];
+const specJSON = getSpecJson();
 
 export const calculateNewEdge = (
   originNode: Node,

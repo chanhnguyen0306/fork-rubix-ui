@@ -2,6 +2,7 @@ import {
   MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useState,
 } from "react";
 import ReactFlow, {
@@ -19,18 +20,17 @@ import NodePicker from "./components/NodePicker";
 import { calculateNewEdge } from "./util/calculateNewEdge";
 import { customNodeTypes } from "./util/customNodeTypes";
 import { getNodePickerFilters } from "./util/getPickerFilters";
-import { NodeSpecJSON } from "./lib";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
+import { Spin } from "antd";
 
 const edgeTypes = {
   default: CustomEdge,
 };
 
-export const RubixFlow = () => {
-  const [nodesSpec] = useNodesSpec();
+const Flow = () => {
   const [nodes, , onNodesChange] = useNodesState([]);
   const [edges, , onEdgesChange] = useEdgesState([]);
   const [nodePickerVisibility, setNodePickerVisibility] =
@@ -162,6 +162,11 @@ export const RubixFlow = () => {
       </ReactFlow>
     </ReactFlowProvider>
   );
+};
+
+export const RubixFlow = () => {
+  const [nodesSpec] = useNodesSpec();
+  return <>{nodesSpec.length === 0 ? <Spin /> : <Flow />}</>;
 };
 
 export default RubixFlow;

@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { FlowFactory } from "./factory";
 import { NodeSpecJSON } from "./lib";
 
+export const SPEC_JSON = "spec-json";
+const _nodesSpec = JSON.parse("" + localStorage.getItem(SPEC_JSON)) || [];
+
+export const getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
+
 export const useNodesSpec = () => {
-  const [nodesSpec, setNodesSpec] = useState([] as NodeSpecJSON[]);
+  const [nodesSpec, setNodesSpec] = useState(getSpecJson);
   const factory = new FlowFactory();
 
   useEffect(() => {
