@@ -1,8 +1,8 @@
-import Debug from '../Debug';
-import Graph from '../Graphs/Graph';
-import GraphEvaluator from '../Graphs/GraphEvaluator';
-import Node from './Node';
-import NodeSocketRef from './NodeSocketRef';
+import Debug from "../Debug";
+import Graph from "../Graphs/Graph";
+import GraphEvaluator from "../Graphs/GraphEvaluator";
+import Node from "./Node";
+import NodeSocketRef from "./NodeSocketRef";
 
 // Purpose:
 //  - Avoid nodes having to access globals to referene the scene or trigger loaders.
@@ -15,7 +15,10 @@ export default class NodeEvalContext {
   public numCommits = 0;
   public readonly graph: Graph;
 
-  constructor(public readonly graphEvaluator: GraphEvaluator, public readonly node: Node) {
+  constructor(
+    public readonly graphEvaluator: GraphEvaluator,
+    public readonly node: Node
+  ) {
     this.graph = graphEvaluator.graph;
   }
 
@@ -34,7 +37,10 @@ export default class NodeEvalContext {
 
   evalFlow() {
     // confirm assumptions for an immediate evaluation
-    Debug.asset(this.node.isEvalNode, 'can not use evalFlow on non-Flow nodes, use evalImmediate instead');
+    Debug.asset(
+      this.node.isEvalNode,
+      "can not use evalFlow on non-Flow nodes, use evalImmediate instead"
+    );
 
     // read inputs all at once to avoid async inconsistencies.
     this.readInputs();
@@ -49,7 +55,9 @@ export default class NodeEvalContext {
   evalImmediate() {
     // confirm assumptions for an immediate evaluation
     if (this.node.isEvalNode) {
-      throw new Error('can not evalImmediate on Flow nodes, use evalFlow instead');
+      throw new Error(
+        "can not evalImmediate on Flow nodes, use evalFlow instead"
+      );
     }
 
     // read inputs all at once to avoid async inconsistencies.
@@ -58,7 +66,10 @@ export default class NodeEvalContext {
     this.node.evalFunc(this);
 
     // confirm assumptions for immediate evaluation.
-    Debug.asset(!this.async, 'evalImmediate can not handle evalPromise nodes, use evalFlow instead');
+    Debug.asset(
+      !this.async,
+      "evalImmediate can not handle evalPromise nodes, use evalFlow instead"
+    );
 
     this.writeOutputs();
   }
@@ -83,7 +94,9 @@ export default class NodeEvalContext {
   // TODO: this may want to cache the values on the creation of the NodeEvalContext
   // for re-entrant async operations, otherwise the inputs may change during operation.
   getInputValue(inputName: string): any {
-    const inputSocket = this.node.inputSockets.find((socket) => socket.name === inputName);
+    const inputSocket = this.node.inputSockets.find(
+      (socket) => socket.name === inputName
+    );
     if (inputSocket === undefined) {
       throw new Error(`can not find input socket with name ${inputName}`);
     }
@@ -91,25 +104,36 @@ export default class NodeEvalContext {
   }
 
   setOutputValue(outputName: string, value: any) {
-    const outputSocket = this.node.outputSockets.find((socket) => socket.name === outputName);
+    const outputSocket = this.node.outputSockets.find(
+      (socket) => socket.name === outputName
+    );
     if (outputSocket === undefined) {
       throw new Error(`can not find output socket with name ${outputName}`);
     }
-    if (outputSocket.valueTypeName === 'flow') {
-      throw new Error(`can not set the value of Flow output socket ${outputName}, use commit() instead`);
+    if (outputSocket.valueTypeName === "flow") {
+      throw new Error(
+        `can not set the value of Flow output socket ${outputName}, use commit() instead`
+      );
     }
     this.cachedOutputValues.set(outputName, value);
   }
 
-  commit(downstreamFlowSocketName: string, onDownstreamCompleted: (()=> void) | undefined = undefined) {
+  commit(
+    downstreamFlowSocketName: string,
+    onDownstreamCompleted: (() => void) | undefined = undefined
+  ) {
     this.numCommits++;
     this.writeOutputs();
-    this.graphEvaluator.commit(new NodeSocketRef(this.node.id, downstreamFlowSocketName), onDownstreamCompleted);
+    this.graphEvaluator.commit(
+      new NodeSocketRef(this.node.id, downstreamFlowSocketName),
+      onDownstreamCompleted
+    );
   }
 
   // eslint-disable-next-line class-methods-use-this
   log(text: string) {
-    Debug.logVerbose(`${this.graphEvaluator.graph.name}: ${this.node.typeName}:`);
-    console.log(`[${new Date().toLocaleString()}] ${text}`);
+    Debug.logVerbose(
+      `${this.graphEvaluator.graph.name}: ${this.node.typeName}:`
+    );
   }
 }

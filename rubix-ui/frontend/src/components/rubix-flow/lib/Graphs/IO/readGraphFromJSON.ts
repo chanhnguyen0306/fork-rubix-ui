@@ -15,14 +15,12 @@ export const readGraphFromJSON = (
   graph.name = graphJson.name || graph.name;
   graph.metadata = graphJson.metadata || graph.metadata;
 
-  // console.log('input JSON', JSON.stringify(nodesJson, null, 2));
   const nodesJson = graphJson.nodes;
 
   if (nodesJson.length === 0) {
     Debug.logWarn("readGraphFromJSON: no nodes specified");
   }
 
-  // create new BehaviorNode instances for each node in the json.
   for (let i = 0; i < nodesJson.length; i += 1) {
     const nodeJson = nodesJson[i];
 
@@ -86,12 +84,9 @@ export const readGraphFromJSON = (
 
   // connect up the graph edges from BehaviorNode inputs to outputs.  This is required to follow execution
   Object.values(graph.nodes).forEach((node) => {
-    // console.log(node);
     // initialize the inputs by resolving to the reference nodes.
     node.inputSockets.forEach((inputSocket) => {
-      // console.log(inputSocket);
       inputSocket.links.forEach((nodeSocketRef) => {
-        // console.log(nodeSocketRef);
         const upstreamNode = graph.nodes[nodeSocketRef.nodeId];
         if (upstreamNode === undefined) {
           throw new Error(
@@ -115,6 +110,5 @@ export const readGraphFromJSON = (
     });
   });
 
-  // console.log('output Graph', JSON.stringify(graph, null, 2));
   return graph;
 };

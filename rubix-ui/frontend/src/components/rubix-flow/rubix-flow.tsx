@@ -138,7 +138,6 @@ const Flow = (props: any) => {
         onPaneClick={handlePaneClick}
         onPaneContextMenu={handlePaneContextMenu}
         fitViewOptions={{ maxZoom: 1 }}
-        fitView
         deleteKeyCode={["Delete"]}
       >
         <Controls />

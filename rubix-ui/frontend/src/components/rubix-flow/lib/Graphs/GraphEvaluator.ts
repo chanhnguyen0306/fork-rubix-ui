@@ -1,28 +1,33 @@
 /* eslint-disable space-in-parens */
-import Debug from '../Debug';
-import Node from '../Nodes/Node';
-import NodeEvalContext from '../Nodes/NodeEvalContext';
-import NodeSocketRef from '../Nodes/NodeSocketRef';
-import Socket from '../Sockets/Socket';
-import Graph from './Graph';
+import Debug from "../Debug";
+import Node from "../Nodes/Node";
+import NodeEvalContext from "../Nodes/NodeEvalContext";
+import NodeSocketRef from "../Nodes/NodeSocketRef";
+import Socket from "../Sockets/Socket";
+import Graph from "./Graph";
 
 // eslint-disable-next-line no-promise-executor-return
-const sleep = (duration:number) => new Promise((resolve) => setTimeout(resolve, Math.round(duration * 1000)));
+const sleep = (duration: number) =>
+  new Promise((resolve) => setTimeout(resolve, Math.round(duration * 1000)));
 
 export default class GraphEvaluator {
   // tracking the next node+input socket to execute.
   public flowWorkQueue: NodeSocketRef[] = [];
   public asyncNodes: Node[] = [];
 
-  constructor(public graph: Graph, public verbose = false) {
-  }
+  constructor(public graph: Graph, public verbose = false) {}
 
   // maybe this should have an id?
   // IMPORTANT: should events somehow register themselves at graph initialization?  There is a missing step here.
   // This simplistic approach is okay if events do no have filters themselves.
-  triggerEvents(nodeName: string, outputValues: Map<string, any> = new Map<string, any>()): number {
+  triggerEvents(
+    nodeName: string,
+    outputValues: Map<string, any> = new Map<string, any>()
+  ): number {
     // look up any nodes with this trigger name and add them to the executionQueue
-    const nodes = Object.values(this.graph.nodes).filter((node) => (node.typeName === nodeName));
+    const nodes = Object.values(this.graph.nodes).filter(
+      (node) => node.typeName === nodeName
+    );
 
     nodes.forEach((node) => {
       // apply output values
@@ -33,14 +38,15 @@ export default class GraphEvaluator {
 
       let flowOutputCount = 0;
       node.outputSockets.forEach((outputSocket) => {
-        // console.log(outputSocket);
-        if (outputSocket.valueTypeName === 'flow') {
+        if (outputSocket.valueTypeName === "flow") {
           if (outputSocket.links.length === 1) {
             this.flowWorkQueue.push(outputSocket.links[0]);
             flowOutputCount++;
           }
           if (outputSocket.links.length > 1) {
-            throw new Error(`flow output ${node.typeName}.${outputSocket.name} has more than 1 downstream link, ${outputSocket.links.length}`);
+            throw new Error(
+              `flow output ${node.typeName}.${outputSocket.name} has more than 1 downstream link, ${outputSocket.links.length}`
+            );
           }
         }
       });
@@ -58,8 +64,10 @@ export default class GraphEvaluator {
   // It will also get stuck in a recursive loop when there are loops in the graph.
   // TODO: Replace with initial traversal to extract sub DAG, order it, and evaluate each node once.
   resolveInputValueFromSocket(inputSocket: Socket): any {
-    if (inputSocket.valueTypeName === 'flow') {
-      throw new Error(`can not resolve input values for Eval input sockets: ${inputSocket.name}`);
+    if (inputSocket.valueTypeName === "flow") {
+      throw new Error(
+        `can not resolve input values for Eval input sockets: ${inputSocket.name}`
+      );
     }
 
     // if it has no links, return the immediate value
@@ -67,11 +75,15 @@ export default class GraphEvaluator {
       return inputSocket.value;
     }
     if (inputSocket.links.length > 1) {
-      throw new Error(`input socket has too many links: ${inputSocket.name} has ${inputSocket.links.length} links`);
+      throw new Error(
+        `input socket has too many links: ${inputSocket.name} has ${inputSocket.links.length} links`
+      );
     }
 
     // what is inputSocket connected to?
-    const upstreamOutputSocket = this.graph.getOutputSocket(inputSocket.links[0]);
+    const upstreamOutputSocket = this.graph.getOutputSocket(
+      inputSocket.links[0]
+    );
 
     // if upstream node is an eval, we just return its last value.
     const upstreamNode = this.graph.nodes[inputSocket.links[0].nodeId];
@@ -88,7 +100,9 @@ export default class GraphEvaluator {
       this.resolveInputValueFromSocket(upstreamInputSocket);
     });
 
-    Debug.logVerbose(`GraphEvaluator: evaluating immediate node ${upstreamNode.typeName}`);
+    Debug.logVerbose(
+      `GraphEvaluator: evaluating immediate node ${upstreamNode.typeName}`
+    );
 
     const context = new NodeEvalContext(this, upstreamNode);
     context.evalImmediate();
@@ -101,18 +115,27 @@ export default class GraphEvaluator {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  commit(outputFlowSocket: NodeSocketRef, onDownstreamCompleted: (()=> void) | undefined = undefined) {
+  commit(
+    outputFlowSocket: NodeSocketRef,
+    onDownstreamCompleted: (() => void) | undefined = undefined
+  ) {
     const node = this.graph.nodes[outputFlowSocket.nodeId];
     const outputSocket = node.getOutputSocket(outputFlowSocket.socketName);
 
-    Debug.logVerbose(`GraphEvaluator: commit: ${node.typeName}.${outputSocket.name}`);
+    Debug.logVerbose(
+      `GraphEvaluator: commit: ${node.typeName}.${outputSocket.name}`
+    );
 
     if (outputSocket.links.length > 1) {
-      throw new Error('invalid for an output flow socket to have multiple downstream links:'
-      + `${node.typeName}.${outputSocket.name} has ${outputSocket.links.length} downlinks`);
+      throw new Error(
+        "invalid for an output flow socket to have multiple downstream links:" +
+          `${node.typeName}.${outputSocket.name} has ${outputSocket.links.length} downlinks`
+      );
     }
     if (outputSocket.links.length === 1) {
-      Debug.logVerbose(`GraphEvaluator: scheduling next flow node: ${outputSocket.links[0].nodeId}.${outputSocket.links[0].socketName}`);
+      Debug.logVerbose(
+        `GraphEvaluator: scheduling next flow node: ${outputSocket.links[0].nodeId}.${outputSocket.links[0].socketName}`
+      );
 
       this.flowWorkQueue.push(outputSocket.links[0]);
     }
@@ -133,12 +156,12 @@ export default class GraphEvaluator {
     // first resolve all input values
     // flow socket is set to true for the one flowing in, while all others are set to false.
     node.inputSockets.forEach((inputSocket) => {
-      if (inputSocket.valueTypeName !== 'flow') {
+      if (inputSocket.valueTypeName !== "flow") {
         // eslint-disable-next-line no-param-reassign
         this.resolveInputValueFromSocket(inputSocket);
       } else {
         // eslint-disable-next-line no-param-reassign
-        inputSocket.value = (inputSocket.name === nodeSocketRef.socketName);
+        inputSocket.value = inputSocket.name === nodeSocketRef.socketName;
       }
     });
 
@@ -152,18 +175,22 @@ export default class GraphEvaluator {
       // ensure this is auto-commit compatible.
       let numFlowOutputs = 0;
       node.outputSockets.forEach((outputSocket) => {
-        if (outputSocket.valueTypeName === 'flow') {
+        if (outputSocket.valueTypeName === "flow") {
           numFlowOutputs++;
         }
       });
 
       if (numFlowOutputs !== 1) {
-        throw new Error(`can not use auto-commit if there are multiple flow outputs, number of outputs is ${numFlowOutputs} on ${node.typeName}`);
+        throw new Error(
+          `can not use auto-commit if there are multiple flow outputs, number of outputs is ${numFlowOutputs} on ${node.typeName}`
+        );
       }
 
       node.outputSockets.forEach((outputSocket) => {
-        if (outputSocket.valueTypeName === 'flow') {
-          this.commit(new NodeSocketRef(nodeSocketRef.nodeId, outputSocket.name));
+        if (outputSocket.valueTypeName === "flow") {
+          this.commit(
+            new NodeSocketRef(nodeSocketRef.nodeId, outputSocket.name)
+          );
         }
       });
     }
@@ -174,28 +201,37 @@ export default class GraphEvaluator {
   // NOTE: This does not execute all if there are promises.
   executeAll(stepLimit: number = 100000000): number {
     let stepsExecuted = 0;
-    while ((stepsExecuted < stepLimit) && this.executeStep()) {
+    while (stepsExecuted < stepLimit && this.executeStep()) {
       stepsExecuted++;
     }
     return stepsExecuted;
   }
 
-  async executeAllAsync(timeLimit = 100, stepLimit: number = 100000000): Promise<number> {
+  async executeAllAsync(
+    timeLimit = 100,
+    stepLimit: number = 100000000
+  ): Promise<number> {
     const startDateTime = Date.now();
     let stepsExecuted = 0;
     let elapsedTime = 0;
     let iterations = 0;
     do {
-      if ( iterations > 0 ) {
+      if (iterations > 0) {
         // eslint-disable-next-line no-await-in-loop
         await sleep(0);
       }
       stepsExecuted += this.executeAll(stepLimit);
       Debug.logVerbose(`this.asyncNodes.length: ${this.asyncNodes.length}`);
-      Debug.logVerbose(`this.flowWorkQueue.length: ${this.flowWorkQueue.length}`);
-      elapsedTime = ( Date.now() - startDateTime ) * 0.001;
+      Debug.logVerbose(
+        `this.flowWorkQueue.length: ${this.flowWorkQueue.length}`
+      );
+      elapsedTime = (Date.now() - startDateTime) * 0.001;
       iterations += 1;
-    } while ((this.asyncNodes.length > 0 || this.flowWorkQueue.length > 0) && ( elapsedTime < timeLimit ) && stepsExecuted < stepLimit);
+    } while (
+      (this.asyncNodes.length > 0 || this.flowWorkQueue.length > 0) &&
+      elapsedTime < timeLimit &&
+      stepsExecuted < stepLimit
+    );
 
     return stepsExecuted;
   }

@@ -29,7 +29,6 @@ export const TokenModal = (props: any) => {
       gitToken ? setToken(gitToken) : setToken("");
     } catch (error) {
       console.log(error);
-    } finally {
     }
   };
 
@@ -44,9 +43,8 @@ export const TokenModal = (props: any) => {
       setSettings(res);
       openNotificationWithIcon("success", "Update Token Successful!");
       onClose();
-    } catch (error) {
+    } catch {
       setToken("");
-      console.log(error);
     } finally {
       setConfirmLoading(false);
     }
