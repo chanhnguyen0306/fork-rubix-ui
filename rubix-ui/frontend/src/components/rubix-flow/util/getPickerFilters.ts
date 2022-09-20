@@ -3,8 +3,6 @@ import { NodePickerFilters } from "../components/NodePicker";
 import { getSocketsByNodeTypeAndHandleType } from "./getSocketsByNodeTypeAndHandleType";
 import { getSpecJson } from "../use-nodes-spec";
 
-const specJSON = getSpecJson();
-
 export const getNodePickerFilters = (
   nodes: Node[],
   params: OnConnectStartParams | undefined
@@ -13,6 +11,8 @@ export const getNodePickerFilters = (
 
   const originNode = nodes.find((node) => node.id === params.nodeId);
   if (originNode === undefined) return;
+
+  const specJSON = getSpecJson();
 
   const sockets = getSocketsByNodeTypeAndHandleType(
     specJSON,

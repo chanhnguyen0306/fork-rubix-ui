@@ -1,15 +1,10 @@
-import {
-  MouseEvent as ReactMouseEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
   Connection,
   Controls,
+  NodeTypes,
   OnConnectStartParams,
   useEdgesState,
   useNodesState,
@@ -17,20 +12,22 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
+import { Node } from "./components/Node";
 import { calculateNewEdge } from "./util/calculateNewEdge";
-import { customNodeTypes } from "./util/customNodeTypes";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
+import { NodeSpecJSON } from "./lib";
 
 const edgeTypes = {
   default: CustomEdge,
 };
 
-const Flow = () => {
+const Flow = (props: any) => {
+  const { customNodeTypes } = props;
   const [nodes, , onNodesChange] = useNodesState([]);
   const [edges, , onEdgesChange] = useEdgesState([]);
   const [nodePickerVisibility, setNodePickerVisibility] =
@@ -166,7 +163,24 @@ const Flow = () => {
 
 export const RubixFlow = () => {
   const [nodesSpec] = useNodesSpec();
-  return <>{nodesSpec.length === 0 ? <Spin /> : <Flow />}</>;
+
+  const customNodeTypes = (nodesSpec as NodeSpecJSON[]).reduce(
+    (nodes, node) => {
+      nodes[node.type] = (props: any) => <Node {...props} spec={node} />;
+      return nodes;
+    },
+    {} as NodeTypes
+  );
+
+  return (
+    <>
+      {nodesSpec.length > 0 ? (
+        <Flow customNodeTypes={customNodeTypes} />
+      ) : (
+        <Spin />
+      )}
+    </>
+  );
 };
 
 export default RubixFlow;

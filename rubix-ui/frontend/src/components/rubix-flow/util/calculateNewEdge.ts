@@ -3,14 +3,14 @@ import { getSocketsByNodeTypeAndHandleType } from "./getSocketsByNodeTypeAndHand
 import { generateUuid } from "../lib/generateUuid";
 import { getSpecJson } from "../use-nodes-spec";
 
-const specJSON = getSpecJson();
-
 export const calculateNewEdge = (
   originNode: Node,
   destinationNodeType: string,
   destinationNodeId: string,
   connection: OnConnectStartParams
 ) => {
+  const specJSON = getSpecJson();
+
   const sockets = getSocketsByNodeTypeAndHandleType(
     specJSON,
     originNode.type,

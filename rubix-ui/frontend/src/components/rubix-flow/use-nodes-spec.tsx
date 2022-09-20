@@ -5,7 +5,7 @@ import { NodeSpecJSON } from "./lib";
 export const SPEC_JSON = "spec-json";
 const _nodesSpec = JSON.parse("" + localStorage.getItem(SPEC_JSON)) || [];
 
-export const getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
+export let getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
 
 export const useNodesSpec = () => {
   const [nodesSpec, setNodesSpec] = useState(getSpecJson);
@@ -44,6 +44,7 @@ export const useNodesSpec = () => {
       return node;
     });
     setNodesSpec(specJSON);
+    getSpecJson = () => specJSON;
     localStorage.setItem("spec-json", JSON.stringify(specJSON));
   };
 
