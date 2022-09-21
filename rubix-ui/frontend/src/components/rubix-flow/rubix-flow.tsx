@@ -115,6 +115,7 @@ const Flow = (props: any) => {
   const closeNodePicker = () => {
     setLastConnectStart(undefined);
     setNodePickerVisibility(undefined);
+    setNodePanelVisibility(undefined);
   };
 
   const handlePaneClick = () => closeNodePicker();
