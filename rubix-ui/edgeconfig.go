@@ -81,7 +81,7 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 		config.DeviceId = 2508
 	}
 
-	log.Infof("write bacnet config device-name:%s device-id:%d", config.ServerName, config.DeviceId)
+	log.Infof("write bacnet config device-name: %s device-id: %d", config.ServerName, config.DeviceId)
 
 	bacnetConfig := &configBACnetServer{
 		ServerName: config.ServerName,
@@ -147,7 +147,7 @@ func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
 			return err
 		}
 		if bacnetConfig != nil {
-			log.Infof("read bacnet config device-name:%s device-id:%d", bacnetConfig.ServerName, bacnetConfig.DeviceId)
+			log.Infof("read bacnet config device-name: %s device-id: %d", bacnetConfig.ServerName, bacnetConfig.DeviceId)
 		}
 		_, err = inst.edgeWriteBACnetConfig(connUUID, hostUUID, bacnetConfig)
 		if err != nil {

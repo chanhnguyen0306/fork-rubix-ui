@@ -11,7 +11,7 @@ import (
 func (inst *App) GetReleases() []store.Release {
 	out, err := inst.getReleases()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error get releases:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get releases: %s", err.Error()))
 		return nil
 	}
 	return out
@@ -48,7 +48,7 @@ func (inst *App) getLatestRelease() (string, error) {
 func (inst *App) GetRelease(uuid string) *store.Release {
 	out, err := inst.getRelease(uuid)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error get release:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get release: %s", err.Error()))
 		return nil
 	}
 	return out
@@ -61,7 +61,7 @@ func (inst *App) getRelease(uuid string) (*store.Release, error) {
 func (inst *App) GetReleaseByVersion(version string) *store.Release {
 	out, err := inst.getReleaseByVersion(version)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error get release by version:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error get release by version: %s", err.Error()))
 		return nil
 	}
 	return out
@@ -78,7 +78,7 @@ func (inst *App) getReleaseByVersion(version string) (*store.Release, error) {
 		return nil, err
 	}
 	if v == nil {
-		return nil, errors.New(fmt.Sprintf("filed to find release by version:%s", version))
+		return nil, errors.New(fmt.Sprintf("filed to find release by version: %s", version))
 	}
 	return v, nil
 
@@ -94,13 +94,13 @@ func (inst *App) getAppFromReleases(version, appName string) (*store.Apps, error
 			return &apps, err
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("failed to find app by name:%s", appName))
+	return nil, errors.New(fmt.Sprintf("failed to find app by name: %s", appName))
 }
 
 func (inst *App) AddRelease(token, version string) *store.Release {
 	out, err := inst.addRelease(token, version)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error add release:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error add release: %s", err.Error()))
 		return nil
 	}
 	return out

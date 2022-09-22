@@ -11,7 +11,7 @@ import (
 func (inst *App) GitListReleases(token string) []store.ReleaseList {
 	out, err := inst.gitListReleases(token)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error list releases:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error list releases: %s", err.Error()))
 		return []store.ReleaseList{}
 	}
 	return out
@@ -56,10 +56,10 @@ func (inst *App) gitDownloadAllRelease(runDownloads bool) error {
 	for _, release := range releases {
 		downloadRelease, err := inst.addRelease(gitToken, release.Path)
 		if err != nil {
-			log.Infof("GIT downloaded error:%s", err.Error())
+			log.Infof("GIT downloaded error: %s", err.Error())
 			return err
 		}
-		log.Infof("GIT downloaded release:%s  path:%s name:%s", downloadRelease.Release, release.Path, release.Name)
+		log.Infof("GIT downloaded release: %s  path: %s name: %s", downloadRelease.Release, release.Path, release.Name)
 	}
 	return nil
 
