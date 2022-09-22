@@ -13,7 +13,7 @@ export const useChangeNodeData = (id: string) => {
             ...n,
             data: {
               ...n.data,
-              [key]: value,
+              [key]: value ? value : null,
             },
           };
         })

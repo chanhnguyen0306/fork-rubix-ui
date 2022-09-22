@@ -52,10 +52,14 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="number"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={value}
-                  onChange={(e) =>
-                    onChange(name, Number(e.currentTarget.value))
-                  }
+                  value={value ? value : ""}
+                  onChange={(e) => {
+                    const inputVal =
+                      e && e.currentTarget.value
+                        ? Number(e.currentTarget.value)
+                        : null;
+                    onChange(name, inputVal);
+                  }}
                 />
               )}
               {valueType === "boolean" && (

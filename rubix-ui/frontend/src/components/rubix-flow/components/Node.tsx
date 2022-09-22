@@ -41,7 +41,6 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
       selected={selected}
     >
       {pairs.map(([input, output], ix) => {
-        if (input && !data[input.name]) data[input.name] = input.defaultValue;
         return (
           <div
             key={ix}
