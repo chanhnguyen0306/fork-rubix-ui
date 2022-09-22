@@ -23,12 +23,16 @@ export const InputSocket = ({
   onChange,
   name,
   valueType,
-  defaultValue,
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
   const [backgroundColor, borderColor] = colors[colorName];
+
+  const onChangeInputNumber = (e: React.FormEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value ? Number(e.currentTarget.value) : null;
+    onChange(name, value);
+  };
 
   return (
     <div className="flex grow items-center justify-start h-7">
@@ -52,14 +56,8 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="number"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={value ? value : ""}
-                  onChange={(e) => {
-                    const inputVal =
-                      e && e.currentTarget.value
-                        ? Number(e.currentTarget.value)
-                        : null;
-                    onChange(name, inputVal);
-                  }}
+                  value={String(value)}
+                  onChange={(e) => onChangeInputNumber(e)}
                 />
               )}
               {valueType === "boolean" && (

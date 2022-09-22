@@ -41,6 +41,9 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
       selected={selected}
     >
       {pairs.map(([input, output], ix) => {
+        if (input && !data[input.name] && data[input.name] !== null) {
+          data[input.name] = input.defaultValue;
+        }
         return (
           <div
             key={ix}
@@ -49,7 +52,7 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
             {input && (
               <InputSocket
                 {...input}
-                value={data[input.name] ?? input.defaultValue}
+                value={data[input.name]}
                 onChange={handleChange}
                 connected={isHandleConnected(edges, id, input.name, "target")}
               />
