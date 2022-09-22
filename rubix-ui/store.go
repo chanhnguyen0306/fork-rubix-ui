@@ -26,10 +26,10 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 	}
 	if appName == flowFramework { // just download all plugins
 		for _, plugin := range release.Plugins {
-			inst.crudMessage(true, fmt.Sprintf("try to download plugin:%s version:%s", plugin.Plugin, release.Release))
+			inst.crudMessage(true, fmt.Sprintf("try to download plugin: %s version: %s", plugin.Plugin, release.Release))
 			_, err := inst.store.DownloadFlowPlugin(token, release.Release, plugin.Plugin, arch, releaseVersion, cleanDownload)
 			if err != nil {
-				inst.crudMessage(false, fmt.Sprintf("download plugin err:%s", err.Error()))
+				inst.crudMessage(false, fmt.Sprintf("download plugin err: %s", err.Error()))
 				return nil, err
 			}
 			out.Plugins = append(out.Plugins, plugin.Plugin)
@@ -39,13 +39,13 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 		if app.Name == appName {
 			if len(app.PluginDependency) > 0 { // if required download any plugins
 				for _, plugin := range app.PluginDependency {
-					inst.crudMessage(true, fmt.Sprintf("try to download plugin:%s version:%s", plugin, release.Release))
+					inst.crudMessage(true, fmt.Sprintf("try to download plugin: %s version: %s", plugin, release.Release))
 					_, err := inst.store.DownloadFlowPlugin(token, release.Release, plugin, arch, releaseVersion, cleanDownload)
 					if err != nil {
-						inst.crudMessage(false, fmt.Sprintf("download plugin err:%s", err.Error()))
+						inst.crudMessage(false, fmt.Sprintf("download plugin err: %s", err.Error()))
 						return nil, err
 					}
-					inst.crudMessage(true, fmt.Sprintf("download plugin:%s ok", plugin))
+					inst.crudMessage(true, fmt.Sprintf("download plugin: %s ok", plugin))
 					out.Plugins = append(out.Plugins, plugin)
 				}
 			}
@@ -57,41 +57,41 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *store.InstallResponse {
 	out := &store.InstallResponse{}
 	inst.store.Arch = arch
-	inst.crudMessage(true, fmt.Sprintf("try and download app:%s release:%s", appName, releaseVersion))
+	inst.crudMessage(true, fmt.Sprintf("try and download app: %s release: %s", appName, releaseVersion))
 	getRelease, err := inst.addRelease(token, releaseVersion)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error download release err:%s", err.Error()))
+		inst.crudMessage(false, fmt.Sprintf("error download release err: %s", err.Error()))
 		return nil
 	}
 	for _, app := range getRelease.Apps {
 		if appName == rubixWires && app.Name == rubixWires { // download wires
-			inst.crudMessage(true, fmt.Sprintf("try to download app:%s version:%s", appName, app.Version))
+			inst.crudMessage(true, fmt.Sprintf("try to download app: %s version: %s", appName, app.Version))
 			asset, err := inst.store.DownloadWires(token, app.Version, cleanDownload)
 			if err != nil {
-				inst.crudMessage(false, fmt.Sprintf("download rubix-wires err:%s", err.Error()))
+				inst.crudMessage(false, fmt.Sprintf("download rubix-wires err: %s", err.Error()))
 				return nil
 			}
 			out.AppName = asset.Name
 			out.AppVersion = asset.Version
-			inst.crudMessage(true, fmt.Sprintf("download app:%s ok", appName))
+			inst.crudMessage(true, fmt.Sprintf("download app: %s ok", appName))
 		} else if app.Name == appName { // download any other as needed
 			opts := git.DownloadOptions{
 				AssetName: app.Repo,
 				MatchName: true,
 				MatchArch: true,
 			}
-			inst.crudMessage(true, fmt.Sprintf("try to download app:%s version:%s", appName, app.Version))
+			inst.crudMessage(true, fmt.Sprintf("try to download app: %s version: %s", appName, app.Version))
 			asset, err := inst.store.GitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, releaseVersion, cleanDownload, opts)
 			if err != nil {
-				inst.crudMessage(false, fmt.Sprintf("download app err:%s", err.Error()))
+				inst.crudMessage(false, fmt.Sprintf("download app err: %s", err.Error()))
 				return nil
 			}
 			out.AppName = asset.Name
 			out.AppVersion = asset.Version
-			inst.crudMessage(true, fmt.Sprintf("download app:%s ok", appName))
+			inst.crudMessage(true, fmt.Sprintf("download app: %s ok", appName))
 			downloadPlugins, err := inst.storeDownloadPlugins(token, appName, releaseVersion, arch, cleanDownload, getRelease)
 			if err != nil {
-				inst.crudMessage(false, fmt.Sprintf("download app err:%s", err.Error()))
+				inst.crudMessage(false, fmt.Sprintf("download app err: %s", err.Error()))
 				return nil
 			}
 			if downloadPlugins != nil {
@@ -144,7 +144,7 @@ func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flo
 		}
 	}
 	if pluginPath == "" {
-		return "", nil, errors.New(fmt.Sprintf("failed to find plugin:%s version:%s arch:%s", name, version, arch))
+		return "", nil, errors.New(fmt.Sprintf("failed to find plugin: %s version: %s arch: %s", name, version, arch))
 	}
 	return pluginPath, flowPlugin, nil
 

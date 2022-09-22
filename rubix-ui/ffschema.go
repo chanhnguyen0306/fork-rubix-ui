@@ -50,7 +50,7 @@ func setPluginURL(pluginName, netDevOrPoint string) (string, error) {
 		url = fmt.Sprintf("ff/api/plugins/api/%s/schema/json/%s", pluginName, netDevOrPoint)
 	}
 	if url == "" {
-		return "", errors.New(fmt.Sprintf("invaild plugin name was provided:%s", pluginName))
+		return "", errors.New(fmt.Sprintf("invaild plugin name was provided: %s", pluginName))
 	}
 	return url, nil
 }
