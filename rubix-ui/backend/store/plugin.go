@@ -22,7 +22,7 @@ func (inst *Store) StoreListPluginsAmd64(version string) ([]installer.BuildDetai
 	}
 	var plugins []installer.BuildDetails
 	for _, file := range files {
-		plugins = append(plugins, *inst.assistStore.PluginZipDetails(file.Name()))
+		plugins = append(plugins, *inst.App.GetZipBuildDetails(file.Name()))
 	}
 	return plugins, pluginStore, err
 }
@@ -42,7 +42,7 @@ func (inst *Store) StoreListPluginsArm(version string) ([]installer.BuildDetails
 	var plugins []installer.BuildDetails
 	for _, file := range files {
 		fmt.Println(file.Name())
-		plugins = append(plugins, *inst.assistStore.PluginZipDetails(file.Name()))
+		plugins = append(plugins, *inst.App.GetZipBuildDetails(file.Name()))
 	}
 	return plugins, pluginStore, err
 }

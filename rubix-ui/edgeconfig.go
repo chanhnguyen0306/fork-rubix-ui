@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
@@ -17,12 +17,12 @@ func (inst *App) edgeWriteWiresConfig(connUUID, hostUUID string) (*assitcli.Mess
 PORT=1313
 SECRET_KEY=__SECRET_KEY__
 `
-	writeConfig := &appstore.EdgeConfig{
+	writeConfig := &assistmodel.EdgeConfig{
 		AppName:      rubixWires,
 		BodyAsString: config,
-		ConfigType:   configEnv,
+		ConfigName:   configEnv,
 	}
-	return client.EdgeWriteConfigYml(hostUUID, writeConfig)
+	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
 
 type ConfigBACnetServer struct {
@@ -106,16 +106,15 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 	if err != nil {
 		return nil, err
 	}
-	writeConfig := &appstore.EdgeConfig{
+	writeConfig := &assistmodel.EdgeConfig{
 		AppName:    bacnetServerDriver,
 		Body:       bacnetConfig,
-		ConfigType: configYml,
+		ConfigName: configYml,
 	}
-	return client.EdgeWriteConfigYml(hostUUID, writeConfig)
-
+	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
 
-func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) (*appstore.EdgeConfig, error) {
+func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) (*assistmodel.EdgeConfigResponse, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
