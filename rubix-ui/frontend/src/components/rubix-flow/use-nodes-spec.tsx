@@ -36,7 +36,7 @@ export const useNodesSpec = () => {
             name: input.name,
             defaultValue: input?.defaultValue
               ? input.defaultValue
-              : (defaultValue as any),
+              : defaultValue,
             valueType: input.valueType,
           };
         });
