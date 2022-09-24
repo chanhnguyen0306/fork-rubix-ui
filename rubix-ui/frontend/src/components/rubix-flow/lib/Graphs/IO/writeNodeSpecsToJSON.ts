@@ -19,14 +19,13 @@ export const writeNodeSpecsToJSON = (
       inputs: [],
       outputs: [],
     };
-
     node.inputSockets.forEach((inputSocket) => {
       const socketSpecJSON: InputSocketSpecJSON = {
         name: inputSocket.name,
         defaultValue: inputSocket.value,
         valueType: inputSocket.valueTypeName,
       };
-      nodeSpecJSON.inputs.push(socketSpecJSON);
+      nodeSpecJSON.inputs?.push(socketSpecJSON);
     });
 
     node.outputSockets.forEach((outputSocket) => {
@@ -34,7 +33,7 @@ export const writeNodeSpecsToJSON = (
         name: outputSocket.name,
         valueType: outputSocket.valueTypeName,
       };
-      nodeSpecJSON.outputs.push(socketSpecJSON);
+      nodeSpecJSON.outputs?.push(socketSpecJSON);
     });
 
     nodeSpecsJSON.push(nodeSpecJSON);

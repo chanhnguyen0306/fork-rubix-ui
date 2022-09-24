@@ -32,8 +32,9 @@ const NodePicker = ({
   let filtered = nodesSpec as NodeSpecJSON[];
   if (filters !== undefined) {
     filtered = filtered.filter((node) => {
-      const sockets =
-        filters?.handleType === "source" ? node.outputs : node.inputs;
+      const inputs = node.inputs ?? [];
+      const outputs = node.outputs ?? [];
+      const sockets = filters?.handleType === "source" ? outputs : inputs;
       return sockets.some((socket) => socket.valueType === filters?.valueType);
     });
   }

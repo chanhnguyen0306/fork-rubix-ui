@@ -33,7 +33,8 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
 export const Node = ({ id, data, spec, selected }: NodeProps) => {
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
-  const pairs = getPairs(spec.inputs, spec.outputs);
+  const pairs = getPairs(spec.inputs || [], spec.outputs || []);
+
   return (
     <NodeContainer
       title={getTitle(spec.type)}
