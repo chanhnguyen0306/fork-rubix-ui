@@ -8,23 +8,25 @@ import (
 )
 
 type Apps struct {
-	Name                    string   `json:"name"`
-	Repo                    string   `json:"repo"`
-	Description             string   `json:"description"`
-	Port                    int      `json:"port,omitempty"`
-	Transport               string   `json:"transport"`
-	AppSpecficExecStart     string   `json:"app_specfic_exec_start"`
-	CustomServiceExecStart  string   `json:"custom_service_exec_start,omitempty"`
-	ServiceWorkingDirectory string   `json:"service_working_directory"`
-	EnvironmentVars         []string `json:"environment_vars"`
-	Products                []string `json:"products"`
-	Arch                    []string `json:"arch"`
-	Version                 string   `json:"version"`
-	MinVersion              string   `json:"min_version,omitempty"`
-	MaxVersion              string   `json:"max_version"`
-	FlowDependency          bool     `json:"flow_dependency"`
-	PluginDependency        []string `json:"plugin_dependency"`
-	ServiceDependency       []string `json:"service_dependency"`
+	Name                            string   `json:"name"`
+	Repo                            string   `json:"repo"`
+	Description                     string   `json:"description"`
+	Port                            int      `json:"port,omitempty"`
+	Transport                       string   `json:"transport"`
+	ExecStart                       string   `json:"exec_start"`
+	AttachWorkingDirOnExecStart     bool     `json:"attach_working_dir_on_exec_start"`
+	EnvironmentVars                 []string `json:"environment_vars"`
+	Products                        []string `json:"products"`
+	Arch                            []string `json:"arch"`
+	Version                         string   `json:"version"`
+	MinVersion                      string   `json:"min_version,omitempty"`
+	MaxVersion                      string   `json:"max_version"`
+	FlowDependency                  bool     `json:"flow_dependency"`
+	PluginDependency                []string `json:"plugin_dependency"`
+	ServiceDependency               []string `json:"service_dependency"`
+	DoNotValidateArch               bool     `json:"do_not_validate_arch"`
+	MoveExtractedFileToNameApp      bool     `json:"move_extracted_file_to_name_app"`
+	MoveOneLevelInsideFileToOutside bool     `json:"move_one_level_inside_file_to_outside"`
 }
 
 type Plugins struct {
@@ -68,7 +70,7 @@ type ReleaseList struct {
 	URL  string `json:"url"`
 }
 
-//DownLoadReleases pass in the path: "flow/v0.6.1.json"
+// DownLoadReleases pass in the path: "flow/v0.6.1.json"
 func (inst *Store) DownLoadReleases(token, path string) (*Release, error) {
 	opts := &git.AssetOptions{
 		Owner: "NubeIO",

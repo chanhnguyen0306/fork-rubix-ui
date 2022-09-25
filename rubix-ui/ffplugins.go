@@ -22,7 +22,7 @@ func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []Plugi
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("restart network driver fail: %s", plg.Name))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("restart network driver:%s", plg.Name))
+			inst.crudMessage(true, fmt.Sprintf("restart network driver: %s", plg.Name))
 		}
 	}
 	return "ok"
@@ -63,7 +63,7 @@ func (inst *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.
 			return &plg, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("no plugin found with that name:%s", pluginName))
+	return nil, errors.New(fmt.Sprintf("no plugin found with that name: %s", pluginName))
 }
 
 func (inst *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginConf {
@@ -110,7 +110,7 @@ func (inst *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []Plugi
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("disabled modbus fail: %s", plg.Name))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("disabled modbus:%s", plg.Name))
+			inst.crudMessage(true, fmt.Sprintf("disabled modbus: %s", plg.Name))
 		}
 	}
 	return "ok"
@@ -127,7 +127,7 @@ func (inst *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []Plugin
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("enable modbus fail: %s", plg.Name))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("enabled modbus:%s", plg.Name))
+			inst.crudMessage(true, fmt.Sprintf("enabled modbus: %s", plg.Name))
 		}
 	}
 	return "ok"

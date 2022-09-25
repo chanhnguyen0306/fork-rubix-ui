@@ -54,7 +54,7 @@ func NewApp() *App {
 	}
 	appStore, err := store.New(str)
 	if err != nil {
-		log.Fatalf("init store on start of app err:%s", err.Error())
+		log.Fatalf("init store on start of app err: %s", err.Error())
 	}
 	app.store = appStore
 	return app
@@ -108,7 +108,7 @@ func (inst *App) initConnection(body *AssistClient) (*assitcli.Client, error) {
 		err = inst.errMsg(errors.New("failed to find a connection"))
 		return nil, errors.New("failed to find a connection")
 	}
-	log.Infof("get connection:%s ip:%s port:%d", connUUID, connection.IP, connection.Port)
+	log.Infof("get connection: %s ip: %s port: %d", connUUID, connection.IP, connection.Port)
 	cli := assitcli.New(&assitcli.Client{
 		URL:         connection.IP,
 		Port:        connection.Port,
@@ -133,26 +133,26 @@ type AssistClient struct {
 func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 	connection, err := inst.getConnection(connUUID)
 	if err != nil {
-		return errors.New(fmt.Sprintf("get connection err:%s", err.Error()))
+		return errors.New(fmt.Sprintf("get connection err: %s", err.Error()))
 	}
 	if connection == nil {
-		return errors.New(fmt.Sprintf("connection not found :%s", connUUID))
+		return errors.New(fmt.Sprintf("connection not found: %s", connUUID))
 	}
 	client, err := inst.initConnection(&AssistClient{
 		ConnUUID: connection.UUID,
 	})
 	if err != nil {
-		return errors.New(fmt.Sprintf("assist-client init err:%s", err.Error()))
+		return errors.New(fmt.Sprintf("assist-client init err: %s", err.Error()))
 	}
 	body := &user.User{Username: connection.Username, Password: connection.Password}
 	resp, err := client.Login(body)
 	if err != nil {
-		return errors.New(fmt.Sprintf("assist-login err:%s", err.Error()))
+		return errors.New(fmt.Sprintf("assist-login err: %s", err.Error()))
 	}
 	jwtToken := resp.AccessToken
 	tokens, err := client.GetTokens(jwtToken)
 	if err != nil {
-		return errors.New(fmt.Sprintf("assist-get-tokens err:%s", err.Error()))
+		return errors.New(fmt.Sprintf("assist-get-tokens err: %s", err.Error()))
 	}
 	tokenName := fmt.Sprintf("%s-%s", connection.UUID, connection.Name)
 	for _, token := range tokens {
@@ -160,10 +160,10 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 			if resetToken {
 				_, err := client.DeleteToken(jwtToken, token.UUID)
 				if err != nil {
-					return errors.New(fmt.Sprintf("assist-delete-token name:%s err:%s", token.Name, err.Error()))
+					return errors.New(fmt.Sprintf("assist-delete-token name: %s err: %s", token.Name, err.Error()))
 				}
 			} else {
-				return errors.New(fmt.Sprintf("a token for host:%s alreay exists", connection.Name))
+				return errors.New(fmt.Sprintf("a token for host: %s alreay exists", connection.Name))
 			}
 		}
 	}
@@ -172,12 +172,12 @@ func (inst *App) assistGenerateToken(connUUID string, resetToken bool) error {
 		Blocked: nils.NewFalse(),
 	})
 	if err != nil {
-		return errors.New(fmt.Sprintf("assist-generate token name:%s err:%s", tokenName, err.Error()))
+		return errors.New(fmt.Sprintf("assist-generate token name: %s err: %s", tokenName, err.Error()))
 	}
 	connection.AssistToken = token.Token
 	_, err = inst.updateConnection(connection.UUID, connection)
 	if err != nil {
-		return errors.New(fmt.Sprintf("update connection token in local db err:%s", err.Error()))
+		return errors.New(fmt.Sprintf("update connection token in local db err: %s", err.Error()))
 	}
 	return nil
 }

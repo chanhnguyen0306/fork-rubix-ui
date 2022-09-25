@@ -1,4 +1,4 @@
-import { installer, store } from "../../../wailsjs/go/models";
+import { store, systemd } from "../../../wailsjs/go/models";
 import {
   EdgeInstallApp,
   GetRelease,
@@ -67,7 +67,7 @@ export class ReleasesFactory {
     appName: string,
     appVersion: string,
     releaseVersion: string
-  ): Promise<installer.InstallResp> {
+  ): Promise<systemd.InstallResponse> {
     return await EdgeInstallApp(
       connUUID,
       hostUUID,
@@ -81,7 +81,7 @@ export class ReleasesFactory {
     connUUID: string,
     hostUUID: string,
     appName: string
-  ): Promise<installer.RemoveRes> {
+  ): Promise<systemd.UninstallResponse> {
     return await EdgeUnInstallApp(connUUID, hostUUID, appName);
   }
 
@@ -98,11 +98,11 @@ export class ReleasesFactory {
   }
 
   async EdgeServiceStart(connUUID: string, hostUUID: string, appName: string) {
-    return await EdgeServiceStart(connUUID, hostUUID, appName, 60);
+    return await EdgeServiceStart(connUUID, hostUUID, appName);
   }
 
   async EdgeServiceStop(connUUID: string, hostUUID: string, appName: string) {
-    return await EdgeServiceStop(connUUID, hostUUID, appName, 60);
+    return await EdgeServiceStop(connUUID, hostUUID, appName);
   }
 
   async EdgeServiceRestart(
@@ -110,7 +110,7 @@ export class ReleasesFactory {
     hostUUID: string,
     appName: string
   ) {
-    return await EdgeServiceRestart(connUUID, hostUUID, appName, 60);
+    return await EdgeServiceRestart(connUUID, hostUUID, appName);
   }
 
   async EdgeServiceAction(

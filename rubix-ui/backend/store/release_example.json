@@ -8,10 +8,9 @@
       "description": "flow-framework",
       "port": 1660,
       "transport": "http",
-      "app_specfic_exec_start": "app -p 1660 -g /data/flow-framework -d data -prod",
-      "custom_service_exec_start": "",
-      "service_working_directory": "",
-      "environment_vars":[],
+      "exec_start": "app -p 1660 -g <data_dir> -d data -prod",
+      "attach_working_dir_on_exec_start": true,
+      "environment_vars": [],
       "products": [
         "Server",
         "Edge28",
@@ -30,7 +29,10 @@
       "plugin_dependency": [
       ],
       "service_dependency": [
-      ]
+      ],
+      "do_not_validate_arch": false,
+      "move_extracted_file_to_name_app": true,
+      "move_one_level_inside_file_to_outside": false
     },
     {
       "name": "bacnet-server-driver",
@@ -38,10 +40,12 @@
       "description": "a bacnet server",
       "port": 47808,
       "transport": "udp",
-      "app_specfic_exec_start": "app",
-      "custom_service_exec_start": "",
-      "service_working_directory": "",
-      "environment_vars": ["g=/data/bacnet-server-driver", "s=config.yml"],
+      "exec_start": "app",
+      "attach_working_dir_on_exec_start": true,
+      "environment_vars": [
+        "g=/data/bacnet-server-driver",
+        "s=config.yml"
+      ],
       "products": [
         "Server",
         "Edge28",
@@ -62,7 +66,10 @@
       ],
       "service_dependency": [
         "socat"
-      ]
+      ],
+      "do_not_validate_arch": false,
+      "move_extracted_file_to_name_app": true,
+      "move_one_level_inside_file_to_outside": false
     },
     {
       "name": "rubix-io-driver",
@@ -70,9 +77,9 @@
       "description": "rubix compute io service",
       "port": 5001,
       "transport": "http",
-      "app_specfic_exec_start": "app -p 5001 -r /data -a rubix-io-driver -d data -c config --prod server",
-      "service_working_directory": "",
-      "environment_vars":[],
+      "exec_start": "app -p 5001 -r /data -a <data_dir_name> -d data -c config --prod server",
+      "attach_working_dir_on_exec_start": true,
+      "environment_vars": [],
       "products": [
         "RubixComputeIO"
       ],
@@ -88,16 +95,19 @@
       ],
       "service_dependency": [
         "pigpi"
-      ]
+      ],
+      "do_not_validate_arch": false,
+      "move_extracted_file_to_name_app": true,
+      "move_one_level_inside_file_to_outside": false
     },
     {
       "name": "lora-driver",
       "repo": "nubeio-rubix-app-lora-serial-py",
       "description": "rubix compute io service",
       "transport": "serial",
-      "app_specfic_exec_start": "app -p <port> -g /data/lora-driver -d data -c config -i <identifier> -s config.json -l logging.conf --prod",
-      "service_working_directory": "",
-      "environment_vars":[],
+      "exec_start": "app -p <port> -g <data_dir> -d data -c config -i <identifier> -s config.json -l logging.conf --prod",
+      "attach_working_dir_on_exec_start": true,
+      "environment_vars": [],
       "products": [
         "RubixCompute5",
         "RubixComputeIO"
@@ -114,7 +124,10 @@
       ],
       "service_dependency": [
         "socat"
-      ]
+      ],
+      "do_not_validate_arch": false,
+      "move_extracted_file_to_name_app": true,
+      "move_one_level_inside_file_to_outside": false
     },
     {
       "name": "edge-28-driver",
@@ -122,10 +135,9 @@
       "description": "edge-28 service",
       "port": 5000,
       "transport": "http",
-      "app_specfic_exec_start": "-p 5000 -g /data/edge-28-driver -d data -c config -i nubeio-edge-28-driver -s config.json -l logging.conf --prod",
-      "service_working_directory": "",
-      "custom_service_exec_start": "",
-      "environment_vars":[],
+      "exec_start": "-p 5000 -g <data_dir> -d data -c config -i nubeio-edge-28-driver -s config.json -l logging.conf --prod",
+      "attach_working_dir_on_exec_start": true,
+      "environment_vars": [],
       "products": [
         "Edge28"
       ],
@@ -140,7 +152,10 @@
         "edge28"
       ],
       "service_dependency": [
-      ]
+      ],
+      "do_not_validate_arch": false,
+      "move_extracted_file_to_name_app": true,
+      "move_one_level_inside_file_to_outside": false
     },
     {
       "name": "rubix-wires",
@@ -148,10 +163,9 @@
       "description": "flow based programming engine",
       "port": 1313,
       "transport": "http",
-      "app_specfic_exec_start": "",
-      "service_working_directory": "",
-      "custom_service_exec_start": "/usr/bin/npm run prod:start --prod -- --datadir /data/rubix-wires/data --envFile /data/rubix-wires/config/.env",
-      "environment_vars":[],
+      "exec_start": "/usr/bin/npm run prod:start --prod -- --datadir <data_dir>/data --envFile /data/rubix-wires/config/.env",
+      "attach_working_dir_on_exec_start": false,
+      "environment_vars": [],
       "products": [
         "Server",
         "Edge28",
@@ -167,7 +181,10 @@
       ],
       "service_dependency": [
         "nodejs"
-      ]
+      ],
+      "do_not_validate_arch": true,
+      "move_extracted_file_to_name_app": false,
+      "move_one_level_inside_file_to_outside": true
     }
   ],
   "plugins": [

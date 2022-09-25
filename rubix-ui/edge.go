@@ -33,60 +33,15 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 	}
 	host, err := inst.getHost(connUUID, hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("no device on ip:%s", host.IP))
+		inst.crudMessage(false, fmt.Sprintf("no device on ip: %s", host.IP))
 		return false
 	}
-	ping, err := client.AssistPing(hostUUID)
+	_, err = client.EdgePing(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("ping fail on ip:%s", host.IP))
+		inst.crudMessage(false, fmt.Sprintf("ping fail on ip: %s", host.IP))
 		return false
 	}
-	if ping {
-		inst.crudMessage(true, fmt.Sprintf("ping ok ip:%s", host.IP))
-	} else {
-		inst.crudMessage(false, fmt.Sprintf("ping fail on ip:%s", host.IP))
-	}
-
-	return ping
-}
-
-func (inst *App) GetHostPublicInfo(connUUID, hostUUID string) bool {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return false
-	}
-	info, err := client.EdgePublicInfo(hostUUID)
-	host, err := inst.getHost(connUUID, hostUUID)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("device not found"))
-		return false
-	}
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("no found ip:%s", host.IP))
-		return false
-	}
-	if info != nil {
-		for _, interfaces := range info.Networking {
-			if info.Device.DeviceName != "na" {
-				if info.Device.DeviceName != "" {
-					if host.IP == interfaces.IP {
-						inst.crudMessage(true, fmt.Sprintf("device name:%s product:%s interface:%s ip:%s", info.Device.DeviceName, info.Product.Product, interfaces.Interface, interfaces.IP))
-					}
-				}
-			} else {
-				if host.IP == interfaces.IP {
-					inst.crudMessage(true, fmt.Sprintf("device:%s interface:%s ip:%s", info.Product.Product, interfaces.Interface, interfaces.IP))
-				}
-			}
-		}
-	} else {
-		host, err := inst.getHost(connUUID, hostUUID)
-		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("device not found"))
-			return false
-		}
-		inst.crudMessage(false, fmt.Sprintf("no found ip:%s", host.IP))
-	}
+	inst.crudMessage(true, fmt.Sprintf("ping ok ip: %s", host.IP))
 	return true
 }
 

@@ -256,7 +256,7 @@ const AppInstallInfo = (props: any) => {
     return releaseFactory.EdgeServiceAction(value.key, {
       connUUID: connUUID,
       hostUUID: host.uuid,
-      appName: item.service_name,
+      appName: item.app_name,
     });
   };
 

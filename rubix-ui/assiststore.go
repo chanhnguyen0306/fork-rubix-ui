@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
+	"path"
 )
 
 func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
@@ -44,26 +45,26 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch st
 	if err != nil {
 		return nil, err
 	}
-	path := str.GetAppPathAndVersion(appName, version)
+	p := str.GetAppPathAndVersion(appName, version)
 	var dontCheckArch bool
 	if appName == rubixWires {
 		dontCheckArch = true
 	}
-	buildDetails, err := appStore.App.GetBuildZipNameByArch(path, arch, dontCheckArch)
+	buildDetails, err := appStore.App.GetBuildZipNameByArch(p, arch, dontCheckArch)
 	if err != nil {
 		return nil, err
 	}
 	if buildDetails == nil {
-		return nil, errors.New(fmt.Sprintf("failed to match build zip name app:%s version:%s arch:%s", appName, version, arch))
+		return nil, errors.New(fmt.Sprintf("failed to match build zip name app: %s version: %s arch: %s", appName, version, arch))
 	}
 
 	fileName := buildDetails.ZipName
-	fileAndPath := appStore.FilePath(fmt.Sprintf("%s/%s", path, fileName))
+	fileAndPath := path.Join(p, fileName)
 	reader, err := os.Open(fileAndPath)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("error open file:%s err:%s", fileAndPath, err.Error()))
+		return nil, errors.New(fmt.Sprintf("error open file: %s err: %s", fileAndPath, err.Error()))
 	}
-	uploadApp, err := client.AddUploadStoreApp(appName, version, product, arch, fileName, reader)
+	uploadApp, err := client.UploadAddOnAppStore(appName, version, arch, fileName, reader)
 	if err != nil {
 		return nil, err
 	}

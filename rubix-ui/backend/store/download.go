@@ -121,13 +121,13 @@ func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch, realseV
 }
 
 // gitDownloadAsset download an app
-func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseVersion string, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
+func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, releaseVersion string, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
 	newApp := &App{
-		Name:          appName,
-		Version:       version,
-		Repo:          repo,
-		Arch:          arch,
-		RealseVersion: realseVersion,
+		Name:           appName,
+		Version:        version,
+		Repo:           repo,
+		Arch:           arch,
+		ReleaseVersion: releaseVersion,
 	}
 	if newApp.Name == "" {
 		return nil, errors.New("downloadApp: app name can not be empty")
@@ -162,8 +162,8 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, realseV
 			return nil, err
 		}
 		if buildDetails != nil {
-			buildName := buildDetails.MatchedName
-			buildArch := buildDetails.MatchedArch
+			buildName := buildDetails.Name
+			buildArch := buildDetails.Arch
 			if buildName == gitOptions.AssetName {
 				buildNameMatch = true
 			}

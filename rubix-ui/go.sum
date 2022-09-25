@@ -65,8 +65,6 @@ github.com/NubeDev/flow-eng v0.1.1 h1:w6ybyyk5KuFgvzyuIiBzxUjmlJXXrfNX+MVRggYc39
 github.com/NubeDev/flow-eng v0.1.1/go.mod h1:J9P6chou9k0SMKvsstiznUMzG9VONu06a/lTdtU7cUM=
 github.com/NubeIO/git v0.0.6 h1:BEmKKXOtWtbgRfw1TbDZlKlbaJXf9OFJe7IzJQ0uXeE=
 github.com/NubeIO/git v0.0.6/go.mod h1:ZjlhXM823d9sKQjv8d4pRugK9z6xJvPqLLX1onCVTbQ=
-github.com/NubeIO/lib-command v0.0.2 h1:jTg8YRSffIBsPAbU9X1Dn+L4bQ8e7PY2p7zJEcrTjrY=
-github.com/NubeIO/lib-command v0.0.2/go.mod h1:Qjl490ti7E47AhftOOvUfhAsM6NhZpBAeZlNfmy6Cd0=
 github.com/NubeIO/lib-date v0.0.6 h1:88Ki7UIOvDEKyd3vKJ7r4fiUeX25Q5iyMO5d0125wrA=
 github.com/NubeIO/lib-date v0.0.6/go.mod h1:VvpSwdwcVCaOgTN+Ad96nHBkFDWTt3VekG933QCtGtc=
 github.com/NubeIO/lib-dhcpd v0.0.2 h1:DC2qcVi3tsRkYlmmlTiZTvsHdFI9/HqSohVj131Pl4I=
@@ -98,12 +96,12 @@ github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.3/go.mod h1:k8eZvTC5I+B0QHGlM3
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.0.4/go.mod h1:A1BPuc3UpE1EF3ugdf+8QIIKTT8s3eK+pfUcheJX2JM=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7 h1:gXg9rTIkV5kRQftSngiidUH/3wGcZghqLY8kATSyqx8=
 github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7/go.mod h1:J0Xy/dX/f/xIhEnW6ZhkE2LiyuRk2H9gCb0Uk+2SSSk=
-github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 h1:Ri5k9eTM03rUGpgfs2+qL4IS+csvK6TrH3QgBJx6CBM=
-github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8/go.mod h1:MU13rBQBD1xc/n2aRvNyCr8HZ5NNTsPhiZSUFhIgrT4=
-github.com/NubeIO/rubix-assist v0.4.9 h1:J9Xa36INMNbJeQobItYjNNnIjN8GI1kDmh3bSjyugL0=
-github.com/NubeIO/rubix-assist v0.4.9/go.mod h1:heptrLDDOPg10+5dAZuWSiKYM+8zjCmBqMAaFIuEmvg=
-github.com/NubeIO/rubix-edge v0.2.0 h1:JqQazObYlunzqPGbGU/SivsBlm+Qv1zMed3uPecxLnk=
-github.com/NubeIO/rubix-edge v0.2.0/go.mod h1:6OVfQH8xXtevoMNRlM3jNrC+fiRHYA7XGeMoar73y+s=
+github.com/NubeIO/rubix-assist v0.5.0 h1:WNeedZXa0R5J5TuYsNvixxMkNwed8CTAWxgl6IGuTRo=
+github.com/NubeIO/rubix-assist v0.5.0/go.mod h1:Sr8mUU8/O6IEcZ5PGqdsntXUTnV91LGScteVXnYUqxE=
+github.com/NubeIO/rubix-edge v0.3.0 h1:RtstvcmTVNr6JJGga3FFBnkLedz/NZBxeUDD71oy/E4=
+github.com/NubeIO/rubix-edge v0.3.0/go.mod h1:FvJeLD52UpBDCxQdDqtTyw9LYI30dri2hNIL7heo+P4=
+github.com/NubeIO/rubix-registry-go v0.0.1 h1:CRCuE/2FxutuffFFePz9abmOoT/QVYJj6uyez7KARk4=
+github.com/NubeIO/rubix-registry-go v0.0.1/go.mod h1:nz/USWqKNI5Gp6hTNW5V8/Md284fo4ii88gMnqQ7Y2E=
 github.com/NubeIO/rubix-rules v0.0.1 h1:LgOg1eEejmr9Z350xgUUCbq3HOaiDjNIYsaJMGp6MDc=
 github.com/NubeIO/rubix-rules v0.0.1/go.mod h1:cWJzNGiBjhKW6rjpHrcJqI1vXalozKJmAvBDVLDDneg=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
