@@ -16,4 +16,6 @@ export type NodeSpecJSON = {
   category: NodeCategory;
   inputs?: InputSocketSpecJSON[];
   outputs?: OutputSocketSpecJSON[];
+  info?: Object;
+  settings?: Object;
 };
