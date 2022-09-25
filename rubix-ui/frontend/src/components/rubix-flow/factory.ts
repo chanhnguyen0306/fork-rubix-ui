@@ -1,6 +1,16 @@
-import { DownloadFlow, NodePallet } from "../../../wailsjs/go/main/App";
+import {
+  DownloadFlow,
+  NodePallet,
+  NodeSchema
+} from "../../../wailsjs/go/main/App";
 
 export class FlowFactory {
+
+  async NodeSchema(nodeName:string) {
+    return await NodeSchema(nodeName);
+  }
+
+
   async NodePallet() {
     return await NodePallet();
   }

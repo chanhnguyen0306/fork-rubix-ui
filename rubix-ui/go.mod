@@ -9,16 +9,16 @@ go 1.17
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.0.4
+	github.com/NubeDev/flow-eng v0.1.1
 	github.com/NubeIO/git v0.0.6
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.8
 	github.com/NubeIO/lib-files v0.1.1
 	github.com/NubeIO/lib-networking v0.0.7
-	github.com/NubeIO/lib-rubix-installer v0.3.0
-	github.com/NubeIO/lib-schema v0.1.4
-	github.com/NubeIO/lib-systemctl-go v0.2.0
+	github.com/NubeIO/lib-rubix-installer v0.2.2
+	github.com/NubeIO/lib-schema v0.1.6
+	github.com/NubeIO/lib-systemctl-go v0.1.2
 	github.com/NubeIO/lib-uuid v0.0.3
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
@@ -39,28 +39,40 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.14.3
-	github.com/wailsapp/wails/v2 v2.0.0-beta.43
+	github.com/wailsapp/wails/v2 v2.0.0-beta.39.2
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
+	github.com/NubeIO/lib-command v0.0.2 // indirect
+	github.com/NubeIO/lib-files v0.1.1 // indirect
+	github.com/NubeIO/lib-goja v0.0.3 // indirect
+	github.com/NubeIO/lib-ufw v0.0.3 // indirect
+	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.3 // indirect
+	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 // indirect
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
 	github.com/NubeIO/rubix-registry-go v0.0.1 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
+	github.com/dlclark/regexp2 v1.7.0 // indirect
+	github.com/dop251/goja v0.0.0-20220915101355-d79e1b125a30 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-co-op/gocron v1.17.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/grid-x/modbus v0.0.0-20220419073012-0daecbb3900f // indirect
+	github.com/grid-x/serial v0.0.0-20191104121038-e24bc9bf6f08 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -106,7 +118,6 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/datatypes v1.0.6 // indirect
