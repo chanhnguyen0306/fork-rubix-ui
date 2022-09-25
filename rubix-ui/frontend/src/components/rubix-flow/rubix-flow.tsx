@@ -12,6 +12,7 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
+import NodeMenu from "./components/NodeMenu";
 import { Node as NodePanel } from "./components/Node";
 import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
@@ -32,7 +33,7 @@ const Flow = (props: any) => {
   const [edges, , onEdgesChange] = useEdgesState([]);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
-  const [nodePanelVisibility, setNodePanelVisibility] = useState<XYPosition>();
+  const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
 
@@ -115,7 +116,7 @@ const Flow = (props: any) => {
   const closeNodePicker = () => {
     setLastConnectStart(undefined);
     setNodePickerVisibility(undefined);
-    setNodePanelVisibility(undefined);
+    setNodeMenuVisibility(undefined);
   };
 
   const handlePaneClick = () => closeNodePicker();
@@ -127,7 +128,7 @@ const Flow = (props: any) => {
 
   const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
     e.preventDefault();
-    setNodePanelVisibility({ x: e.clientX, y: e.clientY });
+    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
   };
 
   return (
@@ -163,17 +164,12 @@ const Flow = (props: any) => {
             onClose={closeNodePicker}
           />
         )}
-        {nodePanelVisibility && (
-          <div
-            className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-            style={{
-              top: nodePanelVisibility.y - 20,
-              left: nodePanelVisibility.x - 125,
-            }}
-          >
-            <div className="bg-gray-500 p-2">Node Settings</div>
-            <div className="p-2">aaaaaaaa</div>
-          </div>
+        {nodeMenuVisibility && (
+          <NodeMenu
+            position={nodeMenuVisibility}
+            nodeId={""}
+            onClose={closeNodePicker}
+          />
         )}
       </ReactFlow>
     </ReactFlowProvider>
