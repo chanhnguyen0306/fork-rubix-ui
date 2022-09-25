@@ -1,6 +1,6 @@
 module github.com/NubeIO/rubix-ui
 
-go 1.17
+go 1.18
 
 //replace github.com/NubeIO/rubix-assist => /Users/raibnod/Enviro/rubix-assist
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
@@ -39,7 +39,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.14.3
-	github.com/wailsapp/wails/v2 v2.0.0-beta.39.2
+	github.com/wailsapp/wails/v2 v2.0.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
