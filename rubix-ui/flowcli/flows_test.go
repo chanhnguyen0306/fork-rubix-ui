@@ -7,6 +7,14 @@ import (
 
 var client = New(nil)
 
+func TestFlowClient_Schema(t *testing.T) {
+	start, err := client.NodeSchema("add")
+	fmt.Println(start, err)
+	if err != nil {
+		return
+	}
+}
+
 func TestFlowClient_GetBaseNodesList(t *testing.T) {
 	start, err := client.GetBaseNodesList()
 	fmt.Println(start, err)
