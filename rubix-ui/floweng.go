@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/NubeDev/flow-eng/nodes"
-	"github.com/NubeDev/flow-eng/schemas"
 	"github.com/NubeIO/rubix-rules/flow"
 	"github.com/NubeIO/rubix-ui/flowcli"
 	"github.com/mitchellh/mapstructure"
@@ -11,7 +10,7 @@ import (
 
 const flowEngIP = "0.0.0.0"
 
-func (inst *App) NodeSchema(nodeName string) *schemas.Schema {
+func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeSchema(nodeName)
 	if err != nil {
