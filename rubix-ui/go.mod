@@ -9,7 +9,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.1.1
+	github.com/NubeDev/flow-eng v0.1.3
 	github.com/NubeIO/git v0.0.6
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
