@@ -1,50 +1,26 @@
 import { useEffect, useState } from "react";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
-
-type NodeSettings = {
-  schema: {};
-  uiSchema: {};
-};
+import { FlowFactory } from "../factory";
 
 export const SettingsModal = (props: any) => {
-  const { nodeId, isModalVisible, onCloseModal } = props;
-  const [settings, setSettings] = useState({} as NodeSettings);
+  const { nodeType, isModalVisible, onCloseModal } = props;
+  const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+
+  const factory = new FlowFactory();
 
   useEffect(() => {
     fetchSchemaJson();
   }, []);
 
   const fetchSchemaJson = async () => {
-    //call api fetch node Settings here
     setIsLoadingForm(true);
-    const settings = {
-      schema: {
-        title: "Inputs Count",
-        properties: {
-          input_type: {
-            type: "string",
-            title: "input_type",
-            enum: ["number", "float", "int"],
-            enumNames: ["Number", "Float", "Int"],
-            default: "number",
-            value: "",
-          },
-          input_name: {
-            type: "string",
-            title: "input_name",
-            maxLength: 20,
-            minLength: 3,
-            value: "",
-          },
-        },
-      },
-      uiSchema: {},
-    }; //fake data
-    setSettings(settings);
+    const type = nodeType.split("/")[1];
+    const res = (await factory.NodeSchema(type)) || {};
+    setSettings(res);
     setIsLoadingForm(false);
   };
 

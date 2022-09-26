@@ -31,6 +31,7 @@ const Flow = (props: any) => {
   const { customNodeTypes } = props;
   const [nodes, , onNodesChange] = useNodesState([]);
   const [edges, , onEdgesChange] = useEdgesState([]);
+  const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
@@ -129,6 +130,7 @@ const Flow = (props: any) => {
   const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
     e.preventDefault();
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+    setSelectedNode(node);
   };
 
   return (
@@ -167,7 +169,7 @@ const Flow = (props: any) => {
         {nodeMenuVisibility && (
           <NodeMenu
             position={nodeMenuVisibility}
-            nodeId={""}
+            nodeType={selectedNode.type}
             onClose={closeNodePicker}
           />
         )}
