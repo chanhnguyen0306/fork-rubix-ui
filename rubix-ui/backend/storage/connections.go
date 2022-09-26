@@ -128,7 +128,7 @@ func (inst *db) SelectByName(name string) (*RubixConnection, error) {
 		}
 
 	}
-	return nil, errors.New(fmt.Sprintf("failed to find connection by name:%s", name))
+	return nil, errors.New(fmt.Sprintf("failed to find connection by name: %s", name))
 }
 
 func (inst *db) SelectAll() ([]RubixConnection, error) {

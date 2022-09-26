@@ -23,10 +23,10 @@ func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, uuids []U
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count:%d", addedCount))
+		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count:%d", errorCount))
+		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }

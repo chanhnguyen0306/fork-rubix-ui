@@ -1,7 +1,7 @@
 package store
 
 import (
-	"fmt"
+	"path"
 )
 
 func (inst *Store) getUserPath() string {
@@ -23,5 +23,5 @@ func (inst *Store) GetAppPathAndVersion(appName, version string) string {
 
 // getAppPathAndVersion get the full app install path and version => /home/user/rubix/store/apps/rubix-wires/v0.0.1
 func (inst *Store) getAppPathAndVersion(appName, version string) string {
-	return filePath(fmt.Sprintf("%s/%s/%s", inst.getUserStorePathApps(), appName, version))
+	return path.Join(inst.getUserStorePathApps(), appName, version)
 }

@@ -11,7 +11,7 @@ const bacnetMasterPlg = "bacnetmaster"
 
 func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 	if pluginName != bacnetMasterPlg {
-		return errors.New(fmt.Sprintf("network:%s is not not bacnet-master", pluginName))
+		return errors.New(fmt.Sprintf("network: %s is not not bacnet-master", pluginName))
 	}
 	plugin, err := inst.GetPluginByName(connUUID, hostUUID, pluginName)
 	if err != nil {

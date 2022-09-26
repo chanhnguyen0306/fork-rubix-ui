@@ -12,7 +12,7 @@ import (
 )
 
 func (inst *App) ImportBackup(body *storage.Backup) string {
-	body.BackupInfo = fmt.Sprintf("was imported from host:%s connection:%s comment:%s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
+	body.BackupInfo = fmt.Sprintf("was imported from host: %s connection: %s comment: %s date: %s", body.HostName, body.HostName, body.UserComment, body.Time.Format(time.RFC822))
 	_, err := inst.addBackup(body)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

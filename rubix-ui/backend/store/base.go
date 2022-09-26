@@ -7,14 +7,10 @@ import (
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	log "github.com/sirupsen/logrus"
-	"os"
-	"path/filepath"
-	"strings"
+	"path"
 )
 
-const nonRoot = 0700
-const root = 0777
+const root = 0755
 
 var FilePerm = root
 var gitClient *git.Client
@@ -61,32 +57,29 @@ func New(store *Store) (*Store, error) {
 		store.Version = "latest"
 	}
 	if store.UserPath == "" {
-		store.UserPath = filePath(fmt.Sprintf("%s/rubix", homeDir))
+		store.UserPath = path.Join(homeDir, "rubix")
 	}
 	if store.UserStorePath == "" {
-		store.UserStorePath = filePath(fmt.Sprintf("%s/store", store.UserPath))
+		store.UserStorePath = path.Join(store.UserPath, "store")
 	}
 	if store.UserStoreAppsPath == "" {
-		store.UserStoreAppsPath = filePath(fmt.Sprintf("%s/apps", store.UserStorePath))
+		store.UserStoreAppsPath = path.Join(store.UserStorePath, "apps")
 	}
 	if store.Perm == 0 {
 		store.Perm = FilePerm
-	}
-	if store.App.FilePerm == 0 {
-		store.App.FilePerm = FilePerm
 	}
 	if store.App.DataDir == "" {
 		store.App.DataDir = "/data"
 	}
 	if store.BackupsDir == "" {
-		store.BackupsDir = filePath(fmt.Sprintf("%s/backups", store.UserPath))
+		store.BackupsDir = path.Join(store.UserPath, "backups")
 	}
 	store.App = installer.New(store.App)
 	appStore, err := appstore.New(&appstore.Store{
 		App: &installer.App{},
 	})
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("init assit-store err:%s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("init assit-store err: %s", err.Error()))
 	}
 	store.assistStore = appStore
 	err = store.initMakeAllDirs()
@@ -95,55 +88,4 @@ func New(store *Store) (*Store, error) {
 	}
 
 	return store, nil
-}
-
-// FilePath make the file path work for unix or windows
-func (inst *Store) FilePath(path string, debug ...bool) string {
-	return filePath(path)
-}
-
-// filePath make the file path work for unix or windows
-func filePath(path string, debug ...bool) string {
-	updated := filepath.FromSlash(path)
-	if len(debug) > 0 {
-		if debug[0] {
-			log.Infof("existing-path: %s", path)
-			log.Infof("updated-path: %s", updated)
-		}
-	}
-	return filepath.FromSlash(updated)
-}
-
-func empty(name string) error {
-	if name == "" {
-		return errors.New("can not be empty")
-	}
-	return nil
-}
-
-func emptyPath(path string) error {
-	if path == "" {
-		return errors.New("path can not be empty")
-	}
-	return nil
-}
-
-func checkDir(path string) error {
-	path = filePath(path)
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return err
-	}
-	return nil
-}
-
-func checkVersion(version string) error {
-	if version[0:1] != "v" { // make sure have a v at the start v0.1.1
-		return errors.New(fmt.Sprintf("incorrect provided:%s version number try: v1.2.3", version))
-	}
-	p := strings.Split(version, ".")
-	if len(p) >= 2 && len(p) < 4 {
-	} else {
-		return errors.New(fmt.Sprintf("incorrect lenght provided:%s version number try: v1.2.3", version))
-	}
-	return nil
 }
