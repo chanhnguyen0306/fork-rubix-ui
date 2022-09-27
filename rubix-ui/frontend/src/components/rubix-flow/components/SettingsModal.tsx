@@ -8,9 +8,24 @@ import { useUpdateNodeInternals, useStore } from "react-flow-renderer";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
+import { getNodesJson, NODES_JSON } from "../use-nodes-spec";
+import { Node } from "../lib";
 
-export const SettingsModal = (props: any) => {
-  const { node, isModalVisible, onCloseModal } = props;
+interface NodeSettings extends Node {
+  settings?: any;
+}
+
+type SettingsModalProps = {
+  isModalVisible: boolean;
+  node: any;
+  onCloseModal: () => void;
+};
+
+export const SettingsModal = ({
+  node,
+  isModalVisible,
+  onCloseModal,
+}: SettingsModalProps) => {
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -37,7 +52,15 @@ export const SettingsModal = (props: any) => {
 
   const handleSubmit = async (formData: any) => {
     setConfirmLoading(true);
-    console.log("formData", formData);
+    const nodesStorage = getNodesJson();
+    const updatedNode = { ...node, settings: formData };
+    const index = nodesStorage.findIndex((n: any) => n.id === node.id);
+    if (index === -1) {
+      nodesStorage.push(updatedNode);
+    } else {
+      nodesStorage[index] = updatedNode;
+    }
+    localStorage.setItem(NODES_JSON, JSON.stringify(nodesStorage)); //use localStorage to store node-settings
     setConfirmLoading(false);
     handleClose();
   };

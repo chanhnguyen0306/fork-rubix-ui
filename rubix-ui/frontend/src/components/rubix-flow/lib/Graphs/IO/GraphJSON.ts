@@ -1,11 +1,11 @@
-import { Metadata } from '../Metadata';
+import { Metadata } from "../Metadata";
 
 export type LinkJSON = { nodeId: string; socket: string };
 
 export type InputJSON = {
   value?: string;
   links?: LinkJSON[];
-}
+};
 
 export type NodeJSON = {
   label?: string;
@@ -15,10 +15,11 @@ export type NodeJSON = {
     [key: string]: InputJSON;
   };
   metadata?: Metadata;
+  settings?: any;
 };
 
 export type GraphJSON = {
   name?: string;
   nodes: NodeJSON[];
   metadata?: Metadata;
-}
+};

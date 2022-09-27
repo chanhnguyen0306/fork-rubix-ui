@@ -5,7 +5,7 @@ import { SettingsModal } from "./SettingsModal";
 
 type NodeMenuProps = {
   position: XYPosition;
-  node: string;
+  node: {};
   onClose: () => void;
 };
 
