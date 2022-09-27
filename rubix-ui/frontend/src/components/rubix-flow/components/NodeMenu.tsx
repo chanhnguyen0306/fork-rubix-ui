@@ -5,11 +5,11 @@ import { SettingsModal } from "./SettingsModal";
 
 type NodeMenuProps = {
   position: XYPosition;
-  nodeType: string;
+  node: string;
   onClose: () => void;
 };
 
-const NodeMenu = ({ position, nodeType, onClose }: NodeMenuProps) => {
+const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
@@ -39,7 +39,7 @@ const NodeMenu = ({ position, nodeType, onClose }: NodeMenuProps) => {
       </div>
 
       <SettingsModal
-        nodeType={nodeType}
+        node={node}
         isModalVisible={isModalVisible}
         onCloseModal={onClose}
       />

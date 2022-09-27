@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
+import {
+  useReactFlow,
+  useNodesState,
+  useNodes,
+} from "react-flow-renderer/nocss";
+import { useUpdateNodeInternals, useStore } from "react-flow-renderer";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 
 export const SettingsModal = (props: any) => {
-  const { nodeType, isModalVisible, onCloseModal } = props;
+  const { node, isModalVisible, onCloseModal } = props;
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -18,7 +24,7 @@ export const SettingsModal = (props: any) => {
 
   const fetchSchemaJson = async () => {
     setIsLoadingForm(true);
-    const type = nodeType.split("/")[1];
+    const type = node.type.split("/")[1];
     const res = (await factory.NodeSchema(type)) || {};
     setSettings(res);
     setIsLoadingForm(false);

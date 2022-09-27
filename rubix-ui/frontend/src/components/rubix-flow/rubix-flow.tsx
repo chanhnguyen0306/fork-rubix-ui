@@ -169,7 +169,7 @@ const Flow = (props: any) => {
         {nodeMenuVisibility && (
           <NodeMenu
             position={nodeMenuVisibility}
-            nodeType={selectedNode.type}
+            node={selectedNode}
             onClose={closeNodePicker}
           />
         )}
