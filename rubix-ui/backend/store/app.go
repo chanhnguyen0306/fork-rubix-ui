@@ -48,6 +48,9 @@ func (inst *Store) AddApp(app *App) (*App, error) {
 	if app.Version == "" {
 		return nil, errors.New("app version can not be empty")
 	}
+	if app.ReleaseVersion == "" {
+		return nil, errors.New("app release_version can not be empty")
+	}
 	if err := inst.makeUserPath(); err != nil {
 		return nil, err
 	}

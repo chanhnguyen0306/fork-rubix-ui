@@ -49,10 +49,7 @@ type App struct {
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
-	str := &store.Store{
-		Arch: "armv7",
-	}
-	appStore, err := store.New(str)
+	appStore, err := store.New(&store.Store{})
 	if err != nil {
 		log.Fatalf("init store on start of app err: %s", err.Error())
 	}

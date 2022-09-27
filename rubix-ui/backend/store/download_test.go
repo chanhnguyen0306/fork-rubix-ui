@@ -2,28 +2,12 @@ package store
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"testing"
 )
 
 func TestStore_UnPackWires(t *testing.T) {
-
-	appName := "rubix-wries"
 	appVersion := "v2.7.4"
-
-	inst := &Store{
-		App:           &installer.App{},
-		Perm:          0,
-		UserPath:      "",
-		UserStorePath: "",
-		Version:       appVersion,
-		Owner:         "",
-		Repo:          appName,
-		Arch:          "armv7",
-		ServiceFile:   "",
-	}
-
-	appStore, err := New(inst)
+	appStore, err := New(&Store{})
 	fmt.Println(err)
 
 	err = appStore.UnPackWires(appVersion)
@@ -31,5 +15,4 @@ func TestStore_UnPackWires(t *testing.T) {
 	if err != nil {
 		return
 	}
-
 }

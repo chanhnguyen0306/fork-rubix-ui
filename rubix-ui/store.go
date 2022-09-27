@@ -56,7 +56,6 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 
 func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *store.InstallResponse {
 	out := &store.InstallResponse{}
-	inst.store.Arch = arch
 	inst.crudMessage(true, fmt.Sprintf("try and download app: %s release: %s", appName, releaseVersion))
 	getRelease, err := inst.addRelease(token, releaseVersion)
 	if err != nil {

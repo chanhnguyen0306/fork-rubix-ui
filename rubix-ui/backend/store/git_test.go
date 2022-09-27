@@ -2,49 +2,22 @@ package store
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"testing"
 )
 
 func TestStore_Git(t *testing.T) {
-
 	appName := "flow-framework"
 	appVersion := "v0.6.0"
+	releaseVersion := "v0.6.8"
 
-	inst := &Store{
-		App: &installer.App{
-			Name:             "",
-			Version:          "",
-			DataDir:          "",
-			HostDownloadPath: "",
-			StoreDir:         "",
-			TmpDir:           "",
-			UserRubixHome:    "",
-			FilePerm:         0,
-			ServiceName:      "",
-			LibSystemPath:    "",
-			EtcSystemPath:    "",
-			DefaultTimeout:   0,
-			AppsInstallDir:   "",
-			AppsDownloadDir:  "",
-		},
-		Perm:          0,
-		UserPath:      "",
-		UserStorePath: "",
-		Version:       appVersion,
-		Owner:         "",
-		Repo:          appName,
-		Arch:          "armv7",
-		ServiceFile:   "",
-	}
-
-	appStore, err := New(inst)
+	appStore, err := New(&Store{})
 	fmt.Println(err)
 	fmt.Println(appStore)
 
 	app, err := appStore.AddApp(&App{
-		Name:    appName,
-		Version: appVersion,
+		Name:           appName,
+		Version:        appVersion,
+		ReleaseVersion: releaseVersion,
 	})
 	fmt.Println(err)
 	fmt.Println(app)
@@ -65,5 +38,4 @@ func TestStore_Git(t *testing.T) {
 	}
 
 	fmt.Println(releases)
-
 }

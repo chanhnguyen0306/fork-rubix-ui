@@ -28,10 +28,7 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch st
 		return nil, err
 	}
 	str := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    arch,
+		App: &installer.App{},
 	}
 	appStore, err := store.New(str)
 	if err != nil {

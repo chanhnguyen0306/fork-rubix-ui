@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -19,13 +18,7 @@ func (inst *App) GitListReleases(token string) []store.ReleaseList {
 
 // gitListReleases gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
 func (inst *App) gitListReleases(token string) ([]store.ReleaseList, error) {
-	str := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    "",
-	}
-	appStore, err := store.New(str)
+	appStore, err := store.New(&store.Store{})
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +52,7 @@ func (inst *App) gitDownloadAllRelease(runDownloads bool) error {
 			log.Infof("GIT downloaded error: %s", err.Error())
 			return err
 		}
-		log.Infof("GIT downloaded release: %s  path: %s name: %s", downloadRelease.Release, release.Path, release.Name)
+		log.Infof("GIT downloaded release: %s path: %s name: %s", downloadRelease.Release, release.Path, release.Name)
 	}
 	return nil
 
@@ -70,13 +63,7 @@ func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) 
 	if !strings.Contains(path, "flow/") {
 		path = fmt.Sprintf("flow/%s.json", path)
 	}
-	str := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    "armv7",
-	}
-	appStore, err := store.New(str)
+	appStore, err := store.New(&store.Store{})
 	if err != nil {
 		return nil, err
 	}
