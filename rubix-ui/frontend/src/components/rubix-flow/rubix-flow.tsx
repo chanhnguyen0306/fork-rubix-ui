@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -19,7 +24,7 @@ import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-import { useNodesSpec } from "./use-nodes-spec";
+import { NODES_JSON, useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { Node, NodeSpecJSON } from "./lib";
 
