@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/flow-eng/nodes"
 	"github.com/NubeIO/rubix-rules/flow"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"github.com/NubeIO/rubix-ui/flowcli"
 	"github.com/mitchellh/mapstructure"
 )
@@ -31,6 +32,19 @@ func (inst *App) NodePallet() []nodes.PalletNode {
 }
 
 func (inst *App) DownloadFlow(encodedNodes interface{}, restartFlow bool) *flow.Message {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	downloadFlow, err := client.DownloadFlow(encodedNodes, restartFlow)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return downloadFlow
+	} else {
+		inst.crudMessage(true, fmt.Sprintf(downloadFlow.Message))
+	}
+	return downloadFlow
+}
+
+func (inst *App) DownloadFlowDecoded(encodedNodes interface{}, restartFlow bool) *flow.Message {
+	pprint.PrintJOSN(encodedNodes)
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	nodeList := &nodes.NodesList{}
 	err := mapstructure.Decode(encodedNodes, &nodeList)
