@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -12,15 +17,16 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
-import { Node } from "./components/Node";
+import NodeMenu from "./components/NodeMenu";
+import { Node as NodePanel } from "./components/Node";
 import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-import { useNodesSpec } from "./use-nodes-spec";
+import { NODES_JSON, useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
-import { NodeSpecJSON } from "./lib";
+import { Node, NodeSpecJSON } from "./lib";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -30,8 +36,10 @@ const Flow = (props: any) => {
   const { customNodeTypes } = props;
   const [nodes, , onNodesChange] = useNodesState([]);
   const [edges, , onEdgesChange] = useEdgesState([]);
+  const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
+  const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
 
@@ -114,6 +122,7 @@ const Flow = (props: any) => {
   const closeNodePicker = () => {
     setLastConnectStart(undefined);
     setNodePickerVisibility(undefined);
+    setNodeMenuVisibility(undefined);
   };
 
   const handlePaneClick = () => closeNodePicker();
@@ -121,6 +130,12 @@ const Flow = (props: any) => {
   const handlePaneContextMenu = (e: ReactMouseEvent) => {
     e.preventDefault();
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
+    e.preventDefault();
+    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+    setSelectedNode(node);
   };
 
   return (
@@ -137,6 +152,7 @@ const Flow = (props: any) => {
         onConnectStop={handleStopConnect}
         onPaneClick={handlePaneClick}
         onPaneContextMenu={handlePaneContextMenu}
+        onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
       >
@@ -155,6 +171,13 @@ const Flow = (props: any) => {
             onClose={closeNodePicker}
           />
         )}
+        {nodeMenuVisibility && (
+          <NodeMenu
+            position={nodeMenuVisibility}
+            node={selectedNode}
+            onClose={closeNodePicker}
+          />
+        )}
       </ReactFlow>
     </ReactFlowProvider>
   );
@@ -165,7 +188,7 @@ export const RubixFlow = () => {
 
   const customNodeTypes = (nodesSpec as NodeSpecJSON[]).reduce(
     (nodes, node) => {
-      nodes[node.type] = (props: any) => <Node {...props} spec={node} />;
+      nodes[node.type] = (props: any) => <NodePanel {...props} spec={node} />;
       return nodes;
     },
     {} as NodeTypes

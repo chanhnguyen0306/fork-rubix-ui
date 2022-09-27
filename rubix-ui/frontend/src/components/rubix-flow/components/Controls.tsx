@@ -13,6 +13,7 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
+import { NODES_JSON } from "../use-nodes-spec";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
@@ -20,6 +21,7 @@ const Controls = () => {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const instance = useReactFlow();
+  const nodesStorage = JSON.parse("" + localStorage.getItem(NODES_JSON)) || [];
 
   const factory = new FlowFactory();
 
@@ -27,6 +29,15 @@ const Controls = () => {
     const nodes = instance.getNodes();
     const edges = instance.getEdges();
     const graphJson = flowToBehave(nodes, edges);
+    if (nodesStorage.length > 0) {
+      for (const nodeSettings of nodesStorage) {
+        const index = graphJson.nodes.findIndex(
+          (n) => n.id === nodeSettings.id
+        );
+        if (index !== -1)
+          graphJson.nodes[index].settings = nodeSettings.settings;
+      }
+    }
     await factory.DownloadFlow(graphJson, true);
   };
 
