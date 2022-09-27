@@ -59,7 +59,6 @@ export const SettingsModal = ({
       nodesStorage[index] = updatedNode;
     }
     localStorage.setItem(NODES_JSON, JSON.stringify(nodesStorage)); //use localStorage to store node-settings
-    console.log("nodesStorage", nodesStorage);
     setConfirmLoading(false);
     handleClose();
   };
