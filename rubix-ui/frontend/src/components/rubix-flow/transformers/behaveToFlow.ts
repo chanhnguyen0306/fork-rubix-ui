@@ -1,5 +1,5 @@
 import { Edge, Node } from "react-flow-renderer/nocss";
-import { GraphJSON } from "../lib";
+import { GraphJSON, NodeExtend } from "../lib";
 import { generateUuid } from "../lib/generateUuid";
 
 export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
@@ -7,7 +7,7 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
   const edges: Edge[] = [];
 
   graph.nodes.forEach((nodeJSON) => {
-    const node: Node = {
+    const node: NodeExtend = {
       id: nodeJSON.id,
       type: nodeJSON.type ?? "",
       position: {
@@ -20,6 +20,7 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
       },
       data: nodeJSON.data ?? ({} as { [key: string]: any }),
       style: nodeJSON.style ?? ({} as { [key: string]: any }),
+      isParent: nodeJSON.isParent ?? false,
     };
 
     nodes.push(node);

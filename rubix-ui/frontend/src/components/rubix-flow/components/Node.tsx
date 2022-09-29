@@ -6,7 +6,7 @@ import {
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
-import { NodeSpecJSON } from "../lib";
+import { NodeExtend, NodeSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
@@ -37,7 +37,8 @@ export const Node = (props: NodeProps) => {
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
-  const node = instance.getNode(id);
+  const node = instance.getNode(id) as NodeExtend;
+  console.log("node", node);
 
   return (
     <NodeContainer
@@ -50,10 +51,12 @@ export const Node = (props: NodeProps) => {
         if (input && !data[input.name] && data[input.name] !== null) {
           data[input.name] = input.defaultValue;
         }
+        const borderB =
+          node.isParent && ix === pairs.length - 1 ? "border-b pb-3" : "";
         return (
           <div
             key={ix}
-            className="flex flex-row justify-between gap-8 relative px-2"
+            className={`flex flex-row justify-between gap-8 relative px-2 ${borderB}`}
           >
             {input && (
               <InputSocket

@@ -128,9 +128,6 @@
           "isChild": true
         }
       },
-      "subFlow": {
-        "parentID": "a123"
-      },
       "metadata":{
         "positionX": 334,
         "positionY": 248
@@ -177,16 +174,13 @@
           "isChild": true
         }
       },
-      "subFlow": {
-        "parentID": "a123"
-      },
       "metadata":{
         "positionX": 552,
         "positionY": 230
       },
-      "type": "constant/const-string"
+      "type": "constant/const-string",
+      "parentNode": "a123"
     },
-
     {
       "id": "a222",
       "outputs": [
@@ -225,10 +219,132 @@
       },
       "data": { "label": "Network-2" },
       "style": {
-        "width": 450,
-        "height": 250
+        "width": 600,
+        "height": 400
       },
       "type": "flow/network"
+    },
+    {
+      "id": "a222-111",
+      "outputs": [
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "connections": null
+        }
+      ],
+      "info": {
+        "nodeID": "a222-111",
+        "name": "device1",
+        "category": "bacnet"
+      },
+      "parameters": {
+        "application": {
+          "application": "bacnet",
+          "isChild": false
+        },
+        "maxNodeCount": 1
+      },
+      "isParent": true,
+      "metadata":{
+        "positionX": 910,
+        "positionY": 247
+      },
+      "data": { "label": "Device1" },
+      "style": {
+        "width": 350,
+        "height": 250
+      },
+      "type": "flow/device",
+      "parentNode": "a222"
+    },
+    {
+      "id": "a222-222",
+      "outputs": [
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "connections": null
+        }
+      ],
+      "info": {
+        "nodeID": "a222-222",
+        "name": "device2",
+        "category": "bacnet"
+      },
+      "parameters": {
+        "application": {
+          "application": "bacnet",
+          "isChild": false
+        },
+        "maxNodeCount": 1
+      },
+      "metadata":{
+        "positionX": 1320,
+        "positionY": 258
+      },
+      "data": { "label": "Device2" },
+      "type": "flow/device",
+      "parentNode": "a222"
+    },
+    {
+      "id": "a222-111-111",
+      "outputs": [
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "connections": null
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "connections": null
+        }
+      ],
+      "info": {
+        "nodeID": "a222-111-111",
+        "name": "point",
+        "category": "bacnet"
+      },
+      "parameters": {
+        "application": {
+          "application": "bacnet",
+          "isChild": true
+        },
+        "maxNodeCount": 1
+      },
+      "metadata":{
+        "positionX": 970,
+        "positionY": 358
+      },
+      "data": { "label": "Point" },
+      "type": "flow/point",
+      "parentNode": "a222-111"
     }
   ]
 }
