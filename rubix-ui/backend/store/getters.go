@@ -16,12 +16,12 @@ func (inst *Store) getUserStorePathApps() string {
 	return inst.UserStoreAppsPath
 }
 
-// GetAppPathAndVersion get the full app install path and version => /home/user/rubix/store/apps/rubix-wires/v0.0.1
-func (inst *Store) GetAppPathAndVersion(appName, version string) string {
-	return inst.getAppPathAndVersion(appName, version)
+// GetAppStoreAppPath get the full app install path and version => ~/rubix/store/apps/rubix-wires/<amd64|armv7>/<version>
+func (inst *Store) GetAppStoreAppPath(appName, arch, version string) string {
+	return path.Join(inst.getUserStorePathApps(), appName, arch, version)
 }
 
-// getAppPathAndVersion get the full app install path and version => /home/user/rubix/store/apps/rubix-wires/v0.0.1
-func (inst *Store) getAppPathAndVersion(appName, version string) string {
-	return path.Join(inst.getUserStorePathApps(), appName, version)
+// GetAppStoreAppPluginsPath get the full app install path and version => ~/rubix/store/apps/flow-framework/<amd64|armv7>/<version>/plugins
+func (inst *Store) GetAppStoreAppPluginsPath(appName, arch, version string) string {
+	return path.Join(inst.GetAppStoreAppPath(appName, arch, version), "plugins")
 }

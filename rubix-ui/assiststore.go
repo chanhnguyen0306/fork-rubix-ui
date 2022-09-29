@@ -22,7 +22,7 @@ func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	return resp, err
 }
 
-func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*appstore.UploadResponse, error) {
+func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doNotValidateArch bool) (*appstore.UploadResponse, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -38,16 +38,12 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch st
 	if err != nil {
 		return nil, err
 	}
-	err = appStore.StoreCheckAppAndVersionExists(appName, version)
+	err = appStore.StoreCheckAppAndVersionExists(appName, arch, version)
 	if err != nil {
 		return nil, err
 	}
-	p := str.GetAppPathAndVersion(appName, version)
-	var dontCheckArch bool
-	if appName == rubixWires {
-		dontCheckArch = true
-	}
-	buildDetails, err := appStore.App.GetBuildZipNameByArch(p, arch, dontCheckArch)
+	p := str.GetAppStoreAppPath(appName, arch, version)
+	buildDetails, err := appStore.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, err
 	}

@@ -60,14 +60,11 @@ func (inst *Store) AddApp(app *App) (*App, error) {
 	if err := inst.makeApp(app.Name); err != nil {
 		return nil, err
 	}
-	if err := inst.makeAppVersionDir(app.Name, app.Version); err != nil {
+	if err := inst.makeAppStoreAppDir(app.Name, app.Arch, app.Version); err != nil {
 		return nil, err
 	}
 	if app.Name == flow {
-		if app.Version == "" {
-			return nil, errors.New("app release version can not be empty when adding a plugin")
-		}
-		if err := inst.makePluginDirs(flow, app.ReleaseVersion); err != nil {
+		if err := inst.makePluginDirs(app.Name, app.Arch, app.Version); err != nil {
 			return nil, err
 		}
 	}
@@ -114,14 +111,14 @@ func (inst *Store) StoreCheckAppExists(appName string) error {
 }
 
 // StoreCheckAppAndVersionExists  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *Store) StoreCheckAppAndVersionExists(appName, version string) error {
+func (inst *Store) StoreCheckAppAndVersionExists(appName, arch, version string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
 	if err := installer.CheckVersion(version); err != nil {
 		return err
 	}
-	p := path.Join(inst.getUserStorePathApps(), appName, version)
+	p := inst.GetAppStoreAppPath(appName, arch, version)
 	found := fileutils.DirExists(p)
 	if !found {
 		return errors.New(fmt.Sprintf("failed to find app: %s version: %s in app-store", appName, version))
@@ -181,34 +178,25 @@ func (inst *Store) makeApp(appName string) error {
 }
 
 // MakeAppVersionDir  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *Store) makeAppVersionDir(appName, version string) error {
+func (inst *Store) makeAppStoreAppDir(appName, arch, version string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
 	if err := installer.CheckVersion(version); err != nil {
 		return err
 	}
-	p := path.Join(inst.getUserStorePathApps(), appName, version)
+	p := inst.GetAppStoreAppPath(appName, arch, version)
 	return os.MkdirAll(p, os.FileMode(FilePerm))
 }
 
 // MakeAppVersionDir  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *Store) makePluginDirs(appName, realseVersion string) error {
+func (inst *Store) makePluginDirs(appName, arch, version string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
-	if err := installer.CheckVersion(realseVersion); err != nil {
+	if err := installer.CheckVersion(version); err != nil {
 		return err
 	}
-	p := path.Join(inst.getUserStorePathApps(), appName, realseVersion, "plugins/amd64")
-	err := os.MkdirAll(p, os.FileMode(FilePerm))
-	if err != nil {
-		return err
-	}
-	p = path.Join(inst.getUserStorePathApps(), appName, realseVersion, "plugins/armv7")
-	err = os.MkdirAll(p, os.FileMode(FilePerm))
-	if err != nil {
-		return err
-	}
-	return nil
+	p := inst.GetAppStoreAppPluginsPath(appName, arch, version)
+	return os.MkdirAll(p, os.FileMode(FilePerm))
 }

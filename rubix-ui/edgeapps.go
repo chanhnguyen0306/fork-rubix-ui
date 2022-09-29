@@ -77,20 +77,20 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 
 	var lastStep = "5"
-	if err := emptyString(releaseVersion, "releaseVersion"); err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if releaseVersion == "" {
+		inst.uiErrorMessage("release_version can't be empty")
 		return nil
 	}
-	if err := emptyString(appName, "appName"); err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if appName == "" {
+		inst.uiErrorMessage("app_name can't be empty")
 		return nil
 	}
-	if err := emptyString(appVersion, "appVersion"); err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if appVersion == "" {
+		inst.uiErrorMessage("app_version can't be empty")
 		return nil
 	}
-	if err := emptyString(arch, "arch"); err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	if arch == "" {
+		inst.uiErrorMessage("arch can't be empty")
 		return nil
 	}
 
@@ -114,7 +114,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 			}
 		}
 	}
-	err = inst.StoreCheckAppAndVersionExists(appName, appVersion) // check if app is in the store and if not then try and download it
+	err = inst.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the store and if not then try and download it
 	if err != nil {
 		inst.crudMessage(true, fmt.Sprintf("app: %s not found in store so download", appName))
 		token, err := inst.getGitToken(gitToken, false)
@@ -124,6 +124,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
 	}
+
 	product := getProduct.Product
 	log.Errorln(" INSTALL-APP add check to make its correct arch and product")
 	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type: %s app: %s", lastStep, product, appName))
@@ -132,7 +133,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		return nil
 	}
 	log.Errorln("INSTALL-APP UPLOAD APP TO ASSIST AND IN CHECK TO SEE IF APP IS ALREADY UPLOADED")
-	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, product, arch)
+	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch)
 	if err != nil {
 		log.Errorf("install-edge-app upload app to rubix-assist app-name: %s err: %s", appName, err.Error())
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

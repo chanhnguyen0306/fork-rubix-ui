@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/git/pkg/git"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-ui/backend/store"
@@ -15,8 +14,8 @@ func (inst *App) StoreCheckAppExists(appName string) error {
 	return inst.store.StoreCheckAppExists(appName)
 }
 
-func (inst *App) StoreCheckAppAndVersionExists(appName, version string) error {
-	return inst.store.StoreCheckAppAndVersionExists(appName, version)
+func (inst *App) StoreCheckAppAndVersionExists(appName, arch, version string) error {
+	return inst.store.StoreCheckAppAndVersionExists(appName, arch, version)
 }
 
 func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch string, cleanDownload bool, release *store.Release) (*store.InstallResponse, error) {
@@ -63,23 +62,9 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 		return nil
 	}
 	for _, app := range getRelease.Apps {
-		if appName == rubixWires && app.Name == rubixWires { // download wires
-			inst.crudMessage(true, fmt.Sprintf("try to download app: %s version: %s", appName, app.Version))
-			asset, err := inst.store.DownloadWires(token, app.Version, cleanDownload)
-			if err != nil {
-				inst.crudMessage(false, fmt.Sprintf("download rubix-wires err: %s", err.Error()))
-				return nil
-			}
-			out.AppName = asset.Name
-			out.AppVersion = asset.Version
-			inst.crudMessage(true, fmt.Sprintf("download app: %s ok", appName))
-		} else if app.Name == appName { // download any other as needed
-			opts := git.DownloadOptions{
-				AssetName: app.Repo,
-				MatchName: true,
-				MatchArch: true,
-			}
-			inst.crudMessage(true, fmt.Sprintf("try to download app: %s version: %s", appName, app.Version))
+		if app.Name == appName {
+			inst.crudMessage(true, fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
+			opts := inst.store.GenerateDownloadOptions(app.Repo, app.DoNotValidateArch)
 			asset, err := inst.store.GitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, releaseVersion, cleanDownload, opts)
 			if err != nil {
 				inst.crudMessage(false, fmt.Sprintf("download app err: %s", err.Error()))

@@ -18,7 +18,7 @@ func TestApp_assistListStore(t *testing.T) { // list all apps on assist
 
 func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
 	app := NewApp()
-	store, err := app.assistAddUploadApp(connection, appName, appVersion, product, arch)
+	store, err := app.assistAddUploadApp(connection, appName, appVersion, arch, false)
 	fmt.Println(err)
 	if err != nil {
 		return

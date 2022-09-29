@@ -8,14 +8,13 @@ import (
 	"io/ioutil"
 )
 
-// StoreListPluginsAmd64 get all plugins for a version => /home/user/rubix/store/apps/rubix-wires/v0.0.1
+// StoreListPluginsAmd64 get all plugins for a version => ~/rubix/store/apps/flow-framework/amd64/v0.0.1/plugins
 func (inst *Store) StoreListPluginsAmd64(version string) ([]installer.BuildDetails, string, error) {
-	flowPath := inst.getAppPathAndVersion(flow, version)
-	err := fileutils.New().DirExistsErr(flowPath)
+	pluginStore := inst.GetAppStoreAppPluginsPath(flow, "amd64", version)
+	err := fileutils.New().DirExistsErr(pluginStore)
 	if err != nil {
 		return nil, "", errors.New(fmt.Sprintf("failed to find plugin by version: %s", version))
 	}
-	pluginStore := fmt.Sprintf("%s/plugins/amd64", flowPath)
 	files, err := ioutil.ReadDir(pluginStore)
 	if err != nil {
 		return nil, "", err
@@ -27,14 +26,13 @@ func (inst *Store) StoreListPluginsAmd64(version string) ([]installer.BuildDetai
 	return plugins, pluginStore, err
 }
 
-// StoreListPluginsArm get all plugins for a version => /home/user/rubix/store/apps/rubix-wires/v0.0.1
+// StoreListPluginsArm get all plugins for a version => ~/rubix/store/apps/flow-framework/armv7/v0.0.1/plugins
 func (inst *Store) StoreListPluginsArm(version string) ([]installer.BuildDetails, string, error) {
-	flowPath := inst.getAppPathAndVersion(flow, version)
-	err := fileutils.New().DirExistsErr(flowPath)
+	pluginStore := inst.GetAppStoreAppPluginsPath(flow, "armv7", version)
+	err := fileutils.New().DirExistsErr(pluginStore)
 	if err != nil {
 		return nil, "", errors.New(fmt.Sprintf("failed to find plugin by version: %s", version))
 	}
-	pluginStore := fmt.Sprintf("%s/plugins/armv7", flowPath)
 	files, err := ioutil.ReadDir(pluginStore)
 	if err != nil {
 		return nil, "", err

@@ -25,7 +25,11 @@ func (inst *App) crudMessage(ok bool, data interface{}) {
 		log.Errorf("%s", data)
 		inst.msgToUI(inst.ctx, string(errMsg), data)
 	}
+}
 
+func (inst *App) uiErrorMessage(data interface{}) {
+	log.Errorf("%s", data)
+	inst.msgToUI(inst.ctx, string(errMsg), data)
 }
 
 func (inst *App) sendTimeToUI(ctx context.Context) {
