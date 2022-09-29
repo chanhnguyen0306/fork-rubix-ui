@@ -16,6 +16,8 @@ export type NodeJSON = {
   };
   metadata?: Metadata;
   settings?: any;
+  data?: { [key: string]: any };
+  style?: { [key: string]: any };
 };
 
 export type GraphJSON = {

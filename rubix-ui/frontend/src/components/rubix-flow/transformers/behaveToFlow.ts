@@ -9,7 +9,7 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
   graph.nodes.forEach((nodeJSON) => {
     const node: Node = {
       id: nodeJSON.id,
-      type: nodeJSON.type,
+      type: nodeJSON.type ?? "",
       position: {
         x: nodeJSON.metadata?.positionX
           ? Number(nodeJSON.metadata?.positionX)
@@ -18,7 +18,8 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
           ? Number(nodeJSON.metadata?.positionY)
           : 0,
       },
-      data: {} as { [key: string]: any },
+      data: nodeJSON.data ?? ({} as { [key: string]: any }),
+      style: nodeJSON.style ?? ({} as { [key: string]: any }),
     };
 
     nodes.push(node);

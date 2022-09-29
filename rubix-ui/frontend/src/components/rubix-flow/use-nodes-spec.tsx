@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { FlowFactory } from "./factory";
-import { InputSocketSpecJSON, NodeJSON, NodeSpecJSON } from "./lib";
+import { InputSocketSpecJSON, NodeSpecJSON } from "./lib";
 
 export const SPEC_JSON = "spec-json";
 export const NODES_JSON = "nodes-json";
+
 const _nodesSpec = JSON.parse("" + localStorage.getItem(SPEC_JSON)) || [];
-const _nodesJson = JSON.parse("" + localStorage.getItem(NODES_JSON)) || [];
 
 export let getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
 

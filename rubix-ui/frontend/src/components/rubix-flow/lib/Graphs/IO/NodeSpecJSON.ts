@@ -17,4 +17,5 @@ export type NodeSpecJSON = {
   inputs?: InputSocketSpecJSON[];
   outputs?: OutputSocketSpecJSON[];
   info?: {};
+  style?: {};
 };

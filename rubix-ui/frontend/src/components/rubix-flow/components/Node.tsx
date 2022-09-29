@@ -1,6 +1,7 @@
 import {
   NodeProps as FlowNodeProps,
   useEdges,
+  useReactFlow,
 } from "react-flow-renderer/nocss";
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
@@ -30,16 +31,20 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
   return pairs;
 };
 
-export const Node = ({ id, data, spec, selected }: NodeProps) => {
+export const Node = (props: NodeProps) => {
+  const { id, data, spec, selected } = props;
+  const instance = useReactFlow();
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
+  const node = instance.getNode(id);
 
   return (
     <NodeContainer
       title={getTitle(spec.type)}
       category={spec.category}
       selected={selected}
+      height={node?.height ?? 30}
     >
       {pairs.map(([input, output], ix) => {
         if (input && !data[input.name] && data[input.name] !== null) {

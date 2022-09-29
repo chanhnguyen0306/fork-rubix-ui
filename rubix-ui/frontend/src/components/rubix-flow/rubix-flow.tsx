@@ -1,9 +1,4 @@
-import {
-  MouseEvent as ReactMouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -24,18 +19,24 @@ import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-import { NODES_JSON, useNodesSpec } from "./use-nodes-spec";
+import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { Node, NodeSpecJSON } from "./lib";
+import rawGraphJSON from "./graph.json";
+import { behaveToFlow } from "./transformers/behaveToFlow";
 
 const edgeTypes = {
   default: CustomEdge,
 };
 
+const graphJSON = rawGraphJSON;
+
+const [initialNodes, initialEdges] = behaveToFlow(graphJSON as any);
+
 const Flow = (props: any) => {
   const { customNodeTypes } = props;
-  const [nodes, , onNodesChange] = useNodesState([]);
-  const [edges, , onEdgesChange] = useEdgesState([]);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();

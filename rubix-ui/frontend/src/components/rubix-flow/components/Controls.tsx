@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 import { NODES_JSON } from "../use-nodes-spec";
+import { NodeJSON } from "../lib";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
@@ -21,7 +22,8 @@ const Controls = () => {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const instance = useReactFlow();
-  const nodesStorage = JSON.parse("" + localStorage.getItem(NODES_JSON)) || [];
+  const nodesStorage = (JSON.parse("" + localStorage.getItem(NODES_JSON)) ||
+    []) as NodeJSON[];
 
   const factory = new FlowFactory();
 
