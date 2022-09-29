@@ -38,7 +38,6 @@ export const Node = (props: NodeProps) => {
   const handleChange = useChangeNodeData(id);
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
   const node = instance.getNode(id) as NodeExtend;
-  console.log("node", node);
 
   return (
     <NodeContainer
