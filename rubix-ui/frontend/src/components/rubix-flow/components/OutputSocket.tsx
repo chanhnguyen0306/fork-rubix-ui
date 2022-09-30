@@ -29,12 +29,12 @@ export const OutputSocket = ({
       {showFlowIcon && (
         <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
       )}
-      {showFlowIcon === false && <div className="capitalize">{name}</div>}
+      {showFlowIcon === false && <div className="">{name}</div>}
       <Handle
         id={name}
         type="source"
         position={Position.Right}
-        className={cx(borderColor, connected ? backgroundColor : "bg-gray-800")}
+        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1200")}
         isValidConnection={(connection: Connection) =>
           isValidConnection(connection, instance)
         }

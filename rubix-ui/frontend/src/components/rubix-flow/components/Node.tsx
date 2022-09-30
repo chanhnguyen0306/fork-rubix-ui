@@ -17,7 +17,7 @@ type NodeProps = FlowNodeProps & {
 const getTitle = (type: string) => {
   const end = type.substring(type.lastIndexOf("/") + 1);
   const spaces = end.replace(/([A-Z])/g, " $1");
-  return spaces.charAt(0).toUpperCase() + spaces.slice(1);
+  return spaces.toUpperCase();
 };
 
 const getPairs = <T, U>(arr1: T[], arr2: U[]) => {

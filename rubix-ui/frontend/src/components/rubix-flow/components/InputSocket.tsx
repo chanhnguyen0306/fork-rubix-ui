@@ -41,7 +41,7 @@ export const InputSocket = ({
       )}
       {showFlowIcon === false && (
         <>
-          <div className="capitalize mr-2">{name}</div>
+          <div className="mr-2">{name}</div>
           {connected === false && (
             <>
               {valueType === "string" && (
@@ -76,7 +76,7 @@ export const InputSocket = ({
         id={name}
         type="target"
         position={Position.Left}
-        className={cx(borderColor, connected ? backgroundColor : "bg-gray-800")}
+        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1200")}
         isValidConnection={(connection: Connection) =>
           isValidConnection(connection, instance)
         }
