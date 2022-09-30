@@ -4,11 +4,7 @@ import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 import { NODES_JSON } from "../use-nodes-spec";
-import { Node, NodeJSON } from "../lib";
-
-interface NodeSettings extends Node {
-  settings?: any;
-}
+import { NodeJSON } from "../lib";
 
 type SettingsModalProps = {
   isModalVisible: boolean;
