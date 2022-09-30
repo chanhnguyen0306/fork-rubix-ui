@@ -9,7 +9,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.1.9
+	github.com/NubeDev/flow-eng v0.2.0
 	github.com/NubeIO/git v0.0.6
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
@@ -25,7 +25,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
 	github.com/NubeIO/rubix-assist v0.5.0
 	github.com/NubeIO/rubix-edge v0.3.0
-	github.com/NubeIO/rubix-rules v0.0.1
+	github.com/NubeIO/rubix-rules v0.0.3
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
