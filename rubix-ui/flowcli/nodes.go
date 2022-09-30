@@ -7,8 +7,14 @@ import (
 	"github.com/NubeIO/rubix-rules/clients/nresty"
 )
 
+type SchemaBody struct {
+	Title      string      `json:"title"`
+	Properties interface{} `json:"properties"`
+}
+
 type Schema struct {
-	Schema map[string]interface{} `json:"schema"`
+	Schema   SchemaBody  `json:"schema"`
+	UiSchema interface{} `json:"uiSchema"`
 }
 
 func (inst *FlowClient) NodeSchema(nameName string) (*Schema, error) {
