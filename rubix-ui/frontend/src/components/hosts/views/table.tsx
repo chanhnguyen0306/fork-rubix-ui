@@ -1,21 +1,21 @@
 import {
   Typography,
-  Tag,
   List,
   Button,
   Space,
   Spin,
   Tooltip,
-  Popover,
   Dropdown,
   Menu,
+  Card,
 } from "antd";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { EllipsisOutlined, DownCircleOutlined } from "@ant-design/icons";
+import { DownCircleOutlined, LeftOutlined } from "@ant-design/icons";
 import { assistmodel, storage, main } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
+import RbTag from "../../../common/rb-tag";
 import {
   RbDeleteButton,
   RbAddButton,
@@ -31,7 +31,8 @@ import { HostsFactory } from "../factory";
 import InstallApp from "./installApp";
 import { BackupModal, CreateEditModal } from "./modals";
 import RbConfirmPopover from "../../../common/rb-confirm-popover";
-
+import { tagMessageStateResolver } from "./utils";
+import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
 
 import Host = assistmodel.Host;
@@ -46,108 +47,6 @@ const releaseFactory = new ReleasesFactory();
 const INSTALL_DIALOG = "INSTALL_DIALOG";
 const UPDATE_DIALOG = "UPDATE_DIALOG";
 
-interface BadgeDetailI {
-  [name: string]: {
-    title: string;
-    color: string;
-  };
-}
-enum APPLICATION_STATES {
-  ENABLED = "enabled",
-  DISABLED = "disabled",
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  RUNNING = "running",
-  ACTIVATING = "activating",
-  AUTORESTART = "auto-restart",
-  DEAD = "dead",
-}
-const badgeDetails: BadgeDetailI = {
-  [APPLICATION_STATES.ENABLED]: {
-    title: "Enabled",
-    color: "green",
-  },
-  [APPLICATION_STATES.DISABLED]: {
-    title: "Disabled",
-    color: "red",
-  },
-  [APPLICATION_STATES.ACTIVE]: {
-    title: "Active",
-    color: "blue",
-  },
-  [APPLICATION_STATES.INACTIVE]: {
-    title: "Inactive",
-    color: "orange",
-  },
-  [APPLICATION_STATES.ACTIVATING]: {
-    title: "Activating",
-    color: "yellow",
-  },
-  [APPLICATION_STATES.RUNNING]: {
-    title: "Running",
-    color: "green",
-  },
-  [APPLICATION_STATES.DEAD]: {
-    title: "Dead",
-    color: "volcano",
-  },
-  [APPLICATION_STATES.AUTORESTART]: {
-    title: "Auto-Restart",
-    color: "pink",
-  },
-  default: {
-    title: "",
-    color: "",
-  },
-};
-
-const tagMessageStateResolver = (
-  state: string,
-  subState: string,
-  activeState: string
-) => {
-  if (
-    state === APPLICATION_STATES.ENABLED &&
-    activeState === APPLICATION_STATES.ACTIVE &&
-    subState === APPLICATION_STATES.RUNNING
-  ) {
-    return "Application is enabled and running";
-  } else if (
-    state === APPLICATION_STATES.ENABLED &&
-    activeState === APPLICATION_STATES.ACTIVATING &&
-    subState === APPLICATION_STATES.AUTORESTART
-  ) {
-    return "Application is enabled and auto restarting.";
-  } else if (
-    state === APPLICATION_STATES.ENABLED &&
-    activeState === APPLICATION_STATES.INACTIVE &&
-    subState === APPLICATION_STATES.DEAD
-  ) {
-    return "Application enabled but is stopped.";
-  } else if (
-    state === APPLICATION_STATES.DISABLED &&
-    activeState === APPLICATION_STATES.ACTIVE &&
-    subState === APPLICATION_STATES.RUNNING
-  ) {
-    return "Application operations are disabled but running in background.";
-  } else if (
-    state === APPLICATION_STATES.DISABLED &&
-    activeState === APPLICATION_STATES.INACTIVE &&
-    subState === APPLICATION_STATES.DEAD
-  ) {
-    return "Application is disabled and stopped.";
-  }
-};
-
-const RbxTag = (props: any) => {
-  const { state } = props;
-  let badgeDetail = badgeDetails[state];
-  if (!badgeDetail) {
-    return <Tag>{state}</Tag>;
-  }
-
-  return <Tag color={badgeDetail.color}>{badgeDetail.title}</Tag>;
-};
 
 interface InstalledAppI {
   active_state: string;
@@ -175,9 +74,79 @@ const ExpandedRow = (props: any) => {
   );
 };
 
+const ConfirmActionMenu = (props: any) => {
+  const { item, onMenuClick } = props;
+  const [selectedAction, updateSelectedAction] = useState("" as string);
+  const [isOpenConfirm, updateIsOpenConfirm] = useState(false);
+
+  const handleOnMenuClick = (v: any) => {
+    updateSelectedAction(v);
+    updateIsOpenConfirm(true);
+  };
+
+  return (
+    <div>
+      {!isOpenConfirm ? (
+        <Menu
+          key={1}
+          onClick={(v) => handleOnMenuClick(v)}
+          items={[
+            {
+              key: "start",
+              label: "Start",
+            },
+            {
+              key: "restart",
+              label: "Restart",
+            },
+            {
+              key: "stop",
+              label: "Stop",
+            },
+            {
+              key: "uninstall",
+              label: "Uninstall",
+            },
+          ]}
+        />
+      ) : (
+        <Card>
+          <div style={{ paddingBottom: 16 }}>
+            <Button
+              style={{ marginRight: "8px" }}
+              shape="circle"
+              icon={<LeftOutlined />}
+              size="small"
+              onClick={() => updateIsOpenConfirm(false)}
+            />
+            <strong>Are you sure?</strong>
+          </div>
+          <div>
+            <Button
+              onClick={() => {
+                updateIsOpenConfirm(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="nube-primary white--text"
+              onClick={() => onMenuClick(selectedAction, item)}
+            >
+              OK
+            </Button>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
 const AppInstallInfo = (props: any) => {
+  let timeout;
   const [product, updateProduct] = useState({});
   const [isLoading, updateIsLoading] = useState(false);
+  const [isActionLoading, updateActionLoading] = useState({} as any);
   const [isUpdating, updateIsUpdading] = useState(false);
   const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
   const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
@@ -190,6 +159,9 @@ const AppInstallInfo = (props: any) => {
 
   useEffect(() => {
     fetchAppInfo();
+    return () => {
+      timeout = null;
+    };
   }, []);
 
   const installApp = (item: any) => {
@@ -253,36 +225,28 @@ const AppInstallInfo = (props: any) => {
   }
 
   const onMenuClick = (value: any, item: any) => {
-    return releaseFactory.EdgeServiceAction(value.key, {
-      connUUID: connUUID,
-      hostUUID: host.uuid,
-      appName: item.app_name,
-    });
+    updateActionLoading((prevState: any) => ({
+      ...prevState,
+      [item.app_name]: true,
+    }));
+    return releaseFactory
+      .EdgeServiceAction(value.key, {
+        connUUID: connUUID,
+        hostUUID: host.uuid,
+        appName: item.app_name,
+      })
+      .then(() => {
+        timeout = setTimeout(() => {
+          fetchAppInfo();
+        }, REFRESH_TIMEOUT);
+      })
+      .finally(() => {
+        updateActionLoading((prevState: any) => ({
+          ...prevState,
+          [item.app_name]: false,
+        }));
+      });
   };
-
-  const menu = (item: any) => (
-    <Menu
-      onClick={(v) => onMenuClick(v, item)}
-      items={[
-        {
-          key: "start",
-          label: "Start",
-        },
-        {
-          key: "restart",
-          label: "Restart",
-        },
-        {
-          key: "stop",
-          label: "Stop",
-        },
-        {
-          key: 'uninstall',
-          label: "Uninstall",
-        }
-      ]}
-    />
-  );
 
   const openUpdateApp = () => {
     openDialog(UPDATE_DIALOG, { host: host, connUUID });
@@ -364,9 +328,9 @@ const AppInstallInfo = (props: any) => {
               }}
             >
               <span>
-                <RbxTag state={item.state} />
-                <RbxTag state={item.sub_state} />
-                <RbxTag state={item.active_state} />
+                <RbTag state={item.state} />
+                <RbTag state={item.sub_state} />
+                <RbTag state={item.active_state} />
               </span>
 
               <Text style={{ paddingTop: 5 }} type="secondary" italic>
@@ -378,7 +342,12 @@ const AppInstallInfo = (props: any) => {
               </Text>
             </span>
             <span className="flex-1" style={{ textAlign: "right" }}>
-              <Dropdown.Button overlay={() => menu(item)}></Dropdown.Button>
+              <Dropdown.Button
+                loading={isActionLoading[item.app_name] || false}
+                overlay={() => (
+                  <ConfirmActionMenu item={item} onMenuClick={onMenuClick} />
+                )}
+              ></Dropdown.Button>
             </span>
           </List.Item>
         )}
