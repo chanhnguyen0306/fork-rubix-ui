@@ -33,7 +33,7 @@ export const NodeContainer = ({
         {title}
       </div>
       <div
-        className={`flex flex-col gap-2 py-3 border-l border-r border-b `}
+        className={`flex flex-col gap-2 py-3 border-l border-r border-b ${borderColor}`}
         style={{ minHeight: height - 27 }}
       >
         {children}

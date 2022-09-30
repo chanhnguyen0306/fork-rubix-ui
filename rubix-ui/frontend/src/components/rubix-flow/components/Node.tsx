@@ -51,7 +51,10 @@ export const Node = (props: NodeProps) => {
           data[input.name] = input.defaultValue;
         }
         const borderB =
-          node.isParent && ix === pairs.length - 1 ? "border-b pb-3" : "";
+          node.isParent && ix === pairs.length - 1
+            ? "border-b pb-3 border-gray-500"
+            : "";
+
         return (
           <div
             key={ix}
