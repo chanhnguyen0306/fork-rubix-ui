@@ -4,11 +4,7 @@ import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 import { NODES_JSON } from "../use-nodes-spec";
-import { Node } from "../lib";
-
-interface NodeSettings extends Node {
-  settings?: any;
-}
+import { NodeJSON } from "../lib";
 
 type SettingsModalProps = {
   isModalVisible: boolean;
@@ -17,18 +13,19 @@ type SettingsModalProps = {
 };
 
 export const SettingsModal = ({
-  node,
-  isModalVisible,
-  onCloseModal,
-}: SettingsModalProps) => {
+                                node,
+                                isModalVisible,
+                                onCloseModal,
+                              }: SettingsModalProps) => {
   const instance = useReactFlow();
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const nodeIds = instance.getNodes().map((n) => n.id);
-  let nodesStorage = JSON.parse("" + localStorage.getItem(NODES_JSON)) || [];
-  nodesStorage = nodesStorage.filter((n: any) => nodeIds.includes(n.id));
+  let nodesStorage = (JSON.parse("" + localStorage.getItem(NODES_JSON)) ||
+    []) as NodeJSON[];
+  nodesStorage = nodesStorage.filter((n) => nodeIds.includes(n.id));
 
   const factory = new FlowFactory();
 
