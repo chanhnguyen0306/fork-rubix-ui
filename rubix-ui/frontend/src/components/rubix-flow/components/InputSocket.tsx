@@ -76,7 +76,7 @@ export const InputSocket = ({
         id={name}
         type="target"
         position={Position.Left}
-        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1200")}
+        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1100")}
         isValidConnection={(connection: Connection) =>
           isValidConnection(connection, instance)
         }
