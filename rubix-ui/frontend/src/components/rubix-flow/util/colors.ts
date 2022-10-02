@@ -16,6 +16,14 @@ export const valueTypeColorMap: Record<string, string> = {
 };
 
 export const categoryColorMap: Record<NodeSpecJSON["category"], string> = {
+  Event: "red",
+  Logic: "green",
+  Math: "green",
+  State: "purple",
+  Query: "purple",
+  Action: "blue",
+  Flow: "gray",
+  Time: "gray",
   math: "purple",
   logic: "green",
   compare: "green",
