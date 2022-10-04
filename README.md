@@ -1,24 +1,26 @@
-# rubix-ui
+# rubix-ui install
 
 
-## backups
+- check what version of go you have installed go version
+- if its < 1.8 the download and install go 1.8 for your OS https://go.dev/dl/
+- install/upgrade wails you need to reinstall https://wails.io/docs/gettingstarted/installation
+- install node > v15
 
-user needs to create a dir
-
-```
-rubix
---backups
---builds
---plugins
-```
+### install npm packages
 
 ```
-rubix
-├── backups
-│    ├── test.json
-│    └── wires-example.json
-├── builds
-│    └── flow-framework-0.5.6-b1b21422.amd64.zip
-└── plugins
-│    └── modbus-0.5.6-b1b21422.amd64.zip
+cd rubix-ui/rubix-ui/frontend
+npm install
+```
+
+### start the UI
+
+```
+cd rubix-ui/rubix-ui/
+wails dev
+```
+
+you can also open in browser
+```
+http://localhost:34115/
 ```
