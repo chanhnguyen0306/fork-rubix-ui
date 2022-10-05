@@ -29,13 +29,13 @@ const edgeTypes = {
   default: CustomEdge,
 };
 
-const graphJSON = rawGraphJSON;
-const [initialNodes, initialEdges] = behaveToFlow(graphJSON as any);
+// const graphJSON = rawGraphJSON;
+// const [initialNodes, initialEdges] = behaveToFlow(graphJSON as any);
 
 const Flow = (props: any) => {
   const { customNodeTypes } = props;
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, , onNodesChange] = useNodesState([]);
+  const [edges, , onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
