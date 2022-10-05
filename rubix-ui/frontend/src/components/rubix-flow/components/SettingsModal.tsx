@@ -13,10 +13,10 @@ type SettingsModalProps = {
 };
 
 export const SettingsModal = ({
-  node,
-  isModalVisible,
-  onCloseModal,
-}: SettingsModalProps) => {
+                                node,
+                                isModalVisible,
+                                onCloseModal,
+                              }: SettingsModalProps) => {
   const instance = useReactFlow();
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});

@@ -22,10 +22,10 @@ export const useNodesSpec = () => {
       let defaultValue = null;
       switch (input?.valueType) {
         case "number":
-          defaultValue = 0;
+          defaultValue = null;
           break;
         case "string":
-          defaultValue = "";
+          defaultValue = null;
           break;
         case "boolean":
           defaultValue = false;
