@@ -25,7 +25,7 @@ const baseStyles: CSSProperties = {
 
 export const AutoSizeInput: FC<AutoSizeInputProps> = ({
   minWidth = 30,
-  minHeight = 33,
+  minHeight = 30,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
