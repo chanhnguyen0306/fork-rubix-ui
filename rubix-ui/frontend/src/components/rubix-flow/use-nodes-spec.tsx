@@ -25,7 +25,7 @@ export const useNodesSpec = () => {
           defaultValue = null;
           break;
         case "string":
-          defaultValue = null;
+          defaultValue = "";
           break;
         case "boolean":
           defaultValue = false;

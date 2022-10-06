@@ -58,7 +58,7 @@ export const Node = (props: NodeProps) => {
         return (
           <div
             key={ix}
-            className={`flex flex-row justify-between gap-8 relative px-2 ${borderB}`}
+            className={`flex flex-row justify-between gap-8 relative px-2 my-2 ${borderB}`}
           >
             {input && (
               <InputSocket
