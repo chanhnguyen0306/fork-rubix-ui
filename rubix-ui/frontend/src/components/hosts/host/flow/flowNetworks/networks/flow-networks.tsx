@@ -22,7 +22,7 @@ export const FlowNetworks = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      let res = await factory.GetAll(true);
+      let res = (await factory.GetAll(true)) || [];
       setNetworks(res);
     } catch (error) {
       console.log(error);
