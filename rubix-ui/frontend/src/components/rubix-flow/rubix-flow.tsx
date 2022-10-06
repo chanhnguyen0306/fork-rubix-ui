@@ -66,10 +66,12 @@ const Flow = (props: any) => {
   );
 
   const handleAddNode = useCallback(
-    (nodeType: string, position: XYPosition) => {
+    (isParent: boolean, style: any, nodeType: string, position: XYPosition) => {
       closeNodePicker();
       const newNode = {
         id: generateUuid(),
+        isParent,
+        style,
         type: nodeType,
         position,
         data: {},

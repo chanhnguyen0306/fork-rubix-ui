@@ -18,4 +18,5 @@ export type NodeSpecJSON = {
   outputs?: OutputSocketSpecJSON[];
   info?: {};
   style?: {};
+  isParent?: boolean;
 };

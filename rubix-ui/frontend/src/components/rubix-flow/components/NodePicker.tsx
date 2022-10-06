@@ -12,7 +12,12 @@ export type NodePickerFilters = {
 type NodePickerProps = {
   position: XYPosition;
   filters?: NodePickerFilters;
-  onPickNode: (type: string, position: XYPosition) => void;
+  onPickNode: (
+    isParent: boolean,
+    style: any,
+    type: string,
+    position: XYPosition
+  ) => void;
   onClose: () => void;
 };
 
@@ -61,12 +66,14 @@ const NodePicker = ({
         />
       </div>
       <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-        {filtered.map(({ type }) => (
+        {filtered.map(({ type, isParent, style }) => (
           <div
             key={type}
             className="p-2 cursor-pointer border-b border-gray-600"
             onClick={() =>
               onPickNode(
+                isParent ?? false,
+                style ?? {},
                 type,
                 instance.project({ x: mousePosition.x, y: mousePosition.y })
               )

@@ -47,7 +47,7 @@ export const InputSocket = ({
               {valueType === "string" && (
                 <AutoSizeInput
                   type="text"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   value={value}
                   onChange={(e) => onChange(name, e.currentTarget.value)}
                 />
@@ -55,7 +55,7 @@ export const InputSocket = ({
               {valueType === "number" && (
                 <AutoSizeInput
                   type="number"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   value={String(value)}
                   onChange={(e) => onChangeInputNumber(e)}
                 />
@@ -63,7 +63,7 @@ export const InputSocket = ({
               {valueType === "boolean" && (
                 <input
                   type="checkbox"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   value={value}
                   onChange={(e) => onChange(name, e.currentTarget.checked)}
                 />
@@ -76,7 +76,10 @@ export const InputSocket = ({
         id={name}
         type="target"
         position={Position.Left}
-        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1100")}
+        className={cx(
+          borderColor,
+          connected ? backgroundColor : "bg-gray-1100"
+        )}
         isValidConnection={(connection: Connection) =>
           isValidConnection(connection, instance)
         }
