@@ -104,7 +104,7 @@ export const FlowNetworkTable = () => {
   const fetchNetworks = async () => {
     try {
       setIsFetching(true);
-      const res = await networkFactory.GetAll(false);
+      const res = (await networkFactory.GetAll(false)) || [];
       setNetworks(res);
     } catch (error) {
     } finally {

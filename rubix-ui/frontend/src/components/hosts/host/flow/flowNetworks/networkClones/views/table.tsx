@@ -85,7 +85,7 @@ export const NetworkClonesTable = (props: any) => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetAll(false);
+      const res = (await factory.GetAll(false)) || [];
       setNetworks(res);
     } catch (error) {
       console.log(error);
