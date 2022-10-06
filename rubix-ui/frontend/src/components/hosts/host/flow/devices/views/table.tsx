@@ -96,7 +96,7 @@ export const FlowDeviceTable = (props: any) => {
   };
 
   useEffect(() => {
-    return setDataSource(data);
+    setDataSource(data);
   }, [data.length]);
 
   const bulkDelete = async () => {
