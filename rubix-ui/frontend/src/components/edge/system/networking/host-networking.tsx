@@ -69,7 +69,7 @@ export const HostNetworking = () => {
 
   const fetchRCSchema = async () => {
     try {
-      const rcSchema = await factory.GetRcNetworkSchema();
+      const rcSchema = (await factory.GetRcNetworkSchema()) || {};
       setRCSchema(rcSchema);
     } catch (error) {
       console.log(error);

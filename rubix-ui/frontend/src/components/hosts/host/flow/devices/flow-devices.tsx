@@ -100,7 +100,7 @@ export const FlowDevices = () => {
     try {
       setIsFetching(true);
       const res = await flowNetworkFactory.GetOne(networkUUID, true);
-      const devices = res.devices as Device[];
+      const devices = (res.devices || []) as Device[];
       setDevices(devices);
       setPluginUUID(res.plugin_conf_id);
       addPrefix(res.name);

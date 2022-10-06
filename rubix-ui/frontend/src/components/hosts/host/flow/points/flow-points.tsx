@@ -38,7 +38,7 @@ export const FlowPoints = () => {
   } = useParams();
   const { prefixedTitle, addPrefix } = useTitlePrefix("Points");
   const [settings] = useSettings();
-  const [data, setDevices] = useState([] as Point[]);
+  const [data, setPoints] = useState([] as Point[]);
   const [discoveries, setDiscoveries] = useState([] as Point[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
@@ -126,8 +126,8 @@ export const FlowPoints = () => {
 
   const fetch = async () => {
     try {
-      const res = await flowPointFactory.GetPointsForDevice(deviceUUID);
-      setDevices(res);
+      const res = (await flowPointFactory.GetPointsForDevice(deviceUUID)) || [];
+      setPoints(res);
     } catch {
       setIsFetching(false);
     }
