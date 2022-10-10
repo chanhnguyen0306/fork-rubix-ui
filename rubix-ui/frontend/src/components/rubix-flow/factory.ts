@@ -1,5 +1,5 @@
 import {
-  DownloadFlow,
+  DownloadFlow, GetFlow,
   NodePallet,
   NodeSchema, NodeValues
 } from "../../../wailsjs/go/main/App";
@@ -15,9 +15,9 @@ export class FlowFactory {
     return await NodeValues();
   }
 
-  // async NodeValues3(): Promise<Array<node.Values>> {
-  //   return await GetFlow();
-  // }
+  async GetFlow(): Promise<Array<node.Values>> {
+    return await GetFlow();
+  }
 
   async NodePallet() {
     return await NodePallet();
