@@ -18,9 +18,8 @@ func TestApp_storeListPluginsArm(t *testing.T) {
 func TestApp_storeGetPluginPath(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
-		PluginName: "bacnetserver",
-		Arch:       "amd64",
-		Version:    "v0.6.6",
+		Arch:    "amd64",
+		Version: "v0.6.6",
 	}
 	path, _, err := app.storeGetPluginPath(body)
 	fmt.Println(path)
@@ -30,9 +29,9 @@ func TestApp_storeGetPluginPath(t *testing.T) {
 func TestApp_storeGetPlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
-		PluginName: "bacnetserver",
-		Arch:       "amd64",
-		Version:    "v0.6.6",
+
+		Arch:    "amd64",
+		Version: "v0.6.6",
 	}
 	f, flowPlugin, err := app.storeGetPlugin(body)
 	if err != nil {

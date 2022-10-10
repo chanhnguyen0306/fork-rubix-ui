@@ -15,6 +15,10 @@ export class FlowFactory {
     return await NodeValues();
   }
 
+  // async NodeValues3(): Promise<Array<node.Values>> {
+  //   return await GetFlow();
+  // }
+
   async NodePallet() {
     return await NodePallet();
   }
