@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/NubeDev/flow-eng/node"
 	"github.com/NubeDev/flow-eng/nodes"
 	"github.com/NubeIO/rubix-rules/flow"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
@@ -10,6 +11,16 @@ import (
 )
 
 const flowEngIP = "0.0.0.0"
+
+func (inst *App) NodeValues() []node.Values {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.NodeValues()
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
 
 func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
