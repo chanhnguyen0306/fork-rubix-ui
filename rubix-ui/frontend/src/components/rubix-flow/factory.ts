@@ -15,7 +15,7 @@ export class FlowFactory {
     return await NodeValues();
   }
 
-  async GetFlow(): Promise<Array<node.Values>> {
+  async GetFlow():Promise<any> {
     return await GetFlow();
   }
 
