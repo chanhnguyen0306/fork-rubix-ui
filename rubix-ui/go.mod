@@ -9,7 +9,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.2.0
+	github.com/NubeDev/flow-eng v0.2.7
 	github.com/NubeIO/git v0.0.6
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
@@ -46,9 +46,9 @@ require (
 )
 
 require (
-	github.com/NubeIO/lib-goja v0.0.3 // indirect
+	github.com/NubeIO/lib-goja v0.0.4 // indirect
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
-	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.3 // indirect
+	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.4 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 // indirect
 	github.com/NubeIO/rubix-registry-go v0.0.1 // indirect
 	github.com/bep/debounce v1.2.1 // indirect

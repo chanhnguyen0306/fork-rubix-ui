@@ -10,9 +10,8 @@ import (
 func TestApp_EdgeUploadPlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
-		PluginName: "bacnetserver",
-		Arch:       "amd64",
-		Version:    "v0.6.6",
+		Arch:    "amd64",
+		Version: "v0.6.6",
 	}
 	resp := app.EdgeUploadPlugin(connection, "rc", body, true)
 	pprint.PrintJOSN(resp)
@@ -27,9 +26,8 @@ func TestApp_EdgeListPlugins(t *testing.T) {
 func TestApp_EdgeDeletePlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
-		PluginName: "bacnetserver",
-		Arch:       "amd64",
-		Version:    "v0.6.6",
+		Arch:    "amd64",
+		Version: "v0.6.6",
 	}
 	resp := app.EdgeDeletePlugin(connection, "rc", body)
 	pprint.PrintJOSN(resp)

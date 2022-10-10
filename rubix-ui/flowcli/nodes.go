@@ -17,6 +17,18 @@ type Schema struct {
 	UiSchema interface{} `json:"uiSchema"`
 }
 
+func (inst *FlowClient) NodeValues() ([]node.Values, error) {
+	resp, err := nresty.FormatRestyResponse(inst.client.R().
+		SetResult(&[]node.Values{}).
+		Get("/api/nodes/values"))
+	if err != nil {
+		return nil, err
+	}
+	var out []node.Values
+	out = *resp.Result().(*[]node.Values)
+	return out, nil
+}
+
 func (inst *FlowClient) NodeSchema(nameName string) (*Schema, error) {
 	resp, err := nresty.FormatRestyResponse(inst.client.R().
 		SetResult(&Schema{}).
