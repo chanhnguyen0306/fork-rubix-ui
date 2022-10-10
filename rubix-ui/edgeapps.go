@@ -124,22 +124,23 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
 	}
-
 	product := getProduct.Product
-	log.Errorln(" INSTALL-APP add check to make its correct arch and product")
-	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) get edge device details product type: %s app: %s", lastStep, product, appName))
-	if err = emptyString(product, "product"); err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	log.Println("Install App > add check to make its correct arch and product")
+	if product == "" {
+		inst.uiErrorMessage("product can't be empty")
 		return nil
 	}
-	log.Errorln("INSTALL-APP UPLOAD APP TO ASSIST AND IN CHECK TO SEE IF APP IS ALREADY UPLOADED")
-	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch)
+	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
+
+	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
+	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch) // todo
 	if err != nil {
-		log.Errorf("install-edge-app upload app to rubix-assist app-name: %s err: %s", appName, err.Error())
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
+		inst.uiErrorMessage(err.Error())
 		return nil
 	}
-	inst.crudMessage(true, fmt.Sprintf("(step 2 of %s) upload app to rubix-assist app: %s", lastStep, assistUpload.Name))
+	inst.crudMessage(true, fmt.Sprintf("(step 2 of %s) uploaded app to rubix-assist, app_name: %s", lastStep, assistUpload.Name))
+
 	upload := installer.Upload{
 		Name:                            appName,
 		Version:                         appVersion,
@@ -151,23 +152,25 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 	uploadApp, err := inst.edgeUploadEdgeApp(connUUID, hostUUID, upload)
 	if err != nil {
-		log.Errorf("install-edge-app upload app to edge app-name: %s err: %s", appName, err.Error())
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		log.Errorf("Install App > upload app to edge failed, app_name: %s, err: %s", appName, err.Error())
+		inst.crudMessage(false, err.Error())
 		return nil
 	}
-	inst.crudMessage(true, fmt.Sprintf("(step 3 of %s) upload app to rubix-edge app: %s", lastStep, uploadApp.Name))
+	inst.crudMessage(true, fmt.Sprintf("(step 3 of %s) uploaded app to rubix-edge, app_name: %s", lastStep, uploadApp.Name))
+
 	uploadEdgeService, err := inst.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
 	if err != nil {
-		log.Errorf("install-edge-app upload linux-service to edge app-name: %s", appName)
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		log.Errorf("Install App > upload linux service to edge failed, app_name: %s", appName)
+		inst.crudMessage(false, err.Error())
 		return nil
 	}
-	inst.crudMessage(true, fmt.Sprintf("(step 4 of %s) upload linux-service to rubix-edge name: %s", lastStep, uploadEdgeService.UploadedFile))
+	inst.crudMessage(true, fmt.Sprintf("(step 4 of %s) uploaded linux-service to rubix-edge, app_name: %s", lastStep, uploadEdgeService.UploadedFile))
+
 	serviceFile := uploadEdgeService.UploadedFile
 	installEdgeService, err := inst.installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFile)
 	if err != nil {
-		log.Errorf("install-edge-app install app to edge app-name: %s err: %s", appName, err.Error())
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		log.Errorf("Install App > install edge service failed, app_name: %s, err: %s", appName, err.Error())
+		inst.crudMessage(false, err.Error())
 		return nil
 	}
 
@@ -186,13 +189,13 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err: %s", err.Error()))
+			inst.crudMessage(false, fmt.Sprintf("restart flow-framework, err: %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("restart flow-framework msg: %s", restart.Message))
+			inst.crudMessage(true, fmt.Sprintf("restart flow-framework, msg: %s", restart.Message))
 		}
 	}
 
-	if appName == flowFramework { // if app is FF then update all the plgins
+	if appName == flowFramework { // if app is FF then update all the plugins
 		inst.crudMessage(true, fmt.Sprintf("update all plugins for flow-framework"))
 		_, err := inst.EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion)
 		if err != nil {
@@ -200,13 +203,13 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("restart flow-framework err: %s", err.Error()))
+			inst.crudMessage(false, fmt.Sprintf("restart flow-framework, err: %s", err.Error()))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("restart flow-framework msg: %s", restart.Message))
+			inst.crudMessage(true, fmt.Sprintf("restart flow-framework, msg: %s", restart.Message))
 		}
 	}
 
-	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) install app name: %s", lastStep, appName))
+	inst.crudMessage(true, fmt.Sprintf("(step 5 of %s) installed successfully, app_name: %s", lastStep, appName))
 	return installEdgeService
 }
 
@@ -445,11 +448,4 @@ func (inst *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*systemd.
 		return nil, err
 	}
 	return client.EdgeUninstallApp(hostUUID, appName, false)
-}
-
-func emptyString(item, name string) error {
-	if item == "" {
-		return errors.New(fmt.Sprintf("%s", name))
-	}
-	return nil
 }

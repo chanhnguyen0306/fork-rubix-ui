@@ -34,14 +34,14 @@ func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Releas
 			for _, arch := range app.Arch { // download both version of each app
 				opts.MatchName = true
 				opts.AssetName = app.Repo
-				app_, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, "", cleanDownload, false, opts)
+				app_, err := inst.gitDownloadZip(token, app.Name, app.Version, app.Repo, arch, "", app.IsZiball, cleanDownload, false, opts)
 				if err != nil {
 					return nil, err
 				}
 				out = append(out, *app_)
 			}
 		} else {
-			app_, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, "", "", cleanDownload, false, opts)
+			app_, err := inst.gitDownloadZip(token, app.Name, app.Version, app.Repo, "", "", app.IsZiball, cleanDownload, false, opts)
 			if err != nil {
 				return nil, err
 			}
@@ -53,7 +53,7 @@ func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Releas
 
 // DownloadFlowPlugin download ff
 func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, releaseVersion string, cleanDownload bool) (*App, error) {
-	app, err := inst.gitDownloadAsset(token, flow, version, flow, arch, releaseVersion, cleanDownload, true, git.DownloadOptions{
+	app, err := inst.gitDownloadZip(token, flow, version, flow, arch, releaseVersion, cleanDownload, false, true, git.DownloadOptions{
 		AssetName: pluginName,
 		MatchName: true,
 		MatchArch: true,
@@ -110,13 +110,13 @@ func (inst *Store) UnPackWires(version string) error {
 
 }
 
-// GitDownloadAsset download an app
-func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch, releaseVersion string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
-	return inst.gitDownloadAsset(token, appName, version, repo, arch, releaseVersion, cleanDownload, false, gitOptions)
+// GitDownloadZip download an app
+func (inst *Store) GitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	return inst.gitDownloadZip(token, appName, version, repo, arch, releaseVersion, isZipball, cleanDownload, false, gitOptions)
 }
 
-// gitDownloadAsset download an app
-func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, releaseVersion string, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
+// gitDownloadZip download an app
+func (inst *Store) gitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
 	newApp := &App{
 		Name:           appName,
 		Version:        version,
@@ -138,7 +138,6 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, release
 		return nil, err
 	}
 	gitOptions.DownloadDestination = inst.GetAppStoreAppPath(newApp.Name, arch, newApp.Version)
-	fmt.Println("gitOptions.DownloadDestination", gitOptions.DownloadDestination)
 	if isPlugin {
 		gitOptions.DownloadDestination = path.Join(inst.GetAppStoreAppPath(newApp.Name, arch, newApp.Version), "plugins")
 	}
@@ -164,10 +163,10 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, release
 		}
 	}
 	if runDownload {
-		if appName == rubixWires {
-			err = inst.GitDownloadWires(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		if isZipball {
+			err = inst.GitDownloadZipball(newApp.Repo, newApp.Version, arch, token, gitOptions)
 		} else {
-			err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+			err = inst.GitDownloadAsset(newApp.Repo, newApp.Version, arch, token, gitOptions)
 		}
 		if err != nil {
 			return nil, err

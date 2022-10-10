@@ -58,14 +58,10 @@ func (inst *App) gitDownloadAllRelease(runDownloads bool) error {
 
 }
 
-//gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
+// gitGetRelease gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
 func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) {
 	if !strings.Contains(path, "flow/") {
 		path = fmt.Sprintf("flow/%s.json", path)
 	}
-	appStore, err := store.New(&store.Store{})
-	if err != nil {
-		return nil, err
-	}
-	return appStore.DownLoadReleases(token, path)
+	return inst.store.DownLoadReleases(token, path)
 }
