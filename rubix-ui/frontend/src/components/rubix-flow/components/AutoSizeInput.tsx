@@ -50,12 +50,19 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
     if (measureRef.current === null) return;
     if (inputRef.current === null) return;
 
+    // Max width is 600px
+    const maxWidth = 600;
     const width = measureRef.current.clientWidth;
-    inputRef.current.style.width = Math.max(minWidth, width) + "px";
+
+    if (width <= maxWidth) {
+      inputRef.current.style.width = Math.max(minWidth, width) + "px";
+    } else {
+      inputRef.current.style.width = `${maxWidth}px`;
+    }
 
     const height = measureRef.current.clientHeight;
     inputRef.current.style.height = Math.max(minHeight, height) + "px";
-  }, [props.value, minWidth, minHeight, styles]);
+  }, [props.value, minWidth, styles]);
 
   return (
     <>
