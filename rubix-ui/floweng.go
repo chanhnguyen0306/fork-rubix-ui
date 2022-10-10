@@ -22,6 +22,16 @@ func (inst *App) NodeValues() []node.Values {
 	return resp
 }
 
+func (inst *App) GetFlow() interface{} {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.GetFlow()
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
+
 func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeSchema(nodeName)

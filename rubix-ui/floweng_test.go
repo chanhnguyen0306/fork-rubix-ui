@@ -7,6 +7,6 @@ import (
 
 func TestApp_NodePallet(t *testing.T) {
 	app := NewApp()
-	resp := app.NodeValues()
+	resp := app.GetFlow()
 	pprint.PrintJOSN(resp)
 }
