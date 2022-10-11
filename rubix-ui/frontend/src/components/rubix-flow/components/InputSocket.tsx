@@ -54,7 +54,7 @@ export const InputSocket = ({
   valueType,
 }: InputSocketProps) => {
   const instance = useReactFlow();
-  const [inputNumber, setInputNumber] = useState("");
+  const [inputNumber, setInputNumber] = useState(value);
 
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
