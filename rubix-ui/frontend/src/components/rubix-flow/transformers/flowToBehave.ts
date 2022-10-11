@@ -19,6 +19,9 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
         positionX: String(node.position.x),
         positionY: String(node.position.y),
       },
+      settings: {
+        selected: node.selected || false
+      }
     };
 
     Object.entries(node.data).forEach(([key, value]) => {
