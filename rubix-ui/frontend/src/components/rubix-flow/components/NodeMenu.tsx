@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { XYPosition } from "react-flow-renderer/nocss";
+import { isObjectEmpty } from "../../../utils/utils";
 import { useOnPressKey } from "../hooks/useOnPressKey";
 import { FLOW_TYPE } from "../use-nodes-spec";
+import { AddStyleModal } from "./AddStyleModal";
 import { AddToParentModal } from "./AddToParentModal";
 import { SettingsModal } from "./SettingsModal";
 
@@ -76,6 +78,39 @@ const AddToParentComponent = ({ node, onClose }: any) => {
   );
 };
 
+const AddStyleComponent = ({ node, onClose }: any) => {
+  if (isObjectEmpty(node.style)) return null;
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    onClose();
+  };
+
+  return (
+    <>
+      <div
+        key="settings"
+        className="p-2 cursor-pointer border-b border-gray-600"
+        onClick={openModal}
+      >
+        Add style
+      </div>
+
+      <AddStyleModal
+        node={node}
+        isModalVisible={isModalVisible}
+        onCloseModal={closeModal}
+      />
+    </>
+  );
+};
+
 const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
@@ -91,6 +126,7 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
         <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
           <SettingsComponent node={node} onClose={onClose} />
           <AddToParentComponent node={node} onClose={onClose} />
+          <AddStyleComponent node={node} onClose={onClose} />
         </div>
       </div>
     </>
