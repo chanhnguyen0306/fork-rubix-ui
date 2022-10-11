@@ -47,8 +47,8 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
       autoLayout(nodes, edges);
     }
 
-    instance.setNodes(nodes);
-    instance.setEdges(edges);
+    instance.setNodes([...instance.getNodes(), ...nodes]);
+    instance.setEdges([...instance.getEdges(), ...edges]);
 
     // TODO better way to call fit vew after edges render
     setTimeout(() => {
