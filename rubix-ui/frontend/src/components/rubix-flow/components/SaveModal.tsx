@@ -8,7 +8,7 @@ export type SaveModalProps = { open?: boolean; onClose: () => void };
 export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
   const ref = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
-  const [nodeRender, setNodeRender] = useState('');
+  const [nodeRender, setNodeRender] = useState("");
 
   const edges = useEdges();
   const nodes = useNodes();
@@ -27,7 +27,7 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
 
   useEffect(() => {
     const _nodes = flow.nodes.filter((item) => {
-      const isSelected = item.settings.selected;
+      const isSelected = item?.settings?.selected;
       delete item.settings;
 
       return isSelected && item;
