@@ -39,6 +39,10 @@ export const SettingsModal = ({
     const res = (await factory.NodeSchema(type)) || {};
     setSettings(res);
     setIsLoadingForm(false);
+
+    setFormData({
+      method: nodesStorage[0].settings?.method || {},
+    });
   };
 
   const handleClose = () => {
