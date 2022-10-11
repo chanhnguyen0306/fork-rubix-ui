@@ -8,6 +8,7 @@ type NodeProps = {
   category?: NodeSpecJSON["category"];
   selected: boolean;
   height: number;
+  hasChild: boolean;
 };
 
 export const NodeContainer = ({
@@ -16,6 +17,7 @@ export const NodeContainer = ({
   selected,
   children,
   height,
+  hasChild,
 }: PropsWithChildren<NodeProps>) => {
   const colorName = categoryColorMap[category] || "gray";
   let [backgroundColor, borderColor, textColor] = colors[colorName];
@@ -25,7 +27,8 @@ export const NodeContainer = ({
   return (
     <div
       className={cx(
-        "rounded text-white bg-gray-800 min-w-[130px] text-start",
+        `rounded text-white bg-gray-800 min-w-[130px] text-start
+         ${hasChild ? "bg-opacity-50" : ""}`,
         selected && "outline outline-1"
       )}
     >

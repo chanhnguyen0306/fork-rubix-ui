@@ -52,27 +52,34 @@ export const AddToParentModal = ({
   const handleSubmit = (formData: any) => {
     const parent = instance.getNode(formData.parentNode);
     if (parent) {
-      const updateNode = {
-        ...formData,
-        position: { x: parent.position.x, y: parent.position.y * 2 + 20 },
+      const positionOfChildNode = {
+        x: parent.position.x,
+        y: parent.position.y * 2 + 20,
       };
 
-      instance.setNodes((nodes) =>
-        nodes.map((n) => {
-          if (n.id === node.id) return { ...updateNode };
-          if (n.id === parent.id && n.style && isObjectEmpty(n.style)) {
-            return {
-              ...n,
-              style: {
-                width: 300,
-                height: 300,
-              },
-            };
-          }
-          return { ...n };
-        })
-      );
+      const updateNode = {
+        ...formData,
+        position: positionOfChildNode,
+        positionAbsolute: positionOfChildNode,
+      };
+
+      let newNodes = instance.getNodes().map((n) => {
+        if (n.id === node.id) return { ...n, ...updateNode };
+        if (n.id === parent.id && n.style && isObjectEmpty(n.style)) {
+          return {
+            ...n,
+            style: {
+              width: 300,
+              height: 300,
+            },
+          };
+        }
+        return n;
+      });
+
+      instance.setNodes(newNodes);
     }
+
     handleClose();
   };
 
