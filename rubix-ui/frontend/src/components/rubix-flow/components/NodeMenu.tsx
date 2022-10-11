@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { XYPosition } from "react-flow-renderer/nocss";
 import { useOnPressKey } from "../hooks/useOnPressKey";
+import { FLOW_TYPE } from "../use-nodes-spec";
+import { AddToParentModal } from "./AddToParentModal";
 import { SettingsModal } from "./SettingsModal";
 
 type NodeMenuProps = {
@@ -9,16 +11,72 @@ type NodeMenuProps = {
   onClose: () => void;
 };
 
-const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
+const SettingsComponent = ({ node }: any) => {
+  const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
+
+  const openSettingsModal = () => {
+    setIsSettingsModalVisible(true);
+  };
+
+  const closeSettingsModal = () => {
+    setIsSettingsModalVisible(false);
+  };
+
+  return (
+    <>
+      <div
+        key="settings"
+        className="p-2 cursor-pointer border-b border-gray-600"
+        onClick={openSettingsModal}
+      >
+        Settings
+      </div>
+
+      <SettingsModal
+        node={node}
+        isModalVisible={isSettingsModalVisible}
+        onCloseModal={closeSettingsModal}
+      />
+    </>
+  );
+};
+
+const AddToParentComponent = ({ node }: any) => {
+  if (node.type !== (FLOW_TYPE.DEVICE || FLOW_TYPE.POINT)) return null; //only for types: flow/device, flow/point
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
+  return (
+    <>
+      <div
+        key="settings"
+        className="p-2 cursor-pointer border-b border-gray-600"
+        onClick={openModal}
+      >
+        Add To Parent
+      </div>
+
+      <AddToParentModal
+        node={node}
+        isModalVisible={isModalVisible}
+        onCloseModal={closeModal}
+      />
+    </>
+  );
+};
+
+const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
   useOnPressKey("Escape", onClose);
-
-  const openSettingsModal = () => {
-    setIsModalVisible(true);
-  };
 
   return (
     <>
@@ -28,21 +86,10 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
       >
         <div className="bg-gray-500 p-2">Node Menu</div>
         <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-          <div
-            key="settings"
-            className="p-2 cursor-pointer border-b border-gray-600"
-            onClick={openSettingsModal}
-          >
-            Settings
-          </div>
+          <SettingsComponent node={node} />
+          <AddToParentComponent node={node} />
         </div>
       </div>
-
-      <SettingsModal
-        node={node}
-        isModalVisible={isModalVisible}
-        onCloseModal={onClose}
-      />
     </>
   );
 };

@@ -4,6 +4,11 @@ import { InputSocketSpecJSON, NodeSpecJSON } from "./lib";
 
 export const SPEC_JSON = "spec-json";
 export const NODES_JSON = "nodes-json";
+export const FLOW_TYPE = {
+  NETWORK: "flow/network",
+  DEVICE: "flow/device",
+  POINT: "flow/point",
+};
 
 const _nodesSpec = JSON.parse("" + localStorage.getItem(SPEC_JSON)) || [];
 

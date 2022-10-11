@@ -15,7 +15,6 @@ import {
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 import { NODES_JSON } from "../use-nodes-spec";
-import { NodeJSON } from "../lib";
 
 const Controls = () => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
