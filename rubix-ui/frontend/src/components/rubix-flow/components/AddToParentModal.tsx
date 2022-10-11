@@ -34,7 +34,7 @@ export const AddToParentModal = ({
       properties: {
         parentNode: {
           type: "string",
-          title: "parent",
+          title: node.type === FLOW_TYPE.POINT ? "Device Id" : "Network Id",
           enum: parentNodes.map((np) => np.id),
           enumNames: parentNodes.map((np) => np.id),
         },

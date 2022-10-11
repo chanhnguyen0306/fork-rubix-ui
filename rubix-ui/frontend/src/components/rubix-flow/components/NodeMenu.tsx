@@ -43,7 +43,8 @@ const SettingsComponent = ({ node, onClose }: any) => {
 };
 
 const AddToParentComponent = ({ node, onClose }: any) => {
-  if (node.type !== (FLOW_TYPE.DEVICE || FLOW_TYPE.POINT)) return null; //only for types: flow/device, flow/point
+  if (node.type != FLOW_TYPE.DEVICE && node.type != FLOW_TYPE.POINT)
+    return null; //only for types: flow/device, flow/point
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
