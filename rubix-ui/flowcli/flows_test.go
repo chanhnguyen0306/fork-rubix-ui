@@ -2,6 +2,7 @@ package flowcli
 
 import (
 	"fmt"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
 
@@ -33,6 +34,7 @@ func TestFlowClient_NodePallet(t *testing.T) {
 
 func TestFlowClient_GetFlow(t *testing.T) {
 	start, err := client.GetFlow()
+	pprint.PrintJOSN(start)
 	fmt.Println(start, err)
 	if err != nil {
 		return

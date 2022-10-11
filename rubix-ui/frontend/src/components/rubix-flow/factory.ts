@@ -1,8 +1,9 @@
 import {
-  DownloadFlow,
+  DownloadFlow, GetFlow,
   NodePallet,
-  NodeSchema
+  NodeSchema, NodeValues
 } from "../../../wailsjs/go/main/App";
+import {node} from "../../../wailsjs/go/models";
 
 export class FlowFactory {
 
@@ -10,6 +11,13 @@ export class FlowFactory {
     return await NodeSchema(nodeName);
   }
 
+  async NodeValues(): Promise<Array<node.Values>> {
+    return await NodeValues();
+  }
+
+  async GetFlow():Promise<any> {
+    return await GetFlow();
+  }
 
   async NodePallet() {
     return await NodePallet();
