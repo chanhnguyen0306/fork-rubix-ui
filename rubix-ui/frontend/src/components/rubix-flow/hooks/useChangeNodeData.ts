@@ -41,3 +41,21 @@ export const useChangeNodeProprerties = (id: string) => {
     [instance, id]
   );
 };
+
+export const useChangeNode = (id: string) => {
+  const instance = useReactFlow();
+
+  return useCallback(
+    (updateNode: any) => {
+      instance.setNodes((nodes) =>
+        nodes.map((n) => {
+          if (n.id !== id) return n;
+          return {
+            ...updateNode,
+          };
+        })
+      );
+    },
+    [instance, id]
+  );
+};

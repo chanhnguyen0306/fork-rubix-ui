@@ -3,7 +3,7 @@ import { Node, useReactFlow } from "react-flow-renderer/nocss";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FLOW_TYPE } from "../use-nodes-spec";
-import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
+import { useChangeNode } from "../hooks/useChangeNodeData";
 
 type AddToParentModalProps = {
   isModalVisible: boolean;
@@ -17,13 +17,14 @@ export const AddToParentModal = ({
   onCloseModal,
 }: AddToParentModalProps) => {
   const instance = useReactFlow();
-  const handleChange = useChangeNodeProprerties(node.id);
-  const [formData, setFormData] = useState({});
+  const handleChange = useChangeNode(node.id);
+  const [formData, setFormData] = useState({} as any);
   const [schema, setSchema] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
   useEffect(() => {
     fetchSchemaJson();
+    setFormData(node);
   }, []);
 
   const fetchSchemaJson = () => {
@@ -49,8 +50,15 @@ export const AddToParentModal = ({
     onCloseModal();
   };
 
-  const handleSubmit = async (formData: any) => {
-    handleChange("parentNode", formData.parentNode);
+  const handleSubmit = (formData: any) => {
+    const parent = instance.getNode(formData.parentNode);
+    if (parent) {
+      const updateNode = {
+        ...formData,
+        position: { x: parent.position.x, y: parent.position.y * 2 + 20 },
+      };
+      handleChange(updateNode);
+    }
     handleClose();
   };
 
