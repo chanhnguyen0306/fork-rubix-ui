@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { Node, useReactFlow } from "react-flow-renderer/nocss";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
-import { FlowFactory } from "../factory";
-import { FLOW_TYPE, NODES_JSON } from "../use-nodes-spec";
-import { NodeJSON } from "../lib";
-import { title } from "case";
+import { FLOW_TYPE } from "../use-nodes-spec";
+import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
 
 type AddToParentModalProps = {
   isModalVisible: boolean;
@@ -19,6 +17,7 @@ export const AddToParentModal = ({
   onCloseModal,
 }: AddToParentModalProps) => {
   const instance = useReactFlow();
+  const handleChange = useChangeNodeProprerties(node.id);
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -51,7 +50,7 @@ export const AddToParentModal = ({
   };
 
   const handleSubmit = async (formData: any) => {
-    console.log(formData);
+    handleChange("parentNode", formData.parentNode);
     handleClose();
   };
 

@@ -11,7 +11,7 @@ type NodeMenuProps = {
   onClose: () => void;
 };
 
-const SettingsComponent = ({ node }: any) => {
+const SettingsComponent = ({ node, onClose }: any) => {
   const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
 
   const openSettingsModal = () => {
@@ -20,6 +20,7 @@ const SettingsComponent = ({ node }: any) => {
 
   const closeSettingsModal = () => {
     setIsSettingsModalVisible(false);
+    onClose();
   };
 
   return (
@@ -41,7 +42,7 @@ const SettingsComponent = ({ node }: any) => {
   );
 };
 
-const AddToParentComponent = ({ node }: any) => {
+const AddToParentComponent = ({ node, onClose }: any) => {
   if (node.type !== (FLOW_TYPE.DEVICE || FLOW_TYPE.POINT)) return null; //only for types: flow/device, flow/point
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -52,6 +53,7 @@ const AddToParentComponent = ({ node }: any) => {
 
   const closeModal = () => {
     setIsModalVisible(false);
+    onClose();
   };
 
   return (
@@ -86,8 +88,8 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
       >
         <div className="bg-gray-500 p-2">Node Menu</div>
         <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-          <SettingsComponent node={node} />
-          <AddToParentComponent node={node} />
+          <SettingsComponent node={node} onClose={onClose} />
+          <AddToParentComponent node={node} onClose={onClose} />
         </div>
       </div>
     </>
