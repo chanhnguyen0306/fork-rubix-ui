@@ -16,7 +16,7 @@ export type NodeJSON = {
     [key: string]: InputJSON;
   };
   metadata?: Metadata;
-  settings?: any;
+  settings?: { [key: string]: any };
   data?: { [key: string]: any };
   style?: { [key: string]: any };
   isParent?: boolean;

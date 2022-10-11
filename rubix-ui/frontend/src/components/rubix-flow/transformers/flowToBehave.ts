@@ -7,7 +7,7 @@ const isNullish = (value: any): value is null | undefined =>
 export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
   const graph: GraphJSON = { nodes: [] };
 
-  nodes.forEach((node) => {
+  nodes.forEach((node: any) => {
     if (node.type === undefined) {
       return;
     }
@@ -20,8 +20,9 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
         positionY: String(node.position.y),
       },
       settings: {
-        selected: node.selected || false
-      }
+        ...node.settings,
+        selected: node.selected || false,
+      },
     };
 
     Object.entries(node.data).forEach(([key, value]) => {
