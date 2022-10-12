@@ -28,7 +28,7 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
   useEffect(() => {
     const _nodes = flow.nodes.filter((item) => {
       const isSelected = item?.settings?.selected;
-      delete item.settings;
+      delete item?.settings?.selected;
 
       return isSelected && item;
     });

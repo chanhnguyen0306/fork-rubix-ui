@@ -22,6 +22,8 @@ import { ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { Node, NodeSpecJSON } from "./lib";
+import { FlowFactory } from "./factory";
+import { behaveToFlow } from "./transformers/behaveToFlow";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -29,14 +31,16 @@ const edgeTypes = {
 
 const Flow = (props: any) => {
   const { customNodeTypes } = props;
-  const [nodes, , onNodesChange] = useNodesState([]);
-  const [edges, , onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
+
+    const factory = new FlowFactory();
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -134,6 +138,14 @@ const Flow = (props: any) => {
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
     setSelectedNode(node);
   };
+
+  useEffect(() => {
+    factory.GetFlow().then((res) => {
+      const [_nodes, _edges] = behaveToFlow(res);
+      setNodes(_nodes);
+      setEdges(_edges);
+    }).catch(() => {})
+  },[])
 
   return (
     <ReactFlowProvider>
