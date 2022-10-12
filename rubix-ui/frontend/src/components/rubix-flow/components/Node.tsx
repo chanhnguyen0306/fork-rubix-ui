@@ -48,6 +48,10 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
   const handleChange = useChangeNodeData(id);
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
 
+  const getValueOutput = (outputName: string) =>
+    data.out &&
+    data.out.find((item: { pin: string }) => item.pin === outputName).value;
+
   return (
     <NodeContainer
       title={getTitle(spec.type)}
@@ -77,8 +81,9 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
                   type="text"
                   className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
                   value={
-                    (output.valueType === "boolean" ? getValueOptions(data.out) : data.out)
-                    || ""
+                    (output.valueType === "boolean"
+                      ? getValueOptions(getValueOutput(output?.name))
+                      : getValueOutput(output?.name)) || ""
                   }
                   minWidth={40}
                   disabled
