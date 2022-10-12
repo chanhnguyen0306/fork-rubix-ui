@@ -31,6 +31,7 @@ export const SettingsModal = ({
 
   useEffect(() => {
     fetchSchemaJson();
+    fetchGetFlow();
   }, []);
 
   const fetchSchemaJson = async () => {
@@ -39,10 +40,26 @@ export const SettingsModal = ({
     const res = (await factory.NodeSchema(type)) || {};
     setSettings(res);
     setIsLoadingForm(false);
+  };
 
-    setFormData({
-      method: nodesStorage[0].settings?.method || {},
-    });
+  const fetchGetFlow = async () => {
+    try {
+      const _formData = {} as any;
+
+      const _res = (await factory.GetFlow()) || {};
+      const _node = _res.nodes.filter(
+        (item: { id: string }) => item.id === node.id
+      );
+
+      const nodeMethod = _node[0]?.settings?.method || null;
+      const nodeFunction = _node[0]?.settings?.function || null;
+      nodeMethod && (_formData.method = nodeMethod);
+      nodeFunction && (_formData.function = nodeFunction);
+
+      setFormData(_formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClose = () => {
