@@ -9,6 +9,7 @@ import { NodeSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
+import { AutoSizeInput } from "./AutoSizeInput";
 
 type NodeProps = FlowNodeProps & {
   spec: NodeSpecJSON;
@@ -28,6 +29,18 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
     pairs.push(pair);
   }
   return pairs;
+};
+
+const getValueOptions = (value: boolean | null) => {
+  switch (value) {
+    case true:
+    case false:
+      return `${value}`;
+    case null:
+      return "null";
+    default:
+      return "";
+  }
 };
 
 export const Node = ({ id, data, spec, selected }: NodeProps) => {
@@ -59,10 +72,22 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
               />
             )}
             {output && (
-              <OutputSocket
-                {...output}
+              <div className="flex grow items-center justify-end h-7">
+                <AutoSizeInput
+                  type="text"
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
+                  value={
+                    (output.valueType === "boolean" ? getValueOptions(data.out) : data.out)
+                    || ""
+                  }
+                  minWidth={40}
+                  disabled
+                />
+                <OutputSocket
+                  {...output}
                 connected={isHandleConnected(edges, id, output.name, "source")}
-              />
+                />
+              </div>
             )}
           </div>
         );

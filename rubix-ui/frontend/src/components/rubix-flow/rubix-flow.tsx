@@ -142,13 +142,43 @@ const Flow = (props: any) => {
     setSelectedNode(node);
   };
 
+  const fetchOutput = async () => {
+    try {
+      return (await factory.NodeValues()) || [];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
+    if (outputNodes.length === 0) return prevNodes;
+
+    return prevNodes.map((node) => {
+      const index = outputNodes.findIndex((item) => item.nodeId === node.id);
+      const value = outputNodes[index]?.outputs[0].value;
+
+      node.data.out = value;
+
+      return node;
+    });
+  };
+
   useEffect(() => {
     factory.GetFlow().then((res) => {
       const [_nodes, _edges] = behaveToFlow(res);
       setNodes(_nodes);
       setEdges(_edges);
     }).catch(() => {})
-  },[])
+
+    const ivlFetchOutput = setInterval(async () => {
+      const _outputNodes = (await fetchOutput()) || [];
+      setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
+    }, 5000);
+
+    return () => {
+      clearInterval(ivlFetchOutput);
+    };
+  }, []);
 
   return (
     <ReactFlowProvider>
