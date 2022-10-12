@@ -3,7 +3,7 @@ import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
-import { useReactFlow } from "react-flow-renderer";
+import { useNodes } from "react-flow-renderer";
 import { NodeJSON } from "../lib";
 
 type SettingsModalProps = {
@@ -18,12 +18,11 @@ export const SettingsModal = ({
   onCloseModal,
 }: SettingsModalProps) => {
   const handleChange = useChangeNodeProprerties(node.id);
-  const instance = useReactFlow();
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const nodes = instance.getNodes() as NodeJSON[];
   const factory = new FlowFactory();
+  const nodes = useNodes() as NodeJSON[];
 
   useEffect(() => {
     fetchSchemaJson();
@@ -37,7 +36,7 @@ export const SettingsModal = ({
     setIsLoadingForm(false);
 
     setFormData({
-      method: nodes[0].settings?.method || {},
+      method: (nodes[0] && nodes[0].settings?.method) || {},
     });
   };
 
