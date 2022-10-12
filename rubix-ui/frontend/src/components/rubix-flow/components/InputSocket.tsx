@@ -94,7 +94,7 @@ export const InputSocket = ({
                 <AutoSizeInput
                   type="text"
                   className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={value}
+                  value={value ?? ""}
                   onChange={(e) => onChange(name, e.currentTarget.value)}
                 />
               )}

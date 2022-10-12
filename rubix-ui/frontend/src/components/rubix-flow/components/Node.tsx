@@ -45,7 +45,7 @@ export const Node = (props: NodeProps) => {
       category={spec.category}
       selected={selected}
       height={node?.height ?? 30}
-      hasChild={node?.height ? true : false}
+      hasChild={node?.height && node.height > 200 ? true : false}
     >
       {pairs.map(([input, output], ix) => {
         if (input && !data[input.name] && data[input.name] !== null) {

@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useState } from "react";
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -40,7 +45,7 @@ const Flow = (props: any) => {
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
 
-    const factory = new FlowFactory();
+  const factory = new FlowFactory();
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -140,12 +145,15 @@ const Flow = (props: any) => {
   };
 
   useEffect(() => {
-    factory.GetFlow().then((res) => {
-      const [_nodes, _edges] = behaveToFlow(res);
-      setNodes(_nodes);
-      setEdges(_edges);
-    }).catch(() => {})
-  },[])
+    factory
+      .GetFlow()
+      .then((res) => {
+        const [_nodes, _edges] = behaveToFlow(res);
+        setNodes(_nodes);
+        setEdges(_edges);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <ReactFlowProvider>
