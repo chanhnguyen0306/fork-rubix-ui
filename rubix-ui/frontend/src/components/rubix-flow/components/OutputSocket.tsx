@@ -28,7 +28,7 @@ export const OutputSocket = ({
   onSetWidthInput
 }: OutputSocketProps) => {
   const instance = useReactFlow();
-  const refName = useRef<any>(null);
+  const refName = useRef<HTMLDivElement>(null);
 
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];

@@ -59,7 +59,7 @@ export const InputSocket = ({
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(value);
-  const refName = useRef<any>(null);
+  const refName = useRef<HTMLDivElement>(null);
 
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
