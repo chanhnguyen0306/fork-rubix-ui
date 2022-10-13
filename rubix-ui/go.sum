@@ -61,8 +61,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
-github.com/NubeDev/flow-eng v0.2.8 h1:6QFfdZGk8FWVCmciwmV2wmZwg1xSJD+JxaDPnCK/CyI=
-github.com/NubeDev/flow-eng v0.2.8/go.mod h1:jp1zQ0qbC0nx1TboQ6U4S965dPEx8ovFkMJGIkJ1Qy8=
+github.com/NubeDev/flow-eng v0.3.0 h1:+Ga2BIFQFp/7rUrq6Bb8QIHNVXeEZidrd5eHjsF+euA=
+github.com/NubeDev/flow-eng v0.3.0/go.mod h1:jp1zQ0qbC0nx1TboQ6U4S965dPEx8ovFkMJGIkJ1Qy8=
 github.com/NubeIO/git v0.0.6 h1:BEmKKXOtWtbgRfw1TbDZlKlbaJXf9OFJe7IzJQ0uXeE=
 github.com/NubeIO/git v0.0.6/go.mod h1:ZjlhXM823d9sKQjv8d4pRugK9z6xJvPqLLX1onCVTbQ=
 github.com/NubeIO/lib-date v0.0.6 h1:88Ki7UIOvDEKyd3vKJ7r4fiUeX25Q5iyMO5d0125wrA=
