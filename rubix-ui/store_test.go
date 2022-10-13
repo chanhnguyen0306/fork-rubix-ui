@@ -7,17 +7,10 @@ import (
 	"testing"
 )
 
-func TestApp_storeListPluginsArm(t *testing.T) {
-	app := NewApp()
-	plugins, path, err := app.storeListPluginsArm("v0.6.6")
-	fmt.Println(path)
-	fmt.Println(err)
-	pprint.PrintJOSN(plugins)
-}
-
 func TestApp_storeGetPluginPath(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
+		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",
 	}
@@ -29,7 +22,7 @@ func TestApp_storeGetPluginPath(t *testing.T) {
 func TestApp_storeGetPlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
-
+		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",
 	}
@@ -41,5 +34,4 @@ func TestApp_storeGetPlugin(t *testing.T) {
 	pprint.PrintJOSN(flowPlugin)
 	fmt.Println(11111, f.Name())
 	fmt.Println(err)
-
 }
