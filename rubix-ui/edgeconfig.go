@@ -25,6 +25,13 @@ SECRET_KEY=__SECRET_KEY__
 	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
 
+type Mqtt struct {
+	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
+	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
+	Debug      bool   `json:"debug" yaml:"debug"`
+	Enable     bool   `json:"enable" yaml:"enable"`
+}
+
 type ConfigBACnetServer struct {
 	ServerName string `json:"server_name" yaml:"server_name"`
 	DeviceId   int    `json:"device_id" yaml:"device_id"`
@@ -36,31 +43,7 @@ type ConfigBACnetServer struct {
 	AiMax      int    `json:"ai_max" yaml:"ai_max"`
 	AoMax      int    `json:"ao_max" yaml:"ao_max"`
 	AvMax      int    `json:"av_max" yaml:"av_max"`
-	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
-	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
-	Debug      bool   `json:"debug" yaml:"debug"`
-	Enable     bool   `json:"enable" yaml:"enable"`
-}
-
-type bacnetBroker struct {
-	BrokerIp   string `json:"broker_ip"  yaml:"broker_ip"`
-	BrokerPort int    `json:"broker_port"  yaml:"broker_port"`
-	Debug      bool   `json:"debug" yaml:"debug"`
-	Enable     bool   `json:"enable" yaml:"enable"`
-}
-
-type configBACnetServer struct {
-	ServerName   string       `json:"server_name" yaml:"server_name"`
-	DeviceId     int          `json:"device_id" yaml:"device_id"`
-	Port         int          `json:"port" yaml:"port"`
-	Iface        string       `json:"iface" yaml:"iface"`
-	BiMax        int          `json:"bi_max" yaml:"bi_max"`
-	BoMax        int          `json:"bo_max" yaml:"bo_max"`
-	BvMax        int          `json:"bv_max" yaml:"bv_max"`
-	AiMax        int          `json:"ai_max" yaml:"ai_max"`
-	AoMax        int          `json:"ao_max" yaml:"ao_max"`
-	AvMax        int          `json:"av_max" yaml:"av_max"`
-	BacnetBroker bacnetBroker `json:"mqtt" yaml:"mqtt"`
+	Mqtt       Mqtt   `json:"mqtt" yaml:"mqtt"`
 }
 
 func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assitcli.Message, error) {
@@ -74,69 +57,65 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 	if config.ServerName == "" {
 		config.ServerName = "Nube IO"
 	}
+
+	if config.DeviceId == 0 {
+		config.DeviceId = 2508
+	}
 	if config.Iface == "" {
 		config.Iface = "eth0"
 	}
-	if config.DeviceId == 0 {
-		config.DeviceId = 2508
+	if config.BiMax == 0 {
+		config.BiMax = 2
+	}
+	if config.BoMax == 0 {
+		config.BoMax = 2
+	}
+	if config.BvMax == 0 {
+		config.BvMax = 2
+	}
+	if config.AiMax == 0 {
+		config.AiMax = 2
+	}
+	if config.AoMax == 0 {
+		config.AoMax = 2
+	}
+	if config.AvMax == 0 {
+		config.AvMax = 2
 	}
 
 	log.Infof("write bacnet config device-name: %s device-id: %d", config.ServerName, config.DeviceId)
 
-	bacnetConfig := &configBACnetServer{
-		ServerName: config.ServerName,
-		DeviceId:   config.DeviceId,
-		Port:       config.Port,
-		Iface:      config.Iface,
-		BiMax:      config.BiMax,
-		BoMax:      config.BoMax,
-		BvMax:      config.BvMax,
-		AiMax:      config.AiMax,
-		AoMax:      config.AoMax,
-		AvMax:      config.AvMax,
-		BacnetBroker: bacnetBroker{
-			BrokerIp:   config.BrokerIp,
-			BrokerPort: config.BrokerPort,
-			Debug:      config.Debug,
-			Enable:     config.Enable,
-		},
-	}
-
-	_, err = yaml.Marshal(&bacnetConfig)
+	_, err = yaml.Marshal(&config)
 	if err != nil {
 		return nil, err
 	}
 	writeConfig := &assistmodel.EdgeConfig{
 		AppName:    bacnetServerDriver,
-		Body:       bacnetConfig,
+		Body:       config,
 		ConfigName: configYml,
 	}
 	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
 
-func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) (*assistmodel.EdgeConfigResponse, error) {
+func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) (*assistmodel.EdgeConfigResponse, error, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	resp, err := client.EdgeReadConfig(hostUUID, appName, configName)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
+	resp, connectionErr, requestErr := client.EdgeReadConfig(hostUUID, appName, configName)
+	return resp, connectionErr, requestErr
 }
 
 func (inst *App) edgeReadBACnetConfig(connUUID, hostUUID string) (*ConfigBACnetServer, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
+	resp, connectionErr, requestErr := inst.edgeReadConfig(connUUID, hostUUID, bacnetServerDriver, configYml)
+	if connectionErr != nil {
+		return nil, connectionErr
 	}
-	resp, err := client.EdgeReadConfig(hostUUID, bacnetServerDriver, configYml)
-	if err != nil {
-		return nil, err
+	if requestErr != nil {
+		return &ConfigBACnetServer{}, nil
 	}
 	data := &ConfigBACnetServer{}
-	err = yaml.Unmarshal(resp.Data, &data)
+	err := yaml.Unmarshal(resp.Data, &data)
 	return data, err
 }
 
@@ -162,5 +141,4 @@ func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
 		log.Infof("wrote bacnet config file")
 	}
 	return nil
-
 }

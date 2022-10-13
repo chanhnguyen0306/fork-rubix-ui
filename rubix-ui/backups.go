@@ -3,10 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/storage/logstore"
-	"github.com/NubeIO/rubix-ui/backend/store"
 	"strings"
 	"time"
 )
@@ -41,15 +39,9 @@ func (inst *App) exportBackup(uuid string) (string, error) {
 	if backup == nil {
 		return "", errors.New("backup with that uuid not found")
 	}
-	str := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-	}
 	t := time.Now().Format("2006-01-02_15-04-05")
-	appStore, err := store.New(str)
 	name := fmt.Sprintf("type-%s-%s-%s", backup.SubApplication, backup.UserComment, t)
-	err = appStore.SaveBackup(strings.ToLower(name), backup)
+	err = inst.store.SaveBackup(strings.ToLower(name), backup)
 	if err != nil {
 		return "", err
 	}

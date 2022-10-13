@@ -2,6 +2,7 @@ module github.com/NubeIO/rubix-ui
 
 go 1.18
 
+//replace github.com/NubeIO/git => /Users/raibnod/Enviro/git
 //replace github.com/NubeIO/rubix-assist => /Users/raibnod/Enviro/rubix-assist
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
 //replace github.com/NubeIO/lib-rubix-installer => /Users/raibnod/Enviro/lib-rubix-installer
@@ -10,7 +11,7 @@ go 1.18
 
 require (
 	github.com/NubeDev/flow-eng v0.3.0
-	github.com/NubeIO/git v0.0.6
+	github.com/NubeIO/git v0.0.7
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.8
@@ -23,7 +24,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
-	github.com/NubeIO/rubix-assist v0.5.0
+	github.com/NubeIO/rubix-assist v0.5.1
 	github.com/NubeIO/rubix-edge v0.3.0
 	github.com/NubeIO/rubix-rules v0.0.3
 	github.com/go-resty/resty/v2 v2.7.0

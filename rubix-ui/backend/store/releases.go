@@ -24,6 +24,7 @@ type Apps struct {
 	FlowDependency                  bool     `json:"flow_dependency"`
 	PluginDependency                []string `json:"plugin_dependency"`
 	ServiceDependency               []string `json:"service_dependency"`
+	IsZiball                        bool     `json:"is_zipball"`
 	DoNotValidateArch               bool     `json:"do_not_validate_arch"`
 	MoveExtractedFileToNameApp      bool     `json:"move_extracted_file_to_name_app"`
 	MoveOneLevelInsideFileToOutside bool     `json:"move_one_level_inside_file_to_outside"`

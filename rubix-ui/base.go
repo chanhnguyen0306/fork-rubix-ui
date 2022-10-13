@@ -27,7 +27,6 @@ const bacnetServerDriver = "bacnet-server-driver"
 const bacnetMasterDriver = "bacnet-master-driver"
 const flowFramework = "flow-framework"
 const rubixWires = "rubix-wires"
-const wiresBuilds = "wires-builds"
 
 func (inst *App) errMsg(err error) error {
 	if err != nil {
@@ -49,10 +48,7 @@ type App struct {
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
-	str := &store.Store{
-		Arch: "armv7",
-	}
-	appStore, err := store.New(str)
+	appStore, err := store.New(&store.Store{})
 	if err != nil {
 		log.Fatalf("init store on start of app err: %s", err.Error())
 	}
@@ -83,7 +79,7 @@ func (inst *App) initConnection(body *AssistClient) (*assitcli.Client, error) {
 		err = inst.errMsg(err)
 		return nil, errors.New("conn can not be empty")
 	}
-	inst.mutex.Lock() // mutex was added had issue with "fatal error: concurrent map writes"
+	inst.mutex.Lock() // mutex was added had the issue with "fatal error: concurrent map writes"
 	defer inst.mutex.Unlock()
 	if connUUID == "" {
 		err = inst.errMsg(errors.New("conn can not be empty"))
