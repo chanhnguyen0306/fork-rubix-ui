@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 	"path"
 )
@@ -27,23 +26,16 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doN
 	if err != nil {
 		return nil, err
 	}
-	str := &store.Store{
-		App: &installer.App{},
-	}
-	appStore, err := store.New(str)
+	err = inst.store.StoreCheckAppExists(appName)
 	if err != nil {
 		return nil, err
 	}
-	err = appStore.StoreCheckAppExists(appName)
+	err = inst.store.StoreCheckAppAndVersionExists(appName, arch, version)
 	if err != nil {
 		return nil, err
 	}
-	err = appStore.StoreCheckAppAndVersionExists(appName, arch, version)
-	if err != nil {
-		return nil, err
-	}
-	p := str.GetAppStoreAppPath(appName, arch, version)
-	buildDetails, err := appStore.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
+	p := inst.store.GetAppStoreAppPath(appName, arch, version)
+	buildDetails, err := inst.store.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, err
 	}

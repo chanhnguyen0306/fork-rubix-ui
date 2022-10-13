@@ -5,6 +5,7 @@ import (
 	"github.com/NubeIO/git/pkg/git"
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
 	"github.com/NubeIO/lib-rubix-installer/installer"
+	"os"
 	"path"
 )
 
@@ -25,6 +26,8 @@ type Store struct {
 	UserPath          string `json:"user_path"`            // ~/rubix
 	UserStorePath     string `json:"user_store_path"`      // ~/rubix/store
 	UserStoreAppsPath string `json:"user_store_apps_path"` // ~/rubix/store/apps
+	UserPluginPath    string `json:"user_plugin_path"`     // ~/rubix/store/plugins
+	UserTmpPath       string `json:"user_tmp_path"`        // ~/rubix/tmp
 	Owner             string `json:"owner"`                // NubeIO
 	BackupsDir        string `json:"backups_dir"`          // ~/backups
 }
@@ -49,6 +52,12 @@ func New(store *Store) (*Store, error) {
 	if store.UserStoreAppsPath == "" {
 		store.UserStoreAppsPath = path.Join(store.UserStorePath, "apps")
 	}
+	if store.UserPluginPath == "" {
+		store.UserPluginPath = path.Join(store.UserStorePath, "plugins")
+	}
+	if store.UserTmpPath == "" {
+		store.UserTmpPath = path.Join(store.UserStorePath, "tmp")
+	}
 	if store.Owner == "" {
 		store.Owner = "NubeIO"
 	}
@@ -60,4 +69,29 @@ func New(store *Store) (*Store, error) {
 		return nil, err
 	}
 	return store, nil
+}
+
+func (inst *Store) initMakeAllDirs() error {
+	if err := os.MkdirAll(inst.UserPath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.UserStorePath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.UserStoreAppsPath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.UserStoreAppsPath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.UserPluginPath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.UserTmpPath, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(inst.BackupsDir, os.FileMode(FilePerm)); err != nil {
+		return err
+	}
+	return nil
 }

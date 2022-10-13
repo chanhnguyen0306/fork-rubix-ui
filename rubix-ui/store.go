@@ -8,7 +8,6 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 	"path"
-	"path/filepath"
 )
 
 func (inst *App) StoreCheckAppExists(appName string) error {
@@ -92,21 +91,19 @@ func (inst *App) storeGetPlugin(body *appstore.Plugin) (f *os.File, flowPlugin *
 	if err != nil {
 		return nil, nil, err
 	}
-	fileAndPath := filepath.FromSlash(_path)
-	f, err = os.Open(fileAndPath)
+	f, err = os.Open(_path)
 	return f, flowPlugin, err
 }
 
 func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flowPlugin *installer.BuildDetails, err error) {
-	fmt.Println(fmt.Sprintf("failed to find plugin: %s, version: %s, arch: %s", body.Name, body.Version, body.Arch))
-	plugins, _path, err := inst.store.StoreListPlugins(body.Arch, body.Version)
+	plugins, pluginPath, err := inst.store.StoreListPlugins()
 	if err != nil {
 		return "", nil, err
 	}
 	for _, plg := range plugins {
 		if plg.Name == body.Name {
 			if plg.Arch == body.Arch {
-				return path.Join(_path, plg.ZipName), &plg, nil
+				return path.Join(pluginPath, plg.ZipName), &plg, nil
 			}
 		}
 	}

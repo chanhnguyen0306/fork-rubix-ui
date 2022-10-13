@@ -13,12 +13,12 @@ func TestStore_Git(t *testing.T) {
 	appStore, err := New(&Store{})
 	fmt.Println(err)
 	fmt.Println(appStore)
-
-	app, err := appStore.AddApp(&App{
+	app := App{
 		Name:           appName,
 		Version:        appVersion,
 		ReleaseVersion: releaseVersion,
-	})
+	}
+	err = appStore.AddApp(&app)
 	fmt.Println(err)
 	fmt.Println(app)
 

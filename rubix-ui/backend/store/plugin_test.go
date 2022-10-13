@@ -13,7 +13,7 @@ func TestStore_StoreListPlugins(t *testing.T) {
 	if err != nil {
 		return
 	}
-	plugins, path, err := appStore.StoreListPluginsArm("v0.6.8")
+	plugins, path, err := appStore.StoreListPlugins()
 	fmt.Println(err, path)
 	if err != nil {
 		return
