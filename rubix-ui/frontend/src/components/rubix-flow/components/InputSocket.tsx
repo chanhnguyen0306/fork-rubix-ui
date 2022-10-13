@@ -108,7 +108,7 @@ export const InputSocket = ({
           >
             {name}
           </div>
-          {connected === false && (
+          {(connected === false || valueType === "boolean") && (
             <>
               {valueType === "string" && (
                 <AutoSizeInput
