@@ -155,7 +155,7 @@ const Flow = (props: any) => {
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
-      const value = outputNodes[index]?.outputs[0].value;
+      const value = outputNodes[index]?.outputs;
 
       node.data.out = value;
 
