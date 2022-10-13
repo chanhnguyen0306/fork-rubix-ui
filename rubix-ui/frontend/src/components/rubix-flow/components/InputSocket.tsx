@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CaretRightOutlined } from "@ant-design/icons";
 import {
   Connection,
@@ -15,7 +15,9 @@ import { InputSocketSpecJSON } from "../lib";
 export type InputSocketProps = {
   connected: boolean;
   value: any | undefined;
+  minWidth: number;
   onChange: (key: string, value: any) => void;
+  onSetWidthInput: (width: number) => void;
 } & InputSocketSpecJSON;
 
 const REGEX_NUMBER = new RegExp('^$|^-?(\\d+)?(\\.?\\d*)?$');
@@ -52,9 +54,12 @@ export const InputSocket = ({
   onChange,
   name,
   valueType,
+  minWidth,
+  onSetWidthInput,
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(value);
+  const refName = useRef<any>(null);
 
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
@@ -79,6 +84,13 @@ export const InputSocket = ({
     const value = getValueOptions(Number((e.target as HTMLInputElement).value));
     onChange(name, value);
   };
+  
+  useEffect(() => {
+    if (refName.current) {
+      const _width = refName.current.offsetWidth;
+      onSetWidthInput(_width + 1);
+    }
+  }, [refName]);
 
   return (
     <div className="flex grow items-center justify-start h-7">
@@ -86,8 +98,16 @@ export const InputSocket = ({
         <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
       )}
       {showFlowIcon === false && (
-        <>
-          <div className="mr-2">{name}</div>
+        <div style={{ display: "flex" }}>
+          <div
+            ref={refName}
+            className="mr-2"
+            style={{
+              minWidth: minWidth === -1 ? "max-content" : minWidth,
+            }}
+          >
+            {name}
+          </div>
           {connected === false && (
             <>
               {valueType === "string" && (
@@ -121,7 +141,7 @@ export const InputSocket = ({
               )}
             </>
           )}
-        </>
+        </div>
       )}
       <Handle
         id={name}
