@@ -169,21 +169,16 @@ const Flow = (props: any) => {
   };
 
   const handleNodeDragStop = (e: React.MouseEvent, node: any) => {
-    const newNodes = nodes.map((n) => {
-      let u = n;
-      if (n.id === node.id) {
-        u = { ...n, position: node.position };
+    const newNodes = nodes.map((item) => {
+      if (item.id === node.id) {
+        item.position = node.position;
       }
 
-      return u;
+      return item;
     });
 
     setUndoable(newNodes);
   };
-
-  const handleUndo = () => {
-    undo();
-  }
 
   const handleRedo = () => {
     redo();
@@ -235,7 +230,7 @@ const Flow = (props: any) => {
       >
         <ControlUndoable
           canUndo={canUndo && past.length !== 0}
-          onUndo={handleUndo}
+          onUndo={undo}
           canRedo={canRedo}
           onRedo={handleRedo}
         />
