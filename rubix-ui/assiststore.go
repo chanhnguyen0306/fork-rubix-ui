@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 	"path"
 )
@@ -22,35 +21,21 @@ func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	return resp, err
 }
 
-func (inst *App) assistAddUploadApp(connUUID, appName, version, product, arch string) (*appstore.UploadResponse, error) {
+func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doNotValidateArch bool) (*appstore.UploadResponse, error) {
 	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	str := &store.Store{
-		App:     &installer.App{},
-		Version: "latest",
-		Repo:    "releases",
-		Arch:    arch,
-	}
-	appStore, err := store.New(str)
+	err = inst.store.StoreCheckAppExists(appName)
 	if err != nil {
 		return nil, err
 	}
-	err = appStore.StoreCheckAppExists(appName)
+	err = inst.store.StoreCheckAppAndVersionExists(appName, arch, version)
 	if err != nil {
 		return nil, err
 	}
-	err = appStore.StoreCheckAppAndVersionExists(appName, version)
-	if err != nil {
-		return nil, err
-	}
-	p := str.GetAppPathAndVersion(appName, version)
-	var dontCheckArch bool
-	if appName == rubixWires {
-		dontCheckArch = true
-	}
-	buildDetails, err := appStore.App.GetBuildZipNameByArch(p, arch, dontCheckArch)
+	p := inst.store.GetAppStoreAppPath(appName, arch, version)
+	buildDetails, err := inst.store.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, err
 	}

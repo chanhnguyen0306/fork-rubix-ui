@@ -43,7 +43,7 @@
       "exec_start": "app",
       "attach_working_dir_on_exec_start": true,
       "environment_vars": [
-        "g=/data/bacnet-server-driver",
+        "g=/data/bacnet-server-c",
         "s=config.yml"
       ],
       "products": [

@@ -10,6 +10,7 @@ import (
 func TestApp_EdgeUploadPlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
+		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",
 	}
@@ -26,6 +27,7 @@ func TestApp_EdgeListPlugins(t *testing.T) {
 func TestApp_EdgeDeletePlugin(t *testing.T) {
 	app := NewApp()
 	body := &appstore.Plugin{
+		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",
 	}

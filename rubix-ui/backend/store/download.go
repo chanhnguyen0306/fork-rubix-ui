@@ -2,47 +2,51 @@ package store
 
 import (
 	"errors"
-	"fmt"
 	"github.com/NubeIO/git/pkg/git"
-	fileutils "github.com/NubeIO/lib-dirs/dirs"
-	"os"
-	"strings"
 )
 
 const flow = "flow-framework"
-const rubixWires = "rubix-wires"
-const wiresBuilds = "wires-builds"
+
+func (inst *Store) GenerateDownloadOptions(repo string, doNotValidateArch bool) git.DownloadOptions {
+	opts := git.DownloadOptions{
+		MatchArch: !doNotValidateArch,
+		AssetName: repo,
+	}
+	if !doNotValidateArch {
+		opts.MatchName = true
+	}
+	return opts
+}
 
 // DownloadAll make all the app store dirs
 func (inst *Store) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
 	var out []App
 	for _, app := range release.Apps { // download all others apps
-		if app.Name == rubixWires {
-			wires, err := inst.DownloadWires(token, app.Version, cleanDownload)
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, *wires)
-		} else if len(app.Arch) > 0 {
+		opts := inst.GenerateDownloadOptions(app.Repo, app.DoNotValidateArch)
+		if len(app.Arch) > 0 {
 			for _, arch := range app.Arch { // download both version of each app
-				app, err := inst.gitDownloadAsset(token, app.Name, app.Version, app.Repo, arch, "", cleanDownload, false, git.DownloadOptions{
-					AssetName: app.Repo,
-					MatchName: true,
-					MatchArch: true,
-				})
+				opts.MatchName = true
+				opts.AssetName = app.Repo
+				app_, err := inst.gitDownloadZip(token, app.Name, app.Version, app.Repo, arch, "", app.IsZiball, cleanDownload, false, opts)
 				if err != nil {
 					return nil, err
 				}
-				out = append(out, *app)
+				out = append(out, *app_)
 			}
+		} else {
+			app_, err := inst.gitDownloadZip(token, app.Name, app.Version, app.Repo, "", "", app.IsZiball, cleanDownload, false, opts)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, *app_)
 		}
 	}
 	return out, nil
 }
 
 // DownloadFlowPlugin download ff
-func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, realseVersion string, cleanDownload bool) (*App, error) {
-	app, err := inst.gitDownloadAsset(token, flow, version, flow, arch, realseVersion, cleanDownload, true, git.DownloadOptions{
+func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, releaseVersion string, cleanDownload bool) (*App, error) {
+	app, err := inst.gitDownloadZip(token, flow, version, flow, arch, releaseVersion, false, cleanDownload, true, git.DownloadOptions{
 		AssetName: pluginName,
 		MatchName: true,
 		MatchArch: true,
@@ -53,124 +57,50 @@ func (inst *Store) DownloadFlowPlugin(token, version, pluginName, arch, realseVe
 	return app, nil
 }
 
-// UnPackWires wires build is different to the go-lang or python builds as its zipped in a 2nd folder
-// this will unzip and re-zip the build to match the other apps
-func (inst *Store) UnPackWires(version string) error {
-	path := inst.getAppPathAndVersion(rubixWires, version)
-	unzipPath := fmt.Sprintf("%s/%s", path, version)
-	f := fileutils.New()
-	tmpDir, err := inst.makeUserPathTmpDir()
-	if err != nil {
-		return err
-	}
-	_, err = f.UnZip(unzipPath, tmpDir, os.FileMode(FilePerm))
-	if err != nil {
-		return err
-	}
-	files, err := f.ListFiles(tmpDir)
-	if err != nil {
-		return err
-	}
-	var wiresDir string
-	for _, file := range files {
-		if strings.Contains(file, "NubeIO-wires") {
-			rubixPath := fmt.Sprintf("%s/%s", tmpDir, file)
-			files, err = f.ListFiles(rubixPath)
-			wiresDir = file
-			if err != nil {
-				return err
-			}
-			for _, file := range files {
-				if strings.Contains(file, "rubix-wires") {
-					reZipPath := fmt.Sprintf("%s/%s/%s", tmpDir, wiresDir, rubixWires)
-					err := f.RecursiveZip(reZipPath, unzipPath)
-					if err != nil {
-						return err
-					}
-				}
-			}
-		}
-	}
-	err = f.RmRF(tmpDir)
-	if err != nil {
-		return err
-	}
-	return err
-
+// GitDownloadZip download an app
+func (inst *Store) GitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+	return inst.gitDownloadZip(token, appName, version, repo, arch, releaseVersion, isZipball, cleanDownload, false, gitOptions)
 }
 
-// DownloadWires download rubix-wires
-func (inst *Store) DownloadWires(token, version string, cleanDownload bool) (*App, error) {
-	app, err := inst.gitDownloadAsset(token, rubixWires, version, wiresBuilds, "", "", cleanDownload, false, git.DownloadOptions{
-		AssetName:     rubixWires,
-		DownloadFirst: true,
-	})
-	if err != nil {
-		return nil, err
-	}
-	err = inst.UnPackWires(version)
-	if err != nil {
-		return nil, err
-	}
-	return app, nil
-}
-
-// GitDownloadAsset download an app
-func (inst *Store) GitDownloadAsset(token, appName, version, repo, arch, realseVersion string, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
-	return inst.gitDownloadAsset(token, appName, version, repo, arch, realseVersion, cleanDownload, false, gitOptions)
-}
-
-// gitDownloadAsset download an app
-func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, releaseVersion string, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
-	newApp := &App{
+// gitDownloadZip download an app
+func (inst *Store) gitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
+	app := App{
 		Name:           appName,
 		Version:        version,
 		Repo:           repo,
 		Arch:           arch,
 		ReleaseVersion: releaseVersion,
 	}
-	if newApp.Name == "" {
-		return nil, errors.New("downloadApp: app name can not be empty")
+	if app.Name == "" {
+		return nil, errors.New("download_app: app name can not be empty")
 	}
-	if newApp.Version == "" {
-		return nil, errors.New("downloadApp: app version can not be empty")
+	if app.Version == "" {
+		return nil, errors.New("download_app: app version can not be empty")
 	}
-	if newApp.Repo == "" {
-		return nil, errors.New("downloadApp: app repo can not be empty")
+	if app.Repo == "" {
+		return nil, errors.New("download_app: app repo can not be empty")
 	}
-	app, err := inst.AddApp(newApp)
+	err := inst.AddApp(&app)
 	if err != nil {
 		return nil, err
 	}
-	gitOptions.DownloadDestination = inst.getAppPathAndVersion(newApp.Name, newApp.Version)
+	gitOptions.DownloadDestination = inst.GetAppStoreAppPath(app.Name, arch, app.Version)
 	if isPlugin {
-		if arch == "amd64" {
-			gitOptions.DownloadDestination = fmt.Sprintf("%s/plugins/amd64", inst.getAppPathAndVersion(newApp.Name, newApp.Version))
-		} else {
-			gitOptions.DownloadDestination = fmt.Sprintf("%s/plugins/armv7", inst.getAppPathAndVersion(newApp.Name, newApp.Version))
-		}
+		gitOptions.DownloadDestination = inst.UserPluginPath
 	}
 	var runDownload bool
-	var buildNameMatch bool
-	var buildArchMatch bool
 	if cleanDownload {
 		runDownload = true
 	} else {
-		path := inst.getAppPathAndVersion(appName, version)
-		buildDetails, err := inst.App.GetBuildZipNameByArch(path, arch, false)
+		path_ := inst.GetAppStoreAppPath(appName, arch, version)
+		buildDetails, err := inst.App.GetBuildZipNameByArch(path_, arch, false)
 		if err != nil {
 			return nil, err
 		}
 		if buildDetails != nil {
 			buildName := buildDetails.Name
 			buildArch := buildDetails.Arch
-			if buildName == gitOptions.AssetName {
-				buildNameMatch = true
-			}
-			if buildArch == arch {
-				buildArchMatch = true
-			}
-			if buildNameMatch && buildArchMatch {
+			if buildName == gitOptions.AssetName && buildArch == arch {
 				runDownload = false
 			} else {
 				runDownload = true
@@ -180,16 +110,16 @@ func (inst *Store) gitDownloadAsset(token, appName, version, repo, arch, release
 		}
 	}
 	if runDownload {
-		if appName == rubixWires {
-			err = inst.GitDownloadWires(newApp.Repo, newApp.Version, arch, token, gitOptions)
+		var err error
+		if isZipball {
+			err = inst.GitDownloadZipball(app.Repo, app.Version, arch, token, gitOptions)
 		} else {
-			err = inst.GitDownload(newApp.Repo, newApp.Version, arch, token, gitOptions)
+			err = inst.GitDownloadAsset(app.Repo, app.Version, arch, token, gitOptions)
 		}
 		if err != nil {
 			return nil, err
 		}
-		return app, nil
+		return &app, nil
 	}
-	return app, nil
-
+	return &app, nil
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   NodeProps as FlowNodeProps,
   useEdges,
@@ -36,8 +37,19 @@ export const Node = (props: NodeProps) => {
   const instance = useReactFlow();
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
+  const [widthInput, setWidthInput] = useState(-1);
+  const [widthOutput, setWidthOutput] = useState(-1);
+
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
   const node = instance.getNode(id) as NodeExtend;
+
+  const handleSetWidthInput = (width: number) => {
+    setWidthInput((prev: number) => Math.max(prev, width))
+  };
+
+  const handleSetWidthOutput = (width: number) => {
+    setWidthOutput((prev: number) => Math.max(prev, width))
+  };
 
   return (
     <NodeContainer
@@ -67,11 +79,16 @@ export const Node = (props: NodeProps) => {
                 value={data[input.name]}
                 onChange={handleChange}
                 connected={isHandleConnected(edges, id, input.name, "target")}
+                minWidth={widthInput}
+                onSetWidthInput={handleSetWidthInput}
               />
             )}
             {output && (
               <OutputSocket
                 {...output}
+                minWidth={widthOutput}
+                dataOut={data.out}
+                onSetWidthInput={handleSetWidthOutput}
                 connected={isHandleConnected(edges, id, output.name, "source")}
               />
             )}

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func intNil(b *int64) int64 {
+func intPtrToInt(b *int64) int64 {
 	if b == nil {
 		return 0
 	} else {
@@ -19,7 +19,7 @@ func intNil(b *int64) int64 {
 	}
 }
 
-func stringIsNil(b *string) string {
+func stringPtrToString(b *string) string {
 	if b == nil {
 		return ""
 	} else {
@@ -27,7 +27,7 @@ func stringIsNil(b *string) string {
 	}
 }
 
-func (inst *Store) GitDownloadWires(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *Store) GitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}
@@ -39,16 +39,16 @@ func (inst *Store) GitDownloadWires(repo, version, arch, token string, gitOption
 	}
 	ctx := context.Background()
 	gitClient = git.NewClient(token, opts, ctx)
-	download, err := gitClient.Download(gitOptions)
+	download, err := gitClient.DownloadZipball(gitOptions)
 	if err != nil {
 		return err
 	}
 	assetName := download.AssetName
-	log.Infof("git downloaded-wires full asset name: %s", assetName)
+	log.Infof("git downloaded: %s", assetName)
 	return err
 }
 
-func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *Store) GitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}
@@ -60,24 +60,21 @@ func (inst *Store) GitDownload(repo, version, arch, token string, gitOptions git
 	}
 	ctx := context.Background()
 	gitClient = git.NewClient(token, opts, ctx)
-	assetInfo, err := gitClient.MatchAssetInfo(gitOptions)
+	releaseAsset, err := gitClient.GetReleaseAsset(gitOptions)
 	if err != nil {
 		return err
 	}
-	if assetInfo == nil {
-		return errors.New("asset info was empty")
+	if releaseAsset == nil {
+		return errors.New("release asset is empty")
 	}
-	if assetInfo.RepositoryRelease == nil {
-		return errors.New("store-download-app failed to match info")
-	}
-	assetName := stringIsNil(assetInfo.RepositoryRelease.Name)
-	dest := path.Join(gitOptions.DownloadDestination, assetName)
-	err = gitClient.DownloadRelease(opts.Owner, opts.Repo, dest, intNil(assetInfo.RepositoryRelease.ID))
+	assetName := stringPtrToString(releaseAsset.Name)
+	destination := path.Join(gitOptions.DownloadDestination, assetName)
+	err = gitClient.DownloadReleaseAsset(opts.Owner, opts.Repo, destination, intPtrToInt(releaseAsset.ID))
 	if err != nil {
 		return err
 	}
 
-	log.Infof("git downloaded full asset name: %s", assetName)
+	log.Infof("git downloaded: %s", assetName)
 	return err
 }
 
@@ -113,5 +110,4 @@ func encodeToken(token string) string {
 func decodeToken(token string) string {
 	data, _ := base64.StdEncoding.DecodeString(token)
 	return string(data)
-
 }
