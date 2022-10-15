@@ -15,6 +15,8 @@ import ReactFlow, {
   useNodesState,
   XYPosition,
 } from "react-flow-renderer/nocss";
+import useUndoable from "use-undoable";
+
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
 import NodeMenu from "./components/NodeMenu";
@@ -29,6 +31,7 @@ import { Spin } from "antd";
 import { Node, NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
+import ControlUndoable from "./components/ControlUndoable";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -44,6 +47,8 @@ const Flow = (props: any) => {
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
+  const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
+    useUndoable(nodes);
 
   const factory = new FlowFactory();
 
@@ -165,6 +170,25 @@ const Flow = (props: any) => {
     });
   };
 
+  const handleNodeDragStop = (e: React.MouseEvent, node: any) => {
+    const newNodes = nodes.map((item) => {
+      if (item.id === node.id) {
+        item.position = node.position;
+      }
+
+      return item;
+    });
+
+    setUndoable(newNodes);
+  };
+
+  const handleRedo = () => {
+    redo();
+    if (undoable.length === 0) {
+      redo();
+    }
+  };
+
   useEffect(() => {
     factory
       .GetFlow()
@@ -172,6 +196,7 @@ const Flow = (props: any) => {
         const [_nodes, _edges] = behaveToFlow(res);
         setNodes(_nodes);
         setEdges(_edges);
+        setUndoable(_nodes);
       })
       .catch(() => {});
 
@@ -184,6 +209,10 @@ const Flow = (props: any) => {
       clearInterval(ivlFetchOutput);
     };
   }, []);
+
+  useEffect(() => {
+    undoable.length > 0 && past.length !== 0 && setNodes(undoable);
+  }, [undoable]);
 
   return (
     <ReactFlowProvider>
@@ -202,7 +231,14 @@ const Flow = (props: any) => {
         onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
+        onNodeDragStop={handleNodeDragStop}
       >
+        <ControlUndoable
+          canUndo={canUndo && past.length !== 0}
+          onUndo={undo}
+          canRedo={canRedo}
+          onRedo={handleRedo}
+        />
         <Controls />
         <Background
           variant={BackgroundVariant.Lines}
