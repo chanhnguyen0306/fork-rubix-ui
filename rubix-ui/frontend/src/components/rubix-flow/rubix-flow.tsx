@@ -138,7 +138,7 @@ const Flow = (props: any) => {
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
   };
 
-  const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
+  const handleNodeContextMenu = (e: ReactMouseEvent, node: any) => {
     e.preventDefault();
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
     setSelectedNode(node);

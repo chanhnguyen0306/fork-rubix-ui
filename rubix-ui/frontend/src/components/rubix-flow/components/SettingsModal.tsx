@@ -22,7 +22,6 @@ export const SettingsModal = ({
   const [formData, setFormData] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const factory = new FlowFactory();
-  const nodes = useNodes() as NodeJSON[];
 
   useEffect(() => {
     fetchSchemaJson();

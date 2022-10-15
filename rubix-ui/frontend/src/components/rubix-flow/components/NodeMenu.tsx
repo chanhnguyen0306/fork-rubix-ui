@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { XYPosition } from "react-flow-renderer/nocss";
+import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
 import { isObjectEmpty } from "../../../utils/utils";
 import { useOnPressKey } from "../hooks/useOnPressKey";
-import { FLOW_TYPE } from "../use-nodes-spec";
+import { NodeJSON } from "../lib";
+import { generateUuid } from "../lib/generateUuid";
+import { getNodePickerFilters } from "../util/getPickerFilters";
 import { AddStyleModal } from "./AddStyleModal";
-import { AddToParentModal } from "./AddToParentModal";
+import NodePicker from "./NodePicker";
 import { SettingsModal } from "./SettingsModal";
 
 type NodeMenuProps = {
@@ -44,19 +46,53 @@ const SettingsComponent = ({ node, onClose }: any) => {
   );
 };
 
-const AddToParentComponent = ({ node, onClose }: any) => {
-  if (node.type != FLOW_TYPE.DEVICE && node.type != FLOW_TYPE.POINT)
-    return null; //only for types: flow/device, flow/point
+const AddNodeComponent = ({ node, onClose, instance }: any) => {
+  if (!node.isParent) return null;
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const nodes = instance.getNodes();
+  const [nodePickerVisibility, setNodePickerVisibility] =
+    useState<XYPosition>();
+  console.log(node);
 
   const openModal = () => {
-    setIsModalVisible(true);
+    setNodePickerVisibility({
+      x: node.position.x,
+      y: node.position.y - 300,
+    });
   };
 
-  const closeModal = () => {
-    setIsModalVisible(false);
+  const closeNodePicker = () => {
+    setNodePickerVisibility(undefined);
     onClose();
+  };
+
+  const handleAddNode = (
+    isParent: boolean,
+    style: any,
+    nodeType: string,
+    position: XYPosition
+  ) => {
+    closeNodePicker();
+    const newNode = {
+      id: generateUuid(),
+      isParent,
+      style,
+      type: nodeType,
+      position: { x: node.position.x + 10, y: node.position.y * 1.5 },
+      data: {},
+      parentId: node.id,
+    };
+
+    const index = nodes.findIndex((n: NodeJSON) => n.id === node.id);
+    const parentStyle = { width: 300, height: 300 };
+    nodes[index] = {
+      ...nodes[index],
+      style: isObjectEmpty(nodes[index].style)
+        ? parentStyle
+        : nodes[index].style,
+    };
+    const newNodes = nodes.concat(newNode);
+    instance.setNodes(newNodes);
   };
 
   return (
@@ -66,14 +102,17 @@ const AddToParentComponent = ({ node, onClose }: any) => {
         className="p-2 cursor-pointer border-b border-gray-600"
         onClick={openModal}
       >
-        Add To Parent
+        Add Node
       </div>
 
-      <AddToParentModal
-        node={node}
-        isModalVisible={isModalVisible}
-        onCloseModal={closeModal}
-      />
+      {nodePickerVisibility && (
+        <NodePicker
+          position={nodePickerVisibility}
+          filters={getNodePickerFilters(nodes, undefined)}
+          onPickNode={handleAddNode}
+          onClose={closeNodePicker}
+        />
+      )}
     </>
   );
 };
@@ -112,6 +151,7 @@ const AddStyleComponent = ({ node, onClose }: any) => {
 };
 
 const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
+  const instance = useReactFlow();
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
   useOnPressKey("Escape", onClose);
@@ -125,8 +165,8 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
         <div className="bg-gray-500 p-2">Node Menu</div>
         <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
           <SettingsComponent node={node} onClose={onClose} />
-          <AddToParentComponent node={node} onClose={onClose} />
           <AddStyleComponent node={node} onClose={onClose} />
+          <AddNodeComponent node={node} onClose={onClose} instance={instance} />
         </div>
       </div>
     </>
