@@ -87,7 +87,7 @@
         "height": 170,
         "color": "white"
       },
-      "parentNode": "a123"
+      "parentId": "a123"
     },
     {
       "id": "a123-111111-111",
@@ -133,7 +133,7 @@
         "positionY": 248
       },
       "type":"math/add",
-      "parentNode": "a123-111111"
+      "parentId": "a123-111111"
     },
     {
       "id": "a123-22222",
@@ -179,7 +179,7 @@
         "positionY": 230
       },
       "type": "constant/const-string",
-      "parentNode": "a123"
+      "parentId": "a123"
     },
     {
       "id": "a222",
@@ -266,7 +266,7 @@
         "height": 250
       },
       "type": "flow/device",
-      "parentNode": "a222"
+      "parentId": "a222"
     },
     {
       "id": "a222-222",
@@ -305,7 +305,7 @@
       },
       "data": { "label": "Device2" },
       "type": "flow/device",
-      "parentNode": "a222"
+      "parentId": "a222"
     },
     {
       "id": "a222-111-111",
@@ -344,7 +344,7 @@
       },
       "data": { "label": "Point" },
       "type": "flow/point",
-      "parentNode": "a222-111"
+      "parentId": "a222-111"
     }
   ]
 }

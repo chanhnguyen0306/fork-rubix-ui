@@ -28,7 +28,7 @@ import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
-import { Node, NodeSpecJSON } from "./lib";
+import { NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import ControlUndoable from "./components/ControlUndoable";
@@ -213,6 +213,21 @@ const Flow = (props: any) => {
   useEffect(() => {
     undoable.length > 0 && past.length !== 0 && setNodes(undoable);
   }, [undoable]);
+
+  useEffect(() => {
+    //When deleting a container, will also delete the nodes that belong to it
+    const subNodes = nodes.filter((n: any) => n.parentId) as any[];
+    if (subNodes.length === 0) return;
+
+    const allNodeIds = nodes.map((n) => n.id);
+    let newNodes = nodes;
+    for (const subNode of subNodes) {
+      if (!allNodeIds.includes(subNode.parentId)) {
+        newNodes = nodes.filter((n) => n.id !== subNode.id);
+      }
+    }
+    setNodes(newNodes);
+  }, [nodes]);
 
   return (
     <ReactFlowProvider>

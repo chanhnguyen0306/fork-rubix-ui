@@ -44,11 +44,11 @@ export const Node = (props: NodeProps) => {
   const node = instance.getNode(id) as NodeExtend;
 
   const handleSetWidthInput = (width: number) => {
-    setWidthInput((prev: number) => Math.max(prev, width))
+    setWidthInput((prev: number) => Math.max(prev, width));
   };
 
   const handleSetWidthOutput = (width: number) => {
-    setWidthOutput((prev: number) => Math.max(prev, width))
+    setWidthOutput((prev: number) => Math.max(prev, width));
   };
 
   return (
@@ -57,14 +57,14 @@ export const Node = (props: NodeProps) => {
       category={spec.category}
       selected={selected}
       height={node?.height ?? 30}
-      hasChild={node?.height && node.height > 200 ? true : false}
+      hasChild={node?.style?.height ? true : false}
     >
       {pairs.map(([input, output], ix) => {
         if (input && !data[input.name] && data[input.name] !== null) {
           data[input.name] = input.defaultValue;
         }
         const borderB =
-          node.isParent && ix === pairs.length - 1 && node.style?.height
+          ix === pairs.length - 1 && node.style?.height
             ? "border-b pb-3 border-gray-500"
             : "";
 

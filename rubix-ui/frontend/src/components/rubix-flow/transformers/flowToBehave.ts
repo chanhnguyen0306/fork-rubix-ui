@@ -27,7 +27,7 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
       },
     };
 
-    if (node.parentNode) behaveNode.parentNode = node.parentNode;
+    if (node.parentId) behaveNode.parentId = node.parentId;
 
     if (!isObjectEmpty(node.style)) behaveNode.style = node.style;
 

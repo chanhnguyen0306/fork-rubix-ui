@@ -20,7 +20,7 @@ export type NodeJSON = {
   data?: { [key: string]: any };
   style?: { [key: string]: any };
   isParent?: boolean;
-  parentNode?: string;
+  parentId?: string;
 };
 
 export type GraphJSON = {

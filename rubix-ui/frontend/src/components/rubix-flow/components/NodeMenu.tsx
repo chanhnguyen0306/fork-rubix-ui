@@ -73,20 +73,31 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
     position: XYPosition
   ) => {
     closeNodePicker();
+
     const newNode = {
       id: generateUuid(),
       isParent,
       style,
       type: nodeType,
-      position: { x: node.position.x + 10, y: node.position.y * 1.5 },
+      position: {
+        x: node.position.x + 10,
+        y:
+          node.position.y +
+          (node.originalHeight ? node.originalHeight : node.height),
+      },
       data: {},
       parentId: node.id,
     };
 
+    //to handle sub-node's position
+    if (!node.originalHeight) {
+      node.originalHeight = node.height;
+    }
+
     const index = nodes.findIndex((n: NodeJSON) => n.id === node.id);
     const parentStyle = { width: 300, height: 300 };
     nodes[index] = {
-      ...nodes[index],
+      ...node,
       style: isObjectEmpty(nodes[index].style)
         ? parentStyle
         : nodes[index].style,
