@@ -48,7 +48,7 @@ const Flow = (props: any) => {
   const [lastConnectStart, setLastConnectStart] =
     useState<OnConnectStartParams>();
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
-    useUndoable(nodes);
+    useUndoable({ nodes: nodes, edges: edges });
 
   const factory = new FlowFactory();
 
@@ -177,22 +177,33 @@ const Flow = (props: any) => {
       return item;
     });
 
-    setUndoable(newNodes);
+    setUndoable({
+      nodes: newNodes,
+      edges: edges
+    });
   };
 
   const handleRedo = () => {
     redo();
-    if (undoable.length === 0) {
-      redo();
-    }
+    if (undoable.nodes.length === 0) redo();
   }
+
+  const handleDeleteEdges = (_nodes: any, _edges: any) => {
+    setUndoable({
+      nodes: _nodes,
+      edges: _edges,
+    });
+  };
 
   useEffect(() => {
     factory.GetFlow().then((res) => {
       const [_nodes, _edges] = behaveToFlow(res);
       setNodes(_nodes);
       setEdges(_edges);
-      setUndoable(_nodes);
+      setUndoable({
+        nodes: _nodes,
+        edges: _edges,
+      });
     }).catch(() => {})
 
     const ivlFetchOutput = setInterval(async () => {
@@ -206,7 +217,10 @@ const Flow = (props: any) => {
   }, []);
 
   useEffect(() => {
-    undoable.length > 0 && past.length !== 0 && setNodes(undoable);
+    if (past.length !== 0 && undoable.nodes.length > 0) {
+      setNodes(undoable.nodes);
+      setEdges(undoable.edges);
+    }
   }, [undoable])
 
   return (
@@ -240,7 +254,7 @@ const Flow = (props: any) => {
           color="#353639"
           style={{ backgroundColor: "#1E1F22" }}
         />
-        <BehaveControls />
+        <BehaveControls onDeleteEdges={handleDeleteEdges} />
         {nodePickerVisibility && (
           <NodePicker
             position={nodePickerVisibility}
