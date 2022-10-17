@@ -1,11 +1,15 @@
 import {
   DownloadFlow, GetFlow,
   NodePallet,
-  NodeSchema, NodeValues
+  NodeSchema, NodeValues, NodeValue
 } from "../../../wailsjs/go/main/App";
 import {node} from "../../../wailsjs/go/models";
 
 export class FlowFactory {
+
+  async NodeValue(nodeUUID:string): Promise<node.Values> {
+    return await NodeValue(nodeUUID);
+  }
 
   async NodeSchema(nodeName:string) {
     return await NodeSchema(nodeName);
