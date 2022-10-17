@@ -16,7 +16,11 @@ import {
 import { FlowFactory } from "../factory";
 import { NODES_JSON } from "../use-nodes-spec";
 
-const Controls = () => {
+type ControlProps = {
+  onDeleteEdges: (nodes: any, edges: any) => void;
+};
+
+const Controls = ({ onDeleteEdges }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -70,6 +74,8 @@ const Controls = () => {
 
     instance.setNodes(newNodes);
     instance.setEdges(newEdges);
+
+    onDeleteEdges(newNodes, newEdges);
   }, [ctrlAndDPressed]);
 
   /* Ctrl + a (key): Select all items */
