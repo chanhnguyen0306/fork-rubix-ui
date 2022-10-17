@@ -15,7 +15,11 @@ import {
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 
-const Controls = () => {
+type ControlProps = {
+  onDeleteEdges: (nodes: any, edges: any) => void;
+};
+
+const Controls = ({ onDeleteEdges }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -58,6 +62,8 @@ const Controls = () => {
 
     instance.setNodes(newNodes);
     instance.setEdges(newEdges);
+
+    onDeleteEdges(newNodes, newEdges);
   }, [ctrlAndDPressed]);
 
   /* Ctrl + a (key): Select all items */

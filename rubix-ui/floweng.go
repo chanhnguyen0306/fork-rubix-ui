@@ -12,6 +12,16 @@ import (
 
 const flowEngIP = "0.0.0.0"
 
+func (inst *App) NodeValue(nodeUUID string) *node.Values {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.NodeValue(nodeUUID)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
+
 func (inst *App) NodeValues() []node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeValues()
