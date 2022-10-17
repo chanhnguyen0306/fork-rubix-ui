@@ -31,7 +31,6 @@ export const SettingsModal = ({
 
   useEffect(() => {
     fetchSchemaJson();
-    fetchGetFlow();
   }, []);
 
   const fetchSchemaJson = async () => {
@@ -40,21 +39,23 @@ export const SettingsModal = ({
     const res = (await factory.NodeSchema(type)) || {};
     setSettings(res);
     setIsLoadingForm(false);
+
+    // Fetch Setting on backend
+    handleSetFormData(res);
   };
 
-  const fetchGetFlow = async () => {
+  const handleSetFormData = async (_settings: any) => {
     try {
       const _formData = {} as any;
+      const _node = (await factory.NodeValue(node.id)) || {};
+      const _properties = Object.entries(_settings.schema.properties || {});
+      
 
-      const _res = (await factory.GetFlow()) || {};
-      const _node = _res.nodes.filter(
-        (item: { id: string }) => item.id === node.id
-      );
-
-      const nodeMethod = _node[0]?.settings?.method || null;
-      const nodeFunction = _node[0]?.settings?.function || null;
-      nodeMethod && (_formData.method = nodeMethod);
-      nodeFunction && (_formData.function = nodeFunction);
+      for (const [key, value] of _properties) {
+        if (_node.settings && key in _node.settings) {
+          _formData[key] = _node.settings[key];
+        }
+      }
 
       setFormData(_formData);
     } catch (error) {
