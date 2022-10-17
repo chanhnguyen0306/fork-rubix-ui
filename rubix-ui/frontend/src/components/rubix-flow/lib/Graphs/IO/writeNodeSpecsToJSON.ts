@@ -14,10 +14,12 @@ export const writeNodeSpecsToJSON = (
     const node = nodeFactory();
 
     const nodeSpecJSON: NodeSpecJSON = {
+      allowSettings: false,
+      info: {},
       type: nodeType,
       category: node.category,
       inputs: [],
-      outputs: [],
+      outputs: []
     };
     node.inputSockets.forEach((inputSocket) => {
       const socketSpecJSON: InputSocketSpecJSON = {
