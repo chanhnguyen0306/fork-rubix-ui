@@ -181,21 +181,14 @@ const Flow = (props: any) => {
 
     setUndoable({
       nodes: newNodes,
-      edges: edges
+      edges: edges,
     });
   };
 
   const handleRedo = () => {
     redo();
-<<<<<<< HEAD
-    if (undoable.length === 0) {
-      redo();
-    }
-  };
-=======
     if (undoable.nodes.length === 0) redo();
-  }
->>>>>>> f536f9a42ef50b1647b25a20e8f79f47d254a74c
+  };
 
   const handleDeleteEdges = (_nodes: any, _edges: any) => {
     setUndoable({
@@ -205,15 +198,18 @@ const Flow = (props: any) => {
   };
 
   useEffect(() => {
-    factory.GetFlow().then((res) => {
-      const [_nodes, _edges] = behaveToFlow(res);
-      setNodes(_nodes);
-      setEdges(_edges);
-      setUndoable({
-        nodes: _nodes,
-        edges: _edges,
-      });
-    }).catch(() => {})
+    factory
+      .GetFlow()
+      .then((res) => {
+        const [_nodes, _edges] = behaveToFlow(res);
+        setNodes(_nodes);
+        setEdges(_edges);
+        setUndoable({
+          nodes: _nodes,
+          edges: _edges,
+        });
+      })
+      .catch(() => {});
 
     const ivlFetchOutput = setInterval(async () => {
       const _outputNodes = (await fetchOutput()) || [];
@@ -230,7 +226,7 @@ const Flow = (props: any) => {
       setNodes(undoable.nodes);
       setEdges(undoable.edges);
     }
-  }, [undoable])
+  }, [undoable]);
 
   useEffect(() => {
     //When deleting a container, will also delete the nodes that belong to it
