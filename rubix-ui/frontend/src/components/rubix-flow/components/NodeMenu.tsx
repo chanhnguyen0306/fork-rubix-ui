@@ -50,18 +50,14 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
   if (!node.isParent) return null;
 
   const nodes = instance.getNodes();
-  const [nodePickerVisibility, setNodePickerVisibility] =
-    useState<XYPosition>();
+  const [nodePickerVisibility, setNodePickerVisibility] = useState(false);
 
   const openModal = () => {
-    setNodePickerVisibility({
-      x: node.position.x,
-      y: node.position.y - 300,
-    });
+    setNodePickerVisibility(true);
   };
 
   const closeNodePicker = () => {
-    setNodePickerVisibility(undefined);
+    setNodePickerVisibility(false);
     onClose();
   };
 
@@ -117,7 +113,7 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
 
       {nodePickerVisibility && (
         <NodePicker
-          position={nodePickerVisibility}
+          position={{} as XYPosition}
           filters={getNodePickerFilters(nodes, undefined)}
           onPickNode={handleAddNode}
           onClose={closeNodePicker}
