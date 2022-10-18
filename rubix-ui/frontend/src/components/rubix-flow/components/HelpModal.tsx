@@ -15,10 +15,13 @@ export const HelpModal: FC<HelpModalProps> = ({ open = false, onClose }) => {
     "Click and drag on a socket to connect to another socket of the same type.",
     "Hold shift and drag for multi-selection.",
     "Drag a connection into empty space to add a new node and connect it to the source.",
-    "Hold ctrl and a to select all node.",
-    "Hold ctrl and e for export to nodes .",
-    "Hold Ctrl and i for import to nodes.",  
-    "Hold Ctrl and d to delete nodes selected.",
+    "Hold Control and Left click to select nodes or connections.",
+    "Hold Control and A to select all node.",
+    "Hold Control and E for export to nodes .",
+    "Hold Control and I for import to nodes.",  
+    "Hold Control and D to delete nodes selected.",
+    "Hold Control and C to copy nodes.",
+    "Hold Control and V to paste nodes.",
   ];
 
   return (
