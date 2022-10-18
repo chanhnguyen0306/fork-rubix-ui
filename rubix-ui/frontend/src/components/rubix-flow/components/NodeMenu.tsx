@@ -1,49 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
 import { isObjectEmpty } from "../../../utils/utils";
 import { useOnPressKey } from "../hooks/useOnPressKey";
-import { NodeJSON } from "../lib";
+import { NodeJSON, NodeSpecJSON } from "../lib";
 import { generateUuid } from "../lib/generateUuid";
 import { getNodePickerFilters } from "../util/getPickerFilters";
 import { AddStyleModal } from "./AddStyleModal";
-import NodePicker from "./NodePicker";
+import { useNodesSpec } from "../use-nodes-spec";
 import { SettingsModal } from "./SettingsModal";
+import NodePicker from "./NodePicker";
 
 type NodeMenuProps = {
   position: XYPosition;
-  node: {};
+  node: { type: string };
   onClose: () => void;
-};
-
-const SettingsComponent = ({ node, onClose }: any) => {
-  const [isSettingsModalVisible, setIsSettingsModalVisible] = useState(false);
-
-  const openSettingsModal = () => {
-    setIsSettingsModalVisible(true);
-  };
-
-  const closeSettingsModal = () => {
-    setIsSettingsModalVisible(false);
-    onClose();
-  };
-
-  return (
-    <>
-      <div
-        key="settings"
-        className="p-2 cursor-pointer border-b border-gray-600"
-        onClick={openSettingsModal}
-      >
-        Settings
-      </div>
-
-      <SettingsModal
-        node={node}
-        isModalVisible={isSettingsModalVisible}
-        onCloseModal={closeSettingsModal}
-      />
-    </>
-  );
 };
 
 const AddNodeComponent = ({ node, onClose, instance }: any) => {
@@ -157,10 +127,25 @@ const AddStyleComponent = ({ node, onClose }: any) => {
 };
 
 const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isShowSetting, setIsShowSetting] = useState(false);
+  const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
+
   const mousePosition = { x: position.x - 125, y: position.y - 20 };
 
   useOnPressKey("Escape", onClose);
+
+  const openSettingsModal = () => {
+    setIsModalVisible(true);
+  };
+
+  useEffect(() => {
+    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
+      (item) => item.type === node.type
+    );
+    setIsShowSetting(nodeType?.allowSettings || false);
+  }, [nodesSpec]);
 
   return (
     <>
@@ -170,11 +155,25 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
       >
         <div className="bg-gray-500 p-2">Node Menu</div>
         <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-          <SettingsComponent node={node} onClose={onClose} />
-          <AddStyleComponent node={node} onClose={onClose} />
-          <AddNodeComponent node={node} onClose={onClose} instance={instance} />
+          {isShowSetting && (
+            <div
+              key="settings"
+              className="p-2 cursor-pointer border-b border-gray-600"
+              onClick={openSettingsModal}
+            >
+              Settings
+            </div>
+          )}
         </div>
+        <AddStyleComponent node={node} onClose={onClose} />
+        <AddNodeComponent node={node} onClose={onClose} instance={instance} />
       </div>
+
+      <SettingsModal
+        node={node}
+        isModalVisible={isModalVisible}
+        onCloseModal={onClose}
+      />
     </>
   );
 };

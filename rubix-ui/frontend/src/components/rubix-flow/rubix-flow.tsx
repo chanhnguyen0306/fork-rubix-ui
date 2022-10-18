@@ -197,6 +197,42 @@ const Flow = (props: any) => {
     });
   };
 
+  const handleCopyNodes = (_copied: { nodes: any; edges: any }) => {
+    /* Unselected nodes, edges */
+    nodes.forEach((item) => (item.selected = false));
+    edges.forEach((item) => (item.selected = false));
+
+    /* Generate new id of nodes copied */
+    _copied.nodes = _copied.nodes.map((item: any) => {
+      const __newNodeId = generateUuid();
+
+      /*
+       * Generate new id of edges copied
+       * Add new id source and target of edges copied
+       */
+      _copied.edges = _copied.edges.map((edge: any) => ({
+        ...edge,
+        id: generateUuid(),
+        source: edge.source === item.id ? __newNodeId : edge.source,
+        target: edge.target === item.id ? __newNodeId : edge.target,
+        selected: true,
+      }));
+
+      return {
+        ...item,
+        id: __newNodeId,
+        position: { x: item.position.x + 10, y: item.position.y - 10 },
+        selected: true,
+      };
+    });
+
+    const _nodes = [...nodes, ..._copied.nodes];
+    const _edges = [...edges, ..._copied.edges];
+    setNodes(_nodes);
+    setEdges(_edges);
+    setUndoable({ edges: _edges, nodes: _nodes });
+  };
+
   useEffect(() => {
     factory
       .GetFlow()
@@ -274,7 +310,12 @@ const Flow = (props: any) => {
           color="#353639"
           style={{ backgroundColor: "#1E1F22" }}
         />
-        <BehaveControls onDeleteEdges={handleDeleteEdges} />
+        <BehaveControls
+          onDeleteEdges={handleDeleteEdges}
+          onCopyNodes={handleCopyNodes}
+          onUndo={undo}
+          onRedo={handleRedo}
+        />
         {nodePickerVisibility && (
           <NodePicker
             position={nodePickerVisibility}

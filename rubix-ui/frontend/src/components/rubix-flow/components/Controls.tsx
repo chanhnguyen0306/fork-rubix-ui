@@ -17,19 +17,32 @@ import { FlowFactory } from "../factory";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
+  onCopyNodes: (nodes: any) => void;
+  onUndo: () => void;
+  onRedo: () => void;
 };
 
-const Controls = ({ onDeleteEdges }: ControlProps) => {
+const Controls = ({
+  onDeleteEdges,
+  onCopyNodes,
+  onUndo,
+  onRedo,
+}: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const instance = useReactFlow();
 
   const ctrlAndEPressed = useKeyPress("Control+e");
   const ctrlAndIPressed = useKeyPress("Control+i");
   const ctrlAndDPressed = useKeyPress("Control+d");
   const ctrlAndAPressed = useKeyPress("Control+a");
+  const ctrlAndCPressed = useKeyPress("Control+c");
+  const ctrlAndVPressed = useKeyPress("Control+v");
+  const ctrlAndZPressed = useKeyPress("Control+z");
+  const ctrlAndYPressed = useKeyPress("Control+y");
 
   const factory = new FlowFactory();
 
@@ -85,6 +98,43 @@ const Controls = ({ onDeleteEdges }: ControlProps) => {
     instance.setNodes(newNodes);
     instance.setEdges(newEdges);
   }, [ctrlAndAPressed]);
+
+  /* Ctrl + C (key): Copy nodes */
+  useEffect(() => {
+    if (!ctrlAndCPressed) return;
+
+    const nodesCopied = instance.getNodes().filter((item) => item.selected);
+
+    const nodeIdCopied = nodesCopied.map((item) => item.id);
+    const edgesCopied = instance
+      .getEdges()
+      .filter(
+        (item) =>
+          item.selected &&
+          nodeIdCopied.includes(item.source) &&
+          nodeIdCopied.includes(item.target)
+      );
+
+    setCopied({
+      nodes: nodesCopied,
+      edges: edgesCopied,
+    });
+  }, [ctrlAndCPressed]);
+
+  /* Ctrl + V (key): Paste nodes */
+  useEffect(() => {
+    if (ctrlAndVPressed) onCopyNodes(copied);
+  }, [ctrlAndVPressed]);
+
+  /* Ctrl + Z (key): Undo */
+  useEffect(() => {
+    if (ctrlAndZPressed) onUndo();
+  }, [ctrlAndZPressed]);
+
+  /* Ctrl + Y (key): Redo */
+  useEffect(() => {
+    if (ctrlAndYPressed) onRedo();
+  }, [ctrlAndYPressed]);
 
   return (
     <>

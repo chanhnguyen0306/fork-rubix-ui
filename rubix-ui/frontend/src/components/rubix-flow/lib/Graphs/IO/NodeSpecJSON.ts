@@ -12,6 +12,7 @@ export type OutputSocketSpecJSON = {
 };
 
 export type NodeSpecJSON = {
+  allowSettings: boolean;
   type: string;
   category: NodeCategory;
   inputs?: InputSocketSpecJSON[];
