@@ -22,6 +22,8 @@ export const HelpModal: FC<HelpModalProps> = ({ open = false, onClose }) => {
     "Hold Control and D to delete nodes selected.",
     "Hold Control and C to copy nodes.",
     "Hold Control and V to paste nodes.",
+    "Hold Control and Z to undo.",
+    "Hold Control and Y to redo.",
   ];
 
   return (

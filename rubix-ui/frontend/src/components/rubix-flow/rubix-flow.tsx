@@ -293,6 +293,8 @@ const Flow = (props: any) => {
         <BehaveControls
           onDeleteEdges={handleDeleteEdges}
           onCopyNodes={handleCopyNodes}
+          onUndo={undo}
+          onRedo={handleRedo}
         />
         {nodePickerVisibility && (
           <NodePicker

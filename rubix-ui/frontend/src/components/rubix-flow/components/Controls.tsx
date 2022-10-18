@@ -19,9 +19,16 @@ import { NODES_JSON } from "../use-nodes-spec";
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
   onCopyNodes: (nodes: any) => void;
+  onUndo: () => void;
+  onRedo: () => void;
 };
 
-const Controls = ({ onDeleteEdges, onCopyNodes }: ControlProps) => {
+const Controls = ({
+  onDeleteEdges,
+  onCopyNodes,
+  onUndo,
+  onRedo,
+}: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -35,6 +42,8 @@ const Controls = ({ onDeleteEdges, onCopyNodes }: ControlProps) => {
   const ctrlAndAPressed = useKeyPress("Control+a");
   const ctrlAndCPressed = useKeyPress("Control+c");
   const ctrlAndVPressed = useKeyPress("Control+v");
+  const ctrlAndZPressed = useKeyPress("Control+z");
+  const ctrlAndYPressed = useKeyPress("Control+y");
 
   const nodesStorage = JSON.parse("" + localStorage.getItem(NODES_JSON)) || [];
 
@@ -128,6 +137,16 @@ const Controls = ({ onDeleteEdges, onCopyNodes }: ControlProps) => {
   useEffect(() => {
     if (ctrlAndVPressed) onCopyNodes(copied);
   }, [ctrlAndVPressed]);
+
+  /* Ctrl + Z (key): Undo */
+  useEffect(() => {
+    if (ctrlAndZPressed) onUndo();
+  }, [ctrlAndZPressed]);
+
+  /* Ctrl + Y (key): Redo */
+  useEffect(() => {
+    if (ctrlAndYPressed) onRedo();
+  }, [ctrlAndYPressed]);
 
   return (
     <>
