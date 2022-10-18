@@ -52,7 +52,6 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
   const nodes = instance.getNodes();
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
-  console.log(node);
 
   const openModal = () => {
     setNodePickerVisibility({

@@ -122,4 +122,5 @@ aside .active {
     overflow: visible;
     pointer-events: none;
     z-index: 1 !important;
+    position: fixed;
 }
