@@ -14,6 +14,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
+  Node as FlowNode
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
@@ -50,6 +51,7 @@ const Flow = (props: any) => {
     useState<OnConnectStartParams>();
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
+  const [isDoubleClick, setIsDoubleClick] = useState(false);
 
   const factory = new FlowFactory();
 
@@ -133,6 +135,7 @@ const Flow = (props: any) => {
     setLastConnectStart(undefined);
     setNodePickerVisibility(undefined);
     setNodeMenuVisibility(undefined);
+    setIsDoubleClick(false)
   };
 
   const handlePaneClick = () => closeNodePicker();
@@ -235,6 +238,13 @@ const Flow = (props: any) => {
     setUndoable({ edges: _edges, nodes: _nodes });
   };
 
+  const handleNodeDoubleClick = (e: ReactMouseEvent, node: FlowNode) => {
+    e.preventDefault();
+    setSelectedNode(node);
+    setIsDoubleClick(true);
+    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+  }
+
   useEffect(() => {
     factory.GetFlow().then((res) => {
       const [_nodes, _edges] = behaveToFlow(res);
@@ -281,6 +291,7 @@ const Flow = (props: any) => {
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
         onNodeDragStop={handleNodeDragStop}
+        onNodeDoubleClick={handleNodeDoubleClick}
       >
         <ControlUndoable
           canUndo={canUndo && past.length !== 0}
@@ -313,6 +324,7 @@ const Flow = (props: any) => {
             position={nodeMenuVisibility}
             node={selectedNode}
             onClose={closeNodePicker}
+            isDoubleClick={isDoubleClick}
           />
         )}
       </ReactFlow>

@@ -8,11 +8,17 @@ import { SettingsModal } from "./SettingsModal";
 type NodeMenuProps = {
   position: XYPosition;
   node: { type: string };
+  isDoubleClick: boolean;
   onClose: () => void;
 };
 
-const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const NodeMenu = ({
+  position,
+  node,
+  isDoubleClick,
+  onClose,
+}: NodeMenuProps) => {
+  const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
   const [nodesSpec] = useNodesSpec();
 
@@ -28,34 +34,43 @@ const NodeMenu = ({ position, node, onClose }: NodeMenuProps) => {
     const nodeType = (nodesSpec as NodeSpecJSON[]).find(
       (item) => item.type === node.type
     );
-    setIsShowSetting(nodeType?.allowSettings || false);
+    const isAllowSetting = nodeType?.allowSettings || false;
+
+    if (isDoubleClick && !isAllowSetting) {
+      onClose();
+    }
+
+    setIsShowSetting(isAllowSetting);
   }, [nodesSpec]);
 
   return (
     <>
-      <div
-        className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-        style={{ top: mousePosition.y, left: mousePosition.x }}
-      >
-        <div className="bg-gray-500 p-2">Node Menu</div>
-        <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-          {isShowSetting && (
-            <div
-              key="settings"
-              className="p-2 cursor-pointer border-b border-gray-600"
-              onClick={openSettingsModal}
-            >
-              Settings
-            </div>
-          )}
+      {!isDoubleClick && (
+        <div
+          className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
+          style={{ top: mousePosition.y, left: mousePosition.x }}
+        >
+          <div className="bg-gray-500 p-2">Node Menu</div>
+          <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
+            {isShowSetting && (
+              <div
+                key="settings"
+                className="p-2 cursor-pointer border-b border-gray-600"
+                onClick={openSettingsModal}
+              >
+                Settings
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-
-      <SettingsModal
-        node={node}
-        isModalVisible={isModalVisible}
-        onCloseModal={onClose}
-      />
+      )}
+      {isShowSetting && (
+        <SettingsModal
+          node={node}
+          isModalVisible={isModalVisible}
+          onCloseModal={onClose}
+        />
+      )}
     </>
   );
 };
