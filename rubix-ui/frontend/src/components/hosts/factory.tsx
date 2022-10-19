@@ -1,4 +1,4 @@
-import { assistmodel, assitcli, main } from "../../../wailsjs/go/models";
+import { assistmodel, assistcli, main } from "../../../wailsjs/go/models";
 import {
   AddHost,
   DeleteHost,
@@ -13,7 +13,7 @@ import { Helpers } from "../../helpers/checks";
 
 import Host = assistmodel.Host;
 import HostSchema = assistmodel.HostSchema;
-import Response = assitcli.Response;
+import Response = assistcli.Response;
 import UUIDs = main.UUIDs;
 
 function hasUUID(uuid: string): Error {

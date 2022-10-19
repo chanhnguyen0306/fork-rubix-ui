@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 )
 
 const bacnetMasterPlg = "bacnetmaster"
@@ -78,7 +78,7 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if netUUID == "" {
 		return nil, errors.New("flow network uuid can not be empty")
 	}
-	devices, err := client.BacnetWhoIs(hostUUID, &assitcli.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
+	devices, err := client.BacnetWhoIs(hostUUID, &assistcli.WhoIsOpts{GlobalBroadcast: true}, netUUID, false)
 	if err != nil {
 		return nil, err
 	}

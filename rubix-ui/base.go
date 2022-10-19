@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeDev/flow-eng/helpers/boolean"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
@@ -66,7 +66,7 @@ func matchConnectionUUID(uuid string) bool {
 	return false
 }
 
-func (inst *App) getAssistClient(body *AssistClient) (*assitcli.Client, error) {
+func (inst *App) getAssistClient(body *AssistClient) (*assistcli.Client, error) {
 	var err error
 	if body.ConnUUID == "" {
 		err = inst.errMsg(err)
@@ -91,7 +91,7 @@ func (inst *App) getAssistClient(body *AssistClient) (*assitcli.Client, error) {
 		return nil, errors.New("failed to find a connection")
 	}
 	log.Infof("get connection: %s ip: %s port: %d", body.ConnUUID, connection.IP, connection.Port)
-	cli := assitcli.New(&assitcli.Client{
+	cli := assistcli.New(&assistcli.Client{
 		Ip:            connection.IP,
 		Port:          connection.Port,
 		HTTPS:         boolean.NewFalse(),

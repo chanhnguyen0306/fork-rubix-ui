@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -59,7 +59,7 @@ func (inst *App) DeleteHostBulk(connUUID string, uuids []UUIDs) interface{} {
 	return "ok"
 }
 
-func (inst *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, error) {
+func (inst *App) deleteHost(connUUID string, uuid string) (*assistcli.Response, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (inst *App) deleteHost(connUUID string, uuid string) (*assitcli.Response, e
 	return res, nil
 }
 
-func (inst *App) DeleteHost(connUUID string, uuid string) *assitcli.Response {
+func (inst *App) DeleteHost(connUUID string, uuid string) *assistcli.Response {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

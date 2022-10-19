@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 )
 
 func (inst *App) EdgeListPlugins(connUUID, hostUUID string) []appstore.Plugin {
@@ -35,7 +35,7 @@ func (inst *App) EdgeDeleteAllPlugins(connUUID, hostUUID string) *model.Message 
 }
 
 // EdgeUpgradePlugins upgrade all the plugins
-func (inst *App) EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion string) (*assitcli.EdgeUploadResponse, error) {
+func (inst *App) EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion string) (*assistcli.EdgeUploadResponse, error) {
 	plugins, err := inst.edgeListPlugins(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (inst *App) EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion string) (
 	return nil, nil
 }
 
-func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin, restartFlow bool) *assitcli.EdgeUploadResponse {
+func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin, restartFlow bool) *assistcli.EdgeUploadResponse {
 	var lastStep = "4"
 	var hasPluginOnRubixAssist bool
 	if body == nil {
@@ -132,7 +132,7 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 	return resp
 }
 
-func (inst *App) edgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin) (*assitcli.EdgeUploadResponse, error) {
+func (inst *App) edgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin) (*assistcli.EdgeUploadResponse, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err

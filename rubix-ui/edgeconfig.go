@@ -3,12 +3,12 @@ package main
 import (
 	"errors"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
-func (inst *App) edgeWriteWiresConfig(connUUID, hostUUID string) (*assitcli.Message, error) {
+func (inst *App) edgeWriteWiresConfig(connUUID, hostUUID string) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ type ConfigBACnetServer struct {
 	Mqtt       Mqtt   `json:"mqtt" yaml:"mqtt"`
 }
 
-func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assitcli.Message, error) {
+func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err

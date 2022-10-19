@@ -3,12 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	"os"
 	"path"
 )
 
-func (inst *App) assistUploadFile(connUUID, destination, path_, fileName string) (*assitcli.EdgeUploadResponse, error) {
+func (inst *App) assistUploadFile(connUUID, destination, path_, fileName string) (*assistcli.EdgeUploadResponse, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err

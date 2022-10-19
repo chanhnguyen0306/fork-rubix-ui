@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 
@@ -83,7 +83,7 @@ func (inst *App) DeleteLocationBulk(connUUID string, uuids []UUIDs) interface{} 
 	return "ok"
 }
 
-func (inst *App) deleteLocation(connUUID string, uuid string) (*assitcli.Response, error) {
+func (inst *App) deleteLocation(connUUID string, uuid string) (*assistcli.Response, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (inst *App) deleteLocation(connUUID string, uuid string) (*assitcli.Respons
 	return res, nil
 }
 
-func (inst *App) DeleteLocation(connUUID string, uuid string) *assitcli.Response {
+func (inst *App) DeleteLocation(connUUID string, uuid string) *assistcli.Response {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

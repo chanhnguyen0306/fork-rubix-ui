@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/NubeIO/rubix-assist/service/clients/assitcli"
+	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 )
 
 func (inst *App) edgeReadFile(connUUID, hostUUID, path string) ([]byte, error) {
@@ -16,7 +16,7 @@ func (inst *App) edgeReadFile(connUUID, hostUUID, path string) ([]byte, error) {
 	return resp, err
 }
 
-func (inst *App) edgeWriteFile(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
+func (inst *App) edgeWriteFile(connUUID, hostUUID string, body *assistcli.WriteFile) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (inst *App) edgeWriteFile(connUUID, hostUUID string, body *assitcli.WriteFi
 	return client.EdgeWriteFile(hostUUID, body)
 }
 
-func (inst *App) edgeWriteFileJson(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
+func (inst *App) edgeWriteFileJson(connUUID, hostUUID string, body *assistcli.WriteFile) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (inst *App) edgeWriteFileJson(connUUID, hostUUID string, body *assitcli.Wri
 	return client.EdgeWriteFileJson(hostUUID, body)
 }
 
-func (inst *App) edgeWriteFileYml(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
+func (inst *App) edgeWriteFileYml(connUUID, hostUUID string, body *assistcli.WriteFile) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (inst *App) edgeWriteFileYml(connUUID, hostUUID string, body *assitcli.Writ
 	return client.EdgeWriteFileYml(hostUUID, body)
 }
 
-func (inst *App) edgeCreateFile(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
+func (inst *App) edgeCreateFile(connUUID, hostUUID string, body *assistcli.WriteFile) (*assistcli.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
