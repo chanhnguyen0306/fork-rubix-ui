@@ -36,7 +36,7 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 		inst.crudMessage(false, fmt.Sprintf("no device on ip: %s", host.IP))
 		return false
 	}
-	_, err = client.EdgePing(hostUUID)
+	_, err = client.EdgeBiosPing(hostUUID)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("ping fail on ip: %s", host.IP))
 		return false
