@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/flow-eng/node"
 	"github.com/NubeDev/flow-eng/nodes"
-	"github.com/NubeIO/rubix-rules/clients/nresty"
+	"github.com/NubeIO/rubix-edge-wires/clients/nresty"
 )
 
 type SchemaBody struct {

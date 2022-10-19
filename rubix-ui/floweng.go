@@ -2,15 +2,65 @@ package main
 
 import (
 	"fmt"
+	"github.com/NubeDev/flow-eng/db"
 	"github.com/NubeDev/flow-eng/node"
 	"github.com/NubeDev/flow-eng/nodes"
-	"github.com/NubeIO/rubix-rules/flow"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
+	"github.com/NubeIO/rubix-edge-wires/flow"
 	"github.com/NubeIO/rubix-ui/flowcli"
 	"github.com/mitchellh/mapstructure"
 )
 
 const flowEngIP = "0.0.0.0"
+
+func (inst *App) GetWiresConnections() []db.Connection {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.GetConnections()
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
+
+func (inst *App) UpdateWiresConnection(uuid string, body *db.Connection) *db.Connection {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.UpdateConnection(uuid, body)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
+
+func (inst *App) AddWiresConnection(body *db.Connection) *db.Connection {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.AddConnection(body)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
+
+func (inst *App) DeleteWiresConnection(uuid string) {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	err := client.DeleteConnection(uuid)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return
+	}
+	inst.crudMessage(true, fmt.Sprintf("ok"))
+}
+
+func (inst *App) GetWiresConnection(uuid string) *db.Connection {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.GetConnection(uuid)
+	if err != nil {
+		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		return resp
+	}
+	return resp
+}
 
 func (inst *App) NodeValue(nodeUUID string) *node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
@@ -75,7 +125,6 @@ func (inst *App) DownloadFlow(encodedNodes interface{}, restartFlow bool) *flow.
 }
 
 func (inst *App) DownloadFlowDecoded(encodedNodes interface{}, restartFlow bool) *flow.Message {
-	pprint.PrintJOSN(encodedNodes)
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	nodeList := &nodes.NodesList{}
 	err := mapstructure.Decode(encodedNodes, &nodeList)
