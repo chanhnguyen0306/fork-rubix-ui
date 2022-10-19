@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) edgeWriteWiresConfig(connUUID, hostUUID string) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ type ConfigBACnetServer struct {
 }
 
 func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *ConfigBACnetServer) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 }
 
 func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) (*assistmodel.EdgeConfigResponse, error, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, nil, err
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 func (inst *App) GetNetworkSchema(connUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -30,7 +30,7 @@ func (inst *App) AddHostNetwork(connUUID string, host *assistmodel.Network) *ass
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("net-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -46,7 +46,7 @@ func (inst *App) AddHostNetwork(connUUID string, host *assistmodel.Network) *ass
 
 func (inst *App) GetHostNetworks(connUUID string) (resp []assistmodel.Network) {
 	resp = []assistmodel.Network{}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -71,7 +71,7 @@ func (inst *App) DeleteHostNetworkBulk(connUUID string, uuids []UUIDs) interface
 }
 
 func (inst *App) deleteHostNetwork(connUUID string, uuid string) (*assitcli.Response, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (inst *App) deleteHostNetwork(connUUID string, uuid string) (*assitcli.Resp
 }
 
 func (inst *App) DeleteHostNetwork(connUUID string, uuid string) *assitcli.Response {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -98,7 +98,7 @@ func (inst *App) DeleteHostNetwork(connUUID string, uuid string) *assitcli.Respo
 }
 
 func (inst *App) GetHostNetwork(connUUID string, uuid string) *assistmodel.Network {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -115,7 +115,7 @@ func (inst *App) EditHostNetwork(connUUID string, hostUUID string, host *assistm
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("net-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

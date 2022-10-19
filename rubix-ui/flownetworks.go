@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -35,7 +35,7 @@ func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs)
 }
 
 func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams bool) *model.FlowNetwork {
-	client, err := inst.initConnection(&AssistClient{
+	client, err := inst.getAssistClient(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	err = inst.errMsg(err)
@@ -51,7 +51,7 @@ func (inst *App) GetFlowNetwork(connUUID, hostUUID, uuid string, withStreams boo
 }
 
 func (inst *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []model.FlowNetwork {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -73,7 +73,7 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 		body.IsTokenAuth = nils.NewTrue()
 	}
 
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (inst *App) AddFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 }
 
 func (inst *App) EditFlowNetwork(connUUID, hostUUID, networkUUID string, body *model.FlowNetwork) *model.FlowNetwork {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -109,7 +109,7 @@ func (inst *App) EditFlowNetwork(connUUID, hostUUID, networkUUID string, body *m
 	return networks
 }
 func (inst *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -123,7 +123,7 @@ func (inst *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) inter
 }
 
 func (inst *App) getFlowNetwork(connUUID, hostUUID, networkUUID string, withStream bool) (*model.FlowNetwork, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err

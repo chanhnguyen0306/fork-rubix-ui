@@ -10,7 +10,7 @@ import (
 var nets = networking.New()
 
 func (inst *App) GetServerTime(connUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -26,7 +26,7 @@ func (inst *App) GetServerTime(connUUID string) interface{} {
 }
 
 func (inst *App) GetServerNetworking(connUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil

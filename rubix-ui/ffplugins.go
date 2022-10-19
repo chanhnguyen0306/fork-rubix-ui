@@ -12,7 +12,7 @@ type PluginName struct {
 }
 
 func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -28,9 +28,9 @@ func (inst *App) RestartPluginBulk(connUUID, hostUUID string, pluginUUID []Plugi
 	return "ok"
 }
 
-//GetPluginsNames return's an array of name and uuid
+// GetPluginsNames return's an array of name and uuid
 func (inst *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -48,7 +48,7 @@ func (inst *App) GetPluginsNames(connUUID, hostUUID string) []PluginName {
 }
 
 func (inst *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.PluginConf, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (inst *App) GetPluginByName(connUUID, hostUUID, pluginName string) (*model.
 }
 
 func (inst *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginConf {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -81,7 +81,7 @@ func (inst *App) GetPlugin(connUUID, hostUUID, pluginUUID string) *model.PluginC
 }
 
 func (inst *App) GetPlugins(connUUID, hostUUID string) []model.PluginConf {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -100,7 +100,7 @@ type PluginUUIDs struct {
 }
 
 func (inst *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -117,7 +117,7 @@ func (inst *App) DisablePluginBulk(connUUID, hostUUID string, pluginUUID []Plugi
 }
 
 func (inst *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []PluginUUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil

@@ -10,7 +10,7 @@ import (
 )
 
 func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 }
 
 func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doNotValidateArch bool) (*appstore.UploadResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doN
 }
 
 func (inst *App) assistStoreListPlugins(connUUID string) ([]installer.BuildDetails, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (inst *App) assistStoreListPlugins(connUUID string) ([]installer.BuildDetai
 }
 
 func (inst *App) assistStoreUploadPlugin(connUUID string, body *appstore.Plugin) (*appstore.UploadResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

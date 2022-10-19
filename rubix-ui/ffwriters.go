@@ -6,7 +6,7 @@ import (
 )
 
 func (inst *App) CreateWriter(connUUID, hostUUID string, body *model.Writer) *model.Writer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -20,7 +20,7 @@ func (inst *App) CreateWriter(connUUID, hostUUID string, body *model.Writer) *mo
 }
 
 func (inst *App) GetWriters(connUUID, hostUUID string) []model.Writer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -34,7 +34,7 @@ func (inst *App) GetWriters(connUUID, hostUUID string) []model.Writer {
 }
 
 func (inst *App) EditWriter(connUUID, hostUUID, uuid string, body *model.Writer, updateProducer bool) *model.Writer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -48,7 +48,7 @@ func (inst *App) EditWriter(connUUID, hostUUID, uuid string, body *model.Writer,
 }
 
 func (inst *App) DeleteWriter(connUUID, hostUUID, uuid string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -62,7 +62,7 @@ func (inst *App) DeleteWriter(connUUID, hostUUID, uuid string) interface{} {
 }
 
 func (inst *App) DeleteWritersBulk(connUUID, hostUUID string, UUIDs []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil

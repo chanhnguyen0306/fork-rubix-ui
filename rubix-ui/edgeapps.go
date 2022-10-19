@@ -364,7 +364,7 @@ func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, 
 
 // edgeListApps apps that are in the app dir
 func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]installer.AppsStatus, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -377,7 +377,7 @@ func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]installer.Apps
 
 // edgeListAppsAndService list all the apps in the rubix-service dir that have a service
 func (inst *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.Apps, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +389,7 @@ func (inst *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.
 }
 
 func (inst *App) edgeUploadEdgeApp(connUUID, hostUUID string, upload installer.Upload) (*installer.AppResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -398,7 +398,7 @@ func (inst *App) edgeUploadEdgeApp(connUUID, hostUUID string, upload installer.U
 }
 
 func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -417,7 +417,7 @@ func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, rele
 }
 
 func (inst *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*systemd.InstallResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -430,7 +430,7 @@ func (inst *App) installEdgeService(connUUID, hostUUID, appName, appVersion, ser
 }
 
 func (inst *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*systemd.InstallResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -443,7 +443,7 @@ func (inst *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, service
 }
 
 func (inst *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*systemd.UninstallResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

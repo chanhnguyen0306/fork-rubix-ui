@@ -8,7 +8,7 @@ import (
 )
 
 func (inst *App) DeleteConsumerBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -34,7 +34,7 @@ func (inst *App) DeleteConsumerBulk(connUUID, hostUUID string, uuids []UUIDs) in
 }
 
 func (inst *App) GetConsumerClones(connUUID, hostUUID string) []model.Consumer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -64,7 +64,7 @@ func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *m
 	if body.ConsumerApplication == "" {
 		body.ConsumerApplication = "mapping"
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -78,7 +78,7 @@ func (inst *App) AddConsumer(connUUID, hostUUID string, body *model.Consumer) *m
 }
 
 func (inst *App) EditConsumer(connUUID, hostUUID, streamUUID string, body *model.Consumer) *model.Consumer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -91,7 +91,7 @@ func (inst *App) EditConsumer(connUUID, hostUUID, streamUUID string, body *model
 	return consumers
 }
 func (inst *App) DeleteConsumer(connUUID, hostUUID, streamUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -105,7 +105,7 @@ func (inst *App) DeleteConsumer(connUUID, hostUUID, streamUUID string) interface
 }
 
 func (inst *App) GetConsumers(connUUID, hostUUID string) []model.Consumer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -119,7 +119,7 @@ func (inst *App) GetConsumers(connUUID, hostUUID string) []model.Consumer {
 }
 
 func (inst *App) getConsumer(connUUID, hostUUID, streamUUID string) (*model.Consumer, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err

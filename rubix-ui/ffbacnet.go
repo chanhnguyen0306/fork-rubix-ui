@@ -44,7 +44,7 @@ func (inst *App) getBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, ad
 	if err != nil {
 		return nil, err
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 	if err != nil {
 		return nil, err
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

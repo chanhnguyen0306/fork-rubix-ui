@@ -11,7 +11,7 @@ import (
 
 // wiresUpload upload a flow to wires
 func (inst *App) wiresUpload(connUUID, hostUUID string, body interface{}) (interface{}, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -49,9 +49,9 @@ func (inst *App) wiresBackupRestore(connUUID, hostUUID, backupUUID string) (inte
 	if data.Application != logstore.RubixWires.String() {
 		return nil, errors.New(fmt.Sprintf("application must be of type %s:", logstore.RubixWires.String()))
 	}
-	//if isJSON(data.Data.(string)) {
+	// if isJSON(data.Data.(string)) {
 	//	return nil, errors.New(fmt.Sprintf("no valid flow found in data %s:", logstore.RubixWires.String()))
-	//}
+	// }
 	if data.Data == nil {
 		return nil, errors.New(fmt.Sprintf("no valid flow found in data %s:", logstore.RubixWires.String()))
 	}
@@ -94,7 +94,7 @@ func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Ba
 }
 
 func (inst *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, errors.New(fmt.Sprintf("error %s", err.Error()))

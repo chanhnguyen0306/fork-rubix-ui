@@ -8,7 +8,7 @@ import (
 )
 
 func (inst *App) DeleteProducerBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -34,7 +34,7 @@ func (inst *App) DeleteProducerBulk(connUUID, hostUUID string, uuids []UUIDs) in
 }
 
 func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -67,7 +67,7 @@ func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *m
 	if nils.BoolIsNil(body.EnableHistory) {
 		body.EnableHistory = nils.NewFalse()
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -81,7 +81,7 @@ func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *m
 }
 
 func (inst *App) EditProducer(connUUID, hostUUID, streamUUID string, body *model.Producer) *model.Producer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -94,7 +94,7 @@ func (inst *App) EditProducer(connUUID, hostUUID, streamUUID string, body *model
 	return producers
 }
 func (inst *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -108,7 +108,7 @@ func (inst *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface
 }
 
 func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return []model.Producer{}
@@ -122,7 +122,7 @@ func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
 }
 
 func (inst *App) getProducer(connUUID, hostUUID, streamUUID string) (*model.Producer, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err

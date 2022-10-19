@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) assistUploadFile(connUUID, destination, path_, fileName string) (*assitcli.EdgeUploadResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

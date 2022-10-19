@@ -21,7 +21,7 @@ func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*mo
 }
 
 func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -44,7 +44,7 @@ func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *mo
 }
 
 func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, body *model.Priority) (*model.Point, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return nil, err
@@ -60,7 +60,7 @@ func (inst *App) addPoint(connUUID, hostUUID string, body *model.Point) (*model.
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("point-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (inst *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.P
 }
 
 func (inst *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Point) *model.Point {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -117,7 +117,7 @@ func (inst *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Poi
 }
 
 func (inst *App) DeletePointBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -144,7 +144,7 @@ func (inst *App) DeletePointBulk(connUUID, hostUUID string, uuids []UUIDs) inter
 }
 
 func (inst *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -158,7 +158,7 @@ func (inst *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
 }
 
 func (inst *App) GetPoint(connUUID, hostUUID, pointUUID string) *model.Point {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil

@@ -7,7 +7,7 @@ import (
 )
 
 func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -33,7 +33,7 @@ func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, uuids []UUIDs) inte
 }
 
 func (inst *App) DeleteStreamBulkClones(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -59,7 +59,7 @@ func (inst *App) DeleteStreamBulkClones(connUUID, hostUUID string, uuids []UUIDs
 }
 
 func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return []model.StreamClone{}
@@ -73,7 +73,7 @@ func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone 
 }
 
 func (inst *App) GetStreamsByFlowNetwork(connUUID, hostUUID, flowUUID string) []*model.Stream {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -87,7 +87,7 @@ func (inst *App) GetStreamsByFlowNetwork(connUUID, hostUUID, flowUUID string) []
 }
 
 func (inst *App) GetStreams(connUUID, hostUUID string) []model.Stream {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -104,7 +104,7 @@ func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUID string, bo
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("stream-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return &model.Stream{}
@@ -122,7 +122,7 @@ func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUID string, bo
 	return streams
 }
 func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.Stream) *model.Stream {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return &model.Stream{}
@@ -136,7 +136,7 @@ func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.S
 }
 
 func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -150,7 +150,7 @@ func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{}
 }
 
 func (inst *App) DeleteStreamClone(connUUID, hostUUID, streamUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -164,7 +164,7 @@ func (inst *App) DeleteStreamClone(connUUID, hostUUID, streamUUID string) interf
 }
 
 func (inst *App) getStream(connUUID, hostUUID, streamUUID string) (*model.Stream, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err

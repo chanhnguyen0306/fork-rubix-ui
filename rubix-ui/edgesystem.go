@@ -115,7 +115,7 @@ func (inst *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.Sy
 	if body.ServiceName == "" && body.AppName == "" {
 		return nil, errors.New("app_name & service_name both can not be empty")
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func (inst *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.System
 }
 
 func (inst *App) edgeCtlStatus(connUUID, hostUUID string, body *installer.SystemCtlBody) (*installer.AppSystemState, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func (inst *App) EdgeServiceMassAction(connUUID, hostUUID string, body *installe
 }
 
 func (inst *App) edgeServiceMassAction(connUUID, hostUUID string, body *installer.SystemCtlBody) ([]installer.MassSystemResponse, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (inst *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installe
 }
 
 func (inst *App) edgeServiceMassStatus(connUUID, hostUUID string, body *installer.SystemCtlBody) ([]installer.AppSystemState, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

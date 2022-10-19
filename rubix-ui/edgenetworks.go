@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil
 	}
@@ -93,8 +93,8 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 		inst.crudMessage(true, fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth1Ip))
 	}
 
-	//eth0IpSettings := rcNetworkBody.Eth0IpSettings
-	//eth1IpSettings := rcNetworkBody.Eth1IpSettings
+	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
+	// eth1IpSettings := rcNetworkBody.Eth1IpSettings
 
 	if product == RubixCompute || product == RubixCompute5 {
 
@@ -106,7 +106,7 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 }
 
 func (inst *App) setEth0(connUUID, hostUUID string, eth0Body networking.NetworkInterfaces) Eth0 {
-	client, err := inst.initConnection(&AssistClient{
+	client, err := inst.getAssistClient(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	m := Eth0{}
@@ -144,7 +144,7 @@ func (inst *App) setEth0(connUUID, hostUUID string, eth0Body networking.NetworkI
 }
 
 func (inst *App) setEth1(connUUID, hostUUID string, eth1Body networking.NetworkInterfaces) Eth1 {
-	client, err := inst.initConnection(&AssistClient{
+	client, err := inst.getAssistClient(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	m := Eth1{}
@@ -191,7 +191,7 @@ func (inst *App) GetRcNetworkSchema(connUUID, hostUUID string) interface{} {
 }
 
 func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, error) {
-	client, err := inst.initConnection(&AssistClient{
+	client, err := inst.getAssistClient(&AssistClient{
 		ConnUUID: connUUID,
 	})
 
@@ -239,7 +239,7 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 }
 
 func (inst *App) edgeDHCPPortExists(connUUID, hostUUID string, body *system.NetworkingBody) (*system.DHCPPortExists, error) {
-	client, err := inst.initConnection(&AssistClient{
+	client, err := inst.getAssistClient(&AssistClient{
 		ConnUUID: connUUID,
 	})
 	if err != nil {
@@ -257,33 +257,33 @@ func (inst *App) EdgeDHCPPortExists(connUUID, hostUUID string, body *system.Netw
 }
 
 func (inst *App) EdgeDHCPSetAsAuto(connUUID, hostUUID string, body *system.NetworkingBody) *system.Message {
-	//client, err := inst.initConnectionAuth(&AssistClient{
+	// client, err := inst.initConnectionAuth(&AssistClient{
 	//	ConnUUID: connUUID,
-	//})
-	//if err != nil {
+	// })
+	// if err != nil {
 	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 	//	return nil
-	//}
-	//resp, err := client.EdgeDHCPSetAsAuto(hostUUID, body)
-	//if err != nil {
+	// }
+	// resp, err := client.EdgeDHCPSetAsAuto(hostUUID, body)
+	// if err != nil {
 	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 	//	return  nil
-	//}
+	// }
 	return nil
 }
 
 func (inst *App) EdgeDHCPSetStaticIP(connUUID, hostUUID string, body *dhcpd.SetStaticIP) string {
-	//client, err := inst.initConnectionAuth(&AssistClient{
+	// client, err := inst.initConnectionAuth(&AssistClient{
 	//	ConnUUID: connUUID,
-	//})
-	//if err != nil {
+	// })
+	// if err != nil {
 	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 	//	return ""
-	//}
-	//resp, err := client.EdgeDHCPSetStaticIP(hostUUID, body)
-	//if err != nil {
+	// }
+	// resp, err := client.EdgeDHCPSetStaticIP(hostUUID, body)
+	// if err != nil {
 	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 	//	return  ""
-	//}
+	// }
 	return ""
 }

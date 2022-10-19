@@ -15,7 +15,7 @@ func (inst *App) EdgeProductInfo(connUUID, hostUUID string) *installer.Product {
 }
 
 func (inst *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (inst *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product,
 }
 
 func (inst *App) PingHost(connUUID, hostUUID string) bool {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return false
 	}
@@ -46,7 +46,7 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 }
 
 func (inst *App) EdgeRubixScan(connUUID, hostUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	data, err := client.ProxyGET(hostUUID, "/api/system/scanner")
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))

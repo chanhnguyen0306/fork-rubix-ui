@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.Device {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -47,7 +47,7 @@ func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*mode
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("device-%s", uuid.ShortUUID("")[5:10])
 	}
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (inst *App) GetNetworkDevices(connUUID, hostUUID, networkUUID string) []*mo
 }
 
 func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.Device) *model.Device {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -93,7 +93,7 @@ func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.D
 }
 
 func (inst *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -119,7 +119,7 @@ func (inst *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs
 }
 
 func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -133,7 +133,7 @@ func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{}
 }
 
 func (inst *App) getDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) (*model.Device, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err

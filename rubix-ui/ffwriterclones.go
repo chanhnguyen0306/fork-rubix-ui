@@ -6,7 +6,7 @@ import (
 )
 
 func (inst *App) GetWriterClones(connUUID, hostUUID string) []model.WriterClone {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -20,7 +20,7 @@ func (inst *App) GetWriterClones(connUUID, hostUUID string) []model.WriterClone 
 }
 
 func (inst *App) DeleteWriterClone(connUUID, hostUUID, uuid string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -34,7 +34,7 @@ func (inst *App) DeleteWriterClone(connUUID, hostUUID, uuid string) interface{} 
 }
 
 func (inst *App) DeleteWriterCloneBulk(connUUID, hostUUID string, UUIDs []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil

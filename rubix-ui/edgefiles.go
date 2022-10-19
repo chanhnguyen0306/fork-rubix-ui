@@ -5,7 +5,7 @@ import (
 )
 
 func (inst *App) edgeReadFile(connUUID, hostUUID, path string) ([]byte, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func (inst *App) edgeReadFile(connUUID, hostUUID, path string) ([]byte, error) {
 }
 
 func (inst *App) edgeWriteFile(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (inst *App) edgeWriteFile(connUUID, hostUUID string, body *assitcli.WriteFi
 }
 
 func (inst *App) edgeWriteFileJson(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (inst *App) edgeWriteFileJson(connUUID, hostUUID string, body *assitcli.Wri
 }
 
 func (inst *App) edgeWriteFileYml(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (inst *App) edgeWriteFileYml(connUUID, hostUUID string, body *assitcli.Writ
 }
 
 func (inst *App) edgeCreateFile(connUUID, hostUUID string, body *assitcli.WriteFile) (*assitcli.Message, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}

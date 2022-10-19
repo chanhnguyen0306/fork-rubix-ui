@@ -6,7 +6,7 @@ import (
 )
 
 func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, uuids []UUIDs) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -32,7 +32,7 @@ func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, uuids []U
 }
 
 func (inst *App) GetFlowNetworkClones(connUUID, hostUUID string, withDevice bool) []model.FlowNetworkClone {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -46,7 +46,7 @@ func (inst *App) GetFlowNetworkClones(connUUID, hostUUID string, withDevice bool
 }
 
 func (inst *App) DeleteFlowNetworkClone(connUUID, hostUUID, networkUUID string) interface{} {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -60,7 +60,7 @@ func (inst *App) DeleteFlowNetworkClone(connUUID, hostUUID, networkUUID string) 
 }
 
 func (inst *App) getFlowNetworkClone(connUUID, hostUUID, networkUUID string, withDevice bool) (*model.FlowNetworkClone, error) {
-	client, err := inst.initConnection(&AssistClient{ConnUUID: connUUID})
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil, err
