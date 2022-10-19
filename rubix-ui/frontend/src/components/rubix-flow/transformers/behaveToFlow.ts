@@ -1,13 +1,14 @@
 import { Edge, Node } from "react-flow-renderer/nocss";
 import { GraphJSON } from "../lib";
 import { generateUuid } from "../lib/generateUuid";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
   graph.nodes.forEach((nodeJSON) => {
-    const node: Node = {
+    const node: NodeInterface = {
       id: nodeJSON.id,
       type: nodeJSON.type,
       position: {
@@ -19,6 +20,7 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
           : 0,
       },
       data: {} as { [key: string]: any },
+      settings: nodeJSON?.settings || {},
     };
 
     nodes.push(node);

@@ -1,5 +1,6 @@
 import { Edge, Node } from "react-flow-renderer/nocss";
 import { GraphJSON, NodeJSON } from "../lib";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 const isNullish = (value: any): value is null | undefined =>
   value === undefined || value === null;
@@ -7,7 +8,7 @@ const isNullish = (value: any): value is null | undefined =>
 export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
   const graph: GraphJSON = { nodes: [] };
 
-  nodes.forEach((node) => {
+  nodes.forEach((node: NodeInterface) => {
     if (node.type === undefined) {
       return;
     }
@@ -20,6 +21,7 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
         positionY: String(node.position.y),
       },
       settings: {
+        ...node.settings,
         selected: node.selected || false
       }
     };

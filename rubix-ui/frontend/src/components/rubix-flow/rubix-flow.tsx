@@ -32,6 +32,7 @@ import { Node, NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import ControlUndoable from "./components/ControlUndoable";
+import { NodeInterface } from "./lib/Nodes/NodeInterface";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -141,7 +142,7 @@ const Flow = (props: any) => {
     setNodePickerVisibility({ x: e.clientX, y: e.clientY });
   };
 
-  const handleNodeContextMenu = (e: ReactMouseEvent, node: Node) => {
+  const handleNodeContextMenu = (e: ReactMouseEvent, node: NodeInterface) => {
     e.preventDefault();
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
     setSelectedNode(node);
@@ -160,9 +161,12 @@ const Flow = (props: any) => {
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
-      const value = outputNodes[index]?.outputs;
 
-      node.data.out = value;
+      if (index !== -1) {
+        node.settings = outputNodes[index]?.settings;
+      }
+
+      node.data.out = outputNodes[index]?.outputs;
 
       return node;
     });
