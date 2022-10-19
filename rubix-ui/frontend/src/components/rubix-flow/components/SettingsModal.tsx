@@ -41,7 +41,7 @@ export const SettingsModal = ({
   const handleSetFormData = async (_settings: any) => {
     try {
       const _formData = {} as any;
-      const _node = (await factory.NodeValue(node.id)) || {};
+      const _node = node.settings ? node : (await factory.NodeValue(node.id));
       const _properties = Object.entries(_settings.schema.properties || {});
       
 

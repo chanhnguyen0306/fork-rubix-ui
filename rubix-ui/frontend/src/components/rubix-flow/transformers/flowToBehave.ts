@@ -1,6 +1,7 @@
 import { Edge, Node } from "react-flow-renderer/nocss";
 import { isObjectEmpty } from "../../../utils/utils";
 import { GraphJSON, NodeJSON } from "../lib";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 const isNullish = (value: any): value is null | undefined =>
   value === undefined || value === null;
@@ -8,7 +9,7 @@ const isNullish = (value: any): value is null | undefined =>
 export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
   const graph: GraphJSON = { nodes: [] };
 
-  nodes.forEach((node: any) => {
+  nodes.forEach((node: NodeInterface) => {
     if (node.type === undefined) {
       return;
     }
@@ -29,7 +30,7 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
 
     if (node.parentId) behaveNode.parentId = node.parentId;
 
-    if (!isObjectEmpty(node.style)) behaveNode.style = node.style;
+    if (node.style && !isObjectEmpty(node.style)) behaveNode.style = node.style;
 
     Object.entries(node.data).forEach(([key, value]) => {
       if (behaveNode.inputs === undefined) {

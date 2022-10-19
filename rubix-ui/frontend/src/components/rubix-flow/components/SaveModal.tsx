@@ -1,5 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useEdges, useNodes } from "react-flow-renderer/nocss";
+import { FlowFactory } from "../factory";
+import { NodeJSON } from "../lib";
 import { flowToBehave } from "../transformers/flowToBehave";
 import { Modal } from "./Modal";
 
@@ -12,6 +14,7 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
 
   const edges = useEdges();
   const nodes = useNodes();
+  const factory = new FlowFactory();
 
   const flow = useMemo(() => flowToBehave(nodes, edges), [nodes, edges]);
 
@@ -25,17 +28,37 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
     }, 1000);
   };
 
-  useEffect(() => {
-    const _nodes = flow.nodes.filter((item) => {
-      const isSelected = item?.settings?.selected;
-      delete item?.settings?.selected;
+  const handleNodeRender = async () => {
+    const selectedNodes: NodeJSON[] = flow.nodes.filter(
+      (item) => item.settings?.selected
+    );
+    const newNodes = selectedNodes.length === 0 ? flow.nodes : selectedNodes;
 
-      return isSelected && item;
+    const promiseNode = await newNodes.map(async (item) => {
+      if (item.settings) delete item.settings.selected;
+
+      if (item.settings && Object.entries(item.settings).length === 0) {
+        const settings: any = {};
+        const type = item.type.split("/")[1];
+        const nodeSchema = (await factory.NodeSchema(type)) || {};
+        const properties = Object.entries(nodeSchema.schema.properties || {});
+
+        for (const [key, item] of properties as [string, any]) {
+          settings[key] = item.default;
+        }
+
+        item.settings = settings;
+      }
+
+      return item;
     });
 
-    const newNodes = _nodes.length === 0 ? flow : { nodes: _nodes };
+    const jsonNodes = JSON.stringify(await Promise.all(promiseNode), null, 3);
+    setNodeRender(jsonNodes);
+  };
 
-    setNodeRender(JSON.stringify(newNodes, null, 2));
+  useEffect(() => {
+    handleNodeRender();
   }, [flow]);
 
   return (
