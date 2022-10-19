@@ -10,7 +10,7 @@ export type SaveModalProps = { open?: boolean; onClose: () => void };
 export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
   const ref = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
-  const [nodeRender, setNodeRender] = useState('');
+  const [nodeRender, setNodeRender] = useState("");
 
   const edges = useEdges();
   const nodes = useNodes();
@@ -30,14 +30,14 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
 
   const handleNodeRender = async () => {
     const selectedNodes: NodeJSON[] = flow.nodes.filter(
-      (item) => item.settings.selected
+      (item) => item.settings?.selected
     );
     const newNodes = selectedNodes.length === 0 ? flow.nodes : selectedNodes;
 
     const promiseNode = await newNodes.map(async (item) => {
       if (item.settings) delete item.settings.selected;
 
-      if (Object.entries(item.settings).length === 0) {
+      if (item.settings && Object.entries(item.settings).length === 0) {
         const settings: any = {};
         const type = item.type.split("/")[1];
         const nodeSchema = (await factory.NodeSchema(type)) || {};

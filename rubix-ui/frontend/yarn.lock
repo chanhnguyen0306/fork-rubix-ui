@@ -2754,7 +2754,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@^18.1.0", "react@>= 16.8.0", "react@>=16", "react@>=16 || >=17", "react@>=16.0.0", "react@>=16.11.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.9.0", "react@16 || 17 || 18":
+"react@*", "react@^17.0.0 || ^18.0.0", "react@^18.0.0", "react@^18.1.0", "react@>= 16.8.0", "react@>=16", "react@>=16 || >=17", "react@>=16.0.0", "react@>=16.11.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.9.0", "react@16 || 17 || 18", "react@17 || 18":
   "integrity" "sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.1.0.tgz"
   "version" "18.1.0"
@@ -3109,6 +3109,11 @@
   "version" "4.4.1"
   dependencies:
     "punycode" "^2.1.0"
+
+"use-undoable@^3.3.11":
+  "integrity" "sha512-9b82HzzBSKewn5EFIxR2hDBXcjvgR/SpzYnFjAviqqtqRAXSOYbaJL3aBIcDlktthY/bf/nYCcRW2TRIhRsFlQ=="
+  "resolved" "https://registry.npmjs.org/use-undoable/-/use-undoable-3.3.11.tgz"
+  "version" "3.3.11"
 
 "util-deprecate@^1.0.2":
   "integrity" "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="

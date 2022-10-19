@@ -1,4 +1,5 @@
 import { Edge, Node } from "react-flow-renderer/nocss";
+import { isObjectEmpty } from "../../../utils/utils";
 import { GraphJSON, NodeJSON } from "../lib";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
@@ -16,15 +17,20 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
     const behaveNode: NodeJSON = {
       id: node.id,
       type: node.type,
+      isParent: node.isParent,
       metadata: {
         positionX: String(node.position.x),
         positionY: String(node.position.y),
       },
       settings: {
         ...node.settings,
-        selected: node.selected || false
-      }
+        selected: node.selected || false,
+      },
     };
+
+    if (node.parentId) behaveNode.parentId = node.parentId;
+
+    if (node.style && !isObjectEmpty(node.style)) behaveNode.style = node.style;
 
     Object.entries(node.data).forEach(([key, value]) => {
       if (behaveNode.inputs === undefined) {

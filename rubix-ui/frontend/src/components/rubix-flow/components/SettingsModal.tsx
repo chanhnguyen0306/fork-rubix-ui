@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useReactFlow } from "react-flow-renderer/nocss";
 import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
-import { NODES_JSON } from "../use-nodes-spec";
+import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
+import { useNodes } from "react-flow-renderer";
 import { NodeJSON } from "../lib";
 
 type SettingsModalProps = {
@@ -13,20 +13,14 @@ type SettingsModalProps = {
 };
 
 export const SettingsModal = ({
-                                node,
-                                isModalVisible,
-                                onCloseModal,
-                              }: SettingsModalProps) => {
-  const instance = useReactFlow();
+  node,
+  isModalVisible,
+  onCloseModal,
+}: SettingsModalProps) => {
+  const handleChange = useChangeNodeProprerties(node.id);
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const nodeIds = instance.getNodes().map((n) => n.id);
-  let nodesStorage = (JSON.parse("" + localStorage.getItem(NODES_JSON)) ||
-    []) as NodeJSON[];
-  nodesStorage = nodesStorage.filter((n) => nodeIds.includes(n.id));
-
   const factory = new FlowFactory();
 
   useEffect(() => {
@@ -69,16 +63,7 @@ export const SettingsModal = ({
   };
 
   const handleSubmit = async (formData: any) => {
-    setConfirmLoading(true);
-    const updatedNode = { ...node, settings: formData };
-    const index = nodesStorage.findIndex((n: any) => n.id == node.id);
-    if (index === -1) {
-      nodesStorage.push(updatedNode);
-    } else {
-      nodesStorage[index] = updatedNode;
-    }
-    localStorage.setItem(NODES_JSON, JSON.stringify(nodesStorage)); //use localStorage to store node-settings
-    setConfirmLoading(false);
+    handleChange("settings", formData);
     handleClose();
   };
 
@@ -89,7 +74,6 @@ export const SettingsModal = ({
       okText="Save"
       okButtonProps={{}}
       onCancel={handleClose}
-      confirmLoading={confirmLoading}
       maskClosable={false}
       style={{ textAlign: "start" }}
     >

@@ -1,4 +1,6 @@
 import { Metadata } from "../Metadata";
+import { Node } from "react-flow-renderer/nocss";
+import { CSSProperties } from "react";
 
 export type LinkJSON = { nodeId: string; socket: string };
 
@@ -15,7 +17,11 @@ export type NodeJSON = {
     [key: string]: InputJSON;
   };
   metadata?: Metadata;
-  settings?: any;
+  settings?: { [key: string]: any };
+  data?: { [key: string]: any };
+  style?: CSSProperties;
+  isParent?: boolean;
+  parentId?: string;
 };
 
 export type GraphJSON = {
@@ -23,3 +29,7 @@ export type GraphJSON = {
   nodes: NodeJSON[];
   metadata?: Metadata;
 };
+
+export interface NodeExtend extends Node {
+  isParent?: boolean;
+}

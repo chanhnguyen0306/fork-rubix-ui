@@ -10,6 +10,7 @@ import {
 
 export type AutoSizeInputProps = HTMLProps<HTMLInputElement> & {
   minWidth?: number;
+  minHeight?: number;
 };
 
 const baseStyles: CSSProperties = {
@@ -24,6 +25,7 @@ const baseStyles: CSSProperties = {
 
 export const AutoSizeInput: FC<AutoSizeInputProps> = ({
   minWidth = 30,
+  minHeight = 30,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -57,6 +59,9 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
     } else {
       inputRef.current.style.width = `${maxWidth}px`;
     }
+
+    const height = measureRef.current.clientHeight;
+    inputRef.current.style.height = Math.max(minHeight, height) + "px";
   }, [props.value, minWidth, styles]);
 
   return (

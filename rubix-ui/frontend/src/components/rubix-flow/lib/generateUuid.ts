@@ -1,6 +1,5 @@
 /* eslint-disable no-bitwise */
 
-
 const lut: string[] = [];
 for (let i = 0; i < 256; i++) {
   lut[i] = (i < 16 ? "0" : "") + i.toString(16);
@@ -25,5 +24,5 @@ export const generateUuid = () => {
   }${lut[(d3 >> 16) & 0xff]}${lut[(d3 >> 24) & 0xff]}`;
 
   // .toUpperCase() here flattens concatenated strings to save heap memory space.
-  return uuid.toUpperCase().split('-').join('');
+  return uuid.toUpperCase().split("-").join("");
 };

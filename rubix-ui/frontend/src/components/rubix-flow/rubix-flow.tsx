@@ -14,7 +14,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
-  Node as FlowNode
+  Node as FlowNode,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
@@ -27,9 +27,9 @@ import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowProvider } from "react-flow-renderer";
-import { NODES_JSON, useNodesSpec } from "./use-nodes-spec";
+import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
-import { Node, NodeSpecJSON } from "./lib";
+import { NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import ControlUndoable from "./components/ControlUndoable";
@@ -78,10 +78,12 @@ const Flow = (props: any) => {
   );
 
   const handleAddNode = useCallback(
-    (nodeType: string, position: XYPosition) => {
+    (isParent: boolean, style: any, nodeType: string, position: XYPosition) => {
       closeNodePicker();
       const newNode = {
         id: generateUuid(),
+        isParent,
+        style,
         type: nodeType,
         position,
         data: {},
@@ -135,7 +137,7 @@ const Flow = (props: any) => {
     setLastConnectStart(undefined);
     setNodePickerVisibility(undefined);
     setNodeMenuVisibility(undefined);
-    setIsDoubleClick(false)
+    setIsDoubleClick(false);
   };
 
   const handlePaneClick = () => closeNodePicker();
@@ -186,14 +188,14 @@ const Flow = (props: any) => {
 
     setUndoable({
       nodes: newNodes,
-      edges: edges
+      edges: edges,
     });
   };
 
   const handleRedo = () => {
     redo();
     if (undoable.nodes.length === 0) redo();
-  }
+  };
 
   const handleDeleteEdges = (_nodes: any, _edges: any) => {
     setUndoable({
@@ -243,18 +245,21 @@ const Flow = (props: any) => {
     setSelectedNode(node);
     setIsDoubleClick(true);
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
-  }
+  };
 
   useEffect(() => {
-    factory.GetFlow().then((res) => {
-      const [_nodes, _edges] = behaveToFlow(res);
-      setNodes(_nodes);
-      setEdges(_edges);
-      setUndoable({
-        nodes: _nodes,
-        edges: _edges,
-      });
-    }).catch(() => {})
+    factory
+      .GetFlow()
+      .then((res) => {
+        const [_nodes, _edges] = behaveToFlow(res);
+        setNodes(_nodes);
+        setEdges(_edges);
+        setUndoable({
+          nodes: _nodes,
+          edges: _edges,
+        });
+      })
+      .catch(() => {});
 
     const ivlFetchOutput = setInterval(async () => {
       const _outputNodes = (await fetchOutput()) || [];
@@ -271,7 +276,22 @@ const Flow = (props: any) => {
       setNodes(undoable.nodes);
       setEdges(undoable.edges);
     }
-  }, [undoable])
+  }, [undoable]);
+
+  useEffect(() => {
+    //When deleting a container, will also delete the nodes that belong to it
+    const subNodes = nodes.filter((n: any) => n.parentId) as any[];
+    if (subNodes.length === 0) return;
+
+    const allNodeIds = nodes.map((n) => n.id);
+    let newNodes = nodes;
+    for (const subNode of subNodes) {
+      if (!allNodeIds.includes(subNode.parentId)) {
+        newNodes = nodes.filter((n) => n.id !== subNode.id);
+      }
+    }
+    setNodes(newNodes);
+  }, [nodes]);
 
   return (
     <ReactFlowProvider>

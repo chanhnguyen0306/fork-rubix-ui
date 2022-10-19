@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { NodeCategory } from "../../Nodes/NodeCategory";
 
 export type InputSocketSpecJSON = {
@@ -18,4 +19,6 @@ export type NodeSpecJSON = {
   inputs?: InputSocketSpecJSON[];
   outputs?: OutputSocketSpecJSON[];
   info?: {};
+  style?: CSSProperties;
+  isParent?: boolean;
 };

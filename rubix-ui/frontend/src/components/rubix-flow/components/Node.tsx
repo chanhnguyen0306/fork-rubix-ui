@@ -2,11 +2,12 @@ import { useState } from "react";
 import {
   NodeProps as FlowNodeProps,
   useEdges,
+  useReactFlow,
 } from "react-flow-renderer/nocss";
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
-import { NodeSpecJSON } from "../lib";
+import { NodeExtend, NodeSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
@@ -31,20 +32,23 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
   return pairs;
 };
 
-export const Node = ({ id, data, spec, selected }: NodeProps) => {
+export const Node = (props: NodeProps) => {
+  const { id, data, spec, selected } = props;
+  const instance = useReactFlow();
   const edges = useEdges();
   const handleChange = useChangeNodeData(id);
   const [widthInput, setWidthInput] = useState(-1);
   const [widthOutput, setWidthOutput] = useState(-1);
 
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
+  const node = instance.getNode(id) as NodeExtend;
 
   const handleSetWidthInput = (width: number) => {
-    setWidthInput((prev: number) => Math.max(prev, width))
+    setWidthInput((prev: number) => Math.max(prev, width));
   };
 
   const handleSetWidthOutput = (width: number) => {
-    setWidthOutput((prev: number) => Math.max(prev, width))
+    setWidthOutput((prev: number) => Math.max(prev, width));
   };
 
   return (
@@ -52,15 +56,22 @@ export const Node = ({ id, data, spec, selected }: NodeProps) => {
       title={getTitle(spec.type)}
       category={spec.category}
       selected={selected}
+      height={node?.height ?? 30}
+      hasChild={node?.style?.height ? true : false}
     >
       {pairs.map(([input, output], ix) => {
         if (input && !data[input.name] && data[input.name] !== null) {
           data[input.name] = input.defaultValue;
         }
+        const borderB =
+          ix === pairs.length - 1 && node.style?.height
+            ? "border-b pb-3 border-gray-500"
+            : "";
+
         return (
           <div
             key={ix}
-            className="flex flex-row justify-between gap-8 relative px-2"
+            className={`flex flex-row justify-between gap-8 relative px-2 my-2 ${borderB}`}
           >
             {input && (
               <InputSocket

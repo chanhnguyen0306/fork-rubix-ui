@@ -20,7 +20,7 @@ export type InputSocketProps = {
   onSetWidthInput: (width: number) => void;
 } & InputSocketSpecJSON;
 
-const REGEX_NUMBER = new RegExp('^$|^-?(\\d+)?(\\.?\\d*)?$');
+const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
 
 const getValueOptions = (value: number) => {
   switch (value) {
@@ -113,8 +113,8 @@ export const InputSocket = ({
               {valueType === "string" && (
                 <AutoSizeInput
                   type="text"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={value || ""}
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  value={value ?? ""}
                   onChange={(e) => onChange(name, e.currentTarget.value)}
                 />
               )}
@@ -147,7 +147,10 @@ export const InputSocket = ({
         id={name}
         type="target"
         position={Position.Left}
-        className={cx(borderColor, connected ? backgroundColor : "bg-gray-1100")}
+        className={cx(
+          borderColor,
+          connected ? backgroundColor : "bg-gray-1100"
+        )}
         isValidConnection={(connection: Connection) =>
           isValidConnection(connection, instance)
         }
