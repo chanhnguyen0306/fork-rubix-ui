@@ -1,26 +1,28 @@
-# rubix-ui install
+# README
 
+### Pre-requisites
 
 - check what version of go you have installed go version
-- if its < 1.8 the download and install go 1.8 for your OS https://go.dev/dl/
+- if its < 1.18 the download and install go 1.18 for your OS https://go.dev/dl/
 - install/upgrade wails you need to reinstall https://wails.io/docs/gettingstarted/installation
-- install node > v15
+- install node >= v14
 
-### install npm packages
+### Install npm packages
 
 ```
-cd rubix-ui/rubix-ui/frontend
+cd frontend
 npm install
 ```
 
-### start the UI
+### How to start
 
 ```
-cd rubix-ui/rubix-ui/
+wails build // this is just needed at the first time for generating frontend/dist before starting anything
 wails dev
 ```
 
-you can also open in browser
+### Frontend browser URL
+
 ```
 http://localhost:34115/
 ```

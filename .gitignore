@@ -6,14 +6,13 @@
 *.dylib
 *.idea
 *.code
-rubix-ui/build/bin/rubix-ui
-rubix-ui/build/bin/rubix-ui.exe
-rubix-ui/build/bin/rubix-ui-dev-linux-amd64
-rubix-ui/frontend/node_modules
-rubix-ui/node_modules
+frontend/node_modules
+frontend/dist
+build
+node_modules
 # Test binary, built with `go test -c`
 *.test
-*data.db
+data/data.db
 *.db
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
