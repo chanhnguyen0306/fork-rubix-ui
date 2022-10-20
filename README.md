@@ -1,15 +1,28 @@
 # README
 
-## About
+### Pre-requisites
 
-This is the official Wails React-TS template.
+- check what version of go you have installed go version
+- if its < 1.18 the download and install go 1.18 for your OS https://go.dev/dl/
+- install/upgrade wails you need to reinstall https://wails.io/docs/gettingstarted/installation
+- install node >= v14
 
-## Live Development
+### Install npm packages
 
-To run in live development mode, run `wails dev` in the project directory. In another terminal, go into the `frontend`
-directory and run `npm run dev`. The frontend dev server will run on http://localhost:34115. Connect to this in your
-browser and connect to your application.
+```
+cd frontend
+npm install
+```
 
-## Building
+### How to start
 
-To build a redistributable, production mode package, use `wails build`.
+```
+wails build // this is just needed at the first time for generating frontend/dist before starting anything
+wails dev
+```
+
+### Frontend browser URL
+
+```
+http://localhost:34115/
+```
