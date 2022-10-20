@@ -3,6 +3,7 @@ package backend
 import (
 	"fmt"
 	"github.com/NubeIO/git/pkg/git"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
@@ -10,8 +11,8 @@ import (
 var connection = "cloud"
 var token = "Z2hwX2pDU0tteWxrVjkzN1Z5NmFFUHlPVFpObEhoTEdITjBYemxkSA=="
 var releaseVersion = "v0.6.6"
-var appName = rubixWires  // flow-framework rubix-wires
-var appVersion = "v2.7.4" // v2.7.4
+var appName = constants.rubixWires // flow-framework rubix-wires
+var appVersion = "v2.7.4"          // v2.7.4
 var product = "Server"
 var arch = "amd64"
 
@@ -43,7 +44,7 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
 	app := NewApp()
-	downloaded := app.StoreDownloadApp(token, flowFramework, "v0.6.6", "amd64", false)
+	downloaded := app.StoreDownloadApp(token, constants.flowFramework, "v0.6.6", "amd64", false)
 	pprint.PrintJOSN(downloaded)
 }
 

@@ -14,20 +14,6 @@ import (
 	"runtime"
 )
 
-const gitToken = "set_123456789ABC"
-const eth0 = "eth0"
-const eth1 = "eth1"
-const RubixCompute = "RubixCompute"
-const RubixCompute5 = "RubixCompute5"
-const RubixComputeIO = "RubixComputeIO"
-const Cloud = "Cloud"
-const configEnv = ".env"
-const configYml = "config.yml"
-const bacnetServerDriver = "bacnet-server-driver"
-const bacnetMasterDriver = "bacnet-master-driver"
-const flowFramework = "flow-framework"
-const rubixWires = "rubix-wires"
-
 func (inst *App) errMsg(err error) error {
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
@@ -36,14 +22,16 @@ func (inst *App) errMsg(err error) error {
 	return nil
 }
 
-// App struct
 type App struct {
 	ctx   context.Context
 	DB    storage.Storage
 	store *store.Store
 }
 
-// NewApp creates a new App application struct
+type AssistClient struct {
+	ConnUUID string
+}
+
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
@@ -124,8 +112,4 @@ func (inst *App) getAssistClient(body *AssistClient) (*assistcli.Client, error) 
 		ExternalToken: connection.AssistToken,
 	})
 	return cli, nil
-}
-
-type AssistClient struct {
-	ConnUUID string
 }

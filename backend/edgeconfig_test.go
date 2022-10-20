@@ -2,6 +2,7 @@ package backend
 
 import (
 	"fmt"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"gopkg.in/yaml.v3"
 	"testing"
@@ -19,7 +20,7 @@ func TestApp_edgeWriteWiresConfig(t *testing.T) {
 
 func TestApp_edgeReadConfigWires(t *testing.T) {
 	app := NewApp()
-	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", rubixWires, ".env")
+	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.rubixWires, ".env")
 	fmt.Println("connectionError", connectionError)
 	fmt.Println("requestError", requestError)
 	if connectionError != nil && requestError != nil {
@@ -39,7 +40,7 @@ func TestApp_edgeWriteBACnetConfig(t *testing.T) {
 
 func TestApp_edgeReadConfig(t *testing.T) {
 	app := NewApp()
-	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", bacnetServerDriver, "config.yml")
+	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.bacnetServerDriver, "config.yml")
 	fmt.Println("connectionError", connectionError)
 	fmt.Println("requestError", requestError)
 	if connectionError != nil && requestError != nil {

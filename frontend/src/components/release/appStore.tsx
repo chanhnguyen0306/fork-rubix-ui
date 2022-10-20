@@ -4,6 +4,7 @@ import PageWrapper from "../../common/rb-page-wrapper";
 import { SettingsFactory } from "../settings/factory";
 import { ReleasesFactory } from "./factory";
 import AppTable from "./views/table";
+import { SettingUUID } from "../../constants/constants";
 
 let releasesFactory = new ReleasesFactory();
 let settingsFactory = new SettingsFactory();
@@ -11,9 +12,6 @@ let settingsFactory = new SettingsFactory();
 const { Option } = Select;
 
 type AppStoreProps = {};
-
-// TODO take this token from settings
-const UUID = "set_123456789ABC";
 
 function useReleases() {
   const [releases, updateReleases] = useState([] as any);
@@ -33,7 +31,7 @@ function useReleases() {
 
   const fetchGitToken = () => {
     return settingsFactory
-      .GitTokenDecoded(UUID)
+      .GitTokenDecoded(SettingUUID)
       .then((token) => {
         updateToken(token);
         updateIsTokenValid(true);

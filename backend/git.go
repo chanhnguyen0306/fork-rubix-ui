@@ -2,6 +2,7 @@ package backend
 
 import (
 	"fmt"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -38,7 +39,7 @@ func (inst *App) GitDownloadAllRelease(runDownloads bool) error {
 	if !runDownloads {
 		return nil
 	}
-	gitToken, err := inst.getGitToken("set_123456789ABC", false)
+	gitToken, err := inst.GetGitToken(constants.SettingUUID, false)
 	if err != nil {
 		return err
 	}

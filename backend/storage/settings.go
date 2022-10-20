@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/tidwall/buntdb"
 )
 
@@ -29,7 +30,7 @@ func (inst *db) AddSettings(body *Settings) (*Settings, error) {
 	if len(settings) > 0 {
 		return nil, errors.New("settings can only be added once")
 	}
-	body.UUID = "set_123456789ABC"
+	body.UUID = constants.SettingUUID
 	if body.GitToken != "" {
 		body.GitToken = encodeToken(body.GitToken)
 	}
@@ -120,14 +121,13 @@ func (inst *db) GetGitToken(uuid string, previewToken bool) (string, error) {
 		return "", err
 	}
 	if data.GitToken != "" {
-		//data.GitToken = data.GitToken
 		data.GitToken = decodeToken(data.GitToken)
 	}
 	if previewToken {
 		if len(data.GitToken) > 5 {
-			return fmt.Sprintf("%s.....", data.GitToken[0:5]), nil
+			return fmt.Sprintf("%s...", data.GitToken[0:5]), nil
 		} else {
-			return fmt.Sprintf("token....."), nil
+			return fmt.Sprintf("token..."), nil
 		}
 	}
 	return data.GitToken, nil

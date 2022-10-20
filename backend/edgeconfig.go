@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -18,9 +19,9 @@ PORT=1313
 SECRET_KEY=__SECRET_KEY__
 `
 	writeConfig := &assistmodel.EdgeConfig{
-		AppName:      rubixWires,
+		AppName:      constants.RubixWires,
 		BodyAsString: config,
-		ConfigName:   configEnv,
+		ConfigName:   constants.ConfigEnv,
 	}
 	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
@@ -90,9 +91,9 @@ func (inst *App) edgeWriteBACnetConfig(connUUID, hostUUID string, config *Config
 		return nil, err
 	}
 	writeConfig := &assistmodel.EdgeConfig{
-		AppName:    bacnetServerDriver,
+		AppName:    constants.BacnetServerDriver,
 		Body:       config,
-		ConfigName: configYml,
+		ConfigName: constants.ConfigYml,
 	}
 	return client.EdgeWriteConfig(hostUUID, writeConfig)
 }
@@ -107,7 +108,7 @@ func (inst *App) edgeReadConfig(connUUID, hostUUID, appName, configName string) 
 }
 
 func (inst *App) edgeReadBACnetConfig(connUUID, hostUUID string) (*ConfigBACnetServer, error) {
-	resp, connectionErr, requestErr := inst.edgeReadConfig(connUUID, hostUUID, bacnetServerDriver, configYml)
+	resp, connectionErr, requestErr := inst.edgeReadConfig(connUUID, hostUUID, constants.BacnetServerDriver, constants.ConfigYml)
 	if connectionErr != nil {
 		return nil, connectionErr
 	}
@@ -120,7 +121,7 @@ func (inst *App) edgeReadBACnetConfig(connUUID, hostUUID string) (*ConfigBACnetS
 }
 
 func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
-	if appName == bacnetServerDriver {
+	if appName == constants.BacnetServerDriver {
 		bacnetConfig, err := inst.edgeReadBACnetConfig(connUUID, hostUUID)
 		if err != nil {
 			return err
@@ -133,7 +134,7 @@ func (inst *App) writeAppConfig(connUUID, hostUUID, appName string) error {
 			return err
 		}
 	}
-	if appName == rubixWires {
+	if appName == constants.RubixWires {
 		_, err := inst.edgeWriteWiresConfig(connUUID, hostUUID)
 		if err != nil {
 			return err
