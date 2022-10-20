@@ -3,6 +3,7 @@ package storage
 import (
 	"github.com/tidwall/buntdb"
 	"log"
+	"os"
 )
 
 type db struct {
@@ -10,6 +11,10 @@ type db struct {
 }
 
 func New(dbFile string) Storage {
+	err := os.MkdirAll("data", 0755)
+	if err != nil {
+		panic("data directory creation issue")
+	}
 	if dbFile == "" {
 		dbFile = "data/data.db"
 	}
