@@ -1,4 +1,4 @@
-import {main, model, storage, store} from "../../../../../../wailsjs/go/models";
+import {backend, model, storage} from "../../../../../../wailsjs/go/models";
 import {
   AddDevice, AddDevicesBulk, AddPointsBulk,
   DeleteDevice,
@@ -10,7 +10,7 @@ import {
   GetFlowDeviceSchema,
   GetNetworkDevices,
   ImportDevicesBulk,
-} from "../../../../../../wailsjs/go/main/App";
+} from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -99,7 +99,7 @@ export class FlowDeviceFactory {
     return resp;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     let resp: Promise<any> = {} as Promise<any>;
     await DeleteDeviceBulk(this.connectionUUID, this.hostUUID, uuids)
       .then((res) => {
@@ -133,7 +133,7 @@ export class FlowDeviceFactory {
   async BulkImport(
     backupUUID: string,
     networkUUID: string
-  ): Promise<main.BulkAddResponse> {
+  ): Promise<backend.BulkAddResponse> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await ImportDevicesBulk(

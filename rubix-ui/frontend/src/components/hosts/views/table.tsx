@@ -13,7 +13,7 @@ import { MenuFoldOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { DownCircleOutlined, LeftOutlined } from "@ant-design/icons";
-import { assistmodel, storage, main } from "../../../../wailsjs/go/models";
+import { assistmodel, storage, backend } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import RbTag from "../../../common/rb-tag";
 import {
@@ -38,7 +38,7 @@ import "./style.css";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import UpdateApp from "./updateApp";
 
 const { Text, Title } = Typography;

@@ -1,8 +1,8 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PingRubixAssist } from "../../../../wailsjs/go/main/App";
-import { main, storage } from "../../../../wailsjs/go/models";
+import { PingRubixAssist } from "../../../../wailsjs/go/backend/App";
+import { backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
@@ -16,7 +16,7 @@ import { ConnectionFactory } from "../factory";
 import { CreateEditModal } from "./create";
 
 import RubixConnection = storage.RubixConnection;
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 
 export const ConnectionsTable = () => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);

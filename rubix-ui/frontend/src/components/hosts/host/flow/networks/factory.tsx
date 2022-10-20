@@ -1,4 +1,4 @@
-import {main, model, storage, store} from "../../../../../../wailsjs/go/models";
+import {backend, model, storage, store} from "../../../../../../wailsjs/go/models";
 import {
   AddNetwork,
   DeleteNetwork,
@@ -9,7 +9,7 @@ import {
   GetNetwork,
   GetNetworks, GetNetworksWithPointsDisplay, GetNetworkWithPoints,
   ImportNetworksBulk,
-} from "../../../../../../wailsjs/go/main/App";
+} from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -56,7 +56,7 @@ export class FlowNetworkFactory {
     return await GetNetworkWithPoints(this.connectionUUID, this.hostUUID, uuid);
   }
 
-  async GetNetworksWithPointsDisplay(): Promise<Array<main.NetworksList>> {
+  async GetNetworksWithPointsDisplay(): Promise<Array<backend.NetworksList>> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await GetNetworksWithPointsDisplay(this.connectionUUID, this.hostUUID);
@@ -104,7 +104,7 @@ export class FlowNetworkFactory {
     return resp;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     let resp: Promise<any> = {} as Promise<any>;
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
@@ -118,7 +118,7 @@ export class FlowNetworkFactory {
     return resp;
   }
 
-  async BulkImport(backupUUID: string): Promise<main.BulkAddResponse> {
+  async BulkImport(backupUUID: string): Promise<backend.BulkAddResponse> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await ImportNetworksBulk(
@@ -160,6 +160,4 @@ export class FlowNetworkFactory {
       });
     return resp;
   }
-
-
 }

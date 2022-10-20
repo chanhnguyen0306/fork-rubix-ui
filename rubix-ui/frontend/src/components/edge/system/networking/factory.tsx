@@ -4,9 +4,9 @@ import {
   EdgeDHCPSetStaticIP,
   EdgeGetNetworks,
   GetRcNetworkSchema, RcSetNetworks,
-} from "../../../../../wailsjs/go/main/App";
+} from "../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../helpers/checks";
-import {dhcpd, main, store, system} from "../../../../../wailsjs/go/models";
+import {dhcpd, backend, system} from "../../../../../wailsjs/go/models";
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(
@@ -38,7 +38,7 @@ export class HostNetworkingFactory {
   }
 
 
-  public RcSetNetworks(body:main.RcNetworkBody) {
+  public RcSetNetworks(body:backend.RcNetworkBody) {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return RcSetNetworks(this.connectionUUID, this.hostUUID, body);

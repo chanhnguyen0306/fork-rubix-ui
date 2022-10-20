@@ -2,7 +2,7 @@ import { Tabs, Typography, Card } from "antd";
 import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { GetHosts, GetHostNetworks } from "../../../wailsjs/go/main/App";
+import { GetHosts, GetHostNetworks } from "../../../wailsjs/go/backend/App";
 import { assistmodel } from "../../../wailsjs/go/models";
 import { ROUTES } from "../../constants/routes";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";

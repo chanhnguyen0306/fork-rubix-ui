@@ -1,7 +1,7 @@
 import { Typography, Space, Card } from "antd";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { GetLocations, GetConnection } from "../../../wailsjs/go/main/App";
+import { GetLocations, GetConnection } from "../../../wailsjs/go/backend/App";
 import { assistmodel, storage } from "../../../wailsjs/go/models";
 import { RbRefreshButton, RbAddButton } from "../../common/rb-table-actions";
 import { ROUTES } from "../../constants/routes";

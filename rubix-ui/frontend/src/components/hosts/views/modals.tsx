@@ -1,7 +1,7 @@
 import { Select, Modal, Spin, Card, Row, Col, Button, Input } from "antd";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { AddHost, EditHost, OpenURL } from "../../../../wailsjs/go/main/App";
+import { AddHost, EditHost, OpenURL } from "../../../../wailsjs/go/backend/App";
 import { assistmodel, storage } from "../../../../wailsjs/go/models";
 import { JsonForm } from "../../../common/json-schema-form";
 import { openNotificationWithIcon } from "../../../utils/utils";

@@ -1,12 +1,12 @@
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../wailsjs/go/models";
 import {
   GetStreamClones,
   DeleteStreamBulkClones,
-} from "../../../../../../../wailsjs/go/main/App";
+} from "../../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../../helpers/checks";
 
 import StreamClone = model.StreamClone;
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "host or connection uuid") as Error;

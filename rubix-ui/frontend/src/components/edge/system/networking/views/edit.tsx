@@ -1,11 +1,11 @@
 import { Modal } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { main } from "../../../../../../wailsjs/go/models";
+import { backend } from "../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../common/json-schema-form";
 import { HostNetworkingFactory } from "../factory";
 
-import RcNetworkBody = main.RcNetworkBody;
+import RcNetworkBody = backend.RcNetworkBody;
 
 export const EditModal = (props: any) => {
   const {

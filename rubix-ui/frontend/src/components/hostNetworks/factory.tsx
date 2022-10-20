@@ -5,9 +5,9 @@ import {
   GetHostNetwork,
   GetHostNetworks,
   GetNetworkSchema,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
-import { assistmodel, main } from "../../../wailsjs/go/models";
+import { assistmodel, backend } from "../../../wailsjs/go/models";
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "network or connection uuid") as Error;
@@ -99,7 +99,7 @@ export class NetworksFactory {
     return one;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     hasUUID(this.connectionUUID);
     let out: Promise<any> = {} as Promise<any>;
     await DeleteHostNetworkBulk(this.connectionUUID, uuids)

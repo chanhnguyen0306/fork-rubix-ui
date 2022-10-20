@@ -1,4 +1,4 @@
-import {main, storage, store} from "../../../wailsjs/go/models";
+import {backend, storage} from "../../../wailsjs/go/models";
 import {
   DeleteBackupBulk, DoBackup, ExportBackup,
   GetBackup,
@@ -7,7 +7,7 @@ import {
   ImportBackup,
   WiresBackup,
   WiresBackupRestore,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -152,7 +152,7 @@ export class BackupFactory {
     return resp;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     let resp: Promise<any> = {} as Promise<any>;
     await DeleteBackupBulk(uuids)
       .then((res) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { FlowProducerFactory } from "../factory";
 import { PRODUCER_HEADERS } from "../../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../../constants/routes";
@@ -13,7 +13,7 @@ import {
 } from "../../../../../../../common/rb-table-actions";
 import { CreateEditModal } from "./create";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import Producer = model.Producer;
 
 export const ProducersTable = (props: any) => {

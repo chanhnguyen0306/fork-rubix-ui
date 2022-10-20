@@ -10,7 +10,7 @@ import {
   NodeValue,
   NodeValues,
   UpdateWiresConnection
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 import {db, node} from "../../../wailsjs/go/models";
 
 export class FlowFactory {

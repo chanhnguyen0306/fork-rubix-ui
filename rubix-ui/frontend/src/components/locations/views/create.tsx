@@ -1,6 +1,6 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { AddLocation, UpdateLocation } from "../../../../wailsjs/go/main/App";
+import { AddLocation, UpdateLocation } from "../../../../wailsjs/go/backend/App";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { JsonForm } from "../../../common/json-schema-form";
 

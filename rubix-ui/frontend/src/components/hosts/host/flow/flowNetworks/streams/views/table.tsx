@@ -2,7 +2,7 @@ import { Space, Spin } from "antd";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FlowStreamFactory } from "../factory";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../../common/rb-table";
 import {
   RbAddButton,
@@ -13,7 +13,7 @@ import { ROUTES } from "../../../../../../../constants/routes";
 import { STREAM_HEADERS } from "../../../../../../../constants/headers";
 import { CreateEditModal } from "./create";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import Stream = model.Stream;
 
 export const StreamsTable = (props: any) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { WritersFactory } from "../factory";
 import { FlowConsumerFactory } from "../../consumers/factory";
 import { WRITER_HEADERS } from "../../../../../../../constants/headers";
@@ -13,7 +13,7 @@ import {
 } from "../../../../../../../common/rb-table-actions";
 import { CreateEditModal } from "./create";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import Writer = model.Writer;
 import Consumer = model.Consumer;
 

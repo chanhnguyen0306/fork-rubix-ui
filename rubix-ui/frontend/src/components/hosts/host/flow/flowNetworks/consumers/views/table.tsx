@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Space, Spin } from "antd";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { FlowConsumerFactory } from "../factory";
 import { CONSUMER_HEADERS } from "../../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../../constants/routes";
@@ -13,7 +13,7 @@ import {
 } from "../../../../../../../common/rb-table-actions";
 import { CreateEditModal } from "./create";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import Consumer = model.Consumer;
 
 export const ConsumersTable = (props: any) => {

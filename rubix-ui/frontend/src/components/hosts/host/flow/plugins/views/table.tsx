@@ -7,14 +7,14 @@ import {
 } from "@ant-design/icons";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../wailsjs/go/models";
 import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import { CreateModal } from "./create";
 import { useParams } from "react-router-dom";
 
 import PluginConf = model.PluginConf;
-import PluginUUIDs = main.PluginUUIDs;
+import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowPluginsTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();

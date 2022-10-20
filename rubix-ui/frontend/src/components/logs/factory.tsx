@@ -1,5 +1,5 @@
-import {main, model} from "../../../wailsjs/go/models";
-import {DeleteDeviceBulk, DeleteLogBulk, GetLogs, GetLogsByConnection} from "../../../wailsjs/go/main/App";
+import {backend, model} from "../../../wailsjs/go/models";
+import {DeleteDeviceBulk, DeleteLogBulk, GetLogs, GetLogsByConnection} from "../../../wailsjs/go/backend/App";
 
 
 export class LogFactory {
@@ -25,7 +25,7 @@ export class LogFactory {
         return all
     }
 
-    async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+    async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
         let out: Promise<any> = {} as Promise<any>
         await DeleteLogBulk(uuids).then(res => {
             out = res as Promise<any>

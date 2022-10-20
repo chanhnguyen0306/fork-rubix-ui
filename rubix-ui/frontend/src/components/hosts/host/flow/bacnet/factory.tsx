@@ -1,5 +1,5 @@
 import {model} from "../../../../../../wailsjs/go/models";
-import {BacnetWhois, GetBacnetDevicePoints} from "../../../../../../wailsjs/go/main/App";
+import {BacnetWhois, GetBacnetDevicePoints} from "../../../../../../wailsjs/go/backend/App";
 
 
 export class BacnetFactory {

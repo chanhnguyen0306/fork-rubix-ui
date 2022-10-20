@@ -1,4 +1,4 @@
-import {GetPcTime} from "../../../../wailsjs/go/main/App";
+import {GetPcTime} from "../../../../wailsjs/go/backend/App";
 
 
 

@@ -1,4 +1,4 @@
-import { assistmodel, assistcli, main } from "../../../wailsjs/go/models";
+import { assistmodel, assistcli, backend } from "../../../wailsjs/go/models";
 import {
   AddHost,
   DeleteHost,
@@ -8,13 +8,13 @@ import {
   GetHosts,
   GetHostSchema,
   PingHost,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
 
 import Host = assistmodel.Host;
 import HostSchema = assistmodel.HostSchema;
 import Response = assistcli.Response;
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "host or connection uuid") as Error;

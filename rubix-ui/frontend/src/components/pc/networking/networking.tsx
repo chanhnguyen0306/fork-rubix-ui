@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Typography } from "antd";
-import { GetPcGetNetworks } from "../../../../wailsjs/go/main/App";
+import { GetPcGetNetworks } from "../../../../wailsjs/go/backend/App";
 import { RbRefreshButton } from "../../../common/rb-table-actions";
 import { ScannerTable } from "./scanner-table";
 

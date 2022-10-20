@@ -1,5 +1,5 @@
 import { Helpers } from "../../helpers/checks";
-import { main, storage } from "../../../wailsjs/go/models";
+import { backend, storage } from "../../../wailsjs/go/models";
 import {
   AddConnection,
   DeleteConnectionBulk,
@@ -8,7 +8,7 @@ import {
   GetConnectionSchema,
   PingRubixAssist,
   UpdateConnection,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "connection uuid") as Error;
@@ -46,8 +46,8 @@ export class ConnectionFactory {
   }
 
   // get the first connection uuid
-  async Schema(): Promise<main.ConnectionSchema> {
-    let out: main.ConnectionSchema = {} as main.ConnectionSchema;
+  async Schema(): Promise<backend.ConnectionSchema> {
+    let out: backend.ConnectionSchema = {} as backend.ConnectionSchema;
     await GetConnectionSchema()
       .then((res) => {
         out = res;
@@ -135,7 +135,7 @@ export class ConnectionFactory {
     return one;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     let out: Promise<any> = {} as Promise<any>;
     await DeleteConnectionBulk(uuids)
       .then((res: any) => {

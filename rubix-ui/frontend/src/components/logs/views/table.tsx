@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 import { useState } from "react";
-import { main } from "../../../../wailsjs/go/models";
+import { backend } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
 import { LOG_HEADERS } from "../../../constants/headers";
@@ -8,7 +8,7 @@ import { LogFactory } from "../factory";
 
 export const LogsTable = (props: any) => {
   const { logs, isFetching, fetch } = props;
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<backend.UUIDs>);
   const logFactory = new LogFactory();
 
   const rowSelection = {

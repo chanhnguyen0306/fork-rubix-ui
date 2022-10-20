@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { model, main } from "../../../../../../../wailsjs/go/models";
+import { model, backend } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbExportButton,
@@ -24,8 +24,8 @@ import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 
 import Device = model.Device;
-import UUIDs = main.UUIDs;
-import PluginUUIDs = main.PluginUUIDs;
+import UUIDs = backend.UUIDs;
+import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowDeviceTable = (props: any) => {
   const {

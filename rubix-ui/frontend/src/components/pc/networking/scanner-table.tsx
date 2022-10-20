@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 import { useState, useEffect } from "react";
-import { GetPcGetNetworksSchema } from "../../../../wailsjs/go/main/App";
+import { GetPcGetNetworksSchema } from "../../../../wailsjs/go/backend/App";
 import RbTable from "../../../common/rb-table";
 
 export const ScannerTable = (props: any) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Spin } from "antd";
 import { openNotificationWithIcon } from "../../../utils/utils";
-import { Scanner } from "../../../../wailsjs/go/main/App";
+import { Scanner } from "../../../../wailsjs/go/backend/App";
 import { SCANNER_HEADERS } from "../../../constants/headers";
 import RbTable from "../../../common/rb-table";
 import { RbAddButton, RbRefreshButton } from "../../../common/rb-table-actions";

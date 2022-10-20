@@ -11,7 +11,7 @@ import {
   EdgeServiceRestart,
   EdgeServiceStop,
   EdgeUnInstallApp,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 
 export class ReleasesFactory {
   // list all the GitHub version to the user

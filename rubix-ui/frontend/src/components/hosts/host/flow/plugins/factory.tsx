@@ -1,9 +1,9 @@
-import {main, model} from "../../../../../../wailsjs/go/models";
+import {backend, model} from "../../../../../../wailsjs/go/models";
 import {
   DisablePluginBulk,
   EnablePluginBulk,
   GetPlugins, RestartPluginBulk,
-} from "../../../../../../wailsjs/go/main/App";
+} from "../../../../../../wailsjs/go/backend/App";
 import {Helpers} from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -28,7 +28,7 @@ export class FlowPluginFactory {
         return resp
     }
 
-    async BulkEnable(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
+    async BulkEnable(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
         let resp: Promise<any> = {} as Promise<any>
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
@@ -40,7 +40,7 @@ export class FlowPluginFactory {
         return resp
     }
 
-    async BulkDisable(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
+    async BulkDisable(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
         let resp: Promise<any> = {} as Promise<any>
         hasUUID(this.connectionUUID)
         hasUUID(this.hostUUID)
@@ -52,7 +52,7 @@ export class FlowPluginFactory {
         return resp
     }
 
-  async RestartBulk(pluginUUIDs: Array<main.PluginUUIDs>): Promise<any> {
+  async RestartBulk(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
     let resp: Promise<any> = {} as Promise<any>
     hasUUID(this.connectionUUID)
     hasUUID(this.hostUUID)
@@ -63,5 +63,4 @@ export class FlowPluginFactory {
     })
     return resp
   }
-
 }

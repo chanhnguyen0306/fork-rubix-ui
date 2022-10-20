@@ -1,4 +1,4 @@
-import {GetServerNetworking} from "../../../../../wailsjs/go/main/App";
+import {GetServerNetworking} from "../../../../../wailsjs/go/backend/App";
 import {Helpers} from "../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {

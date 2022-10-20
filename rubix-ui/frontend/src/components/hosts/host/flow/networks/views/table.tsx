@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../wailsjs/go/models";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import RbTable from "../../../../../../common/rb-table";
 import {
@@ -21,8 +21,8 @@ import { EditModal, CreateModal } from "./create";
 import { ExportModal, ImportModal } from "./import-export";
 import "./style.css";
 
-import UUIDs = main.UUIDs;
-import PluginUUIDs = main.PluginUUIDs;
+import UUIDs = backend.UUIDs;
+import PluginUUIDs = backend.PluginUUIDs;
 import Network = model.Network;
 
 export const FlowNetworkTable = () => {

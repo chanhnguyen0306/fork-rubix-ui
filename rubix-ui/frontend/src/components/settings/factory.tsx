@@ -3,7 +3,7 @@ import {  storage } from "../../../wailsjs/go/models";
 import {
    GetGitToken, GetSetting,
    UpdateSettings,
-} from "../../../wailsjs/go/main/App";
+} from "../../../wailsjs/go/backend/App";
 
 export class SettingsFactory {
 

@@ -2,7 +2,7 @@ import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FlowStreamCloneFactory } from "../factory";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { STREAM_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
@@ -11,7 +11,7 @@ import {
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import StreamClone = model.StreamClone;
 
 export const StreamClonesTable = () => {

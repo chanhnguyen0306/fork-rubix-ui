@@ -2,7 +2,7 @@ import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FlowFrameworkNetworkFactory } from "../factory";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { ROUTES } from "../../../../../../../constants/routes";
 import {
   FLOW_NETWORKS_HEADERS,
@@ -17,7 +17,7 @@ import RbTable from "../../../../../../../common/rb-table";
 import RbTableFilterNameInput from "../../../../../../../common/rb-table-filter-name-input";
 import { CreateEditModal } from "./create";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import FlowNetwork = model.FlowNetwork;
 
 export const FlowNetworksTable = (props: any) => {

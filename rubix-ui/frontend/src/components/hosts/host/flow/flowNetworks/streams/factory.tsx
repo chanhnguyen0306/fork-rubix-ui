@@ -1,4 +1,4 @@
-import {main, model, store} from "../../../../../../../wailsjs/go/models";
+import {backend, model, store} from "../../../../../../../wailsjs/go/models";
 import {
   AddStream,
   DeleteStream,
@@ -6,7 +6,7 @@ import {
   EditStream,
   GetStream,
   GetStreams, GetStreamsByFlowNetwork,
-} from "../../../../../../../wailsjs/go/main/App";
+} from "../../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -55,7 +55,7 @@ export class FlowStreamFactory {
   }
 
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return DeleteStreamBulk(this.connectionUUID, this.hostUUID, uuids);

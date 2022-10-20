@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 import { useState } from "react";
-import { main } from "../../../../wailsjs/go/models";
+import { backend } from "../../../../wailsjs/go/models";
 import { LocationFactory } from "../factory";
 import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
@@ -9,7 +9,7 @@ export const LocationsTable = (props: any) => {
   let { locations, isFetching, tableSchema, connUUID, refreshList } = props;
   if (!locations) return <></>;
 
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<backend.UUIDs>);
 
   let factory = new LocationFactory();
   factory.connectionUUID = connUUID as string;

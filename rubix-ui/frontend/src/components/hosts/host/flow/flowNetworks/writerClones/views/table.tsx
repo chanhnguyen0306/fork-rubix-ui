@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Spin } from "antd";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { WriterClonesFactory } from "../factory";
 import { WRITER_HEADERS } from "../../../../../../../constants/headers";
 import RbTable from "../../../../../../../common/rb-table";
@@ -10,7 +10,7 @@ import {
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import WriterClone = model.WriterClone;
 
 export const WriterClonesTable = (props: any) => {

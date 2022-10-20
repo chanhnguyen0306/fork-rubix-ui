@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { main, model } from "../../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../../wailsjs/go/models";
 import { FlowFrameworkNetworkCloneFactory } from "../factory";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
@@ -12,7 +12,7 @@ import {
 } from "../../../../../../../common/rb-table-actions";
 import RbTable from "../../../../../../../common/rb-table";
 
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 import FlowNetworkClone = model.FlowNetworkClone;
 import RbTableFilterNameInput from "../../../../../../../common/rb-table-filter-name-input";
 

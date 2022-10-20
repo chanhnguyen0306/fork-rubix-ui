@@ -1,9 +1,9 @@
-import {main, model} from "../../../../../../../wailsjs/go/models";
+import {backend, model} from "../../../../../../../wailsjs/go/models";
 import {
    DeleteWriterCloneBulk,
    GetWriterClones,
 
-} from "../../../../../../../wailsjs/go/main/App";
+} from "../../../../../../../wailsjs/go/backend/App";
 
 export class WritersClonesFactory {
   hostUUID!: string;
@@ -13,7 +13,7 @@ export class WritersClonesFactory {
     return await GetWriterClones(this.connectionUUID, this.hostUUID);
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<model.Writer> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<model.Writer> {
     return await DeleteWriterCloneBulk(this.connectionUUID, this.hostUUID, uuids);
   }
 

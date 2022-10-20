@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Spin } from "antd";
-import { main } from "../../../../wailsjs/go/models";
+import { backend } from "../../../../wailsjs/go/models";
 import { BackupFactory } from "../factory";
 import {
   RbDeleteButton,
@@ -11,7 +11,7 @@ import { BACKUP_HEADERS } from "../../../constants/headers";
 
 export const BackupsTable = (props: any) => {
   const { data, isFetching, fetch } = props;
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<main.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<backend.UUIDs>);
   let backupFactory = new BackupFactory();
 
   const columns = BACKUP_HEADERS;

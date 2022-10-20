@@ -2,7 +2,7 @@ import { Input, Space, Spin, Tag } from "antd";
 import { ColumnType } from "antd/lib/table";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { model, main } from "../../../../../../../wailsjs/go/models";
+import { model, backend } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbExportButton,
@@ -26,8 +26,8 @@ import { ExportModal, ImportModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 
 import Point = model.Point;
-import UUIDs = main.UUIDs;
-import PluginUUIDs = main.PluginUUIDs;
+import UUIDs = backend.UUIDs;
+import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;

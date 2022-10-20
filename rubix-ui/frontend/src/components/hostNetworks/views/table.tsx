@@ -1,7 +1,7 @@
 import { Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { main, assistmodel } from "../../../../wailsjs/go/models";
+import { backend, assistmodel } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
@@ -17,7 +17,7 @@ import { CreateEditModal } from "./create";
 
 import Network = assistmodel.Network;
 import Location = assistmodel.Location;
-import UUIDs = main.UUIDs;
+import UUIDs = backend.UUIDs;
 
 export const NetworksTable = () => {
   const { connUUID = "", locUUID = "" } = useParams();

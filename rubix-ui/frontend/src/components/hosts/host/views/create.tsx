@@ -1,7 +1,7 @@
 import { Button, Modal, Spin } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { AddHost, EditHost } from "../../../../../wailsjs/go/main/App";
+import { AddHost, EditHost } from "../../../../../wailsjs/go/backend/App";
 import { openNotificationWithIcon } from "../../../../utils/utils";
 import { JsonForm } from "../../../../common/json-schema-form";
 import { assistmodel } from "../../../../../wailsjs/go/models";

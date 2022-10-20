@@ -1,5 +1,5 @@
 import {
-  main,
+  backend,
   model,
   storage,
   store,
@@ -17,7 +17,7 @@ import {
   GetPointsForDevice,
   ImportPointBulk,
   WritePointValue,
-} from "../../../../../../wailsjs/go/main/App";
+} from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -113,7 +113,7 @@ export class FlowPointFactory {
     return resp;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     let resp: Promise<any> = {} as Promise<any>;
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
@@ -153,7 +153,7 @@ export class FlowPointFactory {
   async BulkImport(
     backupUUID: string,
     deviceUUID: string
-  ): Promise<main.BulkAddResponse> {
+  ): Promise<backend.BulkAddResponse> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     return await ImportPointBulk(

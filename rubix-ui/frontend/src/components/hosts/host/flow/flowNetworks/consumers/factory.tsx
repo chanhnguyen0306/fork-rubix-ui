@@ -1,4 +1,4 @@
-import { main, model } from "../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../wailsjs/go/models";
 import {
   AddConsumer,
   DeleteConsumer,
@@ -6,7 +6,7 @@ import {
   EditConsumer,
   GetConsumers,
   GetConsumer,
-} from "../../../../../../../wailsjs/go/main/App";
+} from "../../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
@@ -89,7 +89,7 @@ export class FlowConsumerFactory {
     return resp;
   }
 
-  async BulkDelete(uuids: Array<main.UUIDs>): Promise<any> {
+  async BulkDelete(uuids: Array<backend.UUIDs>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
     let resp: Promise<any> = {} as Promise<any>;

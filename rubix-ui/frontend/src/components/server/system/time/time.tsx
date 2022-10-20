@@ -1,4 +1,4 @@
-import {GetServerTime} from "../../../../../wailsjs/go/main/App";
+import {GetServerTime} from "../../../../../wailsjs/go/backend/App";
 import {Helpers} from "../../../../helpers/checks";
 
 function hasUUID(uuid: string): Error {
