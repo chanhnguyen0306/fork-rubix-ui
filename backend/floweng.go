@@ -66,7 +66,6 @@ func (inst *App) NodeValue(nodeUUID string) *node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeValue(nodeUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
 		return resp
 	}
 	return resp
@@ -76,7 +75,7 @@ func (inst *App) NodeValues() []node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeValues()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, "flow runtime is not running")
 		return resp
 	}
 	return resp
@@ -96,7 +95,7 @@ func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeSchema(nodeName)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.crudMessage(false, "download the node first to edit the settings")
 		return resp
 	}
 	return resp
