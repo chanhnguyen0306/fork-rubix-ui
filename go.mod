@@ -21,10 +21,9 @@ require (
 	github.com/NubeIO/lib-schema v0.1.6
 	github.com/NubeIO/lib-systemctl-go v0.2.0
 	github.com/NubeIO/lib-uuid v0.0.3
-	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
-	github.com/NubeIO/rubix-assist v0.5.1
+	github.com/NubeIO/rubix-assist v0.5.2
 	github.com/NubeIO/rubix-edge v0.3.0
 	github.com/NubeIO/rubix-edge-wires v0.1.1
 	github.com/go-resty/resty/v2 v2.7.0
@@ -40,7 +39,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.14.3
-	github.com/wailsapp/wails/v2 v2.0.0
+	github.com/wailsapp/wails/v2 v2.0.0-beta.43
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
@@ -49,6 +48,7 @@ require (
 require (
 	github.com/NubeIO/lib-goja v0.0.4 // indirect
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
+	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.0.3 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.4 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 // indirect
 	github.com/NubeIO/rubix-registry-go v0.0.1 // indirect
@@ -78,7 +78,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
-	github.com/labstack/echo/v4 v4.7.2 // indirect
+	github.com/labstack/echo/v4 v4.9.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leaanthony/go-ansi-parser v1.0.1 // indirect
 	github.com/leaanthony/gosod v1.0.3 // indirect
@@ -111,10 +111,10 @@ require (
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
-	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
