@@ -58,7 +58,7 @@ export const InputSocket = ({
   onSetWidthInput,
 }: InputSocketProps) => {
   const instance = useReactFlow();
-  const [inputNumber, setInputNumber] = useState(value);
+  const [inputNumber, setInputNumber] = useState(value || '');
   const refName = useRef<HTMLDivElement>(null);
 
   const showFlowIcon = valueType === "flow";
@@ -123,8 +123,8 @@ export const InputSocket = ({
                   type="text"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   value={inputNumber}
-                  onChange={(e) => onChangeInputNumber(e)}
-                  onBlur={(e) => onBlurInputNumber(e)}
+                  onChange={onChangeInputNumber}
+                  onBlur={onBlurInputNumber}
                 />
               )}
               {valueType === "boolean" && (

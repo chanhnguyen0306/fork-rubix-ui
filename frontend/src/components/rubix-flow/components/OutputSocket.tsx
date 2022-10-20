@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CaretRightOutlined } from "@ant-design/icons";
 import {
   Connection,
@@ -16,7 +16,7 @@ export type OutputSocketProps = {
   connected: boolean;
   minWidth: number;
   dataOut: Array<any>;
-  onSetWidthInput: (width: number) => void
+  onSetWidthInput: (width: number) => void;
 } & OutputSocketSpecJSON;
 
 export const OutputSocket = ({
@@ -25,18 +25,28 @@ export const OutputSocket = ({
   name,
   minWidth,
   dataOut,
-  onSetWidthInput
+  onSetWidthInput,
 }: OutputSocketProps) => {
   const instance = useReactFlow();
   const refName = useRef<HTMLDivElement>(null);
+  const [outValue, setOutValue] = useState<string | number>("");
 
   const showFlowIcon = valueType === "flow";
   const colorName = valueTypeColorMap[valueType];
   const [backgroundColor, borderColor] = colors[colorName];
 
-  const getValueOutput = (outputName: string) =>
-    dataOut &&
-    dataOut.find((item: { pin: string }) => item.pin === outputName).value;
+  const getValueOutput = useCallback((outputName: string) => {
+    if (dataOut) {
+      const out = dataOut.find(
+        (item: { pin: string }) => item.pin === outputName
+      );
+      if (valueType === "number") {
+        return out.value || 0;
+      }
+      return out.value;
+    }
+    return "";
+  }, [valueType, dataOut]);
 
   const getValueOptions = (value: boolean | null) => {
     switch (value) {
@@ -51,6 +61,14 @@ export const OutputSocket = ({
   };
 
   useEffect(() => {
+    const val = valueType === "boolean"
+      ? getValueOptions(getValueOutput(name))
+      : getValueOutput(name);
+
+    setOutValue(val);
+  }, [valueType, name, dataOut]);
+
+  useEffect(() => {
     if (refName.current) {
       const _width = refName.current.offsetWidth;
       onSetWidthInput(_width);
@@ -62,11 +80,7 @@ export const OutputSocket = ({
       <AutoSizeInput
         type="text"
         className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
-        value={
-          (valueType === "boolean"
-            ? getValueOptions(getValueOutput(name))
-            : getValueOutput(name)) || ""
-        }
+        value={outValue}
         minWidth={40}
         disabled
       />
