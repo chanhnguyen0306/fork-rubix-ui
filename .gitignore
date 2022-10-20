@@ -6,11 +6,11 @@
 *.dylib
 *.idea
 *.code
-rubix-ui/build/bin/rubix-ui
-rubix-ui/build/bin/rubix-ui.exe
-rubix-ui/build/bin/rubix-ui-dev-linux-amd64
-rubix-ui/frontend/node_modules
-rubix-ui/node_modules
+build/bin/rubix-ui
+build/bin/rubix-ui.exe
+build/bin/rubix-ui-dev-linux-amd64
+frontend/node_modules
+node_modules
 # Test binary, built with `go test -c`
 *.test
 *data.db

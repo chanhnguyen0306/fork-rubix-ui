@@ -1,26 +1,15 @@
-# rubix-ui install
+# README
 
+## About
 
-- check what version of go you have installed go version
-- if its < 1.8 the download and install go 1.8 for your OS https://go.dev/dl/
-- install/upgrade wails you need to reinstall https://wails.io/docs/gettingstarted/installation
-- install node > v15
+This is the official Wails React-TS template.
 
-### install npm packages
+## Live Development
 
-```
-cd rubix-ui/rubix-ui/frontend
-npm install
-```
+To run in live development mode, run `wails dev` in the project directory. In another terminal, go into the `frontend`
+directory and run `npm run dev`. The frontend dev server will run on http://localhost:34115. Connect to this in your
+browser and connect to your application.
 
-### start the UI
+## Building
 
-```
-cd rubix-ui/rubix-ui/
-wails dev
-```
-
-you can also open in browser
-```
-http://localhost:34115/
-```
+To build a redistributable, production mode package, use `wails build`.
