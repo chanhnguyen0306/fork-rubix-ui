@@ -52,7 +52,11 @@ const NodePicker = ({
   return (
     <div
       className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-      style={{ top: mousePosition.y, left: mousePosition.x, minWidth: 210 }}
+      style={{
+        top: mousePosition.y || "unset",
+        left: mousePosition.x || "unset",
+        minWidth: 210,
+      }}
     >
       <div className="bg-gray-500 p-2">Add Node</div>
       <div className="p-2">
