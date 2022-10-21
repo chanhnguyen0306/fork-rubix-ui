@@ -34,7 +34,7 @@ func (inst *App) UpdateSettings(uuid string, body *storage.Settings) *storage.Se
 func (inst *App) GetSetting(uuid string) *storage.Settings {
 	out, err := inst.DB.GetSetting(uuid)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error on update settings: %s", err.Error()))
+		//inst.crudMessage(false, fmt.Sprintf("error on update settings: %s", err.Error()))
 		return nil
 	}
 	return out
