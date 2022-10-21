@@ -18,16 +18,16 @@ func (inst *App) DeleteStreamBulk(connUUID, hostUUID string, uuids []UUIDs) inte
 		_, err := client.DeleteStream(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -44,16 +44,16 @@ func (inst *App) DeleteStreamBulkClones(connUUID, hostUUID string, uuids []UUIDs
 		_, err := client.DeleteStreamClone(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -66,7 +66,7 @@ func (inst *App) GetStreamClones(connUUID, hostUUID string) []model.StreamClone 
 	}
 	streams, err := client.GetStreamClones(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.StreamClone{}
 	}
 	return streams
@@ -80,7 +80,7 @@ func (inst *App) GetStreamsByFlowNetwork(connUUID, hostUUID, flowUUID string) []
 	}
 	streams, err := client.GetStreamsByFlowNetwork(hostUUID, flowUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams
@@ -94,7 +94,7 @@ func (inst *App) GetStreams(connUUID, hostUUID string) []model.Stream {
 	}
 	streams, err := client.GetStreams(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.Stream{}
 	}
 	return streams
@@ -110,13 +110,13 @@ func (inst *App) AddStream(connUUID, hostUUID string, flowNetworkUUID string, bo
 		return &model.Stream{}
 	}
 	if flowNetworkUUID == "" {
-		inst.crudMessage(false, fmt.Sprintf("flow-network uuid can not be empty"))
+		inst.uiErrorMessage(fmt.Sprintf("flow-network uuid can not be empty"))
 		return nil
 	}
 
 	streams, err := client.AddStreamToExistingFlow(hostUUID, flowNetworkUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return &model.Stream{}
 	}
 	return streams
@@ -129,7 +129,7 @@ func (inst *App) EditStream(connUUID, hostUUID, streamUUID string, body *model.S
 	}
 	streams, err := client.EditStream(hostUUID, streamUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams
@@ -143,7 +143,7 @@ func (inst *App) DeleteStream(connUUID, hostUUID, streamUUID string) interface{}
 	}
 	_, err = client.DeleteStream(hostUUID, streamUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -157,7 +157,7 @@ func (inst *App) DeleteStreamClone(connUUID, hostUUID, streamUUID string) interf
 	}
 	_, err = client.DeleteStreamClone(hostUUID, streamUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -179,7 +179,7 @@ func (inst *App) getStream(connUUID, hostUUID, streamUUID string) (*model.Stream
 func (inst *App) GetStream(connUUID, hostUUID, streamUUID string) *model.Stream {
 	streams, err := inst.getStream(connUUID, hostUUID, streamUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return streams

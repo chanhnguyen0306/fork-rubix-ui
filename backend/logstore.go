@@ -8,7 +8,7 @@ import (
 func (inst *App) GetLogs() interface{} {
 	logs, err := inst.DB.GetLogs()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	var resp []storage.Log
@@ -23,7 +23,7 @@ func (inst *App) GetLogs() interface{} {
 func (inst *App) GetLogsWithData() interface{} {
 	logs, err := inst.DB.GetLogs()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	return logs
@@ -32,7 +32,7 @@ func (inst *App) GetLogsWithData() interface{} {
 func (inst *App) GetLogsByConnection(connUUID string) interface{} {
 	logs, err := inst.DB.GetLogsByConnection(connUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("logs %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("logs %s", err.Error()))
 		return nil
 	}
 	return logs
@@ -42,9 +42,9 @@ func (inst *App) DeleteLogBulk(logUUIDs []UUIDs) interface{} {
 	for _, uuid := range logUUIDs {
 		err := inst.DB.DeleteLog(uuid.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("deleted log: %s", uuid.UUID))
+			inst.uiErrorMessage(fmt.Sprintf("deleted log: %s", uuid.UUID))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleted log: %s", uuid.UUID))
+			inst.uiSuccessMessage(fmt.Sprintf("deleted log: %s", uuid.UUID))
 		}
 	}
 	return "ok"

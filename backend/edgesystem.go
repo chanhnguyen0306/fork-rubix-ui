@@ -129,7 +129,7 @@ func (inst *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.Sy
 func (inst *App) EdgeCtlStatus(connUUID, hostUUID string, body *installer.SystemCtlBody) *installer.AppSystemState {
 	resp, err := inst.edgeCtlStatus(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -150,7 +150,7 @@ func (inst *App) edgeCtlStatus(connUUID, hostUUID string, body *installer.System
 func (inst *App) EdgeServiceMassAction(connUUID, hostUUID string, body *installer.SystemCtlBody) []installer.MassSystemResponse {
 	resp, err := inst.edgeServiceMassAction(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -171,7 +171,7 @@ func (inst *App) edgeServiceMassAction(connUUID, hostUUID string, body *installe
 func (inst *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *installer.SystemCtlBody) []installer.AppSystemState {
 	resp, err := inst.edgeServiceMassStatus(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp

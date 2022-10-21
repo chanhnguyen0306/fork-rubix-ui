@@ -16,7 +16,7 @@ func (inst *App) GetDevices(connUUID, hostUUID string, withPoints bool) []model.
 	}
 	devices, err := client.GetDevices(hostUUID, withPoints)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
@@ -29,16 +29,16 @@ func (inst *App) AddDevicesBulk(connUUID, hostUUID string, body []model.Device) 
 		_, err := inst.addDevice(connUUID, hostUUID, &dev)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("added count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("added count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to add count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to add count: %d", errorCount))
 	}
 
 }
@@ -62,7 +62,7 @@ func (inst *App) addDevice(connUUID, hostUUID string, body *model.Device) (*mode
 func (inst *App) AddDevice(connUUID, hostUUID string, body *model.Device) *model.Device {
 	devices, err := inst.addDevice(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
@@ -86,7 +86,7 @@ func (inst *App) EditDevice(connUUID, hostUUID, deviceUUID string, body *model.D
 	}
 	devices, err := client.EditDevice(hostUUID, deviceUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
@@ -104,16 +104,16 @@ func (inst *App) DeleteDeviceBulk(connUUID, hostUUID string, deviceUUIDs []UUIDs
 		_, err := client.DeleteDevice(hostUUID, dev.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -126,7 +126,7 @@ func (inst *App) DeleteDevice(connUUID, hostUUID, deviceUUID string) interface{}
 	}
 	_, err = client.DeleteDevice(hostUUID, deviceUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -148,7 +148,7 @@ func (inst *App) getDevice(connUUID, hostUUID, deviceUUID string, withPoints boo
 func (inst *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints bool) *model.Device {
 	devices, err := inst.getDevice(connUUID, hostUUID, deviceUUID, withPoints)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
@@ -157,7 +157,7 @@ func (inst *App) GetDevice(connUUID, hostUUID, deviceUUID string, withPoints boo
 func (inst *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID string) *BulkAddResponse {
 	resp, err := inst.importDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID, true)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -166,7 +166,7 @@ func (inst *App) ImportDevicesBulk(connUUID, hostUUID, backupUUID, networkUUID s
 func (inst *App) ExportDevicesBulk(connUUID, hostUUID, userComment, networkUUID string, deviceUUIDs []string) *storage.Backup {
 	resp, err := inst.exportDevicesBulk(connUUID, hostUUID, userComment, networkUUID, deviceUUIDs)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp

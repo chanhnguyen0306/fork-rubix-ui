@@ -84,14 +84,14 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	}
 	product := info.Product
 	if rcNetworkBody != nil {
-		inst.crudMessage(false, fmt.Sprintf("body can not be empty"))
+		inst.uiErrorMessage(fmt.Sprintf("body can not be empty"))
 
 	}
 	if rcNetworkBody.Eth0Ip != "" {
-		inst.crudMessage(true, fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth0Ip))
+		inst.uiSuccessMessage(fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth0Ip))
 	}
 	if rcNetworkBody.Eth1Ip != "" {
-		inst.crudMessage(true, fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth1Ip))
+		inst.uiSuccessMessage(fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth1Ip))
 	}
 
 	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
@@ -262,12 +262,12 @@ func (inst *App) EdgeDHCPSetAsAuto(connUUID, hostUUID string, body *system.Netwo
 	//	ConnUUID: connUUID,
 	// })
 	// if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 	//	return nil
 	// }
 	// resp, err := client.EdgeDHCPSetAsAuto(hostUUID, body)
 	// if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 	//	return  nil
 	// }
 	return nil
@@ -278,12 +278,12 @@ func (inst *App) EdgeDHCPSetStaticIP(connUUID, hostUUID string, body *dhcpd.SetS
 	//	ConnUUID: connUUID,
 	// })
 	// if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 	//	return ""
 	// }
 	// resp, err := client.EdgeDHCPSetStaticIP(hostUUID, body)
 	// if err != nil {
-	//	inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+	//	inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 	//	return  ""
 	// }
 	return ""

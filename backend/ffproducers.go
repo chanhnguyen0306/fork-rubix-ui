@@ -19,16 +19,16 @@ func (inst *App) DeleteProducerBulk(connUUID, hostUUID string, uuids []UUIDs) in
 		_, err := client.DeleteProducer(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -41,7 +41,7 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 	}
 	producers, err := client.GetProducers(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.Producer{}
 	}
 	return producers
@@ -49,7 +49,7 @@ func (inst *App) GetProducerClones(connUUID, hostUUID string) []model.Producer {
 
 func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *model.Producer {
 	if body.ProducerThingUUID == "" {
-		inst.crudMessage(false, fmt.Sprintf("producer uuid can not be empty"))
+		inst.uiErrorMessage(fmt.Sprintf("producer uuid can not be empty"))
 		return nil
 	}
 	if body.Name == "" {
@@ -74,7 +74,7 @@ func (inst *App) AddProducer(connUUID, hostUUID string, body *model.Producer) *m
 	}
 	producers, err := client.AddProducer(hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return producers
@@ -88,7 +88,7 @@ func (inst *App) EditProducer(connUUID, hostUUID, streamUUID string, body *model
 	}
 	producers, err := client.EditProducer(hostUUID, streamUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return producers
@@ -101,7 +101,7 @@ func (inst *App) DeleteProducer(connUUID, hostUUID, streamUUID string) interface
 	}
 	_, err = client.DeleteProducer(hostUUID, streamUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -115,7 +115,7 @@ func (inst *App) GetProducers(connUUID, hostUUID string) []model.Producer {
 	}
 	resp, err := client.GetProducers(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -137,7 +137,7 @@ func (inst *App) getProducer(connUUID, hostUUID, streamUUID string) (*model.Prod
 func (inst *App) GetProducer(connUUID, hostUUID, streamUUID string) *model.Producer {
 	producers, err := inst.getProducer(connUUID, hostUUID, streamUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return producers

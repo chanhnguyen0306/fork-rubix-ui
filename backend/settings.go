@@ -16,7 +16,7 @@ func (inst *App) GetGitToken(uuid string, previewToken bool) (string, error) {
 func (inst *App) UpdateSettings(uuid string, body *storage.Settings) *storage.Settings {
 	out, err := inst.DB.UpdateSettings(uuid, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error on update settings: %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error on update settings: %s", err.Error()))
 		return nil
 	}
 	return out
@@ -25,7 +25,7 @@ func (inst *App) UpdateSettings(uuid string, body *storage.Settings) *storage.Se
 func (inst *App) GetSetting(uuid string) *storage.Settings {
 	out, err := inst.DB.GetSetting(uuid)
 	if err != nil {
-		//inst.crudMessage(false, fmt.Sprintf("error on update settings: %s", err.Error()))
+		// inst.uiErrorMessage(fmt.Sprintf("error on update settings: %s", err.Error()))
 		return nil
 	}
 	return out

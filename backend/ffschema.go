@@ -64,13 +64,13 @@ func (inst *App) GetFlowNetworkSchema(connUUID, hostUUID, pluginName string) int
 	url, err := setPluginURL(pluginName, "network")
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		}
 		return schema.GetDefaults()
 	}
@@ -108,13 +108,13 @@ func (inst *App) GetFlowDeviceSchema(connUUID, hostUUID, pluginName string) inte
 	url, err := setPluginURL(pluginName, "device")
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		}
 		return schema.GetDefaults()
 	}
@@ -152,13 +152,13 @@ func (inst *App) GetFlowPointSchema(connUUID, hostUUID, pluginName string) inter
 	url, err := setPluginURL(pluginName, "point")
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, err := client.ProxyGET(hostUUID, url)
 	if err != nil || data.StatusCode() > 299 {
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		}
 		return schema.GetDefaults()
 	}

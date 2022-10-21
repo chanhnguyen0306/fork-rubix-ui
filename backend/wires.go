@@ -74,7 +74,7 @@ func (inst *App) WiresBackupRestore(connUUID, hostUUID, backupUUID string) inter
 func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Backup {
 	data, err := inst.wiresBackup(connUUID, hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	backup := &storage.Backup{
@@ -87,7 +87,7 @@ func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Ba
 	}
 	addBackup, err := inst.addBackup(backup)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return addBackup
@@ -96,7 +96,7 @@ func (inst *App) WiresBackup(connUUID, hostUUID, userComment string) *storage.Ba
 func (inst *App) wiresBackup(connUUID, hostUUID string) (interface{}, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil, errors.New(fmt.Sprintf("error %s", err.Error()))
 	}
 	data, err := client.WiresBackup(hostUUID)

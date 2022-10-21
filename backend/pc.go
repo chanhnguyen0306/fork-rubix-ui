@@ -24,12 +24,12 @@ func (inst *App) getInternetIP() (networking.Check, error) {
 func (inst *App) GetPcGetNetworksSchema() interface{} {
 	names, err := nets.GetNetworks()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	b, err := json.Marshal(names)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return humanize.ArrayOfMaps(b)
@@ -42,7 +42,7 @@ func (inst *App) GetPcTime() *datelib.Time {
 func (inst *App) GetPcGetNetworks() interface{} {
 	names, err := nets.GetNetworks()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []networking.NetworkInterfaces{}
 	}
 	return names
@@ -51,7 +51,7 @@ func (inst *App) GetPcGetNetworks() interface{} {
 func (inst *App) GetPcInterfaces() networking.InterfaceNames {
 	names, err := nets.GetInterfacesNames()
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return networking.InterfaceNames{}
 	}
 	return names
@@ -64,7 +64,7 @@ func (inst *App) GetScannerSchema() interface{} {
 func (inst *App) Scanner(iface, ip string, count int, ports []string) interface{} {
 	runScanner, err := scanner.RunScanner(iface, ip, count, ports)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return runScanner
