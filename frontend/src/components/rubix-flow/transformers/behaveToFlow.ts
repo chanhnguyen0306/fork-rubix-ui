@@ -9,35 +9,39 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
   const edges: Edge[] = [];
 
   if (graph.nodes) {
-    graph.nodes.forEach((nodeJSON) => {
+    graph.nodes.forEach((nodeJson) => {
       const node: NodeInterface = {
-        id: nodeJSON.id,
-        type: nodeJSON.type ?? "",
+        id: nodeJson.id,
+        type: nodeJson.type || "",
         position: {
-          x: nodeJSON.metadata?.positionX
-            ? Number(nodeJSON.metadata?.positionX)
+          x: nodeJson.metadata?.positionX
+            ? Number(nodeJson.metadata?.positionX)
             : 0,
-          y: nodeJSON.metadata?.positionY
-            ? Number(nodeJSON.metadata?.positionY)
+          y: nodeJson.metadata?.positionY
+            ? Number(nodeJson.metadata?.positionY)
             : 0,
         },
-        data: nodeJSON.data ?? ({} as { [key: string]: any; }),
-        style: nodeJSON.style ?? ({} as CSSProperties),
-        settings: nodeJSON?.settings || {},
+        data: nodeJson.data || ({} as { [key: string]: any }),
+        style: nodeJson.style || ({} as CSSProperties),
+        settings: nodeJson?.settings || {},
+        isParent: nodeJson.isParent || false,
+        parentId: nodeJson.parentId || undefined,
       };
 
       nodes.push(node);
 
-      if (nodeJSON.inputs) {
-        if (nodeJSON.inputs.links) {
-          for (const [inputKey, input] of Object.entries(nodeJSON.inputs.links)) {
+      if (nodeJson.inputs) {
+        if (nodeJson.inputs.links) {
+          for (const [inputKey, input] of Object.entries(
+            nodeJson.inputs.links
+          )) {
             const { nodeId, socket, value } = input as any;
             if (nodeId !== undefined) {
               edges.push({
                 id: generateUuid(),
                 source: nodeId,
                 sourceHandle: socket,
-                target: nodeJSON.id,
+                target: nodeJson.id,
                 targetHandle: inputKey,
               });
             }
@@ -46,14 +50,14 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
             }
           }
         } else {
-          for (const [inputKey, input] of Object.entries(nodeJSON.inputs)) {
+          for (const [inputKey, input] of Object.entries(nodeJson.inputs)) {
             if (input.links !== undefined) {
               (input.links as any).forEach((link: any) => {
                 edges.push({
                   id: generateUuid(),
                   source: link.nodeId,
                   sourceHandle: link.socket,
-                  target: nodeJSON.id,
+                  target: nodeJson.id,
                   targetHandle: inputKey,
                 });
               });
