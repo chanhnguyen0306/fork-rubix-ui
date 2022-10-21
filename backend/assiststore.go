@@ -35,7 +35,7 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doN
 		return nil, err
 	}
 	p := inst.store.GetAppStoreAppPath(appName, arch, version)
-	buildDetails, err := inst.store.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
+	buildDetails, err := inst.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, err
 	}

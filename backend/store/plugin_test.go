@@ -8,12 +8,7 @@ import (
 
 func TestStore_StoreListPlugins(t *testing.T) {
 	inst, _ := New(&Store{})
-	appStore, err := New(inst)
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	plugins, path, err := appStore.StoreListPlugins()
+	plugins, path, err := inst.StoreListPlugins()
 	fmt.Println(err, path)
 	if err != nil {
 		return

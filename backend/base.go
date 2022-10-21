@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeDev/flow-eng/helpers/boolean"
+	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/storage"
 	"github.com/NubeIO/rubix-ui/backend/store"
@@ -25,7 +26,8 @@ func (inst *App) errMsg(err error) error {
 type App struct {
 	ctx   context.Context
 	DB    storage.Storage
-	store *store.Store
+	store store.InterfaceStore
+	App   *installer.App
 }
 
 type AssistClient struct {
@@ -35,11 +37,13 @@ type AssistClient struct {
 func NewApp() *App {
 	app := &App{}
 	app.DB = storage.New("")
-	appStore, err := store.New(&store.Store{})
+	installerApp := installer.New(&installer.App{})
+	appStore, err := store.New(&store.Store{}, installerApp)
 	if err != nil {
 		log.Fatalf("init store on start of app err: %s", err.Error())
 	}
 	app.store = appStore
+	app.App = installerApp
 	return app
 }
 
