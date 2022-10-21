@@ -77,9 +77,31 @@ const Flow = (props: any) => {
     [onEdgesChange]
   );
 
+  const handleGetSettingType = async (nodeType: string) => {
+    const nodeSettings: any = {};
+    const type = nodeType.split("/")[1];
+
+    const nodeSchema = (await factory.NodeSchema(type)) || {};
+    const properties = Object.entries(nodeSchema?.schema?.properties || {});
+
+    if (Object.entries(properties).length === 0) return nodeSettings;
+
+    for (const [key, item] of properties as [string, any]) {
+      nodeSettings[key] = item.default;
+    }
+
+    return nodeSettings;
+  };
+
   const handleAddNode = useCallback(
-    (isParent: boolean, style: any, nodeType: string, position: XYPosition) => {
+    async (
+      isParent: boolean,
+      style: any,
+      nodeType: string,
+      position: XYPosition
+    ) => {
       closeNodePicker();
+      const nodeSettings = await handleGetSettingType(nodeType);
       const newNode = {
         id: generateUuid(),
         isParent,
@@ -87,6 +109,7 @@ const Flow = (props: any) => {
         type: nodeType,
         position,
         data: {},
+        settings: nodeSettings,
       };
       onNodesChange([
         {
@@ -168,7 +191,10 @@ const Flow = (props: any) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
 
       if (index !== -1) {
-        node.settings = outputNodes[index]?.settings;
+        node.settings = {
+          ...node.settings,
+          ...outputNodes[index]?.settings,
+        };
       }
 
       node.data.out = outputNodes[index]?.outputs;
@@ -247,15 +273,41 @@ const Flow = (props: any) => {
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
   };
 
+  const handleNodesEmptySettings = async (_nodes: NodeInterface[]) => {
+    return Promise.all(
+      await _nodes.map(async (node) => {
+        const newNode: NodeInterface = node;
+
+        if (newNode.settings && "selected" in newNode.settings) {
+          delete newNode.settings.selected;
+        }
+
+        if (
+          newNode.type &&
+          (!newNode.settings || Object.entries(newNode.settings).length === 0)
+        ) {
+          node.settings = {
+            ...node.settings,
+            ...(await handleGetSettingType(newNode.type)),
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
   useEffect(() => {
     factory
       .GetFlow()
-      .then((res) => {
+      .then(async (res) => {
         const [_nodes, _edges] = behaveToFlow(res);
-        setNodes(_nodes);
+        const newNodes = await handleNodesEmptySettings(_nodes);
+        
+        setNodes(newNodes);
         setEdges(_edges);
         setUndoable({
-          nodes: _nodes,
+          nodes: newNodes,
           edges: _edges,
         });
       })

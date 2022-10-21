@@ -14,7 +14,6 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
 
   const edges = useEdges();
   const nodes = useNodes();
-  const factory = new FlowFactory();
 
   const flow = useMemo(() => flowToBehave(nodes, edges), [nodes, edges]);
 
@@ -28,33 +27,16 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
     }, 1000);
   };
 
-  const handleNodeRender = async () => {
-    const selectedNodes: NodeJSON[] = flow.nodes.filter(
-      (item) => item.settings?.selected
-    );
-    const newNodes = selectedNodes.length === 0 ? flow.nodes : selectedNodes;
+  const handleNodeRender = () => {
+    const selectedNodes: NodeJSON[] = flow.nodes.filter(item => item.settings?.selected);
+    const newNodes: NodeJSON[] = selectedNodes.length === 0 ? flow.nodes : selectedNodes;
 
-    const promiseNode = await newNodes.map(async (item) => {
-      if (item.settings) delete item.settings.selected;
-
-      if (item.settings && Object.entries(item.settings).length === 0) {
-        const settings: any = {};
-        const type = item.type.split("/")[1];
-        const nodeSchema = (await factory.NodeSchema(type)) || {};
-        const properties = Object.entries(nodeSchema.schema.properties || {});
-
-        for (const [key, item] of properties as [string, any]) {
-          settings[key] = item.default;
-        }
-
-        item.settings = settings;
-      }
-
-      return item;
+    newNodes.map((item) => {
+      if (item.settings && "selected" in item.settings) delete item.settings.selected;
+      return newNodes;
     });
 
-    const jsonNodes = JSON.stringify(await Promise.all(promiseNode), null, 3);
-    setNodeRender(jsonNodes);
+    setNodeRender(JSON.stringify({ nodes: newNodes }, null, 2));
   };
 
   useEffect(() => {
