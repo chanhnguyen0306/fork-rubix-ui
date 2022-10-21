@@ -9,7 +9,7 @@ import (
 )
 
 func TestApp_WritePointValue(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 
 	body := &model.Priority{
 		PointUUID: "pnt_95ff1f8005174dca",

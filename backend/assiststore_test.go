@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_assistListStore(t *testing.T) { // list all apps on assist
-	app := NewApp()
+	app := MockNewApp()
 	store, err := app.assistListStore(connection)
 	fmt.Println(err)
 	if err != nil {
@@ -17,7 +17,7 @@ func TestApp_assistListStore(t *testing.T) { // list all apps on assist
 }
 
 func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
-	app := NewApp()
+	app := MockNewApp()
 	store, err := app.assistAddUploadApp(connection, appName, appVersion, arch, false)
 	fmt.Println(err)
 	if err != nil {

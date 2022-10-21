@@ -27,12 +27,12 @@ func stringPtrToString(b *string) string {
 	}
 }
 
-func (inst *Store) GitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *store) GitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}
 	opts := &git.AssetOptions{
-		Owner: inst.Owner,
+		Owner: inst.Store.Owner,
 		Repo:  repo,
 		Tag:   version,
 		Arch:  arch,
@@ -48,12 +48,12 @@ func (inst *Store) GitDownloadZipball(repo, version, arch, token string, gitOpti
 	return err
 }
 
-func (inst *Store) GitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *store) GitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}
 	opts := &git.AssetOptions{
-		Owner: inst.Owner,
+		Owner: inst.Store.Owner,
 		Repo:  repo,
 		Tag:   version,
 		Arch:  arch,
@@ -78,7 +78,7 @@ func (inst *Store) GitDownloadAsset(repo, version, arch, token string, gitOption
 	return err
 }
 
-func (inst *Store) GitListReleases(token string) ([]ReleaseList, error) {
+func (inst *store) GitListReleases(token string) ([]ReleaseList, error) {
 	var list []ReleaseList
 	opts := &git.AssetOptions{
 		Owner: "NubeIO",

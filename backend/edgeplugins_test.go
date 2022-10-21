@@ -8,7 +8,7 @@ import (
 )
 
 func TestApp_EdgeUploadPlugin(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &appstore.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",
@@ -19,13 +19,13 @@ func TestApp_EdgeUploadPlugin(t *testing.T) {
 }
 
 func TestApp_EdgeListPlugins(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.EdgeListPlugins(connection, "rc")
 	pprint.PrintJOSN(resp)
 }
 
 func TestApp_EdgeDeletePlugin(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &appstore.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",
@@ -36,13 +36,13 @@ func TestApp_EdgeDeletePlugin(t *testing.T) {
 }
 
 func TestApp_EdgeDeleteAllPlugins(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.EdgeDeleteAllPlugins(connection, "rc")
 	pprint.PrintJOSN(resp)
 }
 
 func TestApp_EdgeUpgradePlugins(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp, err := app.EdgeUpgradePlugins(connection, "rc", releaseVersion)
 	fmt.Println(err)
 	pprint.PrintJOSN(resp)

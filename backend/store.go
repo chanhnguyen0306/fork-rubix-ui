@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"os"
 	"path"
@@ -23,7 +24,7 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 	if release == nil {
 		return nil, errors.New("download-plugins release can not be empty")
 	}
-	if appName == flowFramework { // just download all plugins
+	if appName == constants.FlowFramework { // just download all plugins
 		for _, plugin := range release.Plugins {
 			inst.crudMessage(true, fmt.Sprintf("try to download plugin: %s version: %s", plugin.Plugin, release.Release))
 			_, err := inst.store.DownloadFlowPlugin(token, release.Release, plugin.Plugin, arch, releaseVersion, cleanDownload)

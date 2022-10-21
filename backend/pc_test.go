@@ -7,14 +7,14 @@ import (
 )
 
 func TestApp_getInternetIP(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	ips, err := app.getInternetIP()
 	fmt.Println(err)
 	pprint.PrintJOSN(ips)
 }
 
 func TestApp_Scanner(*testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	ips := app.Scanner("", "", 254, nil)
 
 	pprint.PrintJOSN(ips)

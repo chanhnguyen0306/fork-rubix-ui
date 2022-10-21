@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_edgeProductInfo(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	store, err := app.edgeProductInfo(connection, "rc")
 	fmt.Println(err)
 	if err != nil {
@@ -17,7 +17,7 @@ func TestApp_edgeProductInfo(t *testing.T) {
 }
 
 func TestApp_EdgeGetNetworks(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.EdgeGetNetworks("cloud", "rc")
 	pprint.PrintJOSN(resp)
 }

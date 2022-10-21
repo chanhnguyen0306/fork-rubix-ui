@@ -6,7 +6,7 @@ import (
 )
 
 func TestApp_GetPlugins(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.GetPlugins("cloud", "rc")
 
 	pprint.PrintJOSN(resp)

@@ -5,16 +5,7 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/storage"
 )
 
-func (inst *App) GetGitToken(uuid string, previewToken bool) string {
-	out, err := inst.getGitToken(uuid, previewToken)
-	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error get git token: %s", err.Error()))
-		return ""
-	}
-	return out
-}
-
-func (inst *App) getGitToken(uuid string, previewToken bool) (string, error) {
+func (inst *App) GetGitToken(uuid string, previewToken bool) (string, error) {
 	out, err := inst.DB.GetGitToken(uuid, previewToken)
 	if err != nil {
 		return "", err

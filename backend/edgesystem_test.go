@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_EdgeEdgeCtlAction(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &installer.SystemCtlBody{
 		AppName: "flow-framework",
 		Action:  "enable",
@@ -17,7 +17,7 @@ func TestApp_EdgeEdgeCtlAction(t *testing.T) {
 }
 
 func TestApp_EdgeCtlStatus(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &installer.SystemCtlBody{
 		AppName: "flow-framework",
 	}
@@ -26,7 +26,7 @@ func TestApp_EdgeCtlStatus(t *testing.T) {
 }
 
 func TestApp_EdgeServiceMassStatus(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &installer.SystemCtlBody{
 		AppNames: []string{"flow-framework"},
 		Action:   "isInstalled",

@@ -23,7 +23,7 @@ require (
 	github.com/NubeIO/lib-uuid v0.0.3
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
-	github.com/NubeIO/rubix-assist v0.5.2
+	github.com/NubeIO/rubix-assist v0.5.3
 	github.com/NubeIO/rubix-edge v0.3.0
 	github.com/NubeIO/rubix-edge-wires v0.1.1
 	github.com/go-resty/resty/v2 v2.7.0

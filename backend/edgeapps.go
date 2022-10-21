@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/lib-systemctl-go/systemd"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
 )
@@ -117,7 +118,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	err = inst.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the store and if not then try and download it
 	if err != nil {
 		inst.crudMessage(true, fmt.Sprintf("app: %s not found in store so download", appName))
-		token, err := inst.getGitToken(gitToken, false)
+		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			inst.crudMessage(false, fmt.Sprintf("failed to get git token %s", err.Error()))
 			return nil
@@ -133,7 +134,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
 
 	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
-	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch) // todo
+	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch)
 	if err != nil {
 		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
@@ -195,7 +196,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 	}
 
-	if appName == flowFramework { // if app is FF then update all the plugins
+	if appName == constants.FlowFramework { // if app is FF then update all the plugins
 		inst.crudMessage(true, fmt.Sprintf("update all plugins for flow-framework"))
 		_, err := inst.EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion)
 		if err != nil {
@@ -272,7 +273,7 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 		getVersion, err = inst.getReleaseByVersion(versionNumber)
 	}
 	if getVersion == nil {
-		token, err := inst.getGitToken("set_123456789ABC", false) // if not exist then try and download the version
+		token, err := inst.GetGitToken(constants.SettingUUID, false) // if not exist then try and download the version
 		if err != nil {
 			return nil, err
 		}
@@ -299,9 +300,6 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	}
 	for _, installedApp := range installedApps {
 		for _, versionApp := range getVersion.Apps {
-			if installedApp.AppName == flowFramework {
-
-			}
 			if installedApp.AppName == versionApp.Name {
 				installedAppVersion, err := version.NewVersion(installedApp.Version)
 				if err != nil {

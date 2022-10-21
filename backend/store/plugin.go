@@ -6,8 +6,8 @@ import (
 )
 
 // StoreListPlugins get all plugins for a version => ~/rubix/store/plugins
-func (inst *Store) StoreListPlugins() ([]installer.BuildDetails, string, error) {
-	files, err := ioutil.ReadDir(inst.UserPluginPath)
+func (inst *store) StoreListPlugins() ([]installer.BuildDetails, string, error) {
+	files, err := ioutil.ReadDir(inst.Store.UserPluginPath)
 	if err != nil {
 		return nil, "", err
 	}
@@ -15,5 +15,5 @@ func (inst *Store) StoreListPlugins() ([]installer.BuildDetails, string, error) 
 	for _, file := range files {
 		plugins = append(plugins, *inst.App.GetZipBuildDetails(file.Name()))
 	}
-	return plugins, inst.UserPluginPath, err
+	return plugins, inst.Store.UserPluginPath, err
 }

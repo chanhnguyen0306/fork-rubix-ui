@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_buildNetworkSchema(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	schema, err := app.buildNetworkSchema("cloud", "rc")
 	fmt.Println(err)
 	if err != nil {

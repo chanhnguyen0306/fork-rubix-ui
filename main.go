@@ -47,6 +47,6 @@ func main() {
 	})
 
 	if err != nil {
-		log.Errorln("START-ERROR:", err)
+		log.Errorln("Start Error:", err)
 	}
 }

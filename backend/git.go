@@ -2,27 +2,19 @@ package backend
 
 import (
 	"fmt"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
 func (inst *App) GitListReleases(token string) []store.ReleaseList {
-	out, err := inst.gitListReleases(token)
+	out, err := inst.store.GitListReleases(token)
 	if err != nil {
 		inst.crudMessage(false, fmt.Sprintf("error list releases: %s", err.Error()))
 		return []store.ReleaseList{}
 	}
 	return out
-}
-
-// gitListReleases gets the releases from repo https://github.com/NubeIO/releases/tree/master/flow
-func (inst *App) gitListReleases(token string) ([]store.ReleaseList, error) {
-	appStore, err := store.New(&store.Store{})
-	if err != nil {
-		return nil, err
-	}
-	return appStore.GitListReleases(token)
 }
 
 func (inst *App) GitDownloadRelease(token, version string) *store.Release {
@@ -38,11 +30,11 @@ func (inst *App) GitDownloadAllRelease(runDownloads bool) error {
 	if !runDownloads {
 		return nil
 	}
-	gitToken, err := inst.getGitToken("set_123456789ABC", false)
+	gitToken, err := inst.GetGitToken(constants.SettingUUID, false)
 	if err != nil {
 		return err
 	}
-	releases, err := inst.gitListReleases(gitToken)
+	releases, err := inst.store.GitListReleases(gitToken)
 	if err != nil {
 		return err
 	}

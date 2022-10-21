@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SettingsFactory } from "./factory";
+import { SettingUUID } from "../../constants/constants";
 
 const _settings = {
   auto_refresh_enable: false,
   auto_refresh_rate: 5000,
   git_token: "",
   theme: "dark",
-  uuid: "set_123456789ABC",
+  uuid: SettingUUID,
 } as any;
 
 const factory = new SettingsFactory();

@@ -8,7 +8,7 @@ import (
 )
 
 func TestApp_storeGetPluginPath(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &appstore.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",
@@ -20,7 +20,7 @@ func TestApp_storeGetPluginPath(t *testing.T) {
 }
 
 func TestApp_storeGetPlugin(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &appstore.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",

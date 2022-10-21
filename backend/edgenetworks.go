@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/lib-networking/networking"
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-edge/service/system"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 )
 
 func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
@@ -96,11 +97,11 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
 	// eth1IpSettings := rcNetworkBody.Eth1IpSettings
 
-	if product == RubixCompute || product == RubixCompute5 {
+	if product == constants.RubixCompute || product == constants.RubixCompute5 {
 
 	}
 
-	if product == RubixComputeIO {
+	if product == constants.RubixComputeIO {
 
 	}
 }
@@ -110,7 +111,7 @@ func (inst *App) setEth0(connUUID, hostUUID string, eth0Body networking.NetworkI
 		ConnUUID: connUUID,
 	})
 	m := Eth0{}
-	eth0IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: eth0}) // if exists show the user if set to dhcp or static
+	eth0IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: constants.Eth0}) // if exists show the user if set to dhcp or static
 	if err != nil {
 		m.Eth0IpSettingsState.Default = fmt.Sprintf("eth0 err%s", err.Error())
 	}
@@ -148,7 +149,7 @@ func (inst *App) setEth1(connUUID, hostUUID string, eth1Body networking.NetworkI
 		ConnUUID: connUUID,
 	})
 	m := Eth1{}
-	eth1IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: eth1}) // if exists show the user if set to dhcp or static
+	eth1IsDHCP, err := client.EdgeDHCPPortExists(hostUUID, &system.NetworkingBody{PortName: constants.Eth1}) // if exists show the user if set to dhcp or static
 	if err != nil {
 		m.Eth1IpSettingsState.Default = fmt.Sprintf("eth0 err%s", err.Error())
 	}
@@ -212,21 +213,21 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 	eth0Body := networking.NetworkInterfaces{}
 	eth1Body := networking.NetworkInterfaces{}
 	for _, network := range networks {
-		if network.Interface == eth0 {
+		if network.Interface == constants.Eth0 {
 			eth0Body = network
 		}
-		if network.Interface == eth1 {
+		if network.Interface == constants.Eth1 {
 			eth1Body = network
 		}
 	}
 	m := &RcNetwork{}
-	if product == RubixCompute || product == RubixCompute5 {
+	if product == constants.RubixCompute || product == constants.RubixCompute5 {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		m.Eth1 = inst.setEth1(connUUID, hostUUID, eth1Body)
 		schema.Set(m)
 		return m, nil
 	}
-	if product == RubixComputeIO {
+	if product == constants.RubixComputeIO {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		schema.Set(m)
 		return m, nil

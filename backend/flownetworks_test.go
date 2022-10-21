@@ -9,7 +9,7 @@ import (
 )
 
 func TestApp_addFlowNetwork(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &model.FlowNetwork{
 		CommonFlowNetwork: model.CommonFlowNetwork{
 			CommonName: model.CommonName{

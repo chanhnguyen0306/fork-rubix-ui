@@ -22,15 +22,15 @@ type App struct {
 }
 
 // AddApp make required dirs for the store
-func (inst *Store) AddApp(app *App) error {
+func (inst *store) AddApp(app *App) error {
 	if err := os.MkdirAll(inst.GetAppStoreAppPath(app.Name, app.Arch, app.Version), os.FileMode(FilePerm)); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (inst *Store) ListStore() ([]App, error) {
-	rootDir := inst.UserStorePath
+func (inst *store) ListStore() ([]App, error) {
+	rootDir := inst.Store.UserStorePath
 	var files []App
 	app := App{}
 	err := filepath.WalkDir(rootDir, func(p string, d fs.DirEntry, err error) error {
@@ -56,11 +56,11 @@ func (inst *Store) ListStore() ([]App, error) {
 }
 
 // StoreCheckAppExists  => /user/rubix/store/apps/flow-framework
-func (inst *Store) StoreCheckAppExists(appName string) error {
+func (inst *store) StoreCheckAppExists(appName string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
-	p := path.Join(inst.UserStoreAppsPath, appName)
+	p := path.Join(inst.Store.UserStoreAppsPath, appName)
 	found := fileutils.DirExists(p)
 	if !found {
 		return errors.New(fmt.Sprintf("failed to find app: %s in app-store", appName))
@@ -69,7 +69,7 @@ func (inst *Store) StoreCheckAppExists(appName string) error {
 }
 
 // StoreCheckAppAndVersionExists  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *Store) StoreCheckAppAndVersionExists(appName, arch, version string) error {
+func (inst *store) StoreCheckAppAndVersionExists(appName, arch, version string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
@@ -85,8 +85,8 @@ func (inst *Store) StoreCheckAppAndVersionExists(appName, arch, version string) 
 }
 
 // MakeUserPathTmpDir  => ~/rubix/tmp/tmp_45DF323E
-func (inst *Store) MakeUserPathTmpDir() (string, error) {
+func (inst *store) MakeUserPathTmpDir() (string, error) {
 	dir := uuid.ShortUUID("tmp")
-	p := path.Join(inst.UserTmpPath, "tmp", dir)
+	p := path.Join(inst.Store.UserTmpPath, "tmp", dir)
 	return p, os.MkdirAll(p, os.FileMode(FilePerm))
 }
