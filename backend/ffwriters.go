@@ -13,7 +13,7 @@ func (inst *App) CreateWriter(connUUID, hostUUID string, body *model.Writer) *mo
 	}
 	resp, err := client.CreateWriter(hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -27,7 +27,7 @@ func (inst *App) GetWriters(connUUID, hostUUID string) []model.Writer {
 	}
 	resp, err := client.GetWriters(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.Writer{}
 	}
 	return resp
@@ -41,7 +41,7 @@ func (inst *App) EditWriter(connUUID, hostUUID, uuid string, body *model.Writer,
 	}
 	resp, err := client.EditWriter(hostUUID, uuid, body, updateProducer)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -55,7 +55,7 @@ func (inst *App) DeleteWriter(connUUID, hostUUID, uuid string) interface{} {
 	}
 	_, err = client.DeleteWriter(hostUUID, uuid)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -73,16 +73,16 @@ func (inst *App) DeleteWritersBulk(connUUID, hostUUID string, UUIDs []UUIDs) int
 		_, err := client.DeleteStreamClone(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }

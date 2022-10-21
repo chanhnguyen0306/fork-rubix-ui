@@ -20,16 +20,16 @@ func (inst *App) DeleteFlowNetworkBulk(connUUID, hostUUID string, uuids []UUIDs)
 		_, err := client.DeleteFlowNetwork(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -58,7 +58,7 @@ func (inst *App) GetFlowNetworks(connUUID, hostUUID string, withStream bool) []m
 	}
 	networks, err := client.GetFlowNetworks(hostUUID, withStream)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetwork{}
 	}
 	return networks
@@ -89,7 +89,7 @@ func (inst *App) addFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwo
 func (inst *App) AddFlowNetwork(connUUID, hostUUID string, body *model.FlowNetwork) *model.FlowNetwork {
 	networks, err := inst.addFlowNetwork(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -103,7 +103,7 @@ func (inst *App) EditFlowNetwork(connUUID, hostUUID, networkUUID string, body *m
 	}
 	networks, err := client.EditFlowNetwork(hostUUID, networkUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -116,7 +116,7 @@ func (inst *App) DeleteFlowNetwork(connUUID, hostUUID, networkUUID string) inter
 	}
 	_, err = client.DeleteFlowNetwork(hostUUID, networkUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"

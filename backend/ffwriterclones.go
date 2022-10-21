@@ -13,7 +13,7 @@ func (inst *App) GetWriterClones(connUUID, hostUUID string) []model.WriterClone 
 	}
 	resp, err := client.GetWriterClones(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.WriterClone{}
 	}
 	return resp
@@ -27,7 +27,7 @@ func (inst *App) DeleteWriterClone(connUUID, hostUUID, uuid string) interface{} 
 	}
 	_, err = client.DeleteWriterClone(hostUUID, uuid)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -45,16 +45,16 @@ func (inst *App) DeleteWriterCloneBulk(connUUID, hostUUID string, UUIDs []UUIDs)
 		_, err := client.DeleteStreamClone(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }

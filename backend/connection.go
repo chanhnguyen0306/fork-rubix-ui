@@ -83,7 +83,7 @@ func (inst *App) updateConnection(uuid string, conn *storage.RubixConnection) (*
 func (inst *App) UpdateConnection(uuid string, conn *storage.RubixConnection) *storage.RubixConnection {
 	resp, err := inst.updateConnection(uuid, conn)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -93,9 +93,9 @@ func (inst *App) DeleteConnectionBulk(uuids []UUIDs) interface{} {
 	for _, item := range uuids {
 		msg, err := inst.deleteConnection(item.UUID)
 		if err != nil {
-			inst.crudMessage(false, fmt.Sprintf("delete network %s %s", item.Name, msg))
+			inst.uiErrorMessage(fmt.Sprintf("delete network %s %s", item.Name, msg))
 		} else {
-			inst.crudMessage(true, fmt.Sprintf("deleteed network: %s", item.Name))
+			inst.uiSuccessMessage(fmt.Sprintf("deleteed network: %s", item.Name))
 		}
 	}
 	return "ok"

@@ -17,14 +17,9 @@ const (
 	errMsg busTopic = "err"
 )
 
-func (inst *App) crudMessage(ok bool, data interface{}) {
-	if ok {
-		log.Infof("message %s", data)
-		inst.msgToUI(inst.ctx, string(okMsg), data)
-	} else {
-		log.Errorf("%s", data)
-		inst.msgToUI(inst.ctx, string(errMsg), data)
-	}
+func (inst *App) uiSuccessMessage(data interface{}) {
+	log.Infof("%s", data)
+	inst.msgToUI(inst.ctx, string(okMsg), data)
 }
 
 func (inst *App) uiErrorMessage(data interface{}) {

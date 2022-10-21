@@ -17,16 +17,16 @@ func (inst *App) DeleteFlowNetworkCloneBulk(connUUID, hostUUID string, uuids []U
 		_, err := client.DeleteFlowNetworkClone(hostUUID, item.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 }
@@ -39,7 +39,7 @@ func (inst *App) GetFlowNetworkClones(connUUID, hostUUID string, withDevice bool
 	}
 	networks, err := client.GetFlowNetworkClones(hostUUID, withDevice)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.FlowNetworkClone{}
 	}
 	return networks
@@ -53,7 +53,7 @@ func (inst *App) DeleteFlowNetworkClone(connUUID, hostUUID, networkUUID string) 
 	}
 	_, err = client.DeleteFlowNetworkClone(hostUUID, networkUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -75,7 +75,7 @@ func (inst *App) getFlowNetworkClone(connUUID, hostUUID, networkUUID string, wit
 func (inst *App) GetFlowNetworkClone(connUUID, hostUUID, networkUUID string, withDevice bool) *model.FlowNetworkClone {
 	networks, err := inst.getFlowNetworkClone(connUUID, hostUUID, networkUUID, withDevice)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks

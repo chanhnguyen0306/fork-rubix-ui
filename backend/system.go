@@ -12,12 +12,12 @@ var nets = networking.New()
 func (inst *App) GetServerTime(connUUID string) interface{} {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, msg, err := client.GetTime()
 	if msg != nil || err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", msg.Message))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", msg.Message))
 		return nil
 	}
 	j, _ := json.Marshal(data)
@@ -28,12 +28,12 @@ func (inst *App) GetServerTime(connUUID string) interface{} {
 func (inst *App) GetServerNetworking(connUUID string) interface{} {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	data, msg, err := client.GetNetworking()
 	if msg != nil || err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", msg.Message))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", msg.Message))
 		return nil
 	}
 	j, _ := json.Marshal(data)

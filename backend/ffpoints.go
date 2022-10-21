@@ -14,7 +14,7 @@ import (
 func (inst *App) GetPointsForDevice(connUUID, hostUUID, deviceUUID string) []*model.Point {
 	device, err := inst.getDevice(connUUID, hostUUID, deviceUUID, true)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return device.Points
@@ -28,7 +28,7 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 	}
 	points, err := client.GetPoints(hostUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
@@ -37,7 +37,7 @@ func (inst *App) GetPoints(connUUID, hostUUID string) []model.Point {
 func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *model.Priority) *model.Point {
 	pointValue, err := inst.writePointValue(connUUID, hostUUID, pointUUID, value)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return pointValue
@@ -46,7 +46,7 @@ func (inst *App) WritePointValue(connUUID, hostUUID, pointUUID string, value *mo
 func (inst *App) writePointValue(connUUID, hostUUID, pointUUID string, body *model.Priority) (*model.Point, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil, err
 	}
 	pnt, err := client.WritePointValue(hostUUID, pointUUID, body)
@@ -79,16 +79,16 @@ func (inst *App) AddPointsBulk(connUUID, hostUUID string, body []model.Point) {
 		_, err := inst.addPoint(connUUID, hostUUID, &pnt)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("added count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("added count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to add count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to add count: %d", errorCount))
 	}
 
 }
@@ -96,7 +96,7 @@ func (inst *App) AddPointsBulk(connUUID, hostUUID string, body []model.Point) {
 func (inst *App) AddPoint(connUUID, hostUUID string, body *model.Point) *model.Point {
 	point, err := inst.addPoint(connUUID, hostUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return point
@@ -110,7 +110,7 @@ func (inst *App) EditPoint(connUUID, hostUUID, pointUUID string, body *model.Poi
 	}
 	points, err := client.EditPoint(hostUUID, pointUUID, body)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
@@ -128,16 +128,16 @@ func (inst *App) DeletePointBulk(connUUID, hostUUID string, uuids []UUIDs) inter
 		_, err := client.DeletePoint(hostUUID, pnt.UUID)
 		if err != nil {
 			errorCount++
-			inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		} else {
 			addedCount++
 		}
 	}
 	if addedCount > 0 {
-		inst.crudMessage(true, fmt.Sprintf("delete count: %d", addedCount))
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
 	}
 	if errorCount > 0 {
-		inst.crudMessage(false, fmt.Sprintf("failed to delete count: %d", errorCount))
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
 	}
 	return nil
 
@@ -151,7 +151,7 @@ func (inst *App) DeletePoint(connUUID, hostUUID, pointUUID string) interface{} {
 	}
 	_, err = client.DeletePoint(hostUUID, pointUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return err
 	}
 	return "delete ok"
@@ -165,7 +165,7 @@ func (inst *App) GetPoint(connUUID, hostUUID, pointUUID string) *model.Point {
 	}
 	points, err := client.GetPoint(hostUUID, pointUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return points
@@ -180,7 +180,7 @@ type BulkAddResponse struct {
 func (inst *App) ImportPointBulk(connUUID, hostUUID, backupUUID, deviceUUID string) *BulkAddResponse {
 	resp, err := inst.importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
@@ -232,7 +232,7 @@ func (inst *App) importPointBulk(connUUID, hostUUID, backupUUID, deviceUUID stri
 func (inst *App) ExportPointBulk(connUUID, hostUUID, userComment, deviceUUID string, pointUUIDs []string) *storage.Backup {
 	resp, err := inst.exportPointBulk(connUUID, hostUUID, userComment, deviceUUID, pointUUIDs)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp

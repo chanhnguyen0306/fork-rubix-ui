@@ -33,7 +33,7 @@ func (inst *App) bacnetChecks(connUUID, hostUUID, pluginName string) error {
 func (inst *App) GetBacnetDevicePoints(connUUID, hostUUID, deviceUUID string, addPoints, makeWriteable bool) []model.Point {
 	points, err := inst.getBacnetDevicePoints(connUUID, hostUUID, deviceUUID, addPoints, makeWriteable)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("bacnet points %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("bacnet points %s", err.Error()))
 		return nil
 	}
 	return points
@@ -88,7 +88,7 @@ func (inst *App) bacnetWhois(connUUID, hostUUID string, networkUUID, pluginName 
 func (inst *App) BacnetWhois(connUUID, hostUUID, networkUUID, pluginName string) []model.Device {
 	devices, err := inst.bacnetWhois(connUUID, hostUUID, networkUUID, pluginName)
 	if err != nil {
-		inst.crudMessage(false, fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return devices
