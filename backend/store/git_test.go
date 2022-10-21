@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-rubix-installer/installer"
 	"testing"
 )
 
@@ -10,7 +11,7 @@ func TestStore_Git(t *testing.T) {
 	appVersion := "v0.6.0"
 	releaseVersion := "v0.6.8"
 
-	appStore, err := New(&Store{})
+	appStore, err := New(&Store{}, installer.New(&installer.App{}))
 	fmt.Println(err)
 	fmt.Println(appStore)
 	app := App{

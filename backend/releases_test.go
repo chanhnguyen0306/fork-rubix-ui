@@ -19,7 +19,7 @@ func TestApp_ListReleases(t *testing.T) { // downloads from GitHub and stores in
 	token := git.DecodeToken(token)
 	fmt.Printf("%q\n", token)
 	app := MockNewApp()
-	release, err := app.store.GitListReleases(token)
+	release, err := app.appStore.GitListReleases(token)
 	if err != nil {
 		return
 	}

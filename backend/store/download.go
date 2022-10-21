@@ -7,7 +7,7 @@ import (
 
 const flow = "flow-framework"
 
-func (inst *store) GenerateDownloadOptions(repo string, doNotValidateArch bool) git.DownloadOptions {
+func (inst *AppStore) GenerateDownloadOptions(repo string, doNotValidateArch bool) git.DownloadOptions {
 	opts := git.DownloadOptions{
 		MatchArch: !doNotValidateArch,
 		AssetName: repo,
@@ -19,7 +19,7 @@ func (inst *store) GenerateDownloadOptions(repo string, doNotValidateArch bool) 
 }
 
 // DownloadAll make all the app store dirs
-func (inst *store) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
+func (inst *AppStore) DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error) {
 	var out []App
 	for _, app := range release.Apps { // download all others apps
 		opts := inst.GenerateDownloadOptions(app.Repo, app.DoNotValidateArch)
@@ -45,7 +45,7 @@ func (inst *store) DownloadAll(token string, cleanDownload bool, release *Releas
 }
 
 // DownloadFlowPlugin download ff
-func (inst *store) DownloadFlowPlugin(token, version, pluginName, arch, releaseVersion string, cleanDownload bool) (*App, error) {
+func (inst *AppStore) DownloadFlowPlugin(token, version, pluginName, arch, releaseVersion string, cleanDownload bool) (*App, error) {
 	app, err := inst.gitDownloadZip(token, flow, version, flow, arch, releaseVersion, false, cleanDownload, true, git.DownloadOptions{
 		AssetName: pluginName,
 		MatchName: true,
@@ -58,12 +58,12 @@ func (inst *store) DownloadFlowPlugin(token, version, pluginName, arch, releaseV
 }
 
 // GitDownloadZip download an app
-func (inst *store) GitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
+func (inst *AppStore) GitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error) {
 	return inst.gitDownloadZip(token, appName, version, repo, arch, releaseVersion, isZipball, cleanDownload, false, gitOptions)
 }
 
 // gitDownloadZip download an app
-func (inst *store) gitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
+func (inst *AppStore) gitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload, isPlugin bool, gitOptions git.DownloadOptions) (*App, error) {
 	app := App{
 		Name:           appName,
 		Version:        version,

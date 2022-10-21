@@ -12,8 +12,8 @@ func MockNewApp() *App {
 	app.DB = storage.New("../data/data.db")
 	appStore, err := store.New(&store.Store{}, installer.New(&installer.App{}))
 	if err != nil {
-		log.Fatalf("init store on start of app err: %s", err.Error())
+		log.Fatalf("init appStore on start of app err: %s", err.Error())
 	}
-	app.store = appStore
+	app.appStore = appStore
 	return app
 }

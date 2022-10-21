@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *App) GitListReleases(token string) []store.ReleaseList {
-	out, err := inst.store.GitListReleases(token)
+	out, err := inst.appStore.GitListReleases(token)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error list releases: %s", err.Error()))
 		return []store.ReleaseList{}
@@ -34,7 +34,7 @@ func (inst *App) GitDownloadAllRelease(runDownloads bool) error {
 	if err != nil {
 		return err
 	}
-	releases, err := inst.store.GitListReleases(gitToken)
+	releases, err := inst.appStore.GitListReleases(gitToken)
 	if err != nil {
 		return err
 	}
@@ -55,5 +55,5 @@ func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) 
 	if !strings.Contains(path, "flow/") {
 		path = fmt.Sprintf("flow/%s.json", path)
 	}
-	return inst.store.DownLoadReleases(token, path)
+	return inst.appStore.DownLoadReleases(token, path)
 }

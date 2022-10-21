@@ -24,10 +24,10 @@ func (inst *App) errMsg(err error) error {
 }
 
 type App struct {
-	ctx   context.Context
-	DB    storage.Storage
-	store store.InterfaceStore
-	App   *installer.App
+	ctx      context.Context
+	DB       storage.Storage
+	appStore store.IAppStore
+	App      *installer.App
 }
 
 type AssistClient struct {
@@ -40,9 +40,9 @@ func NewApp() *App {
 	installerApp := installer.New(&installer.App{})
 	appStore, err := store.New(&store.Store{}, installerApp)
 	if err != nil {
-		log.Fatalf("init store on start of app err: %s", err.Error())
+		log.Fatalf("init appStore on start of app err: %s", err.Error())
 	}
-	app.store = appStore
+	app.appStore = appStore
 	app.App = installerApp
 	return app
 }

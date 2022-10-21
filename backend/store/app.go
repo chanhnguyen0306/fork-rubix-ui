@@ -21,15 +21,14 @@ type App struct {
 	ReleaseVersion string `json:"release_version"`
 }
 
-// AddApp make required dirs for the store
-func (inst *store) AddApp(app *App) error {
+func (inst *AppStore) AddApp(app *App) error {
 	if err := os.MkdirAll(inst.GetAppStoreAppPath(app.Name, app.Arch, app.Version), os.FileMode(FilePerm)); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (inst *store) ListStore() ([]App, error) {
+func (inst *AppStore) ListStore() ([]App, error) {
 	rootDir := inst.Store.UserStorePath
 	var files []App
 	app := App{}
@@ -56,7 +55,7 @@ func (inst *store) ListStore() ([]App, error) {
 }
 
 // StoreCheckAppExists  => /user/rubix/store/apps/flow-framework
-func (inst *store) StoreCheckAppExists(appName string) error {
+func (inst *AppStore) StoreCheckAppExists(appName string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
@@ -69,7 +68,7 @@ func (inst *store) StoreCheckAppExists(appName string) error {
 }
 
 // StoreCheckAppAndVersionExists  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *store) StoreCheckAppAndVersionExists(appName, arch, version string) error {
+func (inst *AppStore) StoreCheckAppAndVersionExists(appName, arch, version string) error {
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
@@ -85,7 +84,7 @@ func (inst *store) StoreCheckAppAndVersionExists(appName, arch, version string) 
 }
 
 // MakeUserPathTmpDir  => ~/rubix/tmp/tmp_45DF323E
-func (inst *store) MakeUserPathTmpDir() (string, error) {
+func (inst *AppStore) MakeUserPathTmpDir() (string, error) {
 	dir := uuid.ShortUUID("tmp")
 	p := path.Join(inst.Store.UserTmpPath, "tmp", dir)
 	return p, os.MkdirAll(p, os.FileMode(FilePerm))
