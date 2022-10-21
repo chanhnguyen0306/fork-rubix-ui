@@ -9,6 +9,10 @@ import { AddStyleModal } from "./AddStyleModal";
 import { useNodesSpec } from "../use-nodes-spec";
 import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
+import {
+  deviantMousePositionX,
+  deviantMousePositionY,
+} from "../util/autoLayout";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -138,7 +142,10 @@ const NodeMenu = ({
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
-  const mousePosition = { x: position.x - 125, y: position.y - 20 };
+  const mousePosition = {
+    x: position.x - deviantMousePositionX,
+    y: position.y - deviantMousePositionY,
+  };
 
   useOnPressKey("Escape", onClose);
 

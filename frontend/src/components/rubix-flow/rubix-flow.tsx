@@ -185,7 +185,7 @@ const Flow = (props: any) => {
   };
 
   const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
-    if (outputNodes.length === 0) return prevNodes;
+    if (outputNodes && outputNodes.length === 0) return prevNodes;
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
@@ -220,7 +220,7 @@ const Flow = (props: any) => {
 
   const handleRedo = () => {
     redo();
-    if (undoable.nodes.length === 0) redo();
+    if (undoable.nodes && undoable.nodes.length === 0) redo();
   };
 
   const handleDeleteEdges = (_nodes: any, _edges: any) => {
@@ -296,7 +296,7 @@ const Flow = (props: any) => {
       .then(async (res) => {
         const [_nodes, _edges] = behaveToFlow(res);
         const newNodes = await handleNodesEmptySettings(_nodes);
-        
+
         setNodes(newNodes);
         setEdges(_edges);
         setUndoable({
@@ -317,7 +317,12 @@ const Flow = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if (past.length !== 0 && undoable.nodes.length > 0) {
+    if (
+      past &&
+      past.length !== 0 &&
+      undoable.nodes &&
+      undoable.nodes.length > 0
+    ) {
       setNodes(undoable.nodes);
       setEdges(undoable.edges);
     }
@@ -358,7 +363,7 @@ const Flow = (props: any) => {
         onNodeDragStop={handleNodeDragStop}
       >
         <ControlUndoable
-          canUndo={canUndo && past.length !== 0}
+          canUndo={canUndo && past && past.length !== 0}
           onUndo={undo}
           canRedo={canRedo}
           onRedo={handleRedo}
@@ -409,7 +414,7 @@ export const RubixFlow = () => {
 
   return (
     <>
-      {nodesSpec.length > 0 ? (
+      {nodesSpec && nodesSpec.length > 0 ? (
         <Flow customNodeTypes={customNodeTypes} />
       ) : (
         <Spin />

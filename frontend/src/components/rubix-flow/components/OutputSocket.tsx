@@ -35,18 +35,21 @@ export const OutputSocket = ({
   const colorName = valueTypeColorMap[valueType];
   const [backgroundColor, borderColor] = colors[colorName];
 
-  const getValueOutput = useCallback((outputName: string) => {
-    if (dataOut) {
-      const out = dataOut.find(
-        (item: { pin: string }) => item.pin === outputName
-      );
-      if (valueType === "number") {
-        return out.value || 0;
+  const getValueOutput = useCallback(
+    (outputName: string) => {
+      if (dataOut) {
+        const out = dataOut.find(
+          (item: { pin: string }) => item.pin === outputName
+        );
+        if (valueType === "number") {
+          return out.value || 0;
+        }
+        return out.value;
       }
-      return out.value;
-    }
-    return "";
-  }, [valueType, dataOut]);
+      return "";
+    },
+    [valueType, dataOut]
+  );
 
   const getValueOptions = (value: boolean | null) => {
     switch (value) {
@@ -61,9 +64,10 @@ export const OutputSocket = ({
   };
 
   useEffect(() => {
-    const val = valueType === "boolean"
-      ? getValueOptions(getValueOutput(name))
-      : getValueOutput(name);
+    const val =
+      valueType === "boolean"
+        ? getValueOptions(getValueOutput(name))
+        : getValueOutput(name);
 
     setOutValue(val);
   }, [valueType, name, dataOut]);
@@ -80,7 +84,7 @@ export const OutputSocket = ({
       <AutoSizeInput
         type="text"
         className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
-        value={outValue}
+        value={outValue || ""}
         minWidth={40}
         disabled
       />

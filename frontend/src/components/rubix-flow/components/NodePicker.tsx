@@ -3,6 +3,10 @@ import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
 import { useOnPressKey } from "../hooks/useOnPressKey";
 import { NodeSpecJSON } from "../lib";
 import { useNodesSpec } from "../use-nodes-spec";
+import {
+  deviantMousePositionX,
+  deviantMousePositionY,
+} from "../util/autoLayout";
 
 export type NodePickerFilters = {
   handleType: "source" | "target";
@@ -30,7 +34,10 @@ const NodePicker = ({
   const [search, setSearch] = useState("");
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
-  const mousePosition = { x: position.x - 125, y: position.y - 20 };
+  const mousePosition = {
+    x: position.x - deviantMousePositionX,
+    y: position.y - deviantMousePositionY,
+  };
 
   useOnPressKey("Escape", onClose);
 
