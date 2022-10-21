@@ -9,6 +9,7 @@ type NodeProps = {
   selected: boolean;
   height: number;
   hasChild: boolean;
+  onDbClickTitle: () => void;
 };
 
 export const NodeContainer = ({
@@ -18,6 +19,7 @@ export const NodeContainer = ({
   children,
   height,
   hasChild,
+  onDbClickTitle,
 }: PropsWithChildren<NodeProps>) => {
   const colorName = categoryColorMap[category] || "gray";
   let [backgroundColor, borderColor, textColor] = colors[colorName];
@@ -32,7 +34,10 @@ export const NodeContainer = ({
         selected && "outline outline-1"
       )}
     >
-      <div className={`${backgroundColor} ${textColor} px-3 py-1 rounded-t`}>
+      <div
+        className={`${backgroundColor} ${textColor} px-3 py-1 rounded-t`}
+        onDoubleClick={onDbClickTitle}
+      >
         {title}
       </div>
       <div

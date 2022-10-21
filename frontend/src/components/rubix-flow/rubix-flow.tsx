@@ -266,13 +266,6 @@ const Flow = (props: any) => {
     setUndoable({ edges: _edges, nodes: _nodes });
   };
 
-  const handleNodeDoubleClick = (e: ReactMouseEvent, node: FlowNode) => {
-    e.preventDefault();
-    setSelectedNode(node);
-    setIsDoubleClick(true);
-    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
-  };
-
   const handleNodesEmptySettings = async (_nodes: NodeInterface[]) => {
     return Promise.all(
       await _nodes.map(async (node) => {
@@ -363,7 +356,6 @@ const Flow = (props: any) => {
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
         onNodeDragStop={handleNodeDragStop}
-        onNodeDoubleClick={handleNodeDoubleClick}
       >
         <ControlUndoable
           canUndo={canUndo && past.length !== 0}
