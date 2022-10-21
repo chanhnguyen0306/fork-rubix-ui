@@ -11,6 +11,8 @@ import { NodeExtend, NodeSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
+import { SettingsModal } from "./SettingsModal";
+import { useNodesSpec } from "../use-nodes-spec";
 
 type NodeProps = FlowNodeProps & {
   spec: NodeSpecJSON;
@@ -36,9 +38,11 @@ export const Node = (props: NodeProps) => {
   const { id, data, spec, selected } = props;
   const instance = useReactFlow();
   const edges = useEdges();
+  const [nodesSpec] = useNodesSpec();
   const handleChange = useChangeNodeData(id);
   const [widthInput, setWidthInput] = useState(-1);
   const [widthOutput, setWidthOutput] = useState(-1);
+  const [isSettingModal, setIsSettingModal] = useState(false);
 
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
   const node = instance.getNode(id) as NodeExtend;
@@ -51,6 +55,19 @@ export const Node = (props: NodeProps) => {
     setWidthOutput((prev: number) => Math.max(prev, width));
   };
 
+  const handleDbClickTitle = () => {
+    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
+      (item) => item.type === node.type
+    );
+    const isAllowSetting = nodeType?.allowSettings || false;
+
+    if (isAllowSetting) setIsSettingModal(true);
+  };
+
+  const handleCloseModalSetting = () => {
+    setIsSettingModal(false);
+  };
+
   return (
     <NodeContainer
       title={getTitle(spec.type)}
@@ -58,6 +75,7 @@ export const Node = (props: NodeProps) => {
       selected={selected}
       height={node?.height ?? 30}
       hasChild={node?.style?.height ? true : false}
+      onDbClickTitle={handleDbClickTitle}
     >
       {pairs.map(([input, output], ix) => {
         if (input && !data[input.name] && data[input.name] !== null) {
@@ -95,6 +113,12 @@ export const Node = (props: NodeProps) => {
           </div>
         );
       })}
+
+      <SettingsModal
+        node={node}
+        isModalVisible={isSettingModal}
+        onCloseModal={handleCloseModalSetting}
+      />
     </NodeContainer>
   );
 };

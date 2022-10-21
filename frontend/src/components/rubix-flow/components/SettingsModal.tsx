@@ -24,8 +24,8 @@ export const SettingsModal = ({
   const factory = new FlowFactory();
 
   useEffect(() => {
-    fetchSchemaJson();
-  }, []);
+    if (isModalVisible) fetchSchemaJson();
+  }, [isModalVisible]);
 
   const fetchSchemaJson = async () => {
     setIsLoadingForm(true);
