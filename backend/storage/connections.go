@@ -40,7 +40,7 @@ func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
 		return nil, err
 	}
 
-	//check if one exists with same name
+	// check if one exists with same name
 	name, _ := inst.SelectByName(rc.Name)
 	if err != nil {
 		return nil, err
@@ -126,7 +126,6 @@ func (inst *db) SelectByName(name string) (*RubixConnection, error) {
 		if connection.Name == name {
 			return &connection, nil
 		}
-
 	}
 	return nil, errors.New(fmt.Sprintf("failed to find connection by name: %s", name))
 }
@@ -143,7 +142,7 @@ func (inst *db) SelectAll() ([]RubixConnection, error) {
 			if matchConnUUID(data.UUID) {
 				resp = append(resp, data)
 			}
-			//fmt.Printf("key: %s, value: %s\n", key, value)
+			// fmt.Printf("key: %s, value: %s", key, value)
 			return true
 		})
 		return err

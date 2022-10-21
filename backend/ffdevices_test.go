@@ -7,7 +7,7 @@ import (
 
 func TestApp_GetNetworkDevices(t *testing.T) {
 
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.GetNetworkDevices("cloud", "rc", "net_98b19c63529d44ba")
 	pprint.PrintJOSN(resp)
 

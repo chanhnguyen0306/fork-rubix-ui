@@ -4,6 +4,7 @@ import (
 	"github.com/tidwall/buntdb"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 type db struct {
@@ -11,12 +12,15 @@ type db struct {
 }
 
 func New(dbFile string) Storage {
-	err := os.MkdirAll("data", 0755)
-	if err != nil {
-		panic("data directory creation issue")
-	}
 	if dbFile == "" {
 		dbFile = "data/data.db"
+	}
+	parentDir := filepath.Dir(dbFile)
+	if parentDir != "" {
+		err := os.MkdirAll(parentDir, 0755)
+		if err != nil {
+			panic("data directory creation issue")
+		}
 	}
 	newDb, err := buntdb.Open(dbFile)
 	if err != nil {
@@ -26,8 +30,7 @@ func New(dbFile string) Storage {
 }
 
 func (inst *db) Close() error {
-	inst.DB.Close()
-	return nil
+	return inst.DB.Close()
 }
 
 func matchConnUUID(uuid string) bool {

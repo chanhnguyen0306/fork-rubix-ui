@@ -7,13 +7,13 @@ import (
 )
 
 func TestApp_NodePallet(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.GetWiresConnections()
 	pprint.PrintJOSN(resp)
 }
 
 func TestApp_AddWiresConnection(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp := app.AddWiresConnection(&db.Connection{
 
 		Enabled:                       nil,
@@ -36,5 +36,5 @@ func TestApp_AddWiresConnection(t *testing.T) {
 	})
 
 	pprint.PrintJOSN(resp)
-	//*
+	// *
 }

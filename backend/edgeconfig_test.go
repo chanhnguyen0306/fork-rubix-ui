@@ -9,7 +9,7 @@ import (
 )
 
 func TestApp_edgeWriteWiresConfig(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp, err := app.edgeWriteWiresConfig("cloud", "rc")
 	fmt.Println(err)
 	if err != nil {
@@ -19,8 +19,8 @@ func TestApp_edgeWriteWiresConfig(t *testing.T) {
 }
 
 func TestApp_edgeReadConfigWires(t *testing.T) {
-	app := NewApp()
-	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.rubixWires, ".env")
+	app := MockNewApp()
+	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.RubixWires, ".env")
 	fmt.Println("connectionError", connectionError)
 	fmt.Println("requestError", requestError)
 	if connectionError != nil && requestError != nil {
@@ -29,7 +29,7 @@ func TestApp_edgeReadConfigWires(t *testing.T) {
 }
 
 func TestApp_edgeWriteBACnetConfig(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp, err := app.edgeWriteBACnetConfig("cloud", "rc", &ConfigBACnetServer{})
 	fmt.Println(err)
 	if err != nil {
@@ -39,8 +39,8 @@ func TestApp_edgeWriteBACnetConfig(t *testing.T) {
 }
 
 func TestApp_edgeReadConfig(t *testing.T) {
-	app := NewApp()
-	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.bacnetServerDriver, "config.yml")
+	app := MockNewApp()
+	resp, connectionError, requestError := app.edgeReadConfig("cloud", "rc", constants.BacnetServerDriver, "config.yml")
 	fmt.Println("connectionError", connectionError)
 	fmt.Println("requestError", requestError)
 	if connectionError != nil && requestError != nil {
@@ -53,10 +53,9 @@ func TestApp_edgeReadConfig(t *testing.T) {
 		}
 		pprint.PrintJOSN(data)
 	}
-
 }
 func TestApp_edgeReadBACnetConfig(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	resp, err := app.edgeReadBACnetConfig("cloud", "rc")
 	fmt.Println(err)
 	if err != nil {

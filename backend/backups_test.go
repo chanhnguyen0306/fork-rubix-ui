@@ -5,7 +5,7 @@ import (
 )
 
 func TestApp_ExportBackup(t *testing.T) {
-	// app := NewApp()
+	// app := MockNewApp()
 	// err := app.exportBackup("bac_B780EA6D70EC")
 	// fmt.Println(err)
 	// if err != nil {

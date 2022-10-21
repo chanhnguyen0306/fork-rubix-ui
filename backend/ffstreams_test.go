@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_AddStream(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	body := &model.Stream{
 		CommonStream: model.CommonStream{
 			CommonName: model.CommonName{

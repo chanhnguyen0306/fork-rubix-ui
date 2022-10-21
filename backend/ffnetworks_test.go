@@ -7,7 +7,7 @@ import (
 )
 
 func TestApp_getNetworksWithPointsDisplay(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	bulk, err := app.getNetworksWithPointsDisplay("cloud", "rc")
 	fmt.Println(err)
 	if err != nil {
@@ -20,7 +20,7 @@ func TestApp_getNetworksWithPointsDisplay(t *testing.T) {
 func TestApp_getNetwork(t *testing.T) {
 
 	// net_8e292db59d7e4ad8
-	app := NewApp()
+	app := MockNewApp()
 	network, err := app.getNetwork("cloud", "rc", "net_8e292db59d7e4ad8", true)
 	if err != nil {
 		return
@@ -31,7 +31,7 @@ func TestApp_getNetwork(t *testing.T) {
 func TestApp_getNetworksWithPoints(t *testing.T) {
 
 	// net_8e292db59d7e4ad8
-	app := NewApp()
+	app := MockNewApp()
 	network, err := app.getNetworksWithPoints("cloud", "rc")
 	if err != nil {
 		return

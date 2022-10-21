@@ -12,7 +12,7 @@ type testYml struct {
 }
 
 func TestApp_edgeReadFile(t *testing.T) {
-	app := NewApp()
+	app := MockNewApp()
 	file, err := app.edgeReadFile("cloud", "rc", "/data/flow-framework/config/config.yml")
 	fmt.Println(err)
 	fmt.Println(string(file))

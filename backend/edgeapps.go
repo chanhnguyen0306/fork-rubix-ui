@@ -134,7 +134,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	inst.crudMessage(true, fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
 
 	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
-	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch) // todo
+	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch)
 	if err != nil {
 		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
