@@ -8,5 +8,5 @@ export const autoLayout = (nodes: Node[], edges: Edge[]) => {
   });
 };
 
-export const deviantMousePositionX = 300;
+export const deviantMousePositionX = 125;
 export const deviantMousePositionY = 20;
