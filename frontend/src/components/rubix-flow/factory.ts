@@ -1,5 +1,5 @@
 import {
-  AddWiresConnection,
+  AddWiresConnection, BulkDeleteWiresConnection,
   DeleteWiresConnection,
   DownloadFlow,
   GetFlow,
@@ -15,6 +15,9 @@ import {db, node} from "../../../wailsjs/go/models";
 
 export class FlowFactory {
 
+  async BulkDeleteWiresConnection(uuids: Array<string>):Promise<any> {
+    return await BulkDeleteWiresConnection(uuids);
+  }
 
   async GetWiresConnections(): Promise<Array<db.Connection>> {
     return await GetWiresConnections();

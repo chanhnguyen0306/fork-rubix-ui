@@ -16,6 +16,5 @@ func TestApp_getInternetIP(t *testing.T) {
 func TestApp_Scanner(*testing.T) {
 	app := MockNewApp()
 	ips := app.Scanner("", "", 254, nil)
-
 	pprint.PrintJOSN(ips)
 }
