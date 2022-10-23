@@ -34,6 +34,7 @@ import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import ControlUndoable from "./components/ControlUndoable";
 import { NodeInterface } from "./lib/Nodes/NodeInterface";
+import { handleGetSettingType, handleNodesEmptySettings } from "./util/handleSettings";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -76,22 +77,6 @@ const Flow = (props: any) => {
     },
     [onEdgesChange]
   );
-
-  const handleGetSettingType = async (nodeType: string) => {
-    const nodeSettings: any = {};
-    const type = nodeType.split("/")[1];
-
-    const nodeSchema = (await factory.NodeSchema(type)) || {};
-    const properties = Object.entries(nodeSchema?.schema?.properties || {});
-
-    if (Object.entries(properties).length === 0) return nodeSettings;
-
-    for (const [key, item] of properties as [string, any]) {
-      nodeSettings[key] = item.default;
-    }
-
-    return nodeSettings;
-  };
 
   const handleAddNode = useCallback(
     async (
@@ -189,16 +174,7 @@ const Flow = (props: any) => {
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
-
-      if (index !== -1) {
-        node.settings = {
-          ...node.settings,
-          ...outputNodes[index]?.settings,
-        };
-      }
-
       node.data.out = outputNodes[index]?.outputs;
-
       return node;
     });
   };
@@ -230,7 +206,7 @@ const Flow = (props: any) => {
     });
   };
 
-  const handleCopyNodes = (_copied: { nodes: any; edges: any }) => {
+  const handleCopyNodes = async (_copied: { nodes: any; edges: any }) => {
     /* Unselected nodes, edges */
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
@@ -259,35 +235,13 @@ const Flow = (props: any) => {
       };
     });
 
+    _copied.nodes = await handleNodesEmptySettings(_copied.nodes);
+
     const _nodes = [...nodes, ..._copied.nodes];
     const _edges = [...edges, ..._copied.edges];
     setNodes(_nodes);
     setEdges(_edges);
     setUndoable({ edges: _edges, nodes: _nodes });
-  };
-
-  const handleNodesEmptySettings = async (_nodes: NodeInterface[]) => {
-    return Promise.all(
-      await _nodes.map(async (node) => {
-        const newNode: NodeInterface = node;
-
-        if (newNode.settings && "selected" in newNode.settings) {
-          delete newNode.settings.selected;
-        }
-
-        if (
-          newNode.type &&
-          (!newNode.settings || Object.entries(newNode.settings).length === 0)
-        ) {
-          node.settings = {
-            ...node.settings,
-            ...(await handleGetSettingType(newNode.type)),
-          };
-        }
-
-        return node;
-      })
-    );
   };
 
   useEffect(() => {
@@ -361,6 +315,7 @@ const Flow = (props: any) => {
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
         onNodeDragStop={handleNodeDragStop}
+        multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
       >
         <ControlUndoable
           canUndo={canUndo && past && past.length !== 0}
