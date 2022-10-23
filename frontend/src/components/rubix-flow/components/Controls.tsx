@@ -53,18 +53,9 @@ const Controls = ({
     setLoadModalOpen(true);
   });
 
-  /* Ctrl + d (key): Clear items selected */
+  /* Ctrl + d (key): Download/deploy flow */
   useCtrlPressKey("KeyD", () => {
-    const _nodes = instance.getNodes();
-    const _edges = instance.getEdges();
-
-    const newNodes = _nodes.filter((item) => !item.selected);
-    const newEdges = _edges.filter((item) => !item.selected);
-
-    instance.setNodes(newNodes);
-    instance.setEdges(newEdges);
-
-    onDeleteEdges(newNodes, newEdges);
+    download();
   });
 
   /* Ctrl + a (key): Select all items */

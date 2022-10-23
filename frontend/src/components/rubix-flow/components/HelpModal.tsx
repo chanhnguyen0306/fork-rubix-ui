@@ -19,7 +19,7 @@ export const HelpModal: FC<HelpModalProps> = ({ open = false, onClose }) => {
     "Hold Control and A to select all node.",
     "Hold Control and E for export to nodes .",
     "Hold Control and I for import to nodes.",  
-    "Hold Control and D to delete nodes selected.",
+    "Hold Control and D to download/deploy flow.",
     "Hold Control and C to copy nodes.",
     "Hold Control and V to paste nodes.",
     "Hold Control and Z to undo.",

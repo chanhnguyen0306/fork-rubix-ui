@@ -6,7 +6,11 @@ export const useCtrlPressKey = (
 ) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.code === key) callback(e);
+      if ((e.ctrlKey || e.metaKey) && e.code === key) {
+        e.preventDefault();
+        e.stopPropagation();
+        callback(e);
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
 
