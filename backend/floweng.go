@@ -42,6 +42,38 @@ func (inst *App) AddWiresConnection(body *db.Connection) *db.Connection {
 	return resp
 }
 
+func (inst *App) BulkDeleteWiresConnection(uuids []string) interface{} {
+	var addedCount int
+	var errorCount int
+	for _, item := range uuids {
+		err := inst.deleteWiresConnection(item)
+		if err != nil {
+			errorCount++
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		} else {
+			addedCount++
+		}
+	}
+	if addedCount > 0 {
+		inst.uiSuccessMessage(fmt.Sprintf("delete count: %d", addedCount))
+	}
+	if errorCount > 0 {
+		inst.uiErrorMessage(fmt.Sprintf("failed to delete count: %d", errorCount))
+	}
+	return nil
+}
+
+func (inst *App) deleteWiresConnection(uuid string) error {
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	err := client.DeleteConnection(uuid)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		return err
+	}
+	inst.uiSuccessMessage(fmt.Sprintf("ok"))
+	return nil
+}
+
 func (inst *App) DeleteWiresConnection(uuid string) {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	err := client.DeleteConnection(uuid)
