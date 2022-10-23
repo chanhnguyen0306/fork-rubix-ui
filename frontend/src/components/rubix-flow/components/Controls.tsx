@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ClearModal } from "./ClearModal";
 import { HelpModal } from "./HelpModal";
 import { LoadModal } from "./LoadModal";
 import { SaveModal } from "./SaveModal";
 import { flowToBehave } from "../transformers/flowToBehave";
 import { useReactFlow } from "react-flow-renderer/nocss";
-import { useKeyPress } from "react-flow-renderer";
 import {
   QuestionCircleOutlined,
   DownloadOutlined,
@@ -14,6 +13,7 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
+import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -34,16 +34,6 @@ const Controls = ({
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const instance = useReactFlow();
-
-  const ctrlAndEPressed = useKeyPress("Control+e");
-  const ctrlAndIPressed = useKeyPress("Control+i");
-  const ctrlAndDPressed = useKeyPress("Control+d");
-  const ctrlAndAPressed = useKeyPress("Control+a");
-  const ctrlAndCPressed = useKeyPress("Control+c");
-  const ctrlAndVPressed = useKeyPress("Control+v");
-  const ctrlAndZPressed = useKeyPress("Control+z");
-  const ctrlAndYPressed = useKeyPress("Control+y");
-
   const factory = new FlowFactory();
 
   const download = async () => {
@@ -54,19 +44,17 @@ const Controls = ({
   };
 
   /* Ctrl + e (key): Save Graph */
-  useEffect(() => {
-    ctrlAndEPressed && setSaveModalOpen(true);
-  }, [ctrlAndEPressed]);
+  useCtrlPressKey("KeyE", () => {
+    setSaveModalOpen(true);
+  });
 
   /* Ctrl + i (key): Load Graph */
-  useEffect(() => {
-    ctrlAndIPressed && setLoadModalOpen(true);
-  }, [ctrlAndIPressed]);
+  useCtrlPressKey("KeyI", () => {
+    setLoadModalOpen(true);
+  });
 
   /* Ctrl + d (key): Clear items selected */
-  useEffect(() => {
-    if (!ctrlAndDPressed) return;
-
+  useCtrlPressKey("KeyD", () => {
     const _nodes = instance.getNodes();
     const _edges = instance.getEdges();
 
@@ -77,12 +65,10 @@ const Controls = ({
     instance.setEdges(newEdges);
 
     onDeleteEdges(newNodes, newEdges);
-  }, [ctrlAndDPressed]);
+  });
 
   /* Ctrl + a (key): Select all items */
-  useEffect(() => {
-    if (!ctrlAndAPressed) return;
-
+  useCtrlPressKey("KeyA", () => {
     const _nodes = instance.getNodes();
     const _edges = instance.getEdges();
 
@@ -97,14 +83,11 @@ const Controls = ({
 
     instance.setNodes(newNodes);
     instance.setEdges(newEdges);
-  }, [ctrlAndAPressed]);
+  });
 
   /* Ctrl + C (key): Copy nodes */
-  useEffect(() => {
-    if (!ctrlAndCPressed) return;
-
+  useCtrlPressKey("KeyC", () => {
     const nodesCopied = instance.getNodes().filter((item) => item.selected);
-
     const nodeIdCopied = nodesCopied.map((item) => item.id);
     const edgesCopied = instance
       .getEdges()
@@ -119,22 +102,22 @@ const Controls = ({
       nodes: nodesCopied,
       edges: edgesCopied,
     });
-  }, [ctrlAndCPressed]);
+  });
 
   /* Ctrl + V (key): Paste nodes */
-  useEffect(() => {
-    if (ctrlAndVPressed) onCopyNodes(copied);
-  }, [ctrlAndVPressed]);
+  useCtrlPressKey("KeyV", () => {
+    onCopyNodes(copied);
+  });
 
   /* Ctrl + Z (key): Undo */
-  useEffect(() => {
-    if (ctrlAndZPressed) onUndo();
-  }, [ctrlAndZPressed]);
+  useCtrlPressKey("KeyZ", () => {
+    onUndo();
+  });
 
   /* Ctrl + Y (key): Redo */
-  useEffect(() => {
-    if (ctrlAndYPressed) onRedo();
-  }, [ctrlAndYPressed]);
+  useCtrlPressKey("KeyY", () => {
+    onRedo();
+  });
 
   return (
     <>

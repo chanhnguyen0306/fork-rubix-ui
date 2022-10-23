@@ -361,6 +361,7 @@ const Flow = (props: any) => {
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
         onNodeDragStop={handleNodeDragStop}
+        multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
       >
         <ControlUndoable
           canUndo={canUndo && past && past.length !== 0}
