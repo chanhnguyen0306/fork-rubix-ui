@@ -237,7 +237,7 @@ export const MenuSidebar = () => {
     },
     { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
     { name: "Tools", icon: ToolOutlined, link: "" },
-    { name: "Flow", icon: ApartmentOutlined, link: ROUTES.RUBIX_FLOW },
+    { name: "Flow", icon: ApartmentOutlined, link: "" },
   ];
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
@@ -255,9 +255,9 @@ export const MenuSidebar = () => {
         name: name,
         children: [
           {
-            key: "Networking",
-            name: "networking",
-            label: <NavLink to="/networking">Networking</NavLink>,
+            key: ROUTES.NETWORKING,
+            name: ROUTES.NETWORKING,
+            label: <NavLink to={ROUTES.NETWORKING}>Networking</NavLink>,
           },
           {
             key: "Utils",
@@ -265,16 +265,39 @@ export const MenuSidebar = () => {
             label: <div>Utils</div>,
             children: [
               {
-                key: "Logs",
-                name: "logs",
-                label: <NavLink to="/logs">Logs</NavLink>,
+                key: ROUTES.LOGS,
+                name: ROUTES.LOGS,
+                label: <NavLink to={ROUTES.LOGS}>Logs</NavLink>,
               },
               {
-                key: "Backups",
-                name: "backups",
-                label: <NavLink to="/backups">Backups</NavLink>,
+                key: ROUTES.BACKUPS,
+                name: ROUTES.BACKUPS,
+                label: <NavLink to={ROUTES.BACKUPS}>Backups</NavLink>,
               },
             ],
+          },
+        ],
+      };
+    }
+
+    if (name === "Flow") {
+      return {
+        key: name,
+        icon: <Icon />,
+        label: <div>{name}</div>,
+        name: name,
+        children: [
+          {
+            key: ROUTES.RUBIX_FLOW,
+            name: ROUTES.RUBIX_FLOW,
+            label: <NavLink to={ROUTES.RUBIX_FLOW}>Flow</NavLink>,
+          },
+          {
+            key: ROUTES.WIRES_CONNECTIONS,
+            name: ROUTES.WIRES_CONNECTIONS,
+            label: (
+              <NavLink to={ROUTES.WIRES_CONNECTIONS}>Wires Connections</NavLink>
+            ),
           },
         ],
       };
