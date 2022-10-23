@@ -11,6 +11,7 @@ import Delay from "../examples/basics/Delay.json";
 import HelloWorld from "../examples/basics/HelloWorld.json";
 import Math from "../examples/basics/Math.json";
 import State from "../examples/basics/State.json";
+import { handleNodesEmptySettings } from "../util/handleSettings";
 
 const examples = {
   branch: Branch,
@@ -31,7 +32,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
 
   const instance = useReactFlow();
 
-  const handleLoad = () => {
+  const handleLoad = async () => {
     let graph;
     if (value !== undefined) {
       graph = JSON.parse(value) as GraphJSON;
@@ -41,11 +42,13 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
 
     if (graph === undefined) return;
 
-    const [nodes, edges] = behaveToFlow(graph);
+    let [nodes, edges] = behaveToFlow(graph);
 
     if (hasPositionMetaData(graph) === false) {
       autoLayout(nodes, edges);
     }
+
+    nodes = await handleNodesEmptySettings(nodes);
 
     instance.setNodes([...instance.getNodes(), ...nodes]);
     instance.setEdges([...instance.getEdges(), ...edges]);
