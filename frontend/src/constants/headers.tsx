@@ -664,6 +664,20 @@ export const NETWORKING_HEADERS = [
   },
 ];
 
+export const WIRES_CONNECTIONS_HEADERS = [
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
 //--------------schema-------------//
 export const FLOW_NETWORKS_SCHEMA = {
   name: {
