@@ -672,6 +672,23 @@ export const WIRES_CONNECTIONS_HEADERS = [
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
+    title: "host",
+    dataIndex: "host",
+    key: "host",
+    sorter: (a: any, b: any) => a.host.localeCompare(b.host),
+  },
+  {
+    title: "port",
+    dataIndex: "port",
+    key: "port",
+  },
+  {
+    title: "application",
+    dataIndex: "application",
+    key: "application",
+    sorter: (a: any, b: any) => a.application.localeCompare(b.application),
+  },
+  {
     title: "uuid",
     dataIndex: "uuid",
     key: "uuid",

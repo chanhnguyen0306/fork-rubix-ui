@@ -19,7 +19,6 @@ export const WiresConnections = () => {
     try {
       let res = await factory.GetWiresConnections();
       setData(res);
-      console.log(res);
     } catch (error) {
       setData([]);
     } finally {
