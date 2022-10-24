@@ -7,10 +7,12 @@ export const useCtrlPressKey = (
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.code === key) {
-        e.preventDefault();
-        e.stopPropagation();
-        callback(e);
-      }
+        if (e.code !== "KeyC" && e.code !== "KeyV") {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        callback(e)
+      };
     };
     document.addEventListener("keydown", handleKeyDown);
 
