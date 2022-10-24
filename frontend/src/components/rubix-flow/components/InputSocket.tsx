@@ -96,6 +96,10 @@ export const InputSocket = ({
     return valueType === "boolean" ? getNumberOptions(value) : input.value;
   };
 
+  const findBooleanValueInput = () => {
+    return dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+  }
+
   useEffect(() => {
     if (refName.current) {
       const _width = refName.current.offsetWidth;
@@ -137,18 +141,26 @@ export const InputSocket = ({
                 onBlur={onBlurInputNumber}
               />
             )}
-            {valueType === "boolean" && (
-              <select
-                value={getDataByConnected(getNumberOptions(value))}
-                className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                onChange={onChangeCheckbox}
-                style={{ paddingRight: 18 }}
-              >
-                <option value="0">true</option>
-                <option value="1">false</option>
-                <option value="2">null</option>
-              </select>
-            )}
+            {valueType === "boolean" &&
+              (connected ? (
+                <AutoSizeInput
+                  type="text"
+                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  value={findBooleanValueInput()}
+                  disabled
+                />
+              ) : (
+                <select
+                  value={getDataByConnected(getNumberOptions(value))}
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  onChange={onChangeCheckbox}
+                  style={{ paddingRight: 18 }}
+                >
+                  <option value="0">true</option>
+                  <option value="1">false</option>
+                  <option value="2">null</option>
+                </select>
+              ))}
           </div>
         </div>
       )}
