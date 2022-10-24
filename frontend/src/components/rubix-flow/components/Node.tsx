@@ -99,6 +99,7 @@ export const Node = (props: NodeProps) => {
                 connected={isHandleConnected(edges, id, input.name, "target")}
                 minWidth={widthInput}
                 onSetWidthInput={handleSetWidthInput}
+                dataInput={data.inputs}
               />
             )}
             {output && (
