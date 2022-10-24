@@ -10,9 +10,9 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-const flowEngIP = "0.0.0.0"
+var flowEngIP = "0.0.0.0"
 
-func (inst *App) GetWiresConnections() []db.Connection {
+func (inst *App) GetWiresConnections(connUUID, hostUUID string) []db.Connection {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.GetConnections()
 	if err != nil {
@@ -22,7 +22,7 @@ func (inst *App) GetWiresConnections() []db.Connection {
 	return resp
 }
 
-func (inst *App) UpdateWiresConnection(uuid string, body *db.Connection) *db.Connection {
+func (inst *App) UpdateWiresConnection(connUUID, hostUUID string, uuid string, body *db.Connection) *db.Connection {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.UpdateConnection(uuid, body)
 	if err != nil {
@@ -32,7 +32,7 @@ func (inst *App) UpdateWiresConnection(uuid string, body *db.Connection) *db.Con
 	return resp
 }
 
-func (inst *App) AddWiresConnection(body *db.Connection) *db.Connection {
+func (inst *App) AddWiresConnection(connUUID, hostUUID string, body *db.Connection) *db.Connection {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.AddConnection(body)
 	if err != nil {
@@ -42,11 +42,11 @@ func (inst *App) AddWiresConnection(body *db.Connection) *db.Connection {
 	return resp
 }
 
-func (inst *App) BulkDeleteWiresConnection(uuids []string) interface{} {
+func (inst *App) BulkDeleteWiresConnection(connUUID, hostUUID string, uuids []string) interface{} {
 	var addedCount int
 	var errorCount int
 	for _, item := range uuids {
-		err := inst.deleteWiresConnection(item)
+		err := inst.deleteWiresConnection(connUUID, hostUUID, item)
 		if err != nil {
 			errorCount++
 			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -63,7 +63,7 @@ func (inst *App) BulkDeleteWiresConnection(uuids []string) interface{} {
 	return nil
 }
 
-func (inst *App) deleteWiresConnection(uuid string) error {
+func (inst *App) deleteWiresConnection(connUUID, hostUUID string, uuid string) error {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	err := client.DeleteConnection(uuid)
 	if err != nil {
@@ -74,7 +74,7 @@ func (inst *App) deleteWiresConnection(uuid string) error {
 	return nil
 }
 
-func (inst *App) DeleteWiresConnection(uuid string) {
+func (inst *App) DeleteWiresConnection(connUUID, hostUUID string, uuid string) {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	err := client.DeleteConnection(uuid)
 	if err != nil {
@@ -84,7 +84,7 @@ func (inst *App) DeleteWiresConnection(uuid string) {
 	inst.uiSuccessMessage(fmt.Sprintf("ok"))
 }
 
-func (inst *App) GetWiresConnection(uuid string) *db.Connection {
+func (inst *App) GetWiresConnection(connUUID, hostUUID string, uuid string) *db.Connection {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.GetConnection(uuid)
 	if err != nil {
@@ -94,7 +94,7 @@ func (inst *App) GetWiresConnection(uuid string) *db.Connection {
 	return resp
 }
 
-func (inst *App) NodeValue(nodeUUID string) *node.Values {
+func (inst *App) NodeValue(connUUID, hostUUID string, nodeUUID string) *node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeValue(nodeUUID)
 	if err != nil {
@@ -103,7 +103,7 @@ func (inst *App) NodeValue(nodeUUID string) *node.Values {
 	return resp
 }
 
-func (inst *App) NodeValues() []node.Values {
+func (inst *App) NodeValues(connUUID, hostUUID string) []node.Values {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeValues()
 	if err != nil {
@@ -113,7 +113,7 @@ func (inst *App) NodeValues() []node.Values {
 	return resp
 }
 
-func (inst *App) GetFlow() interface{} {
+func (inst *App) GetFlow(connUUID, hostUUID string) interface{} {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.GetFlow()
 	if err != nil {
@@ -123,7 +123,7 @@ func (inst *App) GetFlow() interface{} {
 	return resp
 }
 
-func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
+func (inst *App) NodeSchema(connUUID, hostUUID string, nodeName string) *flowcli.Schema {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodeSchema(nodeName)
 	if err != nil {
@@ -133,7 +133,7 @@ func (inst *App) NodeSchema(nodeName string) *flowcli.Schema {
 	return resp
 }
 
-func (inst *App) NodePallet() []nodes.PalletNode {
+func (inst *App) NodePallet(connUUID, hostUUID string) []nodes.PalletNode {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	resp, err := client.NodePallet()
 	if err != nil {
@@ -143,7 +143,7 @@ func (inst *App) NodePallet() []nodes.PalletNode {
 	return resp
 }
 
-func (inst *App) DownloadFlow(encodedNodes interface{}, restartFlow bool) *flow.Message {
+func (inst *App) DownloadFlow(connUUID, hostUUID string, encodedNodes interface{}, restartFlow bool) *flow.Message {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	downloadFlow, err := client.DownloadFlow(encodedNodes, restartFlow)
 	if err != nil {
@@ -155,7 +155,7 @@ func (inst *App) DownloadFlow(encodedNodes interface{}, restartFlow bool) *flow.
 	return downloadFlow
 }
 
-func (inst *App) DownloadFlowDecoded(encodedNodes interface{}, restartFlow bool) *flow.Message {
+func (inst *App) DownloadFlowDecoded(connUUID, hostUUID string, encodedNodes interface{}, restartFlow bool) *flow.Message {
 	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
 	nodeList := &nodes.NodesList{}
 	err := mapstructure.Decode(encodedNodes, &nodeList)
