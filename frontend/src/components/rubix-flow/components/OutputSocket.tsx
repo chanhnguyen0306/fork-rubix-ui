@@ -41,8 +41,9 @@ export const OutputSocket = ({
         const out = dataOut.find(
           (item: { pin: string }) => item.pin === outputName
         );
-        if (valueType === "number") {
-          return out.value || 0;
+        if (valueType === "number" && out) {
+          if (out.value === null) out.value = "null";
+          return out.value || "0";
         }
         return out.value;
       }
