@@ -757,3 +757,35 @@ export const FLOW_NETWORKS_SCHEMA = {
     type: "string",
   },
 };
+
+export const WIRES_CONNECTION_SCHEMA = {
+  name: {
+    maxLength: 50,
+    minLength: 2,
+    title: "name",
+    type: "string",
+  },
+  host: {
+    type: "string",
+    title: "host",
+    default: "0.0.0.0",
+  },
+  port: {
+    type: "number",
+    title: "port",
+    minLength: 2,
+    maxLength: 65535,
+    default: 1665,
+    readOnly: false,
+  },
+  application: {
+    type: "string",
+    title: "application",
+    default: "flow",
+  },
+  uuid: {
+    readOnly: true,
+    title: "uuid",
+    type: "string",
+  },
+};

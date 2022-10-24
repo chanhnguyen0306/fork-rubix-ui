@@ -1,14 +1,22 @@
 import { Spin } from "antd";
 import { useState } from "react";
-import { backend } from "../../../../wailsjs/go/models";
+import { db } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
-import { RbDeleteButton } from "../../../common/rb-table-actions";
-import { WIRES_CONNECTIONS_HEADERS } from "../../../constants/headers";
+import { RbAddButton, RbDeleteButton } from "../../../common/rb-table-actions";
+import {
+  WIRES_CONNECTIONS_HEADERS,
+  WIRES_CONNECTION_SCHEMA,
+} from "../../../constants/headers";
 import { FlowFactory } from "../../rubix-flow/factory";
+import { CreateModal } from "./create";
+import Connection = db.Connection;
 
 export const WiresConnectionsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<string>);
+  const [schema, setSchema] = useState({});
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 
   const factory = new FlowFactory();
 
@@ -21,8 +29,6 @@ export const WiresConnectionsTable = (props: any) => {
   };
 
   const bulkDelete = async () => {
-    console.log(selectedUUIDs);
-
     try {
       await factory.BulkDeleteWiresConnection(selectedUUIDs);
     } catch (error) {
@@ -32,8 +38,21 @@ export const WiresConnectionsTable = (props: any) => {
     }
   };
 
+  const showCreateModal = () => {
+    setIsCreateModalVisible(true);
+    const schema = {
+      properties: WIRES_CONNECTION_SCHEMA,
+    };
+    setSchema(schema);
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateModalVisible(false);
+  };
+
   return (
     <>
+      <RbAddButton handleClick={showCreateModal} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"
@@ -41,6 +60,12 @@ export const WiresConnectionsTable = (props: any) => {
         dataSource={data}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
+      />
+      <CreateModal
+        isModalVisible={isCreateModalVisible}
+        schema={schema}
+        onCloseModal={closeCreateModal}
+        refreshList={refreshList}
       />
     </>
   );
