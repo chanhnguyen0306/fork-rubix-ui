@@ -243,7 +243,7 @@ export const MenuSidebar = () => {
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon: Icon, link } = item;
 
-    if (name === "Supervisors") {
+    if (name === "Supervisors" && routeData.length > 0) {
       return { ...routeData[0], icon: <Icon /> } as any;
     }
 
