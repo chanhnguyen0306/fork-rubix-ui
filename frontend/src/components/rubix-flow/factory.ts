@@ -18,6 +18,7 @@ export class FlowFactory {
   // arg1 is the connectionUUID
   // arg2 is hostUUID
   // arg3 is used when user is programming on flow localhost (as in running rubix-edge-wires backend on their PC)
+  // set arg3 to true if its a remote connection
 
   async BulkDeleteWiresConnection(uuids: Array<string>):Promise<any> {
     return await BulkDeleteWiresConnection("", "",false, uuids);
