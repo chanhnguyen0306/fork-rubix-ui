@@ -7,7 +7,7 @@ import Connection = db.Connection;
 
 export const WiresConnections = () => {
   const [data, setData] = useState([] as Connection[]);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
 
   let factory = new FlowFactory();
 
@@ -17,6 +17,7 @@ export const WiresConnections = () => {
 
   const fetch = async () => {
     try {
+      setIsFetching(true);
       let res = await factory.GetWiresConnections();
       setData(res);
     } catch (error) {
