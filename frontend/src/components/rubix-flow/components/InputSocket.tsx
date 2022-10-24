@@ -16,7 +16,6 @@ export type InputSocketProps = {
   connected: boolean;
   value: any | undefined;
   minWidth: number;
-  dataInput: any;
   onChange: (key: string, value: any) => void;
   onSetWidthInput: (width: number) => void;
 } & InputSocketSpecJSON;
@@ -50,15 +49,14 @@ const getNumberOptions = (value: boolean) => {
 };
 
 export const InputSocket = ({
-  connected,
-  value,
-  onChange,
-  name,
-  valueType,
-  minWidth,
-  onSetWidthInput,
-  dataInput,
-}: InputSocketProps) => {
+                              connected,
+                              value,
+                              onChange,
+                              name,
+                              valueType,
+                              minWidth,
+                              onSetWidthInput,
+                            }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(value || "");
   const refName = useRef<HTMLDivElement>(null);
@@ -73,12 +71,12 @@ export const InputSocket = ({
 
   const onBlurInputNumber = (e: React.FormEvent<HTMLInputElement>) => {
     if (inputNumber.match(REGEX_NUMBER)) {
-      onChange(name, inputNumber.toString());
+      onChange(name, Number(inputNumber));
     } else if (inputNumber === "null") {
-      onChange(name, 0); /* Value will equal null */
+      onChange(name, "null");
     } else {
       setInputNumber("0");
-      onChange(name, "0");
+      onChange(name, 0);
     }
   };
 
@@ -86,19 +84,6 @@ export const InputSocket = ({
     const value = getValueOptions(Number((e.target as HTMLInputElement).value));
     onChange(name, value);
   };
-
-  const getDataByConnected = (valueCurrent: number | string | boolean) => {
-    if (!connected) return valueCurrent;
-    if (!dataInput) return valueType === "boolean" ? 1 : "";
-
-    const input = dataInput.find((item: { pin: string }) => item.pin === name);
-
-    return valueType === "boolean" ? getNumberOptions(value) : input.value;
-  };
-
-  const findBooleanValueInput = () => {
-    return dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
-  }
 
   useEffect(() => {
     if (refName.current) {
@@ -123,35 +108,28 @@ export const InputSocket = ({
           >
             {name}
           </div>
-          <div>
-            {valueType === "string" && (
-              <AutoSizeInput
-                type="text"
-                className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                value={getDataByConnected(value || "")}
-                onChange={(e) => onChange(name, e.currentTarget.value)}
-              />
-            )}
-            {valueType === "number" && (
-              <AutoSizeInput
-                type="text"
-                className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                value={getDataByConnected(inputNumber)}
-                onChange={onChangeInputNumber}
-                onBlur={onBlurInputNumber}
-              />
-            )}
-            {valueType === "boolean" &&
-              (connected ? (
+          {(connected === false || valueType === "boolean") && (
+            <>
+              {valueType === "string" && (
+                <AutoSizeInput
+                  type="text"
+                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  value={value || ""}
+                  onChange={(e) => onChange(name, e.currentTarget.value)}
+                />
+              )}
+              {valueType === "number" && (
                 <AutoSizeInput
                   type="text"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={findBooleanValueInput()}
-                  disabled
+                  value={inputNumber}
+                  onChange={onChangeInputNumber}
+                  onBlur={onBlurInputNumber}
                 />
-              ) : (
+              )}
+              {valueType === "boolean" && (
                 <select
-                  value={getDataByConnected(getNumberOptions(value))}
+                  value={getNumberOptions(value)}
                   className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   onChange={onChangeCheckbox}
                   style={{ paddingRight: 18 }}
@@ -160,8 +138,9 @@ export const InputSocket = ({
                   <option value="1">false</option>
                   <option value="2">null</option>
                 </select>
-              ))}
-          </div>
+              )}
+            </>
+          )}
         </div>
       )}
       <Handle

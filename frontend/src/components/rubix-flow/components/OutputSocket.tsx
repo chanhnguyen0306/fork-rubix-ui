@@ -20,13 +20,13 @@ export type OutputSocketProps = {
 } & OutputSocketSpecJSON;
 
 export const OutputSocket = ({
-  connected,
-  valueType,
-  name,
-  minWidth,
-  dataOut,
-  onSetWidthInput,
-}: OutputSocketProps) => {
+                               connected,
+                               valueType,
+                               name,
+                               minWidth,
+                               dataOut,
+                               onSetWidthInput,
+                             }: OutputSocketProps) => {
   const instance = useReactFlow();
   const refName = useRef<HTMLDivElement>(null);
   const [outValue, setOutValue] = useState<string | number>("");
@@ -41,9 +41,8 @@ export const OutputSocket = ({
         const out = dataOut.find(
           (item: { pin: string }) => item.pin === outputName
         );
-        if (valueType === "number" && out) {
-          if (out.value === null) out.value = "null";
-          return out.value || "0";
+        if (valueType === "number") {
+          return out.value || 0;
         }
         return out.value;
       }
