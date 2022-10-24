@@ -71,12 +71,12 @@ export const InputSocket = ({
 
   const onBlurInputNumber = (e: React.FormEvent<HTMLInputElement>) => {
     if (inputNumber.match(REGEX_NUMBER)) {
-      onChange(name, Number(inputNumber));
+      onChange(name, inputNumber.toString());
     } else if (inputNumber === "null") {
-      onChange(name, "null");
+      onChange(name, 0); /* Value will equal null */
     } else {
       setInputNumber("0");
-      onChange(name, 0);
+      onChange(name, "0");
     }
   };
 
