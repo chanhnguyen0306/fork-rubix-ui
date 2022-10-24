@@ -174,6 +174,7 @@ const Flow = (props: any) => {
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
+      node.data.inputs = outputNodes[index]?.inputs;
       node.data.out = outputNodes[index]?.outputs;
       return node;
     });
