@@ -16,6 +16,7 @@ export type InputSocketProps = {
   connected: boolean;
   value: any | undefined;
   minWidth: number;
+  dataInput: any;
   onChange: (key: string, value: any) => void;
   onSetWidthInput: (width: number) => void;
 } & InputSocketSpecJSON;
@@ -56,6 +57,7 @@ export const InputSocket = ({
                               valueType,
                               minWidth,
                               onSetWidthInput,
+                              dataInput,
                             }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(value || "");
@@ -85,6 +87,19 @@ export const InputSocket = ({
     onChange(name, value);
   };
 
+  const getDataByConnected = (valueCurrent: number | string | boolean) => {
+    if (!connected) return valueCurrent;
+    if (!dataInput) return valueType === "boolean" ? 1 : "";
+
+    const input = dataInput.find((item: { pin: string }) => item.pin === name);
+
+    return valueType === "boolean" ? getNumberOptions(value) : input.value;
+  };
+
+  const findBooleanValueInput = () => {
+    return dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+  }
+
   useEffect(() => {
     if (refName.current) {
       const _width = refName.current.offsetWidth;
@@ -108,28 +123,35 @@ export const InputSocket = ({
           >
             {name}
           </div>
-          {(connected === false || valueType === "boolean") && (
-            <>
-              {valueType === "string" && (
-                <AutoSizeInput
-                  type="text"
-                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={value || ""}
-                  onChange={(e) => onChange(name, e.currentTarget.value)}
-                />
-              )}
-              {valueType === "number" && (
+          <div>
+            {valueType === "string" && (
+              <AutoSizeInput
+                type="text"
+                className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                value={getDataByConnected(value || "")}
+                onChange={(e) => onChange(name, e.currentTarget.value)}
+              />
+            )}
+            {valueType === "number" && (
+              <AutoSizeInput
+                type="text"
+                className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                value={getDataByConnected(inputNumber)}
+                onChange={onChangeInputNumber}
+                onBlur={onBlurInputNumber}
+              />
+            )}
+            {valueType === "boolean" &&
+              (connected ? (
                 <AutoSizeInput
                   type="text"
                   className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  value={inputNumber}
-                  onChange={onChangeInputNumber}
-                  onBlur={onBlurInputNumber}
+                  value={findBooleanValueInput()}
+                  disabled
                 />
-              )}
-              {valueType === "boolean" && (
+              ) : (
                 <select
-                  value={getNumberOptions(value)}
+                  value={getDataByConnected(getNumberOptions(value))}
                   className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   onChange={onChangeCheckbox}
                   style={{ paddingRight: 18 }}
@@ -138,9 +160,8 @@ export const InputSocket = ({
                   <option value="1">false</option>
                   <option value="2">null</option>
                 </select>
-              )}
-            </>
-          )}
+              ))}
+          </div>
         </div>
       )}
       <Handle
