@@ -26,6 +26,7 @@ export const NodeContainer = ({
   if (selected) {
     borderColor = "border-gray-800";
   }
+
   return (
     <div
       className={cx(
@@ -39,10 +40,11 @@ export const NodeContainer = ({
         onDoubleClick={onDbClickTitle}
       >
         {title}
+        <div>{category}</div>
       </div>
       <div
         className={`flex flex-col gap-2 py-3 border-l border-r border-b ${borderColor}`}
-        style={{ minHeight: height - 27 }}
+        style={{ minHeight: height ? height - 50 : "auto" }}
       >
         {children}
       </div>
