@@ -30,8 +30,8 @@ select {
 }
 
 .react-flow__edge-path {
-  stroke: #b1b1b7;
-  stroke-width: 2;
+  stroke: #555 !important;
+  stroke-width: 2 !important;
   cursor: pointer;
 }
 
@@ -42,10 +42,6 @@ input[type='number'] {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-}
-
-.react-flow__edge-path {
-  stroke: #555;
 }
 
 .react-flow__edge .edge-path-bg {
@@ -60,7 +56,7 @@ input::-webkit-inner-spin-button {
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #fff;
+  stroke: #fff !important;
 }
 
 .react-flow__edge.selected .edge-path-bg {
