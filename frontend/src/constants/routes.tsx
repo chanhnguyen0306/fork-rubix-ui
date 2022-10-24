@@ -12,6 +12,7 @@ export const ROUTES: ROUTE = {
   APP_STORE: "/app-store",
   NETWORKING: "/networking",
   RUBIX_FLOW: "/rubix-flow",
+  WIRES_CONNECTIONS: "/wires-connections",
   FLOW_DEVICES: "/flow/networks/:networkUUID",
   FLOW_POINTS: "/flow/devices/:deviceUUID",
   CONNECTIONS: "/connections",

@@ -1,25 +1,25 @@
-import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { ROUTES as routes } from "./constants/routes";
-import { Logs } from "./components/logs/logs";
-import { Hosts } from "./components/hosts/hosts";
-import { Host } from "./components/hosts/host/host";
-import AppStore from "./components/release/appStore";
 import { Backups } from "./components/backups/backups";
-import { Locations } from "./components/locations/locations";
-import { Networks } from "./components/hostNetworks/networks";
-import { Connections } from "./components/connections/connections";
-import { PcNetworking } from "./components/pc/networking/networking";
-import { FlowPoints } from "./components/hosts/host/flow/points/flow-points";
-import { FlowDevices } from "./components/hosts/host/flow/devices/flow-devices";
-import { Streams } from "./components/hosts/host/flow/flowNetworks/streams/streams";
-import { Producers } from "./components/hosts/host/flow/flowNetworks/producers/producers";
 import ConnectionPage from "./components/connections/connection-page";
-import { StreamClones } from "./components/hosts/host/flow/flowNetworks/streamClones/streamClones";
+import { Connections } from "./components/connections/connections";
+import { Networks } from "./components/hostNetworks/networks";
+import { FlowDevices } from "./components/hosts/host/flow/devices/flow-devices";
 import { Consumers } from "./components/hosts/host/flow/flowNetworks/consumers/consumers";
-import { Writers } from "./components/hosts/host/flow/flowNetworks/writers/writers";
+import { Producers } from "./components/hosts/host/flow/flowNetworks/producers/producers";
+import { StreamClones } from "./components/hosts/host/flow/flowNetworks/streamClones/streamClones";
+import { Streams } from "./components/hosts/host/flow/flowNetworks/streams/streams";
 import { WriterClones } from "./components/hosts/host/flow/flowNetworks/writerClones/writer-clones";
-import { RubixFlow } from "./components/rubix-flow/rubix-flow";
+import { Writers } from "./components/hosts/host/flow/flowNetworks/writers/writers";
+import { FlowPoints } from "./components/hosts/host/flow/points/flow-points";
+import { Host } from "./components/hosts/host/host";
+import { Hosts } from "./components/hosts/hosts";
+import { Locations } from "./components/locations/locations";
+import { Logs } from "./components/logs/logs";
+import { PcNetworking } from "./components/pc/networking/networking";
+import AppStore from "./components/release/appStore";
+import RubixFlow from "./components/rubix-flow/rubix-flow";
+import WiresConnections from "./components/wires-connections/wires-connections";
 
 function AppRoutes() {
   return (
@@ -35,7 +35,11 @@ function AppRoutes() {
       <Route path={routes.BACKUPS} element={<Backups />} />
       <Route path={routes.NETWORKING} element={<PcNetworking />} />
       <Route path={routes.RUBIX_FLOW} element={<RubixFlow />} />
-
+      <Route
+        key={routes.WIRES_CONNECTIONS}
+        path={routes.WIRES_CONNECTIONS}
+        element={<WiresConnections />}
+      />
       <Route path={routes.CONNECTIONS} element={<ConnectionPage />}>
         <Route
           key={routes.CONNECTIONS}

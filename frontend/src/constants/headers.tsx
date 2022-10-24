@@ -664,6 +664,37 @@ export const NETWORKING_HEADERS = [
   },
 ];
 
+export const WIRES_CONNECTIONS_HEADERS = [
+  {
+    title: "name",
+    dataIndex: "name",
+    key: "name",
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  },
+  {
+    title: "host",
+    dataIndex: "host",
+    key: "host",
+    sorter: (a: any, b: any) => a.host.localeCompare(b.host),
+  },
+  {
+    title: "port",
+    dataIndex: "port",
+    key: "port",
+  },
+  {
+    title: "application",
+    dataIndex: "application",
+    key: "application",
+    sorter: (a: any, b: any) => a.application.localeCompare(b.application),
+  },
+  {
+    title: "uuid",
+    dataIndex: "uuid",
+    key: "uuid",
+  },
+];
+
 //--------------schema-------------//
 export const FLOW_NETWORKS_SCHEMA = {
   name: {
@@ -719,6 +750,38 @@ export const FLOW_NETWORKS_SCHEMA = {
     minLength: 2,
     title: "external device token",
     type: "string",
+  },
+  uuid: {
+    readOnly: true,
+    title: "uuid",
+    type: "string",
+  },
+};
+
+export const WIRES_CONNECTION_SCHEMA = {
+  name: {
+    maxLength: 50,
+    minLength: 2,
+    title: "name",
+    type: "string",
+  },
+  host: {
+    type: "string",
+    title: "host",
+    default: "0.0.0.0",
+  },
+  port: {
+    type: "number",
+    title: "port",
+    minLength: 2,
+    maxLength: 65535,
+    default: 1665,
+    readOnly: false,
+  },
+  application: {
+    type: "string",
+    title: "application",
+    default: "flow",
   },
   uuid: {
     readOnly: true,
