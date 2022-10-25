@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useEdges, useNodes } from "react-flow-renderer/nocss";
-import { FlowFactory } from "../factory";
 import { NodeJSON } from "../lib";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { flowToBehave } from "../transformers/flowToBehave";
 import { Modal } from "./Modal";
 
@@ -28,14 +28,11 @@ export const SaveModal: FC<SaveModalProps> = ({ open = false, onClose }) => {
   };
 
   const handleNodeRender = () => {
-    const selectedNodes: NodeJSON[] = flow.nodes.filter(item => item.settings?.selected);
+    const selectedNodes: NodeJSON[] = flowToBehave(
+      nodes.filter((item: NodeInterface) => item.selected),
+      edges
+    ).nodes;    
     const newNodes: NodeJSON[] = selectedNodes.length === 0 ? flow.nodes : selectedNodes;
-
-    newNodes.map((item) => {
-      if (item.settings && "selected" in item.settings) delete item.settings.selected;
-      return newNodes;
-    });
-
     setNodeRender(JSON.stringify({ nodes: newNodes }, null, 2));
   };
 

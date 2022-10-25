@@ -15,6 +15,7 @@ import {
 import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 import { useParams } from "react-router-dom";
+import { handleNodesEmptySettings } from "../util/handleSettings";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -45,6 +46,14 @@ const Controls = ({
     const edges = instance.getEdges();
     const graphJson = flowToBehave(nodes, edges);
     await factory.DownloadFlow(connUUID, hostUUID, isRemote, graphJson, true);
+
+    const newNodes = await handleNodesEmptySettings(
+      connUUID,
+      hostUUID,
+      isRemote,
+      instance.getNodes()
+    );
+    instance.setNodes(newNodes);
   };
 
   /* Ctrl + e (key): Save Graph */
