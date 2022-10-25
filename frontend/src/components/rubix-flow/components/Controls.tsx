@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
+import { useParams } from "react-router-dom";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -33,14 +34,17 @@ const Controls = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
   const instance = useReactFlow();
+
   const factory = new FlowFactory();
 
   const download = async () => {
     const nodes = instance.getNodes();
     const edges = instance.getEdges();
     const graphJson = flowToBehave(nodes, edges);
-    await factory.DownloadFlow(graphJson, true);
+    await factory.DownloadFlow(connUUID, hostUUID, isRemote, graphJson, true);
   };
 
   /* Ctrl + e (key): Save Graph */

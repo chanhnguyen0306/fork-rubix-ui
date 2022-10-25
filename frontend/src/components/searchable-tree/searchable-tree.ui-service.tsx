@@ -7,6 +7,8 @@ let ObjectType = {
   LOCATIONS: "locations",
   NETWORKS: "networks",
   HOSTS: "hosts",
+  RUBIX_FLOW_REMOTE: "rubix-flow",
+  WIRES_CONNECTIONS_REMOTE: "wires-connections",
 };
 
 interface ObjectTypeRoute {
@@ -44,6 +46,22 @@ let ObjectTypesToRoutes: ObjectTypeRoute = {
       .replace(":locUUID", locUUID)
       .replace(":netUUID", netUUID)
       .replace(":hostUUID", hostUUID),
+  [ObjectType.RUBIX_FLOW_REMOTE]: (
+    connUUID: string = "",
+    hostUUID: string = ""
+  ) =>
+    ROUTES.RUBIX_FLOW_REMOTE.replace(":connUUID", connUUID).replace(
+      ":hostUUID",
+      hostUUID
+    ),
+  [ObjectType.WIRES_CONNECTIONS_REMOTE]: (
+    connUUID: string = "",
+    hostUUID: string = ""
+  ) =>
+    ROUTES.WIRES_CONNECTIONS_REMOTE.replace(":connUUID", connUUID).replace(
+      ":hostUUID",
+      hostUUID
+    ),
 };
 
 function getItemValue(item: any, type: string) {
@@ -57,6 +75,8 @@ function getItemValue(item: any, type: string) {
       deleteProp = ObjectType.NETWORKS;
       break;
     case ObjectType.HOSTS:
+    case ObjectType.RUBIX_FLOW_REMOTE:
+    case ObjectType.WIRES_CONNECTIONS_REMOTE:
     default:
       deleteProp = "";
       break;
@@ -165,7 +185,44 @@ export function getTreeDataIterative(connections: any) {
                     host.uuid
                   ),
                   value: getItemValue(host, ObjectType.HOSTS),
-                  children: null,
+                  children: [
+                    {
+                      ...getTreeObject(
+                        { name: "Flow", uuid: "flow_" + host.uuid },
+                        ObjectTypesToRoutes[ObjectType.RUBIX_FLOW_REMOTE](
+                          connection.uuid,
+                          host.uuid
+                        ),
+                        ""
+                      ),
+                      next: ObjectTypesToRoutes[ObjectType.RUBIX_FLOW_REMOTE](
+                        connection.uuid,
+                        host.uuid
+                      ),
+                      value: getItemValue(host, ObjectType.RUBIX_FLOW_REMOTE),
+                      children: null,
+                    },
+                    {
+                      ...getTreeObject(
+                        {
+                          name: "Wires",
+                          uuid: "wires_" + host.uuid,
+                        },
+                        ObjectTypesToRoutes[
+                          ObjectType.WIRES_CONNECTIONS_REMOTE
+                        ](connection.uuid, host.uuid),
+                        ""
+                      ),
+                      next: ObjectTypesToRoutes[
+                        ObjectType.WIRES_CONNECTIONS_REMOTE
+                      ](connection.uuid, host.uuid),
+                      value: getItemValue(
+                        host,
+                        ObjectType.WIRES_CONNECTIONS_REMOTE
+                      ),
+                      children: null,
+                    },
+                  ],
                 })),
               })
             ),

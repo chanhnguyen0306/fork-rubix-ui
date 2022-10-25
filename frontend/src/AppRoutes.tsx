@@ -34,12 +34,6 @@ function AppRoutes() {
       <Route path={routes.LOGS} element={<Logs />} />
       <Route path={routes.BACKUPS} element={<Backups />} />
       <Route path={routes.NETWORKING} element={<PcNetworking />} />
-      <Route path={routes.RUBIX_FLOW} element={<RubixFlow />} />
-      <Route
-        key={routes.WIRES_CONNECTIONS}
-        path={routes.WIRES_CONNECTIONS}
-        element={<WiresConnections />}
-      />
       <Route path={routes.CONNECTIONS} element={<ConnectionPage />}>
         <Route
           key={routes.CONNECTIONS}
@@ -103,6 +97,18 @@ function AppRoutes() {
           element={<WriterClones />}
         />
       </Route>
+      <Route path={routes.RUBIX_FLOW} element={<RubixFlow />} />
+      <Route path={routes.RUBIX_FLOW_REMOTE} element={<RubixFlow />} />
+      <Route
+        key={routes.WIRES_CONNECTIONS}
+        path={routes.WIRES_CONNECTIONS}
+        element={<WiresConnections />}
+      />
+      <Route
+        key={routes.WIRES_CONNECTIONS}
+        path={routes.WIRES_CONNECTIONS_REMOTE}
+        element={<WiresConnections />}
+      />
     </Routes>
   );
 }

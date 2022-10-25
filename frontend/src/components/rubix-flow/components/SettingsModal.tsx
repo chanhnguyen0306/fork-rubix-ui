@@ -3,8 +3,7 @@ import { Modal, Spin } from "antd";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
-import { useNodes } from "react-flow-renderer";
-import { NodeJSON } from "../lib";
+import { useParams } from "react-router-dom";
 
 type SettingsModalProps = {
   isModalVisible: boolean;
@@ -21,6 +20,9 @@ export const SettingsModal = ({
   const [settings, setSettings] = useState({} as any);
   const [formData, setFormData] = useState({});
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
+
   const factory = new FlowFactory();
 
   useEffect(() => {
@@ -30,7 +32,8 @@ export const SettingsModal = ({
   const fetchSchemaJson = async () => {
     setIsLoadingForm(true);
     const type = node.type.split("/")[1];
-    const res = (await factory.NodeSchema(type)) || {};
+    const res =
+      (await factory.NodeSchema(connUUID, hostUUID, isRemote, type)) || {};
     setSettings(res);
     setIsLoadingForm(false);
 
@@ -41,9 +44,10 @@ export const SettingsModal = ({
   const handleSetFormData = async (_settings: any) => {
     try {
       const _formData = {} as any;
-      const _node = node.settings ? node : (await factory.NodeValue(node.id));
+      const _node = node.settings
+        ? node
+        : await factory.NodeValue(connUUID, hostUUID, isRemote, node.id);
       const _properties = Object.entries(_settings.schema.properties || {});
-      
 
       for (const [key, value] of _properties) {
         if (_node.settings && key in _node.settings) {

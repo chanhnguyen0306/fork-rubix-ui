@@ -12,6 +12,7 @@ import HelloWorld from "../examples/basics/HelloWorld.json";
 import Math from "../examples/basics/Math.json";
 import State from "../examples/basics/State.json";
 import { handleNodesEmptySettings } from "../util/handleSettings";
+import { useParams } from "react-router-dom";
 
 const examples = {
   branch: Branch,
@@ -29,6 +30,8 @@ export type LoadModalProps = {
 export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
   const [value, setValue] = useState<string>();
   const [selected, setSelected] = useState("");
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
   const instance = useReactFlow();
 
@@ -48,7 +51,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
       autoLayout(nodes, edges);
     }
 
-    nodes = await handleNodesEmptySettings(nodes);
+    nodes = await handleNodesEmptySettings(connUUID, hostUUID, isRemote, nodes);
 
     instance.setNodes([...instance.getNodes(), ...nodes]);
     instance.setEdges([...instance.getEdges(), ...edges]);

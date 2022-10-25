@@ -34,7 +34,11 @@ import { FlowFactory } from "./factory";
 import { behaveToFlow } from "./transformers/behaveToFlow";
 import ControlUndoable from "./components/ControlUndoable";
 import { NodeInterface } from "./lib/Nodes/NodeInterface";
-import { handleGetSettingType, handleNodesEmptySettings } from "./util/handleSettings";
+import {
+  handleGetSettingType,
+  handleNodesEmptySettings,
+} from "./util/handleSettings";
+import { useParams } from "react-router-dom";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -53,6 +57,8 @@ const Flow = (props: any) => {
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
 
@@ -86,7 +92,12 @@ const Flow = (props: any) => {
       position: XYPosition
     ) => {
       closeNodePicker();
-      const nodeSettings = await handleGetSettingType(nodeType);
+      const nodeSettings = await handleGetSettingType(
+        connUUID,
+        hostUUID,
+        isRemote,
+        nodeType
+      );
       const newNode = {
         id: generateUuid(),
         isParent,
@@ -163,7 +174,7 @@ const Flow = (props: any) => {
 
   const fetchOutput = async () => {
     try {
-      return (await factory.NodeValues()) || [];
+      return (await factory.NodeValues(connUUID, hostUUID, isRemote)) || [];
     } catch (error) {
       console.log(error);
     }
@@ -236,7 +247,12 @@ const Flow = (props: any) => {
       };
     });
 
-    _copied.nodes = await handleNodesEmptySettings(_copied.nodes);
+    _copied.nodes = await handleNodesEmptySettings(
+      connUUID,
+      hostUUID,
+      isRemote,
+      _copied.nodes
+    );
 
     const _nodes = [...nodes, ..._copied.nodes];
     const _edges = [...edges, ..._copied.edges];
@@ -246,11 +262,17 @@ const Flow = (props: any) => {
   };
 
   useEffect(() => {
+    closeNodePicker();
     factory
-      .GetFlow()
+      .GetFlow(connUUID, hostUUID, isRemote)
       .then(async (res) => {
         const [_nodes, _edges] = behaveToFlow(res);
-        const newNodes = await handleNodesEmptySettings(_nodes);
+        const newNodes = await handleNodesEmptySettings(
+          connUUID,
+          hostUUID,
+          isRemote,
+          _nodes
+        );
 
         setNodes(newNodes);
         setEdges(_edges);
@@ -269,7 +291,7 @@ const Flow = (props: any) => {
     return () => {
       clearInterval(ivlFetchOutput);
     };
-  }, []);
+  }, [connUUID, hostUUID]);
 
   useEffect(() => {
     if (

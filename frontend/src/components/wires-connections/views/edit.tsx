@@ -1,5 +1,6 @@
 import { Modal } from "antd";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { db } from "../../../../wailsjs/go/models";
 import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../../rubix-flow/factory";
@@ -10,6 +11,8 @@ export const EditModal = (props: any) => {
     props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentItem);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
 
@@ -18,7 +21,13 @@ export const EditModal = (props: any) => {
   }, [currentItem]);
 
   const edit = async (conenction: Connection) => {
-    await factory.UpdateWiresConnection(conenction.uuid, conenction);
+    await factory.UpdateWiresConnection(
+      connUUID,
+      hostUUID,
+      isRemote,
+      conenction.uuid,
+      conenction
+    );
   };
 
   const handleClose = () => {

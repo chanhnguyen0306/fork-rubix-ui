@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { FlowFactory } from "./factory";
 import { InputSocketSpecJSON, NodeSpecJSON } from "./lib";
 
@@ -11,11 +12,14 @@ export let getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
 
 export const useNodesSpec = () => {
   const [nodesSpec, setNodesSpec] = useState(getSpecJson);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
+
   const factory = new FlowFactory();
 
   useEffect(() => {
     fetch();
-  }, [nodesSpec.length]);
+  }, [nodesSpec.length, connUUID, hostUUID]);
 
   const setDefaultInputValue = (inputs: InputSocketSpecJSON[]) => {
     return inputs.map((input) => {
@@ -40,7 +44,8 @@ export const useNodesSpec = () => {
   };
 
   const fetch = async () => {
-    let specJSON = ((await factory.NodePallet()) || []) as NodeSpecJSON[];
+    let specJSON = ((await factory.NodePallet(connUUID, hostUUID, isRemote)) ||
+      []) as NodeSpecJSON[];
     specJSON = specJSON.map((node: NodeSpecJSON) => {
       if (node.inputs && node.inputs.length > 0) {
         node.inputs = setDefaultInputValue(node.inputs);

@@ -11,8 +11,7 @@ export const ROUTES: ROUTE = {
   DOCS_DIPS: "/switch",
   APP_STORE: "/app-store",
   NETWORKING: "/networking",
-  RUBIX_FLOW: "/rubix-flow",
-  WIRES_CONNECTIONS: "/wires-connections",
+
   FLOW_DEVICES: "/flow/networks/:networkUUID",
   FLOW_POINTS: "/flow/devices/:deviceUUID",
   CONNECTIONS: "/connections",
@@ -37,4 +36,9 @@ export const ROUTES: ROUTE = {
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks-clone/:flNetworkCloneUUID/streams-clone/:streamCloneUUID/consumers/:consumerUUID/writers",
   WRITERCLONES:
     "/connections/:connUUID/locations/:locUUID/networks/:netUUID/hosts/:hostUUID/fl-networks/:flNetworkUUID/streams/:streamUUID/producers/:producerUUID/writer-clones",
+  RUBIX_FLOW: "/rubix-flow",
+  RUBIX_FLOW_REMOTE: "/rubix-flow/connections/:connUUID/hosts/:hostUUID",
+  WIRES_CONNECTIONS: "/wires-connections",
+  WIRES_CONNECTIONS_REMOTE:
+    "/wires-connections/connections/:connUUID/hosts/:hostUUID",
 };
