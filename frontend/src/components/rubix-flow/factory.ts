@@ -20,61 +20,117 @@ export class FlowFactory {
   // arg3 is used when user is programming on flow localhost (as in running rubix-edge-wires backend on their PC)
   // set arg3 to true if its a remote connection
 
-  async BulkDeleteWiresConnection(connUUID:string, hostUUID:string, isRemote:boolean, uuids: Array<string>): Promise<any> {
+  async BulkDeleteWiresConnection(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    uuids: Array<string>
+  ): Promise<any> {
     return await BulkDeleteWiresConnection(connUUID, hostUUID, isRemote, uuids);
   }
 
   async GetWiresConnections(
     connUUID: string,
     hostUUID: string,
-    isRemote:boolean,
+    isRemote: boolean
   ): Promise<Array<db.Connection>> {
-    const _connUUID = connUUID || "";
-    const _hostUUID = hostUUID || "";
     return await GetWiresConnections(connUUID, hostUUID, isRemote);
   }
 
-  async GetWiresConnection(connUUID:string, hostUUID:string, isRemote:boolean, uuid: string): Promise<db.Connection> {
+  async GetWiresConnection(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    uuid: string
+  ): Promise<db.Connection> {
     return await GetWiresConnection(connUUID, hostUUID, isRemote, uuid);
   }
 
-  async DeleteWiresConnection(connUUID:string, hostUUID:string, isRemote:boolean, uuid: string) {
+  async DeleteWiresConnection(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    uuid: string
+  ) {
     await DeleteWiresConnection(connUUID, hostUUID, isRemote, uuid);
   }
 
   async UpdateWiresConnection(
-    connUUID:string, hostUUID:string, isRemote:boolean,
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
     uuid: string,
     body: db.Connection
   ): Promise<db.Connection> {
-    return await UpdateWiresConnection(connUUID, hostUUID, isRemote, uuid, body);
+    return await UpdateWiresConnection(
+      connUUID,
+      hostUUID,
+      isRemote,
+      uuid,
+      body
+    );
   }
 
-  async AddWiresConnection(connUUID:string, hostUUID:string, isRemote:boolean, body: db.Connection): Promise<db.Connection> {
+  async AddWiresConnection(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    body: db.Connection
+  ): Promise<db.Connection> {
     return await AddWiresConnection(connUUID, hostUUID, isRemote, body);
   }
 
-  async NodeValue(connUUID:string, hostUUID:string, isRemote:boolean, nodeUUID: string): Promise<node.Values> {
+  async NodeValue(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    nodeUUID: string
+  ): Promise<node.Values> {
     return await NodeValue(connUUID, hostUUID, isRemote, nodeUUID);
   }
 
-  async NodeSchema(connUUID:string, hostUUID:string, isRemote:boolean, nodeName: string) {
+  async NodeSchema(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    nodeName: string
+  ) {
     return await NodeSchema(connUUID, hostUUID, isRemote, nodeName);
   }
 
-  async NodeValues(connUUID:string, hostUUID:string, isRemote:boolean): Promise<Array<node.Values>> {
+  async NodeValues(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean
+  ): Promise<Array<node.Values>> {
     return await NodeValues(connUUID, hostUUID, isRemote);
   }
 
-  async GetFlow(connUUID:string, hostUUID:string, isRemote:boolean): Promise<any> {
+  async GetFlow(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean
+  ): Promise<any> {
     return await GetFlow(connUUID, hostUUID, isRemote);
   }
 
-  async NodePallet(connUUID:string, hostUUID:string, isRemote:boolean) {
+  async NodePallet(connUUID: string, hostUUID: string, isRemote: boolean) {
     return await NodePallet(connUUID, hostUUID, isRemote);
   }
 
-  async DownloadFlow(connUUID:string, hostUUID:string, isRemote:boolean, encodedNodes: any, restartFlow: boolean) {
-    return await DownloadFlow(connUUID, hostUUID, isRemote, encodedNodes, restartFlow);
+  async DownloadFlow(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    encodedNodes: any,
+    restartFlow: boolean
+  ) {
+    return await DownloadFlow(
+      connUUID,
+      hostUUID,
+      isRemote,
+      encodedNodes,
+      restartFlow
+    );
   }
 }

@@ -8,20 +8,25 @@ import { WiresConnectionsTable } from "./views/table";
 import Connection = db.Connection;
 
 export const WiresConnections = () => {
-  let { connUUID = "", hostUUID = "" } = useParams();
   const [data, setData] = useState([] as Connection[]);
   const [isFetching, setIsFetching] = useState(false);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
 
   useEffect(() => {
-    fetch(connUUID, hostUUID);
+    fetch();
   }, [connUUID, hostUUID]);
 
-  const fetch = async (connUUID: string, hostUUID: string) => {
+  const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetWiresConnections(connUUID, hostUUID);
+      const res = await factory.GetWiresConnections(
+        connUUID,
+        hostUUID,
+        isRemote
+      );
       setData(res);
     } catch (error) {
       setData([]);

@@ -1,5 +1,6 @@
 import { Space, Spin } from "antd";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { db } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import { RbAddButton, RbDeleteButton } from "../../../common/rb-table-actions";
@@ -10,6 +11,7 @@ import {
 import { FlowFactory } from "../../rubix-flow/factory";
 import { CreateModal } from "./create";
 import { EditModal } from "./edit";
+
 import Connection = db.Connection;
 
 export const WiresConnectionsTable = (props: any) => {
@@ -19,6 +21,8 @@ export const WiresConnectionsTable = (props: any) => {
   const [currentItem, setCurrentItem] = useState({} as Connection);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
 
@@ -50,7 +54,12 @@ export const WiresConnectionsTable = (props: any) => {
 
   const bulkDelete = async () => {
     try {
-      await factory.BulkDeleteWiresConnection(selectedUUIDs);
+      await factory.BulkDeleteWiresConnection(
+        connUUID,
+        hostUUID,
+        isRemote,
+        selectedUUIDs
+      );
     } catch (error) {
       console.log(error);
     } finally {
