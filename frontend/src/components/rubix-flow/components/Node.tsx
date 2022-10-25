@@ -78,7 +78,10 @@ export const Node = (props: NodeProps) => {
       onDbClickTitle={handleDbClickTitle}
     >
       {pairs.map(([input, output], ix) => {
-        if (input && !data[input.name] && data[input.name] !== null) {
+        if (
+          input && !data[input.name] && data[input.name] !== null &&
+          (input.valueType === "number" && data[input.name] !== 0)
+        ) {
           data[input.name] = input.defaultValue;
         }
         const borderB =
