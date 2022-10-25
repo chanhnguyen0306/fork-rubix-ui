@@ -31,7 +31,6 @@ require (
 	github.com/hashicorp/go-version v1.6.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/manifoldco/promptui v0.9.0
-	github.com/mitchellh/mapstructure v1.5.0
 	github.com/na4ma4/config v1.0.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.5.0
@@ -86,6 +85,7 @@ require (
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect
