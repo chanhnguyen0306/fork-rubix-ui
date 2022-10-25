@@ -24,15 +24,14 @@ export class FlowFactory {
     return await BulkDeleteWiresConnection("", "", false, uuids);
   }
 
-  async GetWiresConnections(): Promise<Array<db.Connection>> {
-    return await GetWiresConnections("", "", false);
-  }
-
-  async GetWiresConnectionsRemote(
+  async GetWiresConnections(
     connUUID: string,
     hostUUID: string
   ): Promise<Array<db.Connection>> {
-    return await GetWiresConnections(connUUID, hostUUID, true);
+    const _connUUID = connUUID || "";
+    const _hostUUID = hostUUID || "";
+    const isRemote = connUUID && hostUUID ? true : false;
+    return await GetWiresConnections(_connUUID, _hostUUID, isRemote);
   }
 
   async GetWiresConnection(uuid: string): Promise<db.Connection> {
