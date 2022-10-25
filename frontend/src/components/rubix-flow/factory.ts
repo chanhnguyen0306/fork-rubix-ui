@@ -46,14 +46,6 @@ export class FlowFactory {
     return await GetWiresConnection(connUUID, hostUUID, isRemote, uuid);
   }
 
-  async DeleteWiresConnection(
-    connUUID: string,
-    hostUUID: string,
-    isRemote: boolean,
-    uuid: string
-  ) {
-    await DeleteWiresConnection(connUUID, hostUUID, isRemote, uuid);
-  }
 
   async UpdateWiresConnection(
     connUUID: string,

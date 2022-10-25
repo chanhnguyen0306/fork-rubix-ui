@@ -1,40 +1,14 @@
 package backend
 
 import (
-	"github.com/NubeDev/flow-eng/db"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
+	"fmt"
 	"testing"
 )
 
 func TestApp_NodePallet(t *testing.T) {
 	app := MockNewApp()
-	resp := app.GetWiresConnections()
-	pprint.PrintJOSN(resp)
-}
+	//1111 con_0deb1ef16240 hos_f9f6bf2a69c8 true
+	c := app.NodePallet("cloud", "rc", true)
 
-func TestApp_AddWiresConnection(t *testing.T) {
-	app := MockNewApp()
-	resp := app.AddWiresConnection(&db.Connection{
-
-		Enabled:                       nil,
-		Application:                   "flow",
-		Name:                          "test-2",
-		Host:                          "0.0.0.0",
-		Port:                          1883,
-		Authentication:                nil,
-		HTTPS:                         nil,
-		Username:                      "",
-		Password:                      "",
-		Email:                         "",
-		Token:                         "",
-		Keepalive:                     0,
-		Qos:                           0,
-		Retain:                        nil,
-		AttemptReconnectOnUnavailable: nil,
-		AttemptReconnectSecs:          0,
-		Timeout:                       0,
-	})
-
-	pprint.PrintJOSN(resp)
-	// *
+	fmt.Println(c)
 }
