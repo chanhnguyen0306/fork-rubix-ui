@@ -49,6 +49,12 @@ const getNumberOptions = (value: boolean) => {
   }
 };
 
+const handleConvertInputNumber = (_value: any) => {
+  if (_value === null) return "null";
+  else  if (!_value && _value !== 0) return "";
+  return _value.toString();
+};
+
 export const InputSocket = ({
                               connected,
                               value,
@@ -60,7 +66,7 @@ export const InputSocket = ({
                               dataInput,
                             }: InputSocketProps) => {
   const instance = useReactFlow();
-  const [inputNumber, setInputNumber] = useState(value || "");
+  const [inputNumber, setInputNumber] = useState(handleConvertInputNumber(value));
   const refName = useRef<HTMLDivElement>(null);
 
   const showFlowIcon = valueType === "flow";
@@ -75,7 +81,7 @@ export const InputSocket = ({
     if (inputNumber.match(REGEX_NUMBER)) {
       onChange(name, Number(inputNumber));
     } else if (inputNumber === "null") {
-      onChange(name, "null");
+      onChange(name, null);
     } else {
       setInputNumber("0");
       onChange(name, 0);
