@@ -31,7 +31,7 @@ select {
 
 .react-flow__edge-path {
   stroke: #555 !important;
-  stroke-width: 2 !important;
+  stroke-width: 4 !important;
   cursor: pointer;
 }
 
