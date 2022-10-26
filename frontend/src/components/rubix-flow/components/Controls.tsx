@@ -25,6 +25,7 @@ type ControlProps = {
   onUndo: () => void;
   onRedo: () => void;
   onRefreshValues: () => void;
+  onNumberRefresh: (value: number) => void;
 };
 
 const Controls = ({
@@ -33,6 +34,7 @@ const Controls = ({
   onUndo,
   onRedo,
   onRefreshValues,
+  onNumberRefresh
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -60,6 +62,8 @@ const Controls = ({
     );
     instance.setNodes(newNodes);
   };
+
+  const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -153,7 +157,7 @@ const Controls = ({
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Settings refresh value"
-          onClick={() => setSettingRefreshModalOpen(true)}
+          onClick={toggleRefreshModal}
         >
           <SettingOutlined className="p-2 text-gray-700 align-middle" />
         </div>
@@ -200,7 +204,11 @@ const Controls = ({
         open={clearModalOpen}
         onClose={() => setClearModalOpen(false)}
       />
-      <SettingRefreshModal open={settingRefreshModalOpen} onClose={() => setSettingRefreshModalOpen(false)} />
+      <SettingRefreshModal
+        open={settingRefreshModalOpen}
+        onClose={toggleRefreshModal}
+        onNumberRefresh={onNumberRefresh}
+      />
     </>
   );
 };

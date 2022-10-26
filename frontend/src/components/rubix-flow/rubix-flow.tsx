@@ -2,6 +2,7 @@ import {
   MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import ReactFlow, {
@@ -53,10 +54,11 @@ const Flow = (props: any) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
-    useState<XYPosition>();
+  useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
-    useState<OnConnectStartParams>();
+  useState<OnConnectStartParams>();
+  const refreshInterval = useRef<null | number>(null);
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
@@ -268,7 +270,12 @@ const Flow = (props: any) => {
   const handleRefreshValues = async () => {
     const _outputNodes = (await fetchOutput()) || [];
     setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
-  }
+  };
+
+  const handleChangeNumberRefresh = (value: number) => {
+    localStorage.setItem(NUMBER_REFRESH, value.toString());
+    setNumberRefresh(value);
+  };
 
   useEffect(() => {
     closeNodePicker();
@@ -321,16 +328,15 @@ const Flow = (props: any) => {
   }, [nodes]);
 
   useEffect(() => {
-    const ivlFetchOutput = setInterval(async () => {
-      const _outputNodes = (await fetchOutput()) || [];
-      setNodes((prevNodes) => {
-        setNumberRefresh(getNumberRefresh());
-        return addOutputToNodes(_outputNodes, prevNodes);
-      });
-    }, numberRefresh * 1000);
+    if (refreshInterval.current) clearInterval(refreshInterval.current);
+
+    refreshInterval.current = setInterval(
+      handleRefreshValues,
+      numberRefresh * 1000
+    );
 
     return () => {
-      clearInterval(ivlFetchOutput);
+      if (refreshInterval.current) clearInterval(refreshInterval.current);
     };
   }, [numberRefresh]);
 
@@ -372,6 +378,7 @@ const Flow = (props: any) => {
           onUndo={undo}
           onRedo={handleRedo}
           onRefreshValues={handleRefreshValues}
+          onNumberRefresh={handleChangeNumberRefresh}
         />
         {nodePickerVisibility && (
           <NodePicker

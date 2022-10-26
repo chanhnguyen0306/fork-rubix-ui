@@ -6,11 +6,13 @@ const NUMBER_REFRESH = "number-refresh-values";
 export type SettingRefreshModalProps = {
   open?: boolean;
   onClose: () => void;
+  onNumberRefresh: (value: number) => void;
 };
 
 export const SettingRefreshModal: FC<SettingRefreshModalProps> = ({
   open = false,
   onClose,
+  onNumberRefresh,
 }) => {
   const [numberRefresh, setNumberRefresh] = useState<string>(
     localStorage.getItem(NUMBER_REFRESH) || "5"
@@ -20,15 +22,12 @@ export const SettingRefreshModal: FC<SettingRefreshModalProps> = ({
     const value = isNaN(+e.target.value)
       ? 1
       : Math.max(1, Math.min(60, Number(e.target.value)));
+
     setNumberRefresh(value.toString());
   };
 
-  const handleClose = () => {
-    onClose();
-  };
-
   const handleSave = () => {
-    localStorage.setItem(NUMBER_REFRESH, numberRefresh);
+    onNumberRefresh(+numberRefresh);
     onClose();
   };
 
@@ -36,7 +35,7 @@ export const SettingRefreshModal: FC<SettingRefreshModalProps> = ({
     <Modal
       title="Settings"
       actions={[
-        { label: "Cancel", onClick: handleClose },
+        { label: "Cancel", onClick: onClose },
         { label: "Save", onClick: handleSave },
       ]}
       open={open}
