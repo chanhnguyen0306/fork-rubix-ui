@@ -25,7 +25,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   if (open === false) return null;
 
   const actionColors = {
-    primary: "bg-teal-400 hover:bg-teal-500",
+    primary: "bg-blue-400 hover:bg-blue-500",
     secondary: "bg-gray-400 hover:bg-gray-500",
   };
 
