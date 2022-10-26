@@ -88,7 +88,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
         onChange={(e) => setValue(e.currentTarget.value)}
         style={{ height: "50vh", width: "500px" }}
       />
-      <div className="p-4 text-center text-gray-800">or</div>
+      {/* <div className="p-4 text-center text-gray-800">or</div>
       <select
         className="bg-gray-50 border border-gray-300 text-gray-900 rounded block w-full p-3"
         onChange={(e) => setSelected(e.target.value)}
@@ -102,7 +102,7 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
         <option value="helloWorld">Hello World</option>
         <option value="math">Math</option>
         <option value="state">State</option>
-      </select>
+      </select> */}
     </Modal>
   );
 };
