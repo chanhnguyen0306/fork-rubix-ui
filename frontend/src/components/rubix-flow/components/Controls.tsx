@@ -22,6 +22,7 @@ type ControlProps = {
   onCopyNodes: (nodes: any) => void;
   onUndo: () => void;
   onRedo: () => void;
+  onRefreshValues: () => void;
 };
 
 const Controls = ({
@@ -29,6 +30,7 @@ const Controls = ({
   onCopyNodes,
   onUndo,
   onRedo,
+  onRefreshValues,
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -66,9 +68,18 @@ const Controls = ({
     setLoadModalOpen(true);
   });
 
-  /* Ctrl + d (key): Download/deploy flow */
+  /* Ctrl + d (key): Delete items selected */
   useCtrlPressKey("KeyD", () => {
-    download();
+    const _nodes = instance.getNodes();
+    const _edges = instance.getEdges();
+
+    const newNodes = _nodes.filter((item) => !item.selected);
+    const newEdges = _edges.filter((item) => !item.selected);
+
+    instance.setNodes(newNodes);
+    instance.setEdges(newEdges);
+
+    onDeleteEdges(newNodes, newEdges);
   });
 
   /* Ctrl + a (key): Select all items */
@@ -121,6 +132,16 @@ const Controls = ({
   /* Ctrl + Y (key): Redo */
   useCtrlPressKey("KeyY", () => {
     onRedo();
+  });
+
+  /* Ctrl + S (key): Download/deploy flow */
+  useCtrlPressKey("KeyS", () => {
+    download();
+  });
+
+  /* Ctrl + X (key): Refresh node values */
+  useCtrlPressKey("KeyX", () => {
+    onRefreshValues();
   });
 
   return (
