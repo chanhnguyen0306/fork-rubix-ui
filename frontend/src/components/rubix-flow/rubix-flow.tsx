@@ -261,6 +261,11 @@ const Flow = (props: any) => {
     setUndoable({ edges: _edges, nodes: _nodes });
   };
 
+  const handleRefreshValues = async () => {
+    const _outputNodes = (await fetchOutput()) || [];
+    setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
+  }
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -357,6 +362,7 @@ const Flow = (props: any) => {
           onCopyNodes={handleCopyNodes}
           onUndo={undo}
           onRedo={handleRedo}
+          onRefreshValues={handleRefreshValues}
         />
         {nodePickerVisibility && (
           <NodePicker
