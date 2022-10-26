@@ -40,6 +40,9 @@ import {
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
 
+const NUMBER_REFRESH = "number-refresh-values";
+const getNumberRefresh = () => +(localStorage.getItem(NUMBER_REFRESH) || 5);
+
 const edgeTypes = {
   default: CustomEdge,
 };
@@ -57,6 +60,7 @@ const Flow = (props: any) => {
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
+  const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -287,15 +291,6 @@ const Flow = (props: any) => {
         });
       })
       .catch(() => {});
-
-    const ivlFetchOutput = setInterval(async () => {
-      const _outputNodes = (await fetchOutput()) || [];
-      setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
-    }, 5000);
-
-    return () => {
-      clearInterval(ivlFetchOutput);
-    };
   }, [connUUID, hostUUID]);
 
   useEffect(() => {
@@ -324,6 +319,20 @@ const Flow = (props: any) => {
     }
     setNodes(newNodes);
   }, [nodes]);
+
+  useEffect(() => {
+    const ivlFetchOutput = setInterval(async () => {
+      const _outputNodes = (await fetchOutput()) || [];
+      setNodes((prevNodes) => {
+        setNumberRefresh(getNumberRefresh());
+        return addOutputToNodes(_outputNodes, prevNodes);
+      });
+    }, numberRefresh * 1000);
+
+    return () => {
+      clearInterval(ivlFetchOutput);
+    };
+  }, [numberRefresh]);
 
   return (
     <ReactFlowProvider>

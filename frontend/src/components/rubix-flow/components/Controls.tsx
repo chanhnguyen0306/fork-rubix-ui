@@ -11,11 +11,13 @@ import {
   RestOutlined,
   UploadOutlined,
   PlayCircleOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 import { useParams } from "react-router-dom";
 import { handleNodesEmptySettings } from "../util/handleSettings";
+import { SettingRefreshModal } from "./SettingRefreshModal";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -36,6 +38,7 @@ const Controls = ({
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
   const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
@@ -149,6 +152,13 @@ const Controls = ({
       <div className="absolute top-4 right-4 bg-white z-10 flex black--text">
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
+          title="Settings refresh value"
+          onClick={() => setSettingRefreshModalOpen(true)}
+        >
+          <SettingOutlined className="p-2 text-gray-700 align-middle" />
+        </div>
+        <div
+          className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Help"
           onClick={() => setHelpModalOpen(true)}
         >
@@ -190,6 +200,7 @@ const Controls = ({
         open={clearModalOpen}
         onClose={() => setClearModalOpen(false)}
       />
+      <SettingRefreshModal open={settingRefreshModalOpen} onClose={() => setSettingRefreshModalOpen(false)} />
     </>
   );
 };
