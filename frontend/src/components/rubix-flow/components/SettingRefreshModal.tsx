@@ -1,7 +1,9 @@
 import { ChangeEvent, FC, useState } from "react";
 import { Modal } from "./Modal";
 
-const NUMBER_REFRESH = "number-refresh-values";
+export const NUMBER_REFRESH = "number-refresh-values";
+
+export const getNumberRefresh = () => +(localStorage.getItem(NUMBER_REFRESH) || 5);
 
 export type SettingRefreshModalProps = {
   open?: boolean;

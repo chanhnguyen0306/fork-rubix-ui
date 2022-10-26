@@ -40,9 +40,7 @@ import {
   handleNodesEmptySettings,
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
-
-const NUMBER_REFRESH = "number-refresh-values";
-const getNumberRefresh = () => +(localStorage.getItem(NUMBER_REFRESH) || 5);
+import { getNumberRefresh, NUMBER_REFRESH } from "./components/SettingRefreshModal";
 
 const edgeTypes = {
   default: CustomEdge,
