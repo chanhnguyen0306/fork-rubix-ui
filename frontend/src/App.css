@@ -124,3 +124,21 @@ aside .active {
     z-index: 1 !important;
     position: fixed;
 }
+
+.app-layout {
+    padding: 0 24px 24px;
+}
+
+.app-layout-content {
+    padding: 24px;
+    margin: 0;
+    min-height: 280px;
+}
+
+.flow-layout {
+    padding: 0;
+}
+
+.flow-layout-content {
+    padding: 0;
+}

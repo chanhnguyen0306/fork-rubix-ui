@@ -1,5 +1,8 @@
 import { Layout } from "antd";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import cx from "classnames";
+
 import { EventsOff, EventsOn } from "../wailsjs/runtime";
 import AppRoutes from "./AppRoutes";
 import { MenuSidebar } from "./components/sidebar/sidebar";
@@ -27,19 +30,18 @@ const getParentKey = (key: React.Key, tree: any): React.Key => {
   return parentKey!;
 };
 
-const AppContainer = (props: any) => {
+type AppContainerProps = {
+  isFlowRoute: boolean;
+  children: React.ReactNode;
+};
+
+const AppContainer = ({ isFlowRoute, children }: AppContainerProps) => {
   return (
     <Layout>
       <MenuSidebar />
-      <Layout style={{ padding: "0 24px 24px" }}>
-        <Content
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-          }}
-        >
-          {props.children}
+      <Layout className={cx("app-layout", { "flow-layout": isFlowRoute })}>
+        <Content className={cx("app-layout-content", { "flow-layout-content": isFlowRoute })}>
+          {children}
         </Content>
       </Layout>
     </Layout>
@@ -47,7 +49,9 @@ const AppContainer = (props: any) => {
 };
 
 const App: React.FC = () => {
+  const { pathname } = useLocation();
   const [isRegistered, updateIsRegistered] = useState(false);
+  const [isFlowRoute, setIsFlowRoute] = useState(false);
 
   useEffect(() => {
     registerNotification();
@@ -73,9 +77,13 @@ const App: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    setIsFlowRoute(pathname === "/rubix-flow");
+  }, [pathname]);
+
   return (
     <ThemeProvider>
-      <AppContainer>
+      <AppContainer isFlowRoute={isFlowRoute}>
         <AppRoutes></AppRoutes>
       </AppContainer>
     </ThemeProvider>
