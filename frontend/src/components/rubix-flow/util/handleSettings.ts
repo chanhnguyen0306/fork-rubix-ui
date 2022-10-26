@@ -12,11 +12,6 @@ export const handleNodesEmptySettings = async (
   return Promise.all(
     await _nodes.map(async (node) => {
       const newNode: NodeInterface = node;
-
-      if (newNode.settings && "selected" in newNode.settings) {
-        delete newNode.settings.selected;
-      }
-
       if (
         newNode.type &&
         (!newNode.settings || Object.entries(newNode.settings).length === 0)
