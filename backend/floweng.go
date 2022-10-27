@@ -369,7 +369,7 @@ func (inst *App) NodeSchema(connUUID, hostUUID string, isRemote bool, nodeName s
 	return resp
 }
 
-func (inst *App) nodePallet(connUUID, hostUUID string) ([]nodes.PalletNode, error) {
+func (inst *App) nodePallet(connUUID, hostUUID, filterCategory string) ([]nodes.PalletNode, error) {
 	c, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -381,15 +381,24 @@ func (inst *App) nodePallet(connUUID, hostUUID string) ([]nodes.PalletNode, erro
 	}
 	if resp.IsSuccess() {
 		var out []nodes.PalletNode
+		var outFiltered []nodes.PalletNode
 		err := json.Unmarshal(resp.Body(), &out)
+		if filterCategory != "" {
+			for _, palletNode := range out {
+				if palletNode.Category == filterCategory {
+					outFiltered = append(outFiltered, palletNode)
+				}
+			}
+			return outFiltered, err
+		}
 		return out, err
 	}
 	return nil, errors.New(fmt.Sprintf("failed to edit %s:", path))
 }
 
-func (inst *App) NodePallet(connUUID, hostUUID string, isRemote bool) []nodes.PalletNode {
+func (inst *App) NodePallet(connUUID, hostUUID, filterCategory string, isRemote bool) []nodes.PalletNode {
 	if isRemote {
-		resp, err := inst.nodePallet(connUUID, hostUUID)
+		resp, err := inst.nodePallet(connUUID, hostUUID, filterCategory)
 		if err != nil {
 			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 			return resp

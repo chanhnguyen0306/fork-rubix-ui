@@ -107,7 +107,7 @@ export class FlowFactory {
   }
 
   async NodePallet(connUUID: string, hostUUID: string, isRemote: boolean) {
-    return await NodePallet(connUUID, hostUUID, isRemote);
+    return await NodePallet(connUUID, hostUUID, "filterByCategory", isRemote,);
   }
 
   async DownloadFlow(
