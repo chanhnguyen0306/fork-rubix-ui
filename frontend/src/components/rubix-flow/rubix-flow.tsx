@@ -40,7 +40,10 @@ import {
   handleNodesEmptySettings,
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
-import { getNumberRefresh, NUMBER_REFRESH } from "./components/SettingRefreshModal";
+import {
+  getNumberRefresh,
+  NUMBER_REFRESH,
+} from "./components/SettingRefreshModal";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -52,10 +55,10 @@ const Flow = (props: any) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
-  useState<XYPosition>();
+    useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
-  useState<OnConnectStartParams>();
+    useState<OnConnectStartParams>();
   const refreshInterval = useRef<null | number>(null);
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
@@ -400,7 +403,7 @@ const Flow = (props: any) => {
 };
 
 export const RubixFlow = () => {
-  const [nodesSpec] = useNodesSpec();
+  const [nodesSpec, isFetchingNodeSpec] = useNodesSpec();
 
   const customNodeTypes = (nodesSpec as NodeSpecJSON[]).reduce(
     (nodes, node) => {
@@ -412,7 +415,7 @@ export const RubixFlow = () => {
 
   return (
     <>
-      {nodesSpec && nodesSpec.length > 0 ? (
+      {isFetchingNodeSpec ? (
         <Flow customNodeTypes={customNodeTypes} />
       ) : (
         <Spin />

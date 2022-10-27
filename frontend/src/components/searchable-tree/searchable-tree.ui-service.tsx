@@ -188,7 +188,7 @@ export function getTreeDataIterative(connections: any) {
                   children: [
                     {
                       ...getTreeObject(
-                        { name: "Flow", uuid: "flow_" + host.uuid },
+                        { name: "flow", uuid: "flow_" + host.uuid },
                         ObjectTypesToRoutes[ObjectType.RUBIX_FLOW_REMOTE](
                           connection.uuid,
                           host.uuid
@@ -205,7 +205,7 @@ export function getTreeDataIterative(connections: any) {
                     {
                       ...getTreeObject(
                         {
-                          name: "Wires",
+                          name: "wires",
                           uuid: "wires_" + host.uuid,
                         },
                         ObjectTypesToRoutes[

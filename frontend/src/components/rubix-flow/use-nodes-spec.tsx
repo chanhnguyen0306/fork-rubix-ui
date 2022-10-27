@@ -12,6 +12,7 @@ export let getSpecJson = (): NodeSpecJSON[] => _nodesSpec;
 
 export const useNodesSpec = () => {
   const [nodesSpec, setNodesSpec] = useState(getSpecJson);
+  const [isFetchingNodeSpec, setIsFetchingNodeSpec] = useState(false);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -44,18 +45,22 @@ export const useNodesSpec = () => {
   };
 
   const fetch = async () => {
+    setIsFetchingNodeSpec(true);
     let specJSON = ((await factory.NodePallet(connUUID, hostUUID, isRemote)) ||
       []) as NodeSpecJSON[];
-    specJSON = specJSON.map((node: NodeSpecJSON) => {
-      if (node.inputs && node.inputs.length > 0) {
-        node.inputs = setDefaultInputValue(node.inputs);
-      }
-      return node;
-    });
+    if (specJSON.length > 0) {
+      specJSON = specJSON.map((node: NodeSpecJSON) => {
+        if (node.inputs && node.inputs.length > 0) {
+          node.inputs = setDefaultInputValue(node.inputs);
+        }
+        return node;
+      });
+    }
     setNodesSpec(specJSON);
     getSpecJson = () => specJSON;
     localStorage.setItem(SPEC_JSON, JSON.stringify(specJSON));
+    setIsFetchingNodeSpec(false);
   };
 
-  return [nodesSpec, setNodesSpec];
+  return [nodesSpec, setNodesSpec, isFetchingNodeSpec];
 };
