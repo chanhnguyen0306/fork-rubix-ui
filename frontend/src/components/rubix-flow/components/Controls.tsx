@@ -41,7 +41,6 @@ const Controls = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
-  const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
   const instance = useReactFlow();
@@ -107,7 +106,7 @@ const Controls = ({
     instance.setEdges(newEdges);
   });
 
-  /* Ctrl + C (key): Copy nodes */
+  /* Ctrl + C (key): Copy nodes
   useCtrlPressKey("KeyC", () => {
     const nodesCopied = instance.getNodes().filter((item) => item.selected);
     const nodeIdCopied = nodesCopied.map((item) => item.id);
@@ -124,11 +123,24 @@ const Controls = ({
       nodes: nodesCopied,
       edges: edgesCopied,
     });
-  });
+  }); */
 
   /* Ctrl + D (key): Paste nodes */
   useCtrlPressKey("KeyD", () => {
-    onCopyNodes(copied);
+    const nodesCopied = instance.getNodes().filter((item) => item.selected);
+    const nodeIdCopied = nodesCopied.map((item) => item.id);
+    const edgesCopied = instance
+      .getEdges()
+      .filter(
+        (item) =>
+          item.selected &&
+          nodeIdCopied.includes(item.source) &&
+          nodeIdCopied.includes(item.target)
+      );
+    onCopyNodes({
+      nodes: nodesCopied,
+      edges: edgesCopied,
+    });
   });
 
   /* Ctrl + Z (key): Undo */
