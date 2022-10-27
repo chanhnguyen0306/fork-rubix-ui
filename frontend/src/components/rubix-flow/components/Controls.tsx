@@ -41,7 +41,6 @@ const Controls = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
-  const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
   const instance = useReactFlow();
@@ -64,6 +63,15 @@ const Controls = ({
   };
 
   const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
+
+  const handleDataCopied = (json: string) => {
+    try {
+      const copied = JSON.parse(json);
+      return ["nodes", "edges"].every((key) => key in copied) && copied;
+    } catch (error) {
+      return false;
+    }
+  };
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -120,15 +128,20 @@ const Controls = ({
           nodeIdCopied.includes(item.target)
       );
 
-    setCopied({
-      nodes: nodesCopied,
-      edges: edgesCopied,
-    });
+    navigator.clipboard.writeText(
+      JSON.stringify({
+        nodes: nodesCopied,
+        edges: edgesCopied,
+      })
+    );
   });
 
   /* Ctrl + V (key): Paste nodes */
   useCtrlPressKey("KeyV", () => {
-    onCopyNodes(copied);
+    navigator.clipboard.readText().then((clipText) => {
+      const dataCopied = handleDataCopied(clipText);
+      if (dataCopied) onCopyNodes(dataCopied);
+    });
   });
 
   /* Ctrl + Z (key): Undo */
