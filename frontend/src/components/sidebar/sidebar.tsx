@@ -243,10 +243,6 @@ export const MenuSidebar = () => {
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
     const { name, icon: Icon, link } = item;
 
-    if (name === "Supervisors" && routeData.length > 0) {
-      return { ...routeData[0], icon: <Icon /> } as any;
-    }
-
     if (name === "Tools") {
       return {
         key: name,
@@ -301,6 +297,10 @@ export const MenuSidebar = () => {
           },
         ],
       };
+    }
+
+    if (name === "Supervisors" && routeData.length > 0) {
+      return { ...routeData[0], icon: <Icon /> } as any;
     }
 
     return {
