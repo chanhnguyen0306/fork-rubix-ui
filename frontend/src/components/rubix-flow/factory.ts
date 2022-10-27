@@ -109,10 +109,10 @@ export class FlowFactory {
     connUUID: string,
     hostUUID: string,
     isRemote: boolean,
-    category?: string
+    category: string
   ) {
-    const filterCategory = category ?? "filterByCategory";
-    return await NodePallet(connUUID, hostUUID, filterCategory, isRemote);
+
+    return await NodePallet(connUUID, hostUUID, category, isRemote);
   }
 
   async DownloadFlow(
