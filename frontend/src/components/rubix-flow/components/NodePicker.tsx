@@ -16,6 +16,7 @@ export type NodePickerFilters = {
 type NodePickerProps = {
   position: XYPosition;
   filters?: NodePickerFilters;
+  nodeList?: NodeSpecJSON[];
   onPickNode: (
     isParent: boolean,
     style: any,
@@ -30,6 +31,7 @@ const NodePicker = ({
   onPickNode,
   onClose,
   filters,
+  nodeList,
 }: NodePickerProps) => {
   const [search, setSearch] = useState("");
   const [nodesSpec] = useNodesSpec();
@@ -41,7 +43,7 @@ const NodePicker = ({
 
   useOnPressKey("Escape", onClose);
 
-  let filtered = nodesSpec as NodeSpecJSON[];
+  let filtered = nodeList ? nodeList : (nodesSpec as NodeSpecJSON[]);
   if (filters !== undefined) {
     filtered = filtered.filter((node) => {
       const inputs = node.inputs ?? [];

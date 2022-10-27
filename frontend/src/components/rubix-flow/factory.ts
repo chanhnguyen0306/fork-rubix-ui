@@ -46,7 +46,6 @@ export class FlowFactory {
     return await GetWiresConnection(connUUID, hostUUID, isRemote, uuid);
   }
 
-
   async UpdateWiresConnection(
     connUUID: string,
     hostUUID: string,
@@ -106,8 +105,14 @@ export class FlowFactory {
     return await GetFlow(connUUID, hostUUID, isRemote);
   }
 
-  async NodePallet(connUUID: string, hostUUID: string, isRemote: boolean) {
-    return await NodePallet(connUUID, hostUUID, "filterByCategory", isRemote,);
+  async NodePallet(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    category: string
+  ) {
+
+    return await NodePallet(connUUID, hostUUID, category, isRemote);
   }
 
   async DownloadFlow(
