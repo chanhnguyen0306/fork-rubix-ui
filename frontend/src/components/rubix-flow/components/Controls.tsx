@@ -139,8 +139,15 @@ const Controls = ({
   /* Ctrl + V (key): Paste nodes */
   useCtrlPressKey("KeyV", () => {
     navigator.clipboard.readText().then((clipText) => {
+      console.log('Data copied', clipText);
+      
       const dataCopied = handleDataCopied(clipText);
-      if (dataCopied) onCopyNodes(dataCopied);
+      if (dataCopied) {
+        console.log('Is copy node.');
+        onCopyNodes(dataCopied);
+      } else {
+        console.log('Is copy text.');
+      }
     });
   });
 
