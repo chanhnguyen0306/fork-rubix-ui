@@ -11,11 +11,13 @@ import {
   RestOutlined,
   UploadOutlined,
   PlayCircleOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 import { useParams } from "react-router-dom";
 import { handleNodesEmptySettings } from "../util/handleSettings";
+import { SettingRefreshModal } from "./SettingRefreshModal";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -23,6 +25,7 @@ type ControlProps = {
   onUndo: () => void;
   onRedo: () => void;
   onRefreshValues: () => void;
+  onNumberRefresh: (value: number) => void;
 };
 
 const Controls = ({
@@ -31,11 +34,13 @@ const Controls = ({
   onUndo,
   onRedo,
   onRefreshValues,
+  onNumberRefresh
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
+  const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
   const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
@@ -57,6 +62,8 @@ const Controls = ({
     );
     instance.setNodes(newNodes);
   };
+
+  const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -149,6 +156,13 @@ const Controls = ({
       <div className="absolute top-4 right-4 bg-white z-10 flex black--text">
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
+          title="Settings refresh value"
+          onClick={toggleRefreshModal}
+        >
+          <SettingOutlined className="p-2 text-gray-700 align-middle" />
+        </div>
+        <div
+          className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Help"
           onClick={() => setHelpModalOpen(true)}
         >
@@ -189,6 +203,11 @@ const Controls = ({
       <ClearModal
         open={clearModalOpen}
         onClose={() => setClearModalOpen(false)}
+      />
+      <SettingRefreshModal
+        open={settingRefreshModalOpen}
+        onClose={toggleRefreshModal}
+        onNumberRefresh={onNumberRefresh}
       />
     </>
   );

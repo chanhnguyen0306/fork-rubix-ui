@@ -2,6 +2,7 @@ import {
   MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import ReactFlow, {
@@ -39,6 +40,7 @@ import {
   handleNodesEmptySettings,
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
+import { getNumberRefresh, NUMBER_REFRESH } from "./components/SettingRefreshModal";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -50,13 +52,15 @@ const Flow = (props: any) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
-    useState<XYPosition>();
+  useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] =
-    useState<OnConnectStartParams>();
+  useState<OnConnectStartParams>();
+  const refreshInterval = useRef<null | number>(null);
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
+  const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -264,7 +268,12 @@ const Flow = (props: any) => {
   const handleRefreshValues = async () => {
     const _outputNodes = (await fetchOutput()) || [];
     setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
-  }
+  };
+
+  const handleChangeNumberRefresh = (value: number) => {
+    localStorage.setItem(NUMBER_REFRESH, value.toString());
+    setNumberRefresh(value);
+  };
 
   useEffect(() => {
     closeNodePicker();
@@ -287,15 +296,6 @@ const Flow = (props: any) => {
         });
       })
       .catch(() => {});
-
-    const ivlFetchOutput = setInterval(async () => {
-      const _outputNodes = (await fetchOutput()) || [];
-      setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
-    }, 5000);
-
-    return () => {
-      clearInterval(ivlFetchOutput);
-    };
   }, [connUUID, hostUUID]);
 
   useEffect(() => {
@@ -324,6 +324,19 @@ const Flow = (props: any) => {
     }
     setNodes(newNodes);
   }, [nodes]);
+
+  useEffect(() => {
+    if (refreshInterval.current) clearInterval(refreshInterval.current);
+
+    refreshInterval.current = setInterval(
+      handleRefreshValues,
+      numberRefresh * 1000
+    );
+
+    return () => {
+      if (refreshInterval.current) clearInterval(refreshInterval.current);
+    };
+  }, [numberRefresh]);
 
   return (
     <ReactFlowProvider>
@@ -363,6 +376,7 @@ const Flow = (props: any) => {
           onUndo={undo}
           onRedo={handleRedo}
           onRefreshValues={handleRefreshValues}
+          onNumberRefresh={handleChangeNumberRefresh}
         />
         {nodePickerVisibility && (
           <NodePicker
