@@ -46,7 +46,7 @@ export const useNodesSpec = () => {
 
   const fetch = async () => {
     setIsFetchingNodeSpec(true);
-    let specJSON = ((await factory.NodePallet(connUUID, hostUUID, isRemote)) ||
+    let specJSON = ((await factory.NodePallet(connUUID, hostUUID, isRemote, "")) ||
       []) as NodeSpecJSON[];
     if (specJSON.length > 0) {
       specJSON = specJSON.map((node: NodeSpecJSON) => {
