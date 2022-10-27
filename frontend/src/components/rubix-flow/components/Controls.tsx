@@ -41,6 +41,7 @@ const Controls = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
+  const [copied, setCopied] = useState<any>({ nodes: [], edges: [] });
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
   const instance = useReactFlow();
@@ -64,15 +65,6 @@ const Controls = ({
 
   const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
 
-  const handleDataCopied = (json: string) => {
-    try {
-      const copied = JSON.parse(json);
-      return ["nodes", "edges"].every((key) => key in copied) && copied;
-    } catch (error) {
-      return false;
-    }
-  };
-
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
     setSaveModalOpen(true);
@@ -83,7 +75,7 @@ const Controls = ({
     setLoadModalOpen(true);
   });
 
-  /* Ctrl + d (key): Delete items selected */
+  /* Ctrl + d (key): Delete items selected
   useCtrlPressKey("KeyD", () => {
     const _nodes = instance.getNodes();
     const _edges = instance.getEdges();
@@ -95,7 +87,7 @@ const Controls = ({
     instance.setEdges(newEdges);
 
     onDeleteEdges(newNodes, newEdges);
-  });
+  }); */
 
   /* Ctrl + a (key): Select all items */
   useCtrlPressKey("KeyA", () => {
@@ -128,27 +120,15 @@ const Controls = ({
           nodeIdCopied.includes(item.target)
       );
 
-    navigator.clipboard.writeText(
-      JSON.stringify({
-        nodes: nodesCopied,
-        edges: edgesCopied,
-      })
-    );
+    setCopied({
+      nodes: nodesCopied,
+      edges: edgesCopied,
+    });
   });
 
-  /* Ctrl + V (key): Paste nodes */
-  useCtrlPressKey("KeyV", () => {
-    navigator.clipboard.readText().then((clipText) => {
-      console.log('Data copied', clipText);
-      
-      const dataCopied = handleDataCopied(clipText);
-      if (dataCopied) {
-        console.log('Is copy node.');
-        onCopyNodes(dataCopied);
-      } else {
-        console.log('Is copy text.');
-      }
-    });
+  /* Ctrl + D (key): Paste nodes */
+  useCtrlPressKey("KeyD", () => {
+    onCopyNodes(copied);
   });
 
   /* Ctrl + Z (key): Undo */
