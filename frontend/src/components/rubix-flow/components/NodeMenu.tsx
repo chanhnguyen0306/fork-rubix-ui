@@ -5,7 +5,6 @@ import { useOnPressKey } from "../hooks/useOnPressKey";
 import { NodeJSON, NodeSpecJSON } from "../lib";
 import { generateUuid } from "../lib/generateUuid";
 import { getNodePickerFilters } from "../util/getPickerFilters";
-import { AddStyleModal } from "./AddStyleModal";
 import { useNodesSpec } from "../use-nodes-spec";
 import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
@@ -13,6 +12,8 @@ import {
   deviantMousePositionX,
   deviantMousePositionY,
 } from "../util/autoLayout";
+import { FlowFactory } from "../factory";
+import { useParams } from "react-router-dom";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -83,7 +84,7 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
         className="p-2 cursor-pointer border-b border-gray-600"
         onClick={openModal}
       >
-        Add Node
+        Add node
       </div>
 
       {nodePickerVisibility && (
@@ -98,18 +99,76 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
   );
 };
 
-const AddStyleComponent = ({ node, onClose }: any) => {
-  if (isObjectEmpty(node.style)) return null;
+const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
+  if (!node.isParent) return null;
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [nodePickerVisibility, setNodePickerVisibility] = useState(false);
+  const [nodeList, setNodeList] = useState([] as any[]);
+  const nodes = instance.getNodes();
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
+  const category = node.type.split("/")[0];
+
+  const factory = new FlowFactory();
 
   const openModal = () => {
-    setIsModalVisible(true);
+    setNodePickerVisibility(true);
+    fetchNodeList();
   };
 
-  const closeModal = () => {
-    setIsModalVisible(false);
+  const closeNodePicker = () => {
+    setNodePickerVisibility(false);
     onClose();
+  };
+
+  const handleAddNode = (
+    isParent: boolean,
+    style: any,
+    nodeType: string,
+    position: XYPosition
+  ) => {
+    closeNodePicker();
+
+    const newNode = {
+      id: generateUuid(),
+      isParent,
+      style,
+      type: nodeType,
+      position: {
+        x: node.position.x + 10,
+        y:
+          node.position.y +
+          (node.originalHeight ? node.originalHeight : node.height),
+      },
+      data: {},
+      parentId: node.id,
+    };
+
+    //to handle sub-node's position
+    if (!node.originalHeight) {
+      node.originalHeight = node.height;
+    }
+
+    const index = nodes.findIndex((n: NodeJSON) => n.id === node.id);
+    const parentStyle = { width: 300, height: 300 };
+    nodes[index] = {
+      ...node,
+      style: isObjectEmpty(nodes[index].style)
+        ? parentStyle
+        : nodes[index].style,
+    };
+    const newNodes = nodes.concat(newNode);
+    instance.setNodes(newNodes);
+  };
+
+  const fetchNodeList = async () => {
+    const nodeList = await factory.NodePallet(
+      connUUID,
+      hostUUID,
+      isRemote,
+      category
+    );
+    setNodeList(nodeList);
   };
 
   return (
@@ -119,17 +178,54 @@ const AddStyleComponent = ({ node, onClose }: any) => {
         className="p-2 cursor-pointer border-b border-gray-600"
         onClick={openModal}
       >
-        Add style
+        Add sub node
       </div>
 
-      <AddStyleModal
-        node={node}
-        isModalVisible={isModalVisible}
-        onCloseModal={closeModal}
-      />
+      {nodePickerVisibility && (
+        <NodePicker
+          position={{} as XYPosition}
+          filters={getNodePickerFilters(nodes, undefined)}
+          onPickNode={handleAddNode}
+          onClose={closeNodePicker}
+          nodeList={nodeList}
+        />
+      )}
     </>
   );
 };
+
+// const AddStyleComponent = ({ node, onClose }: any) => {
+//   if (isObjectEmpty(node.style)) return null;
+
+//   const [isModalVisible, setIsModalVisible] = useState(false);
+
+//   const openModal = () => {
+//     setIsModalVisible(true);
+//   };
+
+//   const closeModal = () => {
+//     setIsModalVisible(false);
+//     onClose();
+//   };
+
+//   return (
+//     <>
+//       <div
+//         key="settings"
+//         className="p-2 cursor-pointer border-b border-gray-600"
+//         onClick={openModal}
+//       >
+//         Add style
+//       </div>
+
+//       <AddStyleModal
+//         node={node}
+//         isModalVisible={isModalVisible}
+//         onCloseModal={closeModal}
+//       />
+//     </>
+//   );
+// };
 
 const NodeMenu = ({
   position,
@@ -174,6 +270,12 @@ const NodeMenu = ({
           style={{ top: mousePosition.y, left: mousePosition.x }}
         >
           <div className="bg-gray-500 p-2">Node Menu</div>
+          <AddSubNodeComponent
+            node={node}
+            onClose={onClose}
+            instance={instance}
+          />
+          <AddNodeComponent node={node} onClose={onClose} instance={instance} />
           <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
             {isShowSetting && (
               <div
@@ -185,8 +287,6 @@ const NodeMenu = ({
               </div>
             )}
           </div>
-          <AddStyleComponent node={node} onClose={onClose} />
-          <AddNodeComponent node={node} onClose={onClose} instance={instance} />
         </div>
       )}
       {isShowSetting && (
