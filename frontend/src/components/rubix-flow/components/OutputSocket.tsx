@@ -82,37 +82,39 @@ export const OutputSocket = ({
 
   return (
     <div className="flex grow items-center justify-end h-7">
-      <AutoSizeInput
-        type="text"
-        className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
-        value={outValue || ""}
-        minWidth={40}
-        disabled
-      />
-      {showFlowIcon && (
-        <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
-      )}
-      {showFlowIcon === false && (
-        <div
-          ref={refName}
-          className="flex justify-end"
-          style={{ minWidth: minWidth === -1 ? "max-content" : minWidth }}
-        >
-          {name}
-        </div>
-      )}
-      <Handle
-        id={name}
-        type="source"
-        position={Position.Right}
-        className={cx(
-          borderColor,
-          connected ? backgroundColor : "bg-gray-1100"
+      <div style={{ display: "flex" }}>
+        <AutoSizeInput
+          type="text"
+          className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 mr-2 nodrag"
+          value={outValue || ""}
+          minWidth={40}
+          disabled
+        />
+        {showFlowIcon && (
+          <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
         )}
-        isValidConnection={(connection: Connection) =>
-          isValidConnection(connection, instance)
-        }
-      />
+        {showFlowIcon === false && (
+          <div
+            ref={refName}
+            className="flex justify-end"
+            style={{ minWidth: minWidth === -1 ? "max-content" : minWidth }}
+          >
+            {name}
+          </div>
+        )}
+        <Handle
+          id={name}
+          type="source"
+          position={Position.Right}
+          className={cx(
+            borderColor,
+            connected ? backgroundColor : "bg-gray-1100"
+          )}
+          isValidConnection={(connection: Connection) =>
+            isValidConnection(connection, instance)
+          }
+        />
+      </div>
     </div>
   );
 };
