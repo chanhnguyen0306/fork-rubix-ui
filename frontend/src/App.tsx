@@ -40,7 +40,11 @@ const AppContainer = ({ isFlowRoute, children }: AppContainerProps) => {
     <Layout>
       <MenuSidebar />
       <Layout className={cx("app-layout", { "flow-layout": isFlowRoute })}>
-        <Content className={cx("app-layout-content", { "flow-layout-content": isFlowRoute })}>
+        <Content
+          className={cx("app-layout-content", {
+            "flow-layout-content": isFlowRoute,
+          })}
+        >
           {children}
         </Content>
       </Layout>
@@ -78,7 +82,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    setIsFlowRoute(pathname === "/rubix-flow");
+    setIsFlowRoute(pathname.startsWith("/rubix-flow"));
   }, [pathname]);
 
   return (
