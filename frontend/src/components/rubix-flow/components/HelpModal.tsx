@@ -25,7 +25,7 @@ export const HelpModal: FC<HelpModalProps> = ({ open = false, onClose }) => {
     "Hold Control and Z to undo.",
     "Hold Control and Y to redo.",
     "Hold Control and S to save/deploy flow.",
-    "Hold Control and X to refresh node values.",
+    "Hold Control and X to refresh node values (you can hold down control-x and this will update as fast as possible)",
   ];
 
   return (
