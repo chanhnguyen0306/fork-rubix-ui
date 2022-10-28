@@ -76,7 +76,6 @@ export const InputSocket = ({
   const handleChangeInput = (value: string) => onChange(name, value);
 
   const onChangeInputNumber = (value: string) => {
-    if (value.match(REGEX_NUMBER)) onChange(name, Number(value));
     setInputNumber(value);
   };
 
