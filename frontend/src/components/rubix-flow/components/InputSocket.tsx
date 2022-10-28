@@ -73,8 +73,10 @@ export const InputSocket = ({
   const colorName = valueTypeColorMap[valueType];
   const [backgroundColor, borderColor] = colors[colorName];
 
-  const onChangeInputNumber = (e: React.FormEvent<HTMLInputElement>) => {
-    setInputNumber(e.currentTarget.value);
+  const handleChangeInput = (value: string) => onChange(name, value);
+
+  const onChangeInputNumber = (value: string) => {
+    setInputNumber(value);
   };
 
   const onBlurInputNumber = (e: React.FormEvent<HTMLInputElement>) => {
@@ -103,7 +105,10 @@ export const InputSocket = ({
   };
 
   const findBooleanValueInput = () => {
-    return dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+    let value = dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+    if (value === null) value = "null";
+    
+    return value || "";
   }
 
   useEffect(() => {
@@ -135,7 +140,7 @@ export const InputSocket = ({
                 type="text"
                 className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                 value={getDataByConnected(value || "")}
-                onChange={(e) => onChange(name, e.currentTarget.value)}
+                onChangeInput={handleChangeInput}
               />
             )}
             {valueType === "number" && (
@@ -143,7 +148,7 @@ export const InputSocket = ({
                 type="text"
                 className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                 value={getDataByConnected(inputNumber)}
-                onChange={onChangeInputNumber}
+                onChangeInput={onChangeInputNumber}
                 onBlur={onBlurInputNumber}
               />
             )}
