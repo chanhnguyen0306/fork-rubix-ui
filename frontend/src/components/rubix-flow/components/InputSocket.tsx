@@ -105,7 +105,10 @@ export const InputSocket = ({
   };
 
   const findBooleanValueInput = () => {
-    return dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+    let value = dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+    if (value === null) value = "null";
+    
+    return value || "";
   }
 
   useEffect(() => {

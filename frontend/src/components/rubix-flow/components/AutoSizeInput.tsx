@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {CloseCircleOutlined}    from "@ant-design/icons";
 
 export const MAX_WIDTH_INPUT = 300;
 export type AutoSizeInputProps = HTMLProps<HTMLInputElement> & {
@@ -103,26 +102,19 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
         />
       )}
       {isShowArea && (
-        <>
-          <textarea
-            ref={setTextAreaRef}
-            className={props.className}
-            disabled={props.disabled}
-            value={textArea}
-            rows={5}
-            onChange={handleChangeTextArea}
-            onBlur={handleBlurTextArea}
-            style={{
-              width: MAX_WIDTH_INPUT,
-            }}
-          >
-            {props.value || ""}
-          </textarea>
-          <CloseCircleOutlined
-            className="inline-block align-top pl-2 pt-1 pb-3 cursor-m"
-            onClick={handleToggleTextArea}
-          />
-        </>
+        <textarea
+          ref={setTextAreaRef}
+          className={props.className}
+          disabled={props.disabled}
+          value={textArea || ""}
+          rows={5}
+          onChange={handleChangeTextArea}
+          onBlur={handleBlurTextArea}
+          onMouseOut={handleToggleTextArea}
+          style={{
+            width: MAX_WIDTH_INPUT,
+          }}
+        />
       )}
       <span ref={measureRef} style={{ ...baseStyles, ...styles }}>
         {props.value || ""}
