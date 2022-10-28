@@ -260,7 +260,7 @@ const NodeMenu = ({
     }
 
     setIsShowSetting(isAllowSetting);
-  }, [nodesSpec, node]);
+  }, [nodesSpec]);
 
   return (
     <>

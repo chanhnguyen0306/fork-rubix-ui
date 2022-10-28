@@ -178,19 +178,6 @@ const Flow = (props: any) => {
     setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
     setSelectedNode(node);
   };
-  
-  const handleClickNode = (e: ReactMouseEvent, node: NodeInterface) => {
-    if (!e.ctrlKey && !e.metaKey) {
-      handleNodeContextMenu(e, node);
-    }
-  }
-
-  const handleOnClick = (e: ReactMouseEvent) => {
-    const element = e.target as HTMLElement;
-    if (element.classList.contains("react-flow__pane")) {
-      handlePaneContextMenu(e);
-    }
-  };
 
   const fetchOutput = async () => {
     try {
@@ -369,17 +356,10 @@ const Flow = (props: any) => {
         onPaneClick={handlePaneClick}
         onPaneContextMenu={handlePaneContextMenu}
         onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
-        onNodeClick={handleClickNode}
-        onClick={handleOnClick}
         fitViewOptions={{ maxZoom: 1 }}
         deleteKeyCode={["Delete"]}
         onNodeDragStop={handleNodeDragStop}
-        multiSelectionKeyCode={[
-          "ControlLeft",
-          "ControlRight",
-          "MetaLeft",
-          "MetaRight",
-        ]}
+        multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
       >
         <ControlUndoable
           canUndo={canUndo && past && past.length !== 0}
