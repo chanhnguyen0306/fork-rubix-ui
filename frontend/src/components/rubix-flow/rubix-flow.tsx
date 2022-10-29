@@ -44,6 +44,7 @@ import {
   getNumberRefresh,
   NUMBER_REFRESH,
 } from "./components/SettingRefreshModal";
+import Sidebar from "./components/Sidebar";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -343,6 +344,7 @@ const Flow = (props: any) => {
 
   return (
     <ReactFlowProvider>
+      <Sidebar />
       <ReactFlow
         nodeTypes={customNodeTypes}
         edgeTypes={edgeTypes}
