@@ -22,6 +22,7 @@ export const useNodesSpec = () => {
     fetch();
   }, [nodesSpec.length, connUUID, hostUUID]);
 
+
   const setDefaultInputValue = (inputs: InputSocketSpecJSON[]) => {
     return inputs.map((input) => {
       let defaultValue = null;
