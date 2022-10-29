@@ -1,0 +1,14 @@
+.rubix-flow {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.rubix-flow__node-sidebar {
+    min-width: 210px;
+}
+
+.rubix-flow__wrapper {
+    flex-grow: 1;
+    height: 100vh;
+}
