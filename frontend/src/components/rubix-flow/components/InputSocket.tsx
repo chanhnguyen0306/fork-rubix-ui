@@ -51,22 +51,24 @@ const getNumberOptions = (value: boolean) => {
 
 const handleConvertInputNumber = (_value: any) => {
   if (_value === null) return "null";
-  else  if (!_value && _value !== 0) return "";
+  else if (!_value && _value !== 0) return "";
   return _value.toString();
 };
 
 export const InputSocket = ({
-                              connected,
-                              value,
-                              onChange,
-                              name,
-                              valueType,
-                              minWidth,
-                              onSetWidthInput,
-                              dataInput,
-                            }: InputSocketProps) => {
+  connected,
+  value,
+  onChange,
+  name,
+  valueType,
+  minWidth,
+  onSetWidthInput,
+  dataInput,
+}: InputSocketProps) => {
   const instance = useReactFlow();
-  const [inputNumber, setInputNumber] = useState(handleConvertInputNumber(value));
+  const [inputNumber, setInputNumber] = useState(
+    handleConvertInputNumber(value)
+  );
   const refName = useRef<HTMLDivElement>(null);
 
   const showFlowIcon = valueType === "flow";
@@ -90,7 +92,7 @@ export const InputSocket = ({
     }
   };
 
-  const onChangeCheckbox = (e: React.FormEvent<HTMLSelectElement>) => {
+  const onChangeInputBoolean = (e: React.FormEvent<HTMLSelectElement>) => {
     const value = getValueOptions(Number((e.target as HTMLInputElement).value));
     onChange(name, value);
   };
@@ -105,11 +107,12 @@ export const InputSocket = ({
   };
 
   const findBooleanValueInput = () => {
-    let value = dataInput && dataInput.find((item: { pin: string }) => item.pin === name).value;
+    let value =
+      dataInput &&
+      dataInput.find((item: { pin: string }) => item.pin === name).value;
     if (value === null) value = "null";
-    
     return value || "";
-  }
+  };
 
   useEffect(() => {
     if (refName.current) {
@@ -164,7 +167,7 @@ export const InputSocket = ({
                 <select
                   value={getDataByConnected(getNumberOptions(value))}
                   className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
-                  onChange={onChangeCheckbox}
+                  onChange={onChangeInputBoolean}
                   style={{ paddingRight: 18 }}
                 >
                   <option value="0">true</option>
