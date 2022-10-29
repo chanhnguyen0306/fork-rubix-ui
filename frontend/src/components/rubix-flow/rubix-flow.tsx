@@ -44,7 +44,8 @@ import {
   getNumberRefresh,
   NUMBER_REFRESH,
 } from "./components/SettingRefreshModal";
-import Sidebar from "./components/Sidebar";
+import { NodeSideBar } from "./components/NodeSidebar";
+import "./rubix-flow.css";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -65,6 +66,7 @@ const Flow = (props: any) => {
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
   const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
+  const reactFlowWrapper = useRef<null | any>(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -279,6 +281,24 @@ const Flow = (props: any) => {
     setNumberRefresh(value);
   };
 
+  const onDragOver = (event: any) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const onDrop = (event: any) => {
+    event.preventDefault();
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const { isParent, nodeType } = JSON.parse(
+      event.dataTransfer.getData("from-node-sidebar")
+    );
+    const position = {
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    };
+    handleAddNode(isParent, null, nodeType, position);
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -343,64 +363,70 @@ const Flow = (props: any) => {
   }, [numberRefresh]);
 
   return (
-    <ReactFlowProvider>
-      <Sidebar />
-      <ReactFlow
-        nodeTypes={customNodeTypes}
-        edgeTypes={edgeTypes}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onConnectStart={handleStartConnect}
-        onConnectStop={handleStopConnect}
-        onPaneClick={handlePaneClick}
-        onPaneContextMenu={handlePaneContextMenu}
-        onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
-        fitViewOptions={{ maxZoom: 1 }}
-        deleteKeyCode={["Delete"]}
-        onNodeDragStop={handleNodeDragStop}
-        multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
-      >
-        <ControlUndoable
-          canUndo={canUndo && past && past.length !== 0}
-          onUndo={undo}
-          canRedo={canRedo}
-          onRedo={handleRedo}
-        />
-        <Controls />
-        <Background
-          variant={BackgroundVariant.Lines}
-          color="#353639"
-          style={{ backgroundColor: "#1E1F22" }}
-        />
-        <BehaveControls
-          onDeleteEdges={handleDeleteEdges}
-          onCopyNodes={handleCopyNodes}
-          onUndo={undo}
-          onRedo={handleRedo}
-          onRefreshValues={handleRefreshValues}
-          onNumberRefresh={handleChangeNumberRefresh}
-        />
-        {nodePickerVisibility && (
-          <NodePicker
-            position={nodePickerVisibility}
-            filters={getNodePickerFilters(nodes, lastConnectStart)}
-            onPickNode={handleAddNode}
-            onClose={closeNodePicker}
-          />
-        )}
-        {nodeMenuVisibility && (
-          <NodeMenu
-            position={nodeMenuVisibility}
-            node={selectedNode}
-            onClose={closeNodePicker}
-            isDoubleClick={isDoubleClick}
-          />
-        )}
-      </ReactFlow>
-    </ReactFlowProvider>
+    <div className="rubix-flow">
+      <ReactFlowProvider>
+        <NodeSideBar onPickNode={handleAddNode} />
+        <div className="rubix-flow__wrapper" ref={reactFlowWrapper}>
+          <ReactFlow
+            nodeTypes={customNodeTypes}
+            edgeTypes={edgeTypes}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onConnectStart={handleStartConnect}
+            onConnectStop={handleStopConnect}
+            onPaneClick={handlePaneClick}
+            onPaneContextMenu={handlePaneContextMenu}
+            onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            fitViewOptions={{ maxZoom: 1 }}
+            deleteKeyCode={["Delete"]}
+            onNodeDragStop={handleNodeDragStop}
+            multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
+          >
+            <ControlUndoable
+              canUndo={canUndo && past && past.length !== 0}
+              onUndo={undo}
+              canRedo={canRedo}
+              onRedo={handleRedo}
+            />
+            <Controls />
+            <Background
+              variant={BackgroundVariant.Lines}
+              color="#353639"
+              style={{ backgroundColor: "#1E1F22" }}
+            />
+            <BehaveControls
+              onDeleteEdges={handleDeleteEdges}
+              onCopyNodes={handleCopyNodes}
+              onUndo={undo}
+              onRedo={handleRedo}
+              onRefreshValues={handleRefreshValues}
+              onNumberRefresh={handleChangeNumberRefresh}
+            />
+            {nodePickerVisibility && (
+              <NodePicker
+                position={nodePickerVisibility}
+                filters={getNodePickerFilters(nodes, lastConnectStart)}
+                onPickNode={handleAddNode}
+                onClose={closeNodePicker}
+              />
+            )}
+            {nodeMenuVisibility && (
+              <NodeMenu
+                position={nodeMenuVisibility}
+                node={selectedNode}
+                onClose={closeNodePicker}
+                isDoubleClick={isDoubleClick}
+              />
+            )}
+          </ReactFlow>
+        </div>
+      </ReactFlowProvider>
+    </div>
   );
 };
 
