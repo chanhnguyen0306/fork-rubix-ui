@@ -66,7 +66,8 @@ const Flow = (props: any) => {
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
   const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
-  const reactFlowWrapper = useRef<null | any>(null);
+  const rubixFlowWrapper = useRef<null | any>(null);
+  const [rubixFlowInstance, setRubixFlowInstance] = useState<null | any>(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -286,18 +287,21 @@ const Flow = (props: any) => {
     event.dataTransfer.dropEffect = "move";
   };
 
-  const onDrop = (event: any) => {
-    event.preventDefault();
-    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    const { isParent, nodeType } = JSON.parse(
-      event.dataTransfer.getData("from-node-sidebar")
-    );
-    const position = {
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
-    };
-    handleAddNode(isParent, null, nodeType, position);
-  };
+  const onDrop = useCallback(
+    (event: any) => {
+      event.preventDefault();
+      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
+      const { isParent, nodeType } = JSON.parse(
+        event.dataTransfer.getData("from-node-sidebar")
+      );
+      const position = rubixFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+      handleAddNode(isParent, null, nodeType, position);
+    },
+    [rubixFlowInstance]
+  );
 
   useEffect(() => {
     closeNodePicker();
@@ -366,7 +370,7 @@ const Flow = (props: any) => {
     <div className="rubix-flow">
       <ReactFlowProvider>
         <NodeSideBar onPickNode={handleAddNode} />
-        <div className="rubix-flow__wrapper" ref={reactFlowWrapper}>
+        <div className="rubix-flow__wrapper" ref={rubixFlowWrapper}>
           <ReactFlow
             nodeTypes={customNodeTypes}
             edgeTypes={edgeTypes}
@@ -382,6 +386,7 @@ const Flow = (props: any) => {
             onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onInit={setRubixFlowInstance}
             fitViewOptions={{ maxZoom: 1 }}
             deleteKeyCode={["Delete"]}
             onNodeDragStop={handleNodeDragStop}
