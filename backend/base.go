@@ -25,7 +25,7 @@ func (inst *App) errMsg(err error) error {
 
 type App struct {
 	ctx      context.Context
-	DB       storage.Storage
+	DB       storage.IStorage
 	appStore store.IAppStore
 	App      *installer.App
 }
