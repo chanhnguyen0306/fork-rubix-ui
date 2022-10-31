@@ -231,7 +231,7 @@ const Flow = (props: any) => {
     });
   };
 
-  const handleCopyNodes = async (_copied: { nodes: any; edges: any }) => {
+  const handleCopyNodes = async (_copied: { nodes: NodeInterface[]; edges: any }) => {
     /* Unselected nodes, edges */
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
@@ -257,6 +257,11 @@ const Flow = (props: any) => {
         id: __newNodeId,
         position: { x: item.position.x + 10, y: item.position.y - 10 },
         selected: true,
+        data: {
+          ...item.data,
+          input: undefined,
+          output: undefined,
+        },
       };
     });
 
