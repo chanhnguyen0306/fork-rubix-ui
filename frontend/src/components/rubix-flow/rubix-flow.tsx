@@ -15,7 +15,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
-  Node as FlowNode,
+  MiniMap,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
@@ -46,6 +46,8 @@ import {
 } from "./components/SettingRefreshModal";
 import { NodeSideBar } from "./components/NodeSidebar";
 import "./rubix-flow.css";
+import { categoryColorMap } from "./util/colors";
+import { NodeCategory } from "./lib/Nodes/NodeCategory";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -303,6 +305,19 @@ const Flow = (props: any) => {
     [rubixFlowInstance]
   );
 
+  const handleMinimapNodeColor = (node: NodeInterface) => {
+    if (node.type) {
+      const category = node.type.split("/")[0] as NodeCategory;
+      return categoryColorMap[category] || "gray";
+    }
+    return "gray";
+  };
+
+  const handleMinimapBorderColor = (node: NodeInterface) => {
+    if (node.selected) return "red";
+    return "none";
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -392,6 +407,11 @@ const Flow = (props: any) => {
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
+            <MiniMap
+              className="absolute top-20 right-4"
+              nodeColor={handleMinimapNodeColor}
+              nodeStrokeColor={handleMinimapBorderColor}
+            />
             <ControlUndoable
               canUndo={canUndo && past && past.length !== 0}
               onUndo={undo}
