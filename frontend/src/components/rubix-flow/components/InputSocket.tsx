@@ -78,6 +78,7 @@ export const InputSocket = ({
   const handleChangeInput = (value: string) => onChange(name, value);
 
   const onChangeInputNumber = (value: string) => {
+    if (value.match(REGEX_NUMBER)) onChange(name, Number(value));
     setInputNumber(value);
   };
 
@@ -102,8 +103,15 @@ export const InputSocket = ({
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
     const input = dataInput.find((item: { pin: string }) => item.pin === name);
+    if (!input) return valueType === "boolean" ? 1 : "";
 
-    return valueType === "boolean" ? getNumberOptions(value) : input.value;
+    if (valueType === "boolean") {
+      return getNumberOptions(input.value);
+    } else if (valueType === "number") {
+      return input.value === null ? "null" : input.value.toString();
+    }
+
+    return input.value;
   };
 
   const findBooleanValueInput = () => {
@@ -111,6 +119,7 @@ export const InputSocket = ({
       dataInput &&
       dataInput.find((item: { pin: string }) => item.pin === name).value;
     if (value === null) value = "null";
+    else if (value === false) value = "false";
     return value || "";
   };
 

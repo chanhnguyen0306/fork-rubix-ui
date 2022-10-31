@@ -99,6 +99,7 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
           onChange={(e) => onChangeInput(e.currentTarget.value)}
           onMouseOver={handleToggleTextArea}
           {...props}
+          value={props.value || ""}
         />
       )}
       {isShowArea && (
