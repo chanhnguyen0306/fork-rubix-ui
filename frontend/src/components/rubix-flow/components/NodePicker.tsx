@@ -3,10 +3,6 @@ import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
 import { useOnPressKey } from "../hooks/useOnPressKey";
 import { NodeSpecJSON } from "../lib";
 import { useNodesSpec } from "../use-nodes-spec";
-import {
-  deviantMousePositionX,
-  deviantMousePositionY,
-} from "../util/autoLayout";
 
 export type NodePickerFilters = {
   handleType: "source" | "target";
@@ -36,10 +32,6 @@ const NodePicker = ({
   const [search, setSearch] = useState("");
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
-  const mousePosition = {
-    x: position.x - deviantMousePositionX,
-    y: position.y - deviantMousePositionY,
-  };
 
   useOnPressKey("Escape", onClose);
 
@@ -62,8 +54,8 @@ const NodePicker = ({
     <div
       className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
       style={{
-        top: mousePosition.y || "unset",
-        left: mousePosition.x || "unset",
+        top: position.y,
+        left: position.x,
         minWidth: 210,
       }}
     >
@@ -88,7 +80,7 @@ const NodePicker = ({
                 isParent ?? false,
                 style ?? {},
                 type,
-                instance.project({ x: mousePosition.x, y: mousePosition.y })
+                instance.project({ x: position.x, y: position.y })
               )
             }
           >

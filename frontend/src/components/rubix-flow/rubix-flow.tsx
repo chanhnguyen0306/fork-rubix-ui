@@ -174,16 +174,32 @@ const Flow = (props: any) => {
 
   const handlePaneClick = () => closeNodePicker();
 
-  const handlePaneContextMenu = (e: ReactMouseEvent) => {
-    e.preventDefault();
-    setNodePickerVisibility({ x: e.clientX, y: e.clientY });
+  const handlePaneContextMenu = (event: ReactMouseEvent) => {
+    const { x, y } = setMousePosition(event);
+    setNodePickerVisibility({ x, y });
   };
 
-  const handleNodeContextMenu = (e: ReactMouseEvent, node: NodeInterface) => {
-    e.preventDefault();
-    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+  const handleNodeContextMenu = (
+    event: ReactMouseEvent,
+    node: NodeInterface
+  ) => {
+    const { x, y } = setMousePosition(event);
+    setNodeMenuVisibility({ x, y });
     setSelectedNode(node);
   };
+
+  const setMousePosition = useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
+      const position = rubixFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+      return position;
+    },
+    [rubixFlowInstance]
+  );
 
   const fetchOutput = async () => {
     try {
@@ -289,21 +305,13 @@ const Flow = (props: any) => {
     event.dataTransfer.dropEffect = "move";
   };
 
-  const onDrop = useCallback(
-    (event: any) => {
-      event.preventDefault();
-      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
-      const { isParent, nodeType } = JSON.parse(
-        event.dataTransfer.getData("from-node-sidebar")
-      );
-      const position = rubixFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-      handleAddNode(isParent, null, nodeType, position);
-    },
-    [rubixFlowInstance]
-  );
+  const onDrop = (event: any) => {
+    const { isParent, nodeType } = JSON.parse(
+      event.dataTransfer.getData("from-node-sidebar")
+    );
+    const position = setMousePosition(event);
+    handleAddNode(isParent, null, nodeType, position);
+  };
 
   const handleMinimapNodeColor = (node: NodeInterface) => {
     if (node.type) {
