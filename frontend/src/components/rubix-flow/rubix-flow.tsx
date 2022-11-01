@@ -41,9 +41,10 @@ import {
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
 import {
-  getNumberRefresh,
-  NUMBER_REFRESH,
-} from "./components/SettingRefreshModal";
+  getFlowSettings,
+  FLOW_SETTINGS,
+  FlowSettings,
+} from "./components/FlowSettingsModal";
 import { NodeSideBar } from "./components/NodeSidebar";
 import "./rubix-flow.css";
 import { categoryColorMap } from "./util/colors";
@@ -67,7 +68,7 @@ const Flow = (props: any) => {
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
-  const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
+  const [flowSettings, setFlowSettings] = useState(getFlowSettings());
   const rubixFlowWrapper = useRef<null | any>(null);
   const [rubixFlowInstance, setRubixFlowInstance] = useState<null | any>(null);
   const { connUUID = "", hostUUID = "" } = useParams();
@@ -279,9 +280,9 @@ const Flow = (props: any) => {
     setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
   };
 
-  const handleChangeNumberRefresh = (value: number) => {
-    localStorage.setItem(NUMBER_REFRESH, value.toString());
-    setNumberRefresh(value);
+  const onSaveFlowSettings = (config: FlowSettings) => {
+    localStorage.setItem(FLOW_SETTINGS, JSON.stringify(config));
+    setFlowSettings(config);
   };
 
   const onDragOver = (event: any) => {
@@ -373,13 +374,13 @@ const Flow = (props: any) => {
 
     refreshInterval.current = setInterval(
       handleRefreshValues,
-      numberRefresh * 1000
+      flowSettings.refreshTimeout * 1000
     );
 
     return () => {
       if (refreshInterval.current) clearInterval(refreshInterval.current);
     };
-  }, [numberRefresh]);
+  }, [flowSettings.refreshTimeout]);
 
   return (
     <div className="rubix-flow">
@@ -407,11 +408,13 @@ const Flow = (props: any) => {
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
-            <MiniMap
-              className="absolute top-20 right-4"
-              nodeColor={handleMinimapNodeColor}
-              nodeStrokeColor={handleMinimapBorderColor}
-            />
+            {flowSettings.showMiniMap && (
+              <MiniMap
+                className="absolute top-20 right-4"
+                nodeColor={handleMinimapNodeColor}
+                nodeStrokeColor={handleMinimapBorderColor}
+              />
+            )}
             <ControlUndoable
               canUndo={canUndo && past && past.length !== 0}
               onUndo={undo}
@@ -430,7 +433,8 @@ const Flow = (props: any) => {
               onUndo={undo}
               onRedo={handleRedo}
               onRefreshValues={handleRefreshValues}
-              onNumberRefresh={handleChangeNumberRefresh}
+              settings={flowSettings}
+              onSaveSettings={onSaveFlowSettings}
             />
             {nodePickerVisibility && (
               <NodePicker
