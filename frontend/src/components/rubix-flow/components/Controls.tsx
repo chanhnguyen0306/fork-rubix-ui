@@ -63,14 +63,11 @@ const Controls = ({
     instance.setNodes(newNodes);
   };
 
-  const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
+  const onShowRefreshModal = () => setSettingRefreshModalOpen(true);
+  const onCloseRefreshModal = () => setSettingRefreshModalOpen(false);
 
   /* ESC (key) */
-  useOnPressKey("Escape", () => {
-    if (settingRefreshModalOpen) {
-      setSettingRefreshModalOpen(false);
-    }
-  });
+  useOnPressKey("Escape", onCloseRefreshModal);
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -177,7 +174,7 @@ const Controls = ({
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Settings refresh value"
-          onClick={toggleRefreshModal}
+          onClick={onShowRefreshModal}
         >
           <SettingOutlined className="p-2 text-gray-700 align-middle" />
         </div>
@@ -226,7 +223,7 @@ const Controls = ({
       />
       <SettingRefreshModal
         open={settingRefreshModalOpen}
-        onClose={() => setSettingRefreshModalOpen(false)}
+        onClose={onCloseRefreshModal}
         onNumberRefresh={onNumberRefresh}
       />
     </>
