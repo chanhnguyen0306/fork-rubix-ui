@@ -27,7 +27,7 @@ func stringPtrToString(b *string) string {
 	}
 }
 
-func (inst *AppStore) GitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *AppStore) gitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}
@@ -48,7 +48,7 @@ func (inst *AppStore) GitDownloadZipball(repo, version, arch, token string, gitO
 	return err
 }
 
-func (inst *AppStore) GitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *AppStore) gitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
 	if token == "" {
 		return errors.New("git token can not be empty")
 	}

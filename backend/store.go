@@ -11,14 +11,6 @@ import (
 	"path"
 )
 
-func (inst *App) StoreCheckAppExists(appName string) error {
-	return inst.appStore.StoreCheckAppExists(appName)
-}
-
-func (inst *App) StoreCheckAppAndVersionExists(appName, arch, version string) error {
-	return inst.appStore.StoreCheckAppAndVersionExists(appName, arch, version)
-}
-
 func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch string, cleanDownload bool, release *store.Release) (*store.InstallResponse, error) {
 	out := &store.InstallResponse{}
 	if release == nil {
@@ -65,8 +57,7 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
 			inst.uiSuccessMessage(fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
-			opts := inst.appStore.GenerateDownloadOptions(app.Repo, app.DoNotValidateArch)
-			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, releaseVersion, app.IsZiball, cleanDownload, opts)
+			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, releaseVersion, app.DoNotValidateArch, app.IsZiball, cleanDownload)
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("download app err: %s", err.Error()))
 				return nil

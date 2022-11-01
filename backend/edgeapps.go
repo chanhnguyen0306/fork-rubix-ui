@@ -115,7 +115,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 			}
 		}
 	}
-	err = inst.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the appStore and if not then try and download it
+	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the appStore and if not then try and download it
 	if err != nil {
 		inst.uiSuccessMessage(fmt.Sprintf("app: %s not found in appStore so download", appName))
 		token, err := inst.GetGitToken(constants.SettingUUID, false)

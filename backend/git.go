@@ -55,5 +55,5 @@ func (inst *App) gitDownloadRelease(token, path string) (*store.Release, error) 
 	if !strings.Contains(path, "flow/") {
 		path = fmt.Sprintf("flow/%s.json", path)
 	}
-	return inst.appStore.DownLoadReleases(token, path)
+	return inst.appStore.DownloadReleases(token, path)
 }
