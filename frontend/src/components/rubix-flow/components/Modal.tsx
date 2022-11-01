@@ -13,6 +13,11 @@ export type ModalProps = {
   actions: ModalAction[];
 };
 
+const actionColors = {
+  primary: "bg-blue-400 hover:bg-blue-500",
+  secondary: "bg-gray-400 hover:bg-gray-500",
+};
+
 export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   open = false,
   onClose,
@@ -23,11 +28,6 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   useOnPressKey("Escape", onClose);
 
   if (open === false) return null;
-
-  const actionColors = {
-    primary: "bg-blue-400 hover:bg-blue-500",
-    secondary: "bg-gray-400 hover:bg-gray-500",
-  };
 
   return (
     <>
