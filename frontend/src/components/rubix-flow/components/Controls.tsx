@@ -35,7 +35,7 @@ const Controls = ({
   onUndo,
   onRedo,
   onRefreshValues,
-  onNumberRefresh
+  onNumberRefresh,
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -66,7 +66,11 @@ const Controls = ({
   const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
 
   /* ESC (key) */
-  useOnPressKey("Escape", toggleRefreshModal);
+  useOnPressKey("Escape", () => {
+    if (settingRefreshModalOpen) {
+      setSettingRefreshModalOpen(false);
+    }
+  });
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
