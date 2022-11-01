@@ -95,7 +95,7 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 	}
 	plugins, err := inst.assistStoreListPlugins(connUUID)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("assist check store for plugin: %s, err: %s", body.Name, err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("assist check appStore for plugin: %s, err: %s", body.Name, err.Error()))
 	}
 	for _, plg := range plugins {
 		if plg.Name == body.Name && plg.Arch == body.Arch && plg.Version == body.Version {
@@ -103,15 +103,15 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 		}
 	}
 	if hasPluginOnRubixAssist {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) plugin found in assist-store", lastStep))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) plugin found in assist-appStore", lastStep))
 	} else {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) try and upload plugin: %s to assist-store", lastStep, body.Name))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) try and upload plugin: %s to assist-appStore", lastStep, body.Name))
 		plg, err := inst.assistStoreUploadPlugin(connUUID, body)
 		if err != nil {
 			inst.uiErrorMessage(err.Error())
 			return nil
 		}
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) uploaded plugin to assist-store: %s", lastStep, plg.UploadedFile))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) uploaded plugin to assist-appStore: %s", lastStep, plg.UploadedFile))
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) start to upload plugin: %s to edge device", lastStep, body.Name))
 	resp, err := inst.edgeUploadPlugin(connUUID, hostUUID, body)

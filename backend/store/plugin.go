@@ -6,7 +6,7 @@ import (
 )
 
 // StoreListPlugins get all plugins for a version => ~/rubix/store/plugins
-func (inst *store) StoreListPlugins() ([]installer.BuildDetails, string, error) {
+func (inst *AppStore) StoreListPlugins() ([]installer.BuildDetails, string, error) {
 	files, err := ioutil.ReadDir(inst.Store.UserPluginPath)
 	if err != nil {
 		return nil, "", err

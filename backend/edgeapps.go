@@ -115,9 +115,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 			}
 		}
 	}
-	err = inst.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the store and if not then try and download it
+	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the appStore and if not then try and download it
 	if err != nil {
-		inst.uiSuccessMessage(fmt.Sprintf("app: %s not found in store so download", appName))
+		inst.uiSuccessMessage(fmt.Sprintf("app: %s not found in appStore so download", appName))
 		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
@@ -312,14 +312,14 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 				installedApp.IsInstalled = true
 				installedApp.LatestVersion = versionApp.Version
 				if installedAppVersion.String() == storeAppVersion.String() {
-					installedApp.Message = fmt.Sprintf("installed version and store version match version: %s", installedAppVersion)
+					installedApp.Message = fmt.Sprintf("installed version and appStore version match version: %s", installedAppVersion)
 					installedApp.Match = true
 				} else {
 					if installedAppVersion.LessThan(storeAppVersion) {
-						installedApp.Message = fmt.Sprintf("an upgrade is required to match (installed: %s | store: %s)", installedAppVersion, storeAppVersion)
+						installedApp.Message = fmt.Sprintf("an upgrade is required to match (installed: %s | appStore: %s)", installedAppVersion, storeAppVersion)
 						installedApp.UpgradeRequired = true
 					} else {
-						installedApp.Message = fmt.Sprintf("an downgrade is required to match (installed: %s | store: %s)", installedAppVersion, storeAppVersion)
+						installedApp.Message = fmt.Sprintf("an downgrade is required to match (installed: %s | appStore: %s)", installedAppVersion, storeAppVersion)
 						installedApp.DowngradeRequired = true
 					}
 				}

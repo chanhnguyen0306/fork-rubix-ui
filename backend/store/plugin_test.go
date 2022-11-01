@@ -2,13 +2,14 @@ package store
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-rubix-installer/installer"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
 
 func TestStore_StoreListPlugins(t *testing.T) {
-	inst, _ := New(&Store{})
-	plugins, path, err := inst.StoreListPlugins()
+	appStore, err := New(&Store{}, installer.New(&installer.App{}))
+	plugins, path, err := appStore.StoreListPlugins()
 	fmt.Println(err, path)
 	if err != nil {
 		return
