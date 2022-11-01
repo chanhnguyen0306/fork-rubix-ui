@@ -18,7 +18,6 @@ import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 import { useParams } from "react-router-dom";
 import { handleNodesEmptySettings } from "../util/handleSettings";
 import { SettingRefreshModal } from "./SettingRefreshModal";
-import { useOnPressKey } from "../hooks/useOnPressKey";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -62,12 +61,6 @@ const Controls = ({
     );
     instance.setNodes(newNodes);
   };
-
-  const onShowRefreshModal = () => setSettingRefreshModalOpen(true);
-  const onCloseRefreshModal = () => setSettingRefreshModalOpen(false);
-
-  /* ESC (key) */
-  useOnPressKey("Escape", onCloseRefreshModal);
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -174,7 +167,7 @@ const Controls = ({
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Settings refresh value"
-          onClick={onShowRefreshModal}
+          onClick={() => setSettingRefreshModalOpen(true)}
         >
           <SettingOutlined className="p-2 text-gray-700 align-middle" />
         </div>
@@ -223,7 +216,7 @@ const Controls = ({
       />
       <SettingRefreshModal
         open={settingRefreshModalOpen}
-        onClose={onCloseRefreshModal}
+        onClose={() => setSettingRefreshModalOpen(false)}
         onNumberRefresh={onNumberRefresh}
       />
     </>
