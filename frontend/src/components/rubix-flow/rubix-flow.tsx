@@ -27,7 +27,7 @@ import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
-import { ReactFlowProvider } from "react-flow-renderer";
+import { ReactFlowInstance, ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { NodeSpecJSON } from "./lib";
@@ -69,7 +69,9 @@ const Flow = (props: any) => {
   const [isDoubleClick, setIsDoubleClick] = useState(false);
   const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
   const rubixFlowWrapper = useRef<null | any>(null);
-  const [rubixFlowInstance, setRubixFlowInstance] = useState<null | any>(null);
+  const [rubixFlowInstance, setRubixFlowInstance] = useState<
+    ReactFlowInstance | any
+  >(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -180,7 +182,7 @@ const Flow = (props: any) => {
   };
 
   const handleNodeContextMenu = (
-    event: ReactMouseEvent,
+    event: React.MouseEvent,
     node: NodeInterface
   ) => {
     const { x, y } = setMousePosition(event);
@@ -189,14 +191,20 @@ const Flow = (props: any) => {
   };
 
   const setMousePosition = useCallback(
-    (event: React.MouseEvent) => {
+    (event: React.MouseEvent, fromSidebar?: boolean) => {
       event.preventDefault();
       const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
-      const position = rubixFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-      return position;
+      if (!fromSidebar) {
+        return {
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        };
+      } else {
+        return rubixFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+      }
     },
     [rubixFlowInstance]
   );
@@ -309,7 +317,7 @@ const Flow = (props: any) => {
     const { isParent, nodeType } = JSON.parse(
       event.dataTransfer.getData("from-node-sidebar")
     );
-    const position = setMousePosition(event);
+    const position = setMousePosition(event, true);
     handleAddNode(isParent, null, nodeType, position);
   };
 
@@ -406,7 +414,7 @@ const Flow = (props: any) => {
             onConnectStop={handleStopConnect}
             onPaneClick={handlePaneClick}
             onPaneContextMenu={handlePaneContextMenu}
-            onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
+            onNodeContextMenu={handleNodeContextMenu}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onInit={setRubixFlowInstance}
