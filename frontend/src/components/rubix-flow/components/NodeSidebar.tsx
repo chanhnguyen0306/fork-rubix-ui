@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { Collapse } from "antd";
-
+import { Collapse, Layout } from "antd";
 import { NodeSpecJSON } from "../lib";
 import { useNodesSpec } from "../use-nodes-spec";
 
 const { Panel } = Collapse;
+const { Sider } = Layout;
 
 export const NodeSideBar = () => {
   const [nodesSpec] = useNodesSpec();
@@ -48,14 +48,14 @@ export const NodeSideBar = () => {
   }, [search, nodesSpec]);
 
   return (
-    <div className="rubix-flow__node-sidebar node-picker z-10 text-white bg-gray-800 border border-gray-500">
-      <div className="bg-gray-500 p-2">Add Node</div>
+    <Sider className="rubix-flow__node-sidebar node-picker z-10 text-white border-l border-gray-600">
+      <div className="p-2">Add Node</div>
       <div className="p-2">
         <input
           type="text"
           autoFocus
           placeholder="Type to filter"
-          className=" bg-gray-600 disabled:bg-gray-700 w-full py-1 px-2"
+          className="bg-gray-600 disabled:bg-gray-700 w-full py-1 px-2"
           value={search}
           onChange={onChangeSearch}
         />
@@ -68,28 +68,33 @@ export const NodeSideBar = () => {
           activeKey={activeKeyPanel}
           expandIconPosition="right"
           onChange={onChangeOpenPanels}
+          className="ant-menu ant-menu-root ant-menu-inline ant-menu-dark border-0"
         >
           {Object.keys(nodes).map((category) => (
             <Panel
               key={category}
               header={category}
-              className="panel-no-padding"
+              className="panel-no-padding border-gray-600"
             >
-              {nodes[category].map(({ type, isParent }) => (
-                <div
-                  key={type}
-                  className="py-2 cursor-pointer border-b border-gray-600 text-left"
-                  onDragStart={(event) => onDragStart(event, isParent, type)}
-                  draggable
-                  style={{ paddingLeft: 24 }}
-                >
-                  {type.split("/")[1]}
-                </div>
-              ))}
+              <div className="bg-gray-800">
+                {nodes[category].map(({ type, isParent }, index) => (
+                  <div
+                    key={type}
+                    className={`py-2 cursor-po inter 
+                    border-gray-600 text-left ant-menu-item ant-menu-item-only-child
+                    ${index === 0 ? "" : "border-t"}`}
+                    onDragStart={(event) => onDragStart(event, isParent, type)}
+                    draggable
+                    style={{ paddingLeft: 24 }}
+                  >
+                    {type.split("/")[1]}
+                  </div>
+                ))}
+              </div>
             </Panel>
           ))}
         </Collapse>
       </div>
-    </div>
+    </Sider>
   );
 };
