@@ -256,7 +256,10 @@ const Flow = (props: any) => {
     });
   };
 
-  const handleCopyNodes = async (_copied: { nodes: NodeInterface[]; edges: any }) => {
+  const handleCopyNodes = async (_copied: {
+    nodes: NodeInterface[];
+    edges: any;
+  }) => {
     /* Unselected nodes, edges */
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
@@ -406,7 +409,7 @@ const Flow = (props: any) => {
   return (
     <div className="rubix-flow">
       <ReactFlowProvider>
-        <NodeSideBar onPickNode={handleAddNode} />
+        <NodeSideBar />
         <div className="rubix-flow__wrapper" ref={rubixFlowWrapper}>
           <ReactFlow
             nodeTypes={customNodeTypes}
