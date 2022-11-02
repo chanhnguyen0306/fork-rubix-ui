@@ -31,64 +31,45 @@ type Store struct {
 	BackupsDir        string `json:"backups_dir"`          // ~/backups
 }
 
-type store struct {
+type AppStore struct {
 	Store *Store
 	App   *installer.App
 }
 
-type InterfaceStore interface {
-	AddApp(app *App) error
-	ListStore() ([]App, error)
-	StoreCheckAppExists(appName string) error
-	StoreCheckAppAndVersionExists(appName, arch, version string) error
-	MakeUserPathTmpDir() (string, error)
-	SaveBackup(fileName string, data interface{}) error
-	GenerateDownloadOptions(repo string, doNotValidateArch bool) git.DownloadOptions
-	DownloadAll(token string, cleanDownload bool, release *Release) ([]App, error)
-	DownloadFlowPlugin(token, version, pluginName, arch, releaseVersion string, cleanDownload bool) (*App, error)
-	GitDownloadZip(token, appName, version, repo, arch, releaseVersion string, isZipball, cleanDownload bool, gitOptions git.DownloadOptions) (*App, error)
-	GetAppStoreAppPath(appName, arch, version string) string
-	GitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error
-	GitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error
-	GitListReleases(token string) ([]ReleaseList, error)
-	StoreListPlugins() ([]installer.BuildDetails, string, error)
-	DownLoadReleases(token, path string) (*Release, error)
-}
-
-func New(_store *Store, app *installer.App) (InterfaceStore, error) {
+func New(store *Store, app *installer.App) (*AppStore, error) {
 	homeDir, _ := fileutils.HomeDir()
-	if _store == nil {
+	if store == nil {
 		return nil, errors.New("store can not be empty")
 	}
-	if _store.Perm == 0 {
-		_store.Perm = FilePerm
+	if store.Perm == 0 {
+		store.Perm = FilePerm
 	}
-	if _store.UserPath == "" {
-		_store.UserPath = path.Join(homeDir, "rubix")
+	if store.UserPath == "" {
+		store.UserPath = path.Join(homeDir, "rubix")
 	}
-	if _store.UserStorePath == "" {
-		_store.UserStorePath = path.Join(_store.UserPath, "_store")
+	if store.UserStorePath == "" {
+		store.UserStorePath = path.Join(store.UserPath, "store")
 	}
-	if _store.UserStoreAppsPath == "" {
-		_store.UserStoreAppsPath = path.Join(_store.UserStorePath, "apps")
+	if store.UserStoreAppsPath == "" {
+		store.UserStoreAppsPath = path.Join(store.UserStorePath, "apps")
 	}
-	if _store.UserPluginPath == "" {
-		_store.UserPluginPath = path.Join(_store.UserStorePath, "plugins")
+	if store.UserPluginPath == "" {
+		store.UserPluginPath = path.Join(store.UserStorePath, "plugins")
 	}
-	if _store.UserTmpPath == "" {
-		_store.UserTmpPath = path.Join(_store.UserStorePath, "tmp")
+	if store.UserTmpPath == "" {
+		store.UserTmpPath = path.Join(store.UserStorePath, "tmp")
 	}
-	if _store.Owner == "" {
-		_store.Owner = "NubeIO"
+	if store.Owner == "" {
+		store.Owner = "NubeIO"
 	}
-	if _store.BackupsDir == "" {
-		_store.BackupsDir = path.Join(_store.UserPath, "backups")
+	if store.BackupsDir == "" {
+		store.BackupsDir = path.Join(store.UserPath, "backups")
 	}
-	err := _store.initMakeAllDirs()
+	err := store.initMakeAllDirs()
 	if err != nil {
 		return nil, err
 	}
-	return &store{Store: _store, App: app}, nil
+	return &AppStore{Store: store, App: app}, nil
 }
 
 func (inst *Store) initMakeAllDirs() error {

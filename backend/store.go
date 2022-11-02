@@ -11,14 +11,6 @@ import (
 	"path"
 )
 
-func (inst *App) StoreCheckAppExists(appName string) error {
-	return inst.store.StoreCheckAppExists(appName)
-}
-
-func (inst *App) StoreCheckAppAndVersionExists(appName, arch, version string) error {
-	return inst.store.StoreCheckAppAndVersionExists(appName, arch, version)
-}
-
 func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch string, cleanDownload bool, release *store.Release) (*store.InstallResponse, error) {
 	out := &store.InstallResponse{}
 	if release == nil {
@@ -27,7 +19,7 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 	if appName == constants.FlowFramework { // just download all plugins
 		for _, plugin := range release.Plugins {
 			inst.uiSuccessMessage(fmt.Sprintf("try to download plugin: %s version: %s", plugin.Plugin, release.Release))
-			_, err := inst.store.DownloadFlowPlugin(token, release.Release, plugin.Plugin, arch, releaseVersion, cleanDownload)
+			_, err := inst.appStore.DownloadFlowPlugin(token, release.Release, plugin.Plugin, arch, releaseVersion, cleanDownload)
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("download plugin err: %s", err.Error()))
 				return nil, err
@@ -40,7 +32,7 @@ func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch strin
 			if len(app.PluginDependency) > 0 { // if required download any plugins
 				for _, plugin := range app.PluginDependency {
 					inst.uiSuccessMessage(fmt.Sprintf("try to download plugin: %s version: %s", plugin, release.Release))
-					_, err := inst.store.DownloadFlowPlugin(token, release.Release, plugin, arch, releaseVersion, cleanDownload)
+					_, err := inst.appStore.DownloadFlowPlugin(token, release.Release, plugin, arch, releaseVersion, cleanDownload)
 					if err != nil {
 						inst.uiErrorMessage(fmt.Sprintf("download plugin err: %s", err.Error()))
 						return nil, err
@@ -65,8 +57,7 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
 			inst.uiSuccessMessage(fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
-			opts := inst.store.GenerateDownloadOptions(app.Repo, app.DoNotValidateArch)
-			asset, err := inst.store.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, releaseVersion, app.IsZiball, cleanDownload, opts)
+			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, releaseVersion, app.DoNotValidateArch, app.IsZiball, cleanDownload)
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("download app err: %s", err.Error()))
 				return nil
@@ -97,7 +88,7 @@ func (inst *App) storeGetPlugin(body *appstore.Plugin) (f *os.File, flowPlugin *
 }
 
 func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flowPlugin *installer.BuildDetails, err error) {
-	plugins, pluginPath, err := inst.store.StoreListPlugins()
+	plugins, pluginPath, err := inst.appStore.StoreListPlugins()
 	if err != nil {
 		return "", nil, err
 	}

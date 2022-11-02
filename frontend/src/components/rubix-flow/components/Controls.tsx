@@ -17,7 +17,7 @@ import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
 import { useParams } from "react-router-dom";
 import { handleNodesEmptySettings } from "../util/handleSettings";
-import { SettingRefreshModal } from "./SettingRefreshModal";
+import { FlowSettings, FlowSettingsModal } from "./FlowSettingsModal";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -25,7 +25,8 @@ type ControlProps = {
   onUndo: () => void;
   onRedo: () => void;
   onRefreshValues: () => void;
-  onNumberRefresh: (value: number) => void;
+  settings: FlowSettings;
+  onSaveSettings: (settings: FlowSettings) => void;
 };
 
 const Controls = ({
@@ -34,7 +35,8 @@ const Controls = ({
   onUndo,
   onRedo,
   onRefreshValues,
-  onNumberRefresh
+  settings,
+  onSaveSettings,
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -61,8 +63,6 @@ const Controls = ({
     );
     instance.setNodes(newNodes);
   };
-
-  const toggleRefreshModal = () => setSettingRefreshModalOpen((p) => !p);
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -169,7 +169,7 @@ const Controls = ({
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Settings refresh value"
-          onClick={toggleRefreshModal}
+          onClick={() => setSettingRefreshModalOpen(true)}
         >
           <SettingOutlined className="p-2 text-gray-700 align-middle" />
         </div>
@@ -216,10 +216,11 @@ const Controls = ({
         open={clearModalOpen}
         onClose={() => setClearModalOpen(false)}
       />
-      <SettingRefreshModal
+      <FlowSettingsModal
+        settings={settings}
         open={settingRefreshModalOpen}
-        onClose={toggleRefreshModal}
-        onNumberRefresh={onNumberRefresh}
+        onClose={() => setSettingRefreshModalOpen(false)}
+        onSaveSettings={onSaveSettings}
       />
     </>
   );

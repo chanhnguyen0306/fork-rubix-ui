@@ -10,7 +10,7 @@ import (
 )
 
 // SaveBackup save a backup to disc
-func (inst *store) SaveBackup(fileName string, data interface{}) error {
+func (inst *AppStore) SaveBackup(fileName string, data interface{}) error {
 	_path := path.Join(inst.Store.BackupsDir, fmt.Sprintf("%s.json", fileName))
 	saveJson, err := json.Marshal(data)
 	if err != nil {

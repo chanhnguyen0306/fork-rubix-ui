@@ -2,11 +2,13 @@ package storage
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
 func TestInitializeBuntDB(t *testing.T) {
-	db := New("test.db")
+	dbFile := "test.db"
+	db := New(dbFile)
 	add, err := db.Add(&RubixConnection{
 		Name:        "test",
 		Description: "test",
@@ -33,6 +35,7 @@ func TestInitializeBuntDB(t *testing.T) {
 		return
 	}
 	db.Wipe()
+	os.Remove(dbFile)
 
 	fmt.Println(toggle.Description)
 

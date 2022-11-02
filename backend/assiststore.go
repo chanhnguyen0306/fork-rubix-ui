@@ -26,15 +26,15 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doN
 	if err != nil {
 		return nil, err
 	}
-	err = inst.store.StoreCheckAppExists(appName)
+	err = inst.appStore.StoreCheckAppExists(appName)
 	if err != nil {
 		return nil, err
 	}
-	err = inst.store.StoreCheckAppAndVersionExists(appName, arch, version)
+	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, version)
 	if err != nil {
 		return nil, err
 	}
-	p := inst.store.GetAppStoreAppPath(appName, arch, version)
+	p := inst.appStore.GetAppStoreAppPath(appName, arch, version)
 	buildDetails, err := inst.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, err

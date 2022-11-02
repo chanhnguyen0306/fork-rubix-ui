@@ -8,19 +8,6 @@ import (
 	"sort"
 )
 
-func (inst *App) GetReleases() []store.Release {
-	out, err := inst.getReleases()
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error get releases: %s", err.Error()))
-		return nil
-	}
-	return out
-}
-
-func (inst *App) getReleases() ([]store.Release, error) {
-	return inst.DB.GetReleases()
-}
-
 func (inst *App) getLatestRelease() (string, error) {
 	releases, err := inst.DB.GetReleases()
 	if err != nil {
@@ -42,20 +29,24 @@ func (inst *App) getLatestRelease() (string, error) {
 	} else {
 		return "", nil
 	}
-
 }
 
-func (inst *App) GetRelease(uuid string) *store.Release {
-	out, err := inst.getRelease(uuid)
+func (inst *App) GetReleases() []store.Release {
+	out, err := inst.DB.GetReleases()
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error get release: %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("error get releases: %s", err.Error()))
 		return nil
 	}
 	return out
 }
 
-func (inst *App) getRelease(uuid string) (*store.Release, error) {
-	return inst.DB.GetRelease(uuid)
+func (inst *App) GetRelease(uuid string) *store.Release {
+	out, err := inst.DB.GetRelease(uuid)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error get release: %s", err.Error()))
+		return nil
+	}
+	return out
 }
 
 func (inst *App) GetReleaseByVersion(version string) *store.Release {
@@ -115,7 +106,7 @@ func (inst *App) addRelease(token, version string) (*store.Release, error) {
 }
 
 func (inst *App) dropReleases() error {
-	releases, err := inst.getReleases()
+	releases, err := inst.DB.GetReleases()
 	if err != nil {
 		return err
 	}

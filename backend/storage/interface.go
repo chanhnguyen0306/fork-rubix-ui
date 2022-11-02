@@ -2,7 +2,7 @@ package storage
 
 import "github.com/NubeIO/rubix-ui/backend/store"
 
-type Storage interface {
+type IStorage interface {
 	Add(*RubixConnection) (*RubixConnection, error)
 	Delete(uuid string) error
 	Select(uuid string) (*RubixConnection, error)

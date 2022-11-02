@@ -11,7 +11,7 @@ type db struct {
 	DB *buntdb.DB
 }
 
-func New(dbFile string) Storage {
+func New(dbFile string) IStorage {
 	if dbFile == "" {
 		dbFile = "data/data.db"
 	}

@@ -71,8 +71,8 @@ type ReleaseList struct {
 	URL  string `json:"url"`
 }
 
-// DownLoadReleases pass in the path: "flow/v0.6.1.json"
-func (inst *store) DownLoadReleases(token, path string) (*Release, error) {
+// DownloadReleases pass in the path: "flow/v0.6.1.json"
+func (inst *AppStore) DownloadReleases(token, path string) (*Release, error) {
 	opts := &git.AssetOptions{
 		Owner: "NubeIO",
 		Repo:  "releases",
