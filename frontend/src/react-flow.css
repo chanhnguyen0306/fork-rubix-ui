@@ -78,3 +78,11 @@ input::-webkit-inner-spin-button {
 .panel-no-padding .ant-collapse-content .ant-collapse-content-box {
   padding: 0;
 }
+
+.panel-no-padding .ant-collapse-content {
+  border: 0;
+}
+
+.ant-collapse>.ant-collapse-item>.ant-collapse-header {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
