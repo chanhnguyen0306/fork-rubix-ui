@@ -27,7 +27,7 @@ import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
-import { ReactFlowProvider } from "react-flow-renderer";
+import { ReactFlowInstance, ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { NodeSpecJSON } from "./lib";
@@ -70,7 +70,9 @@ const Flow = (props: any) => {
   const [isDoubleClick, setIsDoubleClick] = useState(false);
   const [flowSettings, setFlowSettings] = useState(getFlowSettings());
   const rubixFlowWrapper = useRef<null | any>(null);
-  const [rubixFlowInstance, setRubixFlowInstance] = useState<null | any>(null);
+  const [rubixFlowInstance, setRubixFlowInstance] = useState<
+    ReactFlowInstance | any
+  >(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -175,16 +177,38 @@ const Flow = (props: any) => {
 
   const handlePaneClick = () => closeNodePicker();
 
-  const handlePaneContextMenu = (e: ReactMouseEvent) => {
-    e.preventDefault();
-    setNodePickerVisibility({ x: e.clientX, y: e.clientY });
+  const handlePaneContextMenu = (event: ReactMouseEvent) => {
+    const { x, y } = setMousePosition(event);
+    setNodePickerVisibility({ x, y });
   };
 
-  const handleNodeContextMenu = (e: ReactMouseEvent, node: NodeInterface) => {
-    e.preventDefault();
-    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+  const handleNodeContextMenu = (
+    event: React.MouseEvent,
+    node: NodeInterface
+  ) => {
+    const { x, y } = setMousePosition(event);
+    setNodeMenuVisibility({ x, y });
     setSelectedNode(node);
   };
+
+  const setMousePosition = useCallback(
+    (event: React.MouseEvent, fromSidebar?: boolean) => {
+      event.preventDefault();
+      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
+      if (!fromSidebar) {
+        return {
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        };
+      } else {
+        return rubixFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+      }
+    },
+    [rubixFlowInstance]
+  );
 
   const fetchOutput = async () => {
     try {
@@ -232,7 +256,10 @@ const Flow = (props: any) => {
     });
   };
 
-  const handleCopyNodes = async (_copied: { nodes: NodeInterface[]; edges: any }) => {
+  const handleCopyNodes = async (_copied: {
+    nodes: NodeInterface[];
+    edges: any;
+  }) => {
     /* Unselected nodes, edges */
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
@@ -295,21 +322,13 @@ const Flow = (props: any) => {
     event.dataTransfer.dropEffect = "move";
   };
 
-  const onDrop = useCallback(
-    (event: any) => {
-      event.preventDefault();
-      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
-      const { isParent, nodeType } = JSON.parse(
-        event.dataTransfer.getData("from-node-sidebar")
-      );
-      const position = rubixFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-      handleAddNode(isParent, null, nodeType, position);
-    },
-    [rubixFlowInstance]
-  );
+  const onDrop = (event: any) => {
+    const { isParent, nodeType } = JSON.parse(
+      event.dataTransfer.getData("from-node-sidebar")
+    );
+    const position = setMousePosition(event, true);
+    handleAddNode(isParent, null, nodeType, position);
+  };
 
   const handleMinimapNodeColor = (node: NodeInterface) => {
     if (node.type) {
@@ -404,7 +423,7 @@ const Flow = (props: any) => {
             onConnectStop={handleStopConnect}
             onPaneClick={handlePaneClick}
             onPaneContextMenu={handlePaneContextMenu}
-            onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
+            onNodeContextMenu={handleNodeContextMenu}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onInit={setRubixFlowInstance}
