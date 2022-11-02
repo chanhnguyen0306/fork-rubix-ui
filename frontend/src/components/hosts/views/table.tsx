@@ -1,24 +1,28 @@
 import {
-  Typography,
-  List,
   Button,
+  Card,
+  Dropdown,
+  List,
+  Menu,
   Space,
   Spin,
   Tooltip,
-  Dropdown,
-  Menu,
-  Card,
+  Typography,
 } from "antd";
-import { MenuFoldOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { DownCircleOutlined, LeftOutlined } from "@ant-design/icons";
-import { assistmodel, storage, backend } from "../../../../wailsjs/go/models";
+import {
+  DownCircleOutlined,
+  LeftOutlined,
+  MenuFoldOutlined,
+  SnippetsOutlined
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { assistmodel, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import RbTag from "../../../common/rb-tag";
 import {
-  RbDeleteButton,
   RbAddButton,
+  RbDeleteButton,
   RbRefreshButton,
 } from "../../../common/rb-table-actions";
 import { HOST_HEADERS } from "../../../constants/headers";
@@ -34,12 +38,12 @@ import RbConfirmPopover from "../../../common/rb-confirm-popover";
 import { tagMessageStateResolver } from "./utils";
 import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
-
+import UpdateApp from "./updateApp";
+import { TokenModal } from "./token-modal";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
-import UpdateApp from "./updateApp";
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
@@ -369,6 +373,7 @@ export const HostsTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
@@ -426,6 +431,15 @@ export const HostsTable = (props: any) => {
               }}
             >
               <MenuFoldOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Tokens">
+            <a
+              onClick={(e) => {
+                showTokenModal(host, e);
+              }}
+            >
+              <SnippetsOutlined />
             </a>
           </Tooltip>
         </Space>
@@ -503,6 +517,18 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
+  const showTokenModal = (host: Host, e: any) => {
+    e.stopPropagation();
+    setCurrentHost(host);
+    setIsTokenModalVisible(true);
+  };
+
+
+  const onCloseExternalTokenModal = () => {
+    setIsTokenModalVisible(false);
+    setCurrentHost({} as Host);
+  };
+
   return (
     <div>
       <RbRefreshButton refreshList={refreshList} />
@@ -539,6 +565,11 @@ export const HostsTable = (props: any) => {
         backups={backups}
         fetchBackups={fetchBackups}
         onCloseModal={onCloseBackupModal}
+      />
+      <TokenModal
+        isModalVisible={isTokenModalVisible}
+        selectedHost={currentHost}
+        onCloseModal={onCloseExternalTokenModal}
       />
       <InstallApp
         isOpen={isOpen(INSTALL_DIALOG)}
