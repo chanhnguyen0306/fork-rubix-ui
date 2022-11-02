@@ -15,10 +15,10 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
-  MiniMap,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
+import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
 import NodeMenu from "./components/NodeMenu";
@@ -49,6 +49,7 @@ import { NodeSideBar } from "./components/NodeSidebar";
 import "./rubix-flow.css";
 import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
+import { useOnPressKey } from "./hooks/useOnPressKey";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -58,6 +59,7 @@ const Flow = (props: any) => {
   const { customNodeTypes } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([] as NodeInterface[]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [shouldUpdateMiniMap, setShouldUpdateMiniMap] = useState(false);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
@@ -77,6 +79,18 @@ const Flow = (props: any) => {
   const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
+
+  // delete selected wires
+  useOnPressKey("Backspace", () => {
+    const newEdges = edges.filter((item) => !item.selected);
+    setEdges(newEdges);
+    setUndoable({
+      nodes,
+      edges: newEdges,
+    });
+  });
+
+  const onMoveEnd = () => setShouldUpdateMiniMap(s => !s);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -343,6 +357,26 @@ const Flow = (props: any) => {
     return "none";
   };
 
+  const onEdgeClick = useCallback(
+    (evt: ReactMouseEvent) => {
+      const { id } = evt.target as HTMLElement;
+      const newEdge = edges.map((item) => {
+        const isClicked = item.id === id;
+        if (evt.metaKey) {
+          if (isClicked) {
+            item.selected = !item.selected;
+          }
+        } else {
+          item.selected = isClicked;
+        }
+
+        return item;
+      });
+      setEdges(newEdge);
+    },
+    [edges, setEdges]
+  );
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -416,8 +450,10 @@ const Flow = (props: any) => {
             edgeTypes={edgeTypes}
             nodes={nodes}
             edges={edges}
+            onMoveEnd={onMoveEnd}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onEdgeClick={onEdgeClick}
             onConnect={onConnect}
             onConnectStart={handleStartConnect}
             onConnectStop={handleStopConnect}
@@ -427,13 +463,15 @@ const Flow = (props: any) => {
             onDrop={onDrop}
             onDragOver={onDragOver}
             onInit={setRubixFlowInstance}
-            fitViewOptions={{ maxZoom: 1 }}
+            fitView
             deleteKeyCode={["Delete"]}
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
             {flowSettings.showMiniMap && (
               <MiniMap
+                nodes={nodes}
+                shouldUpdate={shouldUpdateMiniMap}
                 className="absolute top-20 right-4"
                 nodeColor={handleMinimapNodeColor}
                 nodeStrokeColor={handleMinimapBorderColor}
