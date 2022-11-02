@@ -68,13 +68,13 @@ export const NodeSideBar = () => {
           activeKey={activeKeyPanel}
           expandIconPosition="right"
           onChange={onChangeOpenPanels}
-          className="ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
+          className="ant-menu ant-menu-root ant-menu-inline ant-menu-dark border-0"
         >
           {Object.keys(nodes).map((category) => (
             <Panel
               key={category}
               header={category}
-              className="panel-no-padding"
+              className="panel-no-padding border-gray-600"
             >
               <div className="ant-menu ant-menu-sub ant-menu-inline">
                 {nodes[category].map(({ type, isParent }, index) => (
