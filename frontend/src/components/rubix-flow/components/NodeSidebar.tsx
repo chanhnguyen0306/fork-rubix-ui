@@ -76,7 +76,7 @@ export const NodeSideBar = () => {
               header={category}
               className="panel-no-padding border-gray-600"
             >
-              <div className="ant-menu ant-menu-sub ant-menu-inline">
+              <div className="bg-gray-800">
                 {nodes[category].map(({ type, isParent }, index) => (
                   <div
                     key={type}
