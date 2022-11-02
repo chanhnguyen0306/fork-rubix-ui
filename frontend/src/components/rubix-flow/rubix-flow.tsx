@@ -390,7 +390,7 @@ const Flow = (props: any) => {
   return (
     <div className="rubix-flow">
       <ReactFlowProvider>
-        <NodeSideBar onPickNode={handleAddNode} />
+        <NodeSideBar />
         <div className="rubix-flow__wrapper" ref={rubixFlowWrapper}>
           <ReactFlow
             nodeTypes={customNodeTypes}
