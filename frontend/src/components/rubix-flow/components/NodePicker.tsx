@@ -52,14 +52,16 @@ const NodePicker = ({
 
   return (
     <div
-      className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
+      className="node-picker absolute z-10 text-white border rounded border-gray-500  ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
       style={{
         top: position.y,
         left: position.x,
-        minWidth: 210,
+        width: 210,
       }}
     >
-      <div className="bg-gray-500 p-2">Add Node</div>
+      <div className="bg-gray-500 mt-0 ant-menu-item ant-menu-item-only-child">
+        Add Node
+      </div>
       <div className="p-2">
         <input
           type="text"
@@ -74,7 +76,7 @@ const NodePicker = ({
         {filtered.map(({ type, isParent, style }) => (
           <div
             key={type}
-            className="p-2 cursor-pointer border-b border-gray-600"
+            className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
             onClick={() =>
               onPickNode(
                 isParent ?? false,

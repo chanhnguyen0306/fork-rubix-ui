@@ -77,7 +77,7 @@ const AddNodeComponent = ({ node, onClose, instance }: any) => {
     <>
       <div
         key="settings"
-        className="p-2 cursor-pointer border-b border-gray-600"
+        className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
         onClick={openModal}
       >
         Add node
@@ -171,7 +171,7 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
     <>
       <div
         key="settings"
-        className="p-2 cursor-pointer border-b border-gray-600"
+        className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
         onClick={openModal}
       >
         Add sub node
@@ -224,27 +224,33 @@ const NodeMenu = ({
     <>
       {!isDoubleClick && (
         <div
-          className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-          style={{ top: position.y, left: position.x }}
+          className="node-picker node-menu absolute z-10 text-white border rounded border-gray-500 ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
+          style={{
+            top: position.y,
+            left: position.x,
+            width: "auto",
+            borderRight: "1px solid #303030",
+            minWidth: 120,
+          }}
         >
-          <div className="bg-gray-500 p-2">Node Menu</div>
+          <div className="bg-gray-500 mt-0 ant-menu-item ant-menu-item-only-child">
+            Node Menu
+          </div>
           <AddSubNodeComponent
             node={node}
             onClose={onClose}
             instance={instance}
           />
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
-          <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-            {isShowSetting && (
-              <div
-                key="settings"
-                className="p-2 cursor-pointer border-b border-gray-600"
-                onClick={openSettingsModal}
-              >
-                Settings
-              </div>
-            )}
-          </div>
+          {isShowSetting && (
+            <div
+              key="settings"
+              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+              onClick={openSettingsModal}
+            >
+              Settings
+            </div>
+          )}
         </div>
       )}
       {isShowSetting && (
