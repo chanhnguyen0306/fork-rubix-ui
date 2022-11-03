@@ -9,6 +9,7 @@ type NodeProps = {
   selected: boolean;
   height: number;
   hasChild: boolean;
+  status?: any;
   onDbClickTitle: () => void;
 };
 
@@ -19,10 +20,12 @@ export const NodeContainer = ({
   children,
   height,
   hasChild,
+  status,
   onDbClickTitle,
 }: PropsWithChildren<NodeProps>) => {
   const colorName = categoryColorMap[category] || "gray";
   let [backgroundColor, borderColor, textColor] = colors[colorName];
+
   if (selected) {
     borderColor = "border-gray-800";
   }
@@ -40,7 +43,9 @@ export const NodeContainer = ({
         onDoubleClick={onDbClickTitle}
       >
         {title}
-        <div>{category}</div>
+        <div>
+          {category} {status ? " | " + status.subTitle : null}
+        </div>
       </div>
       <div
         className={`flex flex-col gap-2 py-3 border-l border-r border-b ${borderColor}`}
