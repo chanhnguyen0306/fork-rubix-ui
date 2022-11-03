@@ -174,7 +174,7 @@ const Flow = (props: any) => {
     setLastConnectStart(params);
   };
 
-  const onConnectEnd = (evt: ReactMouseEvent) => {
+  const onConnectEnd = (evt: ReactMouseEvent | any) => {
     const {
       nodeid: nodeId,
       handleid: handleId,
