@@ -30,7 +30,7 @@ export const NodeContainer = ({
   return (
     <div
       className={cx(
-        `rounded text-white bg-gray-800 min-w-[130px] text-start
+        `rounded text-white bg-gray-800 min-w-[130px] text-start react-flow--font
          ${hasChild ? "bg-opacity-50" : ""}`,
         selected && "outline outline-1"
       )}
