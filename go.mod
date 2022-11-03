@@ -10,7 +10,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.3.4
+	github.com/NubeDev/flow-eng v0.5.1
 	github.com/NubeIO/git v0.0.7
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
@@ -25,7 +25,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
 	github.com/NubeIO/rubix-assist v0.5.3
 	github.com/NubeIO/rubix-edge v0.3.0
-	github.com/NubeIO/rubix-edge-wires v0.1.1
+	github.com/NubeIO/rubix-edge-wires v0.1.4
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
@@ -58,6 +58,7 @@ require (
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/dop251/goja v0.0.0-20220915101355-d79e1b125a30 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.1 // indirect
+	github.com/enescakir/emoji v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-co-op/gocron v1.17.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -86,6 +87,7 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect

@@ -40,6 +40,29 @@ func (inst *FlowClient) NodeValues() ([]node.Values, error) {
 	return out, nil
 }
 
+func (inst *FlowClient) NodesHelp() ([]node.Help, error) {
+	resp, err := nresty.FormatRestyResponse(inst.client.R().
+		SetResult(&[]node.Help{}).
+		Get("/api/nodes/help"))
+	if err != nil {
+		return nil, err
+	}
+	var out []node.Help
+	out = *resp.Result().(*[]node.Help)
+	return out, nil
+}
+
+func (inst *FlowClient) NodeHelpByName(nodeName string) (*node.Help, error) {
+	resp, err := nresty.FormatRestyResponse(inst.client.R().
+		SetResult(&node.Help{}).
+		Get(fmt.Sprintf("/api/nodes/help/%s", nodeName)))
+
+	if err != nil {
+		return nil, err
+	}
+	return resp.Result().(*node.Help), nil
+}
+
 func (inst *FlowClient) NodeSchema(nameName string) (*Schema, error) {
 	resp, err := nresty.FormatRestyResponse(inst.client.R().
 		SetResult(&Schema{}).
