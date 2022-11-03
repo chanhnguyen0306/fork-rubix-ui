@@ -173,6 +173,17 @@ const Flow = (props: any) => {
     setLastConnectStart(params);
   };
 
+  const onEdgeContextMenu = useCallback(
+    (evt: ReactMouseEvent, edge: any) => {
+      evt.preventDefault();
+      const newEdges = edges.map((item) =>
+        item.id === edge.id ? { ...edge, selected: !item.selected } : item
+      );
+      setEdges(newEdges);
+    },
+    [edges, setEdges]
+  );
+
   const onConnectEnd = (evt: ReactMouseEvent | any) => {
     const {
       nodeid: nodeId,
@@ -192,8 +203,6 @@ const Flow = (props: any) => {
 
         return item.selected && (isChangeTarget || isChangeSource);
       });
-
-      console.log("isDragSelected", isDragSelected);
 
       if (isDragSelected) {
         let newEdges;
@@ -411,15 +420,7 @@ const Flow = (props: any) => {
     (evt: ReactMouseEvent) => {
       const { id } = evt.target as HTMLElement;
       const newEdge = edges.map((item) => {
-        const isClicked = item.id === id;
-        if (evt.altKey) {
-          if (isClicked) {
-            item.selected = !item.selected;
-          }
-        } else {
-          item.selected = isClicked;
-        }
-
+        item.selected = item.id === id;
         return item;
       });
       setEdges(newEdge);
@@ -506,6 +507,7 @@ const Flow = (props: any) => {
             onEdgeClick={onEdgeClick}
             onConnect={onConnect}
             onConnectStart={handleStartConnect}
+            onEdgeContextMenu={onEdgeContextMenu}
             // onConnectStop={handleStopConnect}
             onConnectEnd={onConnectEnd}
             onPaneClick={handlePaneClick}
