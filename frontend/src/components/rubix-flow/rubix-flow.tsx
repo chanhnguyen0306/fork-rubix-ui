@@ -15,6 +15,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
+  OnConnectEnd
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
@@ -173,13 +174,62 @@ const Flow = (props: any) => {
     setLastConnectStart(params);
   };
 
-  const handleStopConnect = (e: any) => {
-    const element = e.target as HTMLElement;
-    if (element.classList.contains("react-flow__pane")) {
-      const { x, y } = setMousePosition(e);
-      setNodePickerVisibility({ x, y });
-    } else {
-      setLastConnectStart(undefined);
+  const onConnectEnd = (evt: ReactMouseEvent) => {
+    const {
+      nodeid: nodeId,
+      handleid: handleId,
+      handlepos: position,
+    } = (evt.target as HTMLDivElement).dataset;
+    const isTarget = position === "left";
+
+    if (lastConnectStart) {
+      const isDragSelected = edges.some((item) => {
+        const isChangeTarget =
+          lastConnectStart.handleType === "target" &&
+          item.targetHandle === lastConnectStart.handleId;
+        const isChangeSource =
+          lastConnectStart.handleId === "out" &&
+          item.source === lastConnectStart.nodeId;
+
+        return item.selected && (isChangeTarget || isChangeSource);
+      });
+
+      console.log("isDragSelected", isDragSelected);
+
+      if (isDragSelected) {
+        let newEdges;
+        if (nodeId) {
+          // update selected lines to new node if start and end are same type
+          newEdges = edges.map((item) => {
+            if (
+              item.selected &&
+              lastConnectStart.nodeId === item[lastConnectStart.handleType!!]
+            ) {
+              const updateKey = isTarget ? "target" : "source";
+              item[`${updateKey}Handle`] = handleId;
+              item[updateKey] = nodeId;
+            }
+            return item;
+          });
+        } else {
+          // remove selected lines
+          newEdges = edges.filter((item) => !item.selected);
+        }
+
+        if (newEdges) {
+          setEdges(newEdges);
+          setUndoable({
+            edges: newEdges,
+            nodes,
+          });
+        }
+      } else {
+        const element = evt.target as HTMLElement;
+        if (element.classList.contains("react-flow__pane")) {
+          const { x, y } = setMousePosition(evt);
+          setNodePickerVisibility({ x, y });
+        }
+      }
     }
   };
 
@@ -457,7 +507,8 @@ const Flow = (props: any) => {
             onEdgeClick={onEdgeClick}
             onConnect={onConnect}
             onConnectStart={handleStartConnect}
-            onConnectStop={handleStopConnect}
+            // onConnectStop={handleStopConnect}
+            onConnectEnd={onConnectEnd}
             onPaneClick={handlePaneClick}
             onPaneContextMenu={handlePaneContextMenu}
             onNodeContextMenu={handleNodeContextMenu}

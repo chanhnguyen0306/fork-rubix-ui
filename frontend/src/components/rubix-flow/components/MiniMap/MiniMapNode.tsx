@@ -1,5 +1,5 @@
 import { memo, CSSProperties } from "react";
-import cc from "classcat";
+import cc from "classnames";
 
 interface MiniMapNodeProps {
   x: number;
