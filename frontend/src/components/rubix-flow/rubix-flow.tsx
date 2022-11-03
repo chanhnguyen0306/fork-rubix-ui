@@ -90,7 +90,7 @@ const Flow = (props: any) => {
     });
   });
 
-  const onMoveEnd = () => setShouldUpdateMiniMap(s => !s);
+  const onMoveEnd = () => setShouldUpdateMiniMap((s) => !s);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -173,10 +173,11 @@ const Flow = (props: any) => {
     setLastConnectStart(params);
   };
 
-  const handleStopConnect = (e: MouseEvent) => {
+  const handleStopConnect = (e: any) => {
     const element = e.target as HTMLElement;
     if (element.classList.contains("react-flow__pane")) {
-      setNodePickerVisibility({ x: e.clientX, y: e.clientY });
+      const { x, y } = setMousePosition(e);
+      setNodePickerVisibility({ x, y });
     } else {
       setLastConnectStart(undefined);
     }
