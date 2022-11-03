@@ -44,7 +44,7 @@ export const NodeContainer = ({
       >
         {title}
         <div>
-          {category} {status ? " | " + status.subTitle : null}
+          {category} {status?.subTitle ? " | " + status.subTitle : null}
         </div>
       </div>
       <div
