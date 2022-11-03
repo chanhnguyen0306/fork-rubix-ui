@@ -15,7 +15,6 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
-  OnConnectEnd
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 
@@ -413,7 +412,7 @@ const Flow = (props: any) => {
       const { id } = evt.target as HTMLElement;
       const newEdge = edges.map((item) => {
         const isClicked = item.id === id;
-        if (evt.metaKey) {
+        if (evt.altKey) {
           if (isClicked) {
             item.selected = !item.selected;
           }
