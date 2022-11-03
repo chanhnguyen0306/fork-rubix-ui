@@ -5,7 +5,7 @@ import {
   DownloadFlow,
   GetFlow,
   GetWiresConnection,
-  GetWiresConnections,
+  GetWiresConnections, NodeHelp, NodeHelpByName,
   NodePallet,
   NodeSchema,
   NodeValue,
@@ -96,6 +96,24 @@ export class FlowFactory {
   ): Promise<Array<node.Values>> {
     return await NodeValues(connUUID, hostUUID, isRemote);
   }
+
+  async NodesHelp(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean
+  ): Promise<Array<node.Help>> {
+    return await NodeHelp(connUUID, hostUUID, isRemote);
+  }
+
+  async NodeHelpByName(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    nodeName:  string,
+  ): Promise<node.Help> {
+    return await NodeHelpByName(connUUID, hostUUID, isRemote, nodeName);
+  }
+
 
   async GetFlow(
     connUUID: string,
