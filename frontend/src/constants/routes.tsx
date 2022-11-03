@@ -41,4 +41,6 @@ export const ROUTES: ROUTE = {
   WIRES_CONNECTIONS: "/wires-connections",
   WIRES_CONNECTIONS_REMOTE:
     "/wires-connections/connections/:connUUID/hosts/:hostUUID",
+  USER_GUIDE: "/user-guide",
+  USER_GUIDE_REMOTE: "/user-guide/connections/:connUUID/hosts/:hostUUID",
 };

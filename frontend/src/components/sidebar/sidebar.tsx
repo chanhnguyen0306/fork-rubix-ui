@@ -295,6 +295,11 @@ export const MenuSidebar = () => {
               <NavLink to={ROUTES.WIRES_CONNECTIONS}>Wires Connections</NavLink>
             ),
           },
+          {
+            key: ROUTES.USER_GUIDE,
+            name: ROUTES.USER_GUIDE,
+            label: <NavLink to={ROUTES.USER_GUIDE}>User Guide</NavLink>,
+          },
         ],
       };
     }

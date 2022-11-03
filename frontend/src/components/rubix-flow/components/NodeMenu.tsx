@@ -251,6 +251,9 @@ const NodeMenu = ({
               Settings
             </div>
           )}
+          <div key="help" className="ant-menu-item ant-menu-item-disabled">
+            Help
+          </div>
         </div>
       )}
       {isShowSetting && (
