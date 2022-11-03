@@ -16,6 +16,10 @@ select {
   background-size: 1.5em 1.5em;
 }
 
+.react-flow--font {
+  font-family: Verdana, sans-serif;
+}
+
 .react-flow__handle {
   width: 16px !important;
   height: 16px !important;
