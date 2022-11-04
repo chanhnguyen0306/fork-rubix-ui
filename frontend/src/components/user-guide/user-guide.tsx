@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import { FlowFactory } from "../rubix-flow/factory";
 
 export const UserGuide = () => {
-  const [json, setJson] = useState<object>({});
   const [nodeHelps, setNodeHelps] = useState<any>();
+  const [filterHelps, setFilterHelps] = useState<any>();
+  const [search, setSearch] = useState("");
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
@@ -14,14 +15,23 @@ export const UserGuide = () => {
   const fetchNodeHelp = async () => {
     const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
     setNodeHelps(res);
+    setFilterHelps(res);
   };
 
-  const handleChangeNodeHelp = (value: ChangeEvent<HTMLSelectElement>) => {
-    const _nodeHelp = nodeHelps.find(
-      (item: any) => item.name === value.target.value
-    );
-    setJson(_nodeHelp);
+  const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.currentTarget.value);
   };
+
+  useEffect(() => {
+    const keyword = search.toLowerCase().trim();
+    const newHelps =
+      keyword.length > 0
+        ? nodeHelps.filter((item: any) =>
+            item.name.toLowerCase().includes(keyword)
+          )
+        : nodeHelps;
+    setFilterHelps(newHelps);
+  }, [search]);
 
   useEffect(() => {
     fetchNodeHelp();
@@ -29,21 +39,22 @@ export const UserGuide = () => {
 
   return (
     <>
-      <div className="z-[1] text-black">
-        <select
-          className="flex p-2 mb-3 rounded"
-          defaultValue=""
-          onChange={handleChangeNodeHelp}
-        >
-          <option value="">--</option>
-          {nodeHelps &&
-            nodeHelps.map((item: any, i: number) => (
-              <option key={i} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-        </select>
-        <JsonTable json={json} />
+      <div className="grid place-items-center">
+        <input
+          className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 rounded"
+          value={search}
+          onChange={handleChangeSearch}
+          placeholder="Search name..."
+        />
+        {filterHelps &&
+          filterHelps.map((item: any, i: number) => (
+            <div key={i} className="text-black mb-5 pb-2">
+              <h1 className="text-white my-5">{item.name}</h1>
+              <div className="text-left">
+                <JsonTable json={item} />
+              </div>
+            </div>
+          ))}
       </div>
     </>
   );
