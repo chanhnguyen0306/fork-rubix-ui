@@ -47,7 +47,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
         <div
           className="p-3 text-start black--text"
           style={{
-            height: "80vh",
+            maxHeight: "75vh",
             overflowY: "scroll",
           }}
         >

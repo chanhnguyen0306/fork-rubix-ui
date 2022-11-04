@@ -274,13 +274,11 @@ const NodeMenu = ({
           onCloseModal={onClose}
         />
       )}
-      {isShowHelpModal && (
-        <NodeHelpModal
-          node={node}
-          open={isShowHelpModal}
-          onClose={handleToggleHelpModal}
-        />
-      )}
+      <NodeHelpModal
+        node={node}
+        open={isShowHelpModal}
+        onClose={() => setIsShowHelpModal(false)}
+      />
     </>
   );
 };

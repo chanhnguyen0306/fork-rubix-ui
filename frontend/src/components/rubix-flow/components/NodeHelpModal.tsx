@@ -36,8 +36,8 @@ export const NodeHelpModal: FC<NodeHelpModalProps> = ({
   };
 
   useEffect(() => {
-    fetchNodeHelp();
-  }, [node]);
+    open && fetchNodeHelp();
+  }, [node, open]);
 
   return (
     <Modal
@@ -46,7 +46,7 @@ export const NodeHelpModal: FC<NodeHelpModalProps> = ({
       open={open}
       onClose={onClose}
     >
-      <JsonTable json={value || {}} />
+      <JsonTable json={value} />
     </Modal>
   );
 };

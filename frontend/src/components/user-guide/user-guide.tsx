@@ -37,13 +37,11 @@ export const UserGuide = () => {
         >
           <option value="">--</option>
           {nodeHelps &&
-            nodeHelps.map((item: any, i: number) => {
-              return (
-                <option key={i} value={item.name}>
-                  {item.name}
-                </option>
-              );
-            })}
+            nodeHelps.map((item: any, i: number) => (
+              <option key={i} value={item.name}>
+                {item.name}
+              </option>
+            ))}
         </select>
         <JsonTable json={json} />
       </div>
