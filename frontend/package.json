@@ -13,7 +13,6 @@
     "@use-gesture/react": "^10.2.21",
     "antd": "^4.20.6",
     "case": "^1.6.3",
-    "classcat": "^5.0.4",
     "file-uploader-react-component": "^8.2.0",
     "formik": "^2.2.9",
     "formik-antd": "^2.0.4",

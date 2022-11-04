@@ -1,5 +1,5 @@
 import { memo, HTMLAttributes, useCallback, useRef } from "react";
-import cc from "classcat";
+import cc from "classnames";
 import {
   Node,
   Rect,

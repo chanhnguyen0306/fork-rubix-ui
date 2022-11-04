@@ -1146,7 +1146,7 @@
   optionalDependencies:
     "fsevents" "~2.3.2"
 
-"classcat@^5.0.3", "classcat@^5.0.4":
+"classcat@^5.0.3":
   "integrity" "sha512-sbpkOw6z413p+HDGcBENe498WM9woqWHiJxCq7nvmxe9WmrUmqfAcxpIwAiMtM5Q3AhYkzXcNQHqsWq0mND51g=="
   "resolved" "https://registry.npmjs.org/classcat/-/classcat-5.0.4.tgz"
   "version" "5.0.4"
