@@ -35,7 +35,7 @@ export const openNotificationWithIcon = (type: NotificationType, data: any) => {
 };
 
 export const isObjectEmpty = (obj: Object) => {
-  return Object.keys(obj).length === 0;
+  return obj && Object.keys(obj).length === 0;
 };
 
 export function pluginLogo(plugin: string): string {
