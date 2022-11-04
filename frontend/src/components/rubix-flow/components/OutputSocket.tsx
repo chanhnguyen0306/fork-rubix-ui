@@ -20,13 +20,13 @@ export type OutputSocketProps = {
 } & OutputSocketSpecJSON;
 
 export const OutputSocket = ({
-                               connected,
-                               valueType,
-                               name,
-                               minWidth,
-                               dataOut,
-                               onSetWidthInput,
-                             }: OutputSocketProps) => {
+  connected,
+  valueType,
+  name,
+  minWidth,
+  dataOut,
+  onSetWidthInput,
+}: OutputSocketProps) => {
   const instance = useReactFlow();
   const refName = useRef<HTMLDivElement>(null);
   const [outValue, setOutValue] = useState<string | number>("");
