@@ -1,36 +1,52 @@
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { JsonTable } from "react-json-to-html";
-import { JsonModal } from "./components/JsonModal";
+import { useParams } from "react-router-dom";
+import { FlowFactory } from "../rubix-flow/factory";
 
 export const UserGuide = () => {
-  const [isOpenJsonModal, setIsOpenJsonModal] = useState<boolean>(false);
   const [json, setJson] = useState<object>({});
+  const [nodeHelps, setNodeHelps] = useState<any>();
+  const { connUUID = "", hostUUID = "" } = useParams();
+  const isRemote = connUUID && hostUUID ? true : false;
 
-  const handleToggleModal = () => {
-    setIsOpenJsonModal((p) => !p);
+  const factory = new FlowFactory();
+
+  const fetchNodeHelp = async () => {
+    const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
+    setNodeHelps(res);
   };
 
-  const handleSubmitModal = (value: string) => {
-    setJson(JSON.parse(value));
-    handleToggleModal();
+  const handleChangeNodeHelp = (value: ChangeEvent<HTMLSelectElement>) => {
+    const _nodeHelp = nodeHelps.find(
+      (item: any) => item.name === value.target.value
+    );
+    setJson(_nodeHelp);
   };
+
+  useEffect(() => {
+    fetchNodeHelp();
+  }, []);
 
   return (
     <>
       <div className="z-[1] text-black">
-        <button
-          className="flex text-white p-2 mb-3 rounded cursor-pointer bg-blue-400 hover:bg-blue-500"
-          onClick={handleToggleModal}
+        <select
+          className="flex p-2 mb-3 rounded"
+          defaultValue=""
+          onChange={handleChangeNodeHelp}
         >
-          Input Json
-        </button>
+          <option value="">--</option>
+          {nodeHelps &&
+            nodeHelps.map((item: any, i: number) => {
+              return (
+                <option key={i} value={item.name}>
+                  {item.name}
+                </option>
+              );
+            })}
+        </select>
         <JsonTable json={json} />
       </div>
-      <JsonModal
-        open={isOpenJsonModal}
-        onSubmit={handleSubmitModal}
-        onClose={handleToggleModal}
-      />
     </>
   );
 };

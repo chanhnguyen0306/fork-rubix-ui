@@ -10,10 +10,12 @@ import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
 import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
+import { NodeHelpModal } from "./NodeHelpModal";
 
 type NodeMenuProps = {
   position: XYPosition;
-  node: { type: string };
+  node: NodeInterface;
   isDoubleClick: boolean;
   onClose: () => void;
 };
@@ -198,6 +200,7 @@ const NodeMenu = ({
 }: NodeMenuProps) => {
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
+  const [isShowHelpModal, setIsShowHelpModal] = useState(false);
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
@@ -206,6 +209,10 @@ const NodeMenu = ({
   const openSettingsModal = () => {
     setIsModalVisible(true);
   };
+
+  const handleToggleHelpModal = () => {
+    setIsShowHelpModal(p => !p);
+  }
 
   useEffect(() => {
     const nodeType = (nodesSpec as NodeSpecJSON[]).find(
@@ -251,7 +258,11 @@ const NodeMenu = ({
               Settings
             </div>
           )}
-          <div key="help" className="ant-menu-item ant-menu-item-disabled">
+          <div
+            key="help"
+            className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+            onClick={handleToggleHelpModal}
+          >
             Help
           </div>
         </div>
@@ -261,6 +272,13 @@ const NodeMenu = ({
           node={node}
           isModalVisible={isModalVisible}
           onCloseModal={onClose}
+        />
+      )}
+      {isShowHelpModal && (
+        <NodeHelpModal
+          node={node}
+          open={isShowHelpModal}
+          onClose={handleToggleHelpModal}
         />
       )}
     </>
