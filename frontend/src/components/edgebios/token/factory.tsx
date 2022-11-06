@@ -1,5 +1,8 @@
 import {
   EdgeBiosLogin,
+  EdgeBiosTokenBlock,
+  EdgeBiosTokenDelete,
+  EdgeBiosTokenRegenerate,
   EdgeBiosTokens
 } from "../../../../wailsjs/go/backend/App";
 
@@ -11,7 +14,19 @@ export class EdgeBiosTokenFactory {
     return EdgeBiosLogin(this.connectionUUID, this.hostUUID, username, password);
   }
 
-  public EdgeBiosTokens(jwt_token: string): Promise<any> {
-    return EdgeBiosTokens(this.connectionUUID, this.hostUUID, jwt_token);
+  public EdgeBiosTokens(jwtToken: string): Promise<any> {
+    return EdgeBiosTokens(this.connectionUUID, this.hostUUID, jwtToken);
+  }
+
+  public EdgeBiosTokenBlock(jwtToken: string, uuid: string, block: boolean): Promise<any> {
+    return EdgeBiosTokenBlock(this.connectionUUID, this.hostUUID, jwtToken, uuid, block);
+  }
+
+  public EdgeBiosTokenRegenerate(jwtToken: string, uuid: string): Promise<any> {
+    return EdgeBiosTokenRegenerate(this.connectionUUID, this.hostUUID, jwtToken, uuid);
+  }
+
+  public EdgeBiosTokenDelete(jwtToken: string, uuid: string): Promise<any> {
+    return EdgeBiosTokenDelete(this.connectionUUID, this.hostUUID, jwtToken, uuid);
   }
 }

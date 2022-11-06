@@ -1,11 +1,14 @@
 import { Button, Card, Form, Input, Modal } from "antd";
 import { useParams } from "react-router-dom";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import TokenView from "./token-view";
+import { externaltoken } from "../../../../wailsjs/go/models";
+import ExternalToken = externaltoken.ExternalToken;
 
 export const TokenModal = (props: any) => {
   const [jwtToken, setJwtToken] = useState("");
-  const [tokens, setTokens] = useState([]);
+  const [tokens, setTokens] = useState<ExternalToken[]>([]);
   const { connUUID = "" } = useParams();
   const { isModalVisible, selectedHost, onCloseModal } = props;
 
@@ -21,20 +24,21 @@ export const TokenModal = (props: any) => {
     try {
       const response = await factory.EdgeBiosLogin(values.username, values.password)
       setJwtToken(response.access_token)
-      console.log("jwtToken", jwtToken)
-      const tokens = await factory.EdgeBiosTokens(jwtToken)
-      console.log("tokens", tokens)
-      setTokens(tokens)
     } catch (error) {
-      console.log(error);
-    } finally {
-      console.log("completed querying tokens...")
+      console.log("error:", error);
     }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  const fetchToken = async () => {
+    if (jwtToken != "") {
+      const tokens = await factory.EdgeBiosTokens(jwtToken)
+      setTokens(tokens || undefined) // restrict to pass null to child
+    }
+  }
+
+  useEffect(() => {
+    fetchToken().catch(console.error);
+  }, [jwtToken])
 
   return (
     <Modal
@@ -54,7 +58,6 @@ export const TokenModal = (props: any) => {
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item
@@ -79,9 +82,7 @@ export const TokenModal = (props: any) => {
           </Form.Item>
         </Form>
 
-
-
-
+        <TokenView jwtToken={jwtToken} tokens={tokens} factory={factory} fetchToken={fetchToken} />
       </Card>
     </Modal>
   );
