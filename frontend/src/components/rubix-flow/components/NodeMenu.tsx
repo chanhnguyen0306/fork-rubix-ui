@@ -10,10 +10,12 @@ import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
 import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
+import { SetPayloadModal } from "./SetPayloadModal";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 type NodeMenuProps = {
   position: XYPosition;
-  node: { type: string };
+  node: NodeInterface;
   isDoubleClick: boolean;
   onClose: () => void;
 };
@@ -198,6 +200,8 @@ const NodeMenu = ({
 }: NodeMenuProps) => {
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
+  const [isShowPayload, setIsShowPayload] = useState(false);
+  const [nodeType, setNodeType] = useState<any>({});
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
@@ -207,10 +211,16 @@ const NodeMenu = ({
     setIsModalVisible(true);
   };
 
+  const handleTogglePayload = () => {
+    setIsShowPayload(!isShowPayload);
+  };
+
   useEffect(() => {
     const nodeType = (nodesSpec as NodeSpecJSON[]).find(
       (item) => item.type === node.type
     );
+    setNodeType(nodeType);
+
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isDoubleClick && !isAllowSetting) {
@@ -218,7 +228,7 @@ const NodeMenu = ({
     }
 
     setIsShowSetting(isAllowSetting);
-  }, [nodesSpec]);
+  }, [node, nodesSpec]);
 
   return (
     <>
@@ -242,6 +252,13 @@ const NodeMenu = ({
             instance={instance}
           />
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
+          <div
+            key="Set Payload"
+            className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+            onClick={handleTogglePayload}
+          >
+            Set Payload
+          </div>
           {isShowSetting && (
             <div
               key="settings"
@@ -260,6 +277,13 @@ const NodeMenu = ({
           onCloseModal={onClose}
         />
       )}
+
+      <SetPayloadModal
+        node={node}
+        inputs={nodeType.inputs}
+        open={isShowPayload}
+        onClose={() => setIsShowPayload(false)}
+      />
     </>
   );
 };

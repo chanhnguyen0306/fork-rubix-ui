@@ -19,6 +19,9 @@ export type InputSocketProps = {
   dataInput: any;
   onChange: (key: string, value: any) => void;
   onSetWidthInput: (width: number) => void;
+  isHideConnect?: boolean;
+  classnames?: string;
+  widthInput?: number;
 } & InputSocketSpecJSON;
 
 const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
@@ -64,6 +67,9 @@ export const InputSocket = ({
   minWidth,
   onSetWidthInput,
   dataInput,
+  isHideConnect,
+  classnames,
+  widthInput,
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(
@@ -150,34 +156,53 @@ export const InputSocket = ({
             {valueType === "string" && (
               <AutoSizeInput
                 type="text"
-                className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                className={cx(
+                  classnames
+                    ? classnames
+                    : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                )}
                 value={getDataByConnected(value || "")}
                 onChangeInput={handleChangeInput}
+                minWidth={widthInput}
               />
             )}
             {valueType === "number" && (
               <AutoSizeInput
                 type="text"
-                className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                className={cx(
+                  classnames
+                    ? classnames
+                    : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                )}
                 value={getDataByConnected(inputNumber)}
                 onChangeInput={onChangeInputNumber}
                 onBlur={onBlurInputNumber}
+                minWidth={widthInput}
               />
             )}
             {valueType === "boolean" &&
               (connected ? (
                 <AutoSizeInput
                   type="text"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className={cx(
+                    classnames
+                      ? classnames
+                      : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  )}
                   value={findBooleanValueInput()}
                   disabled
+                  minWidth={widthInput}
                 />
               ) : (
                 <select
                   value={getDataByConnected(getNumberOptions(value))}
-                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className={cx(
+                    classnames
+                      ? classnames
+                      : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  )}
                   onChange={onChangeInputBoolean}
-                  style={{ paddingRight: 18 }}
+                  style={{ paddingRight: 18, width: widthInput }}
                 >
                   <option value="0">true</option>
                   <option value="1">false</option>
@@ -187,18 +212,20 @@ export const InputSocket = ({
           </div>
         </div>
       )}
-      <Handle
-        id={name}
-        type="target"
-        position={Position.Left}
-        className={cx(
-          borderColor,
-          connected ? backgroundColor : "bg-gray-1100"
-        )}
-        isValidConnection={(connection: Connection) =>
-          isValidConnection(connection, instance)
-        }
-      />
+      {!isHideConnect && (
+        <Handle
+          id={name}
+          type="target"
+          position={Position.Left}
+          className={cx(
+            borderColor,
+            connected ? backgroundColor : "bg-gray-1100"
+          )}
+          isValidConnection={(connection: Connection) =>
+            isValidConnection(connection, instance)
+          }
+        />
+      )}
     </div>
   );
 };
