@@ -1,5 +1,5 @@
-import { List, Popconfirm } from 'antd';
-import React, { useState } from 'react';
+import { List, Popconfirm } from "antd";
+import React, { useEffect, useState } from "react";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -13,23 +13,27 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 export const TokenView = (props: ITokenView) => {
   const { jwtToken, tokens = [], factory, fetchToken } = props;
 
-  const [regeneratedToken, setRegeneratedToken] = useState({} as externaltoken.ExternalToken)
+  const [regeneratedToken, setRegeneratedToken] = useState({} as externaltoken.ExternalToken);
+
+  useEffect(()=> {
+    setRegeneratedToken({} as externaltoken.ExternalToken)
+  }, [jwtToken])
 
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
-    await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked)
+    await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked);
     fetchToken().catch(console.error);
-  }
+  };
 
   const regenerateToken = async (token: externaltoken.ExternalToken) => {
-    const externalToken = await factory.EdgeBiosTokenRegenerate(jwtToken, token.uuid)
-    setRegeneratedToken(externalToken)
+    const externalToken = await factory.EdgeBiosTokenRegenerate(jwtToken, token.uuid);
+    setRegeneratedToken(externalToken);
     fetchToken().catch(console.error);
-  }
+  };
 
   const deleteToken = async (token: externaltoken.ExternalToken) => {
-    await factory.EdgeBiosTokenDelete(jwtToken, token.uuid)
+    await factory.EdgeBiosTokenDelete(jwtToken, token.uuid);
     fetchToken().catch(console.error);
-  }
+  };
 
   return (
     <>

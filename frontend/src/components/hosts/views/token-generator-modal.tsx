@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button, Form, Input, Modal } from "antd";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
 import { externaltoken } from "../../../../wailsjs/go/models";
@@ -8,27 +8,31 @@ export const TokenGeneratorModal = (props: ITokenGeneratorModal) => {
   const { isModalVisible, jwtToken, onCloseModal, factory, fetchToken } = props;
 
   const [loading, setLoading] = useState(false);
-  const [generatedToken, setGeneratedToken] = useState({} as externaltoken.ExternalToken)
+  const [isTokenCreated, setIsTokenCreated] = useState(false);
+  const [generatedToken, setGeneratedToken] = useState({} as externaltoken.ExternalToken);
 
   const handleClose = () => {
     onCloseModal();
+    if (isTokenCreated) {
+      fetchToken().catch(console.error);
+    }
   };
 
   const onFinish = async (values: any) => {
     try {
-      setLoading(true)
-      const response = await factory.EdgeBiosTokenGenerate(jwtToken, values.token_name)
-      setGeneratedToken(response)
-      fetchToken().catch(console.error);
+      setLoading(true);
+      const response = await factory.EdgeBiosTokenGenerate(jwtToken, values.token_name);
+      setGeneratedToken(response);
+      setIsTokenCreated(true);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Modal
       centered
-      title="Create Token"
+      title="Generate Token"
       visible={isModalVisible}
       maskClosable={false}
       footer={null}
@@ -58,14 +62,14 @@ export const TokenGeneratorModal = (props: ITokenGeneratorModal) => {
           name="token_name"
           rules={[{
             required: true,
-            message: 'Please input your token name!'
+            message: "Please input your token name!"
           }]}
         >
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
           <Button type="primary" htmlType="submit" loading={loading}>
-            Create
+            Generate
           </Button>
         </Form.Item>
       </Form>

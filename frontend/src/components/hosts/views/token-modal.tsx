@@ -7,9 +7,9 @@ import { assistmodel, externaltoken } from "../../../../wailsjs/go/models";
 import { PlusOutlined } from "@ant-design/icons";
 import TokenGeneratorModal from "./token-generator-modal";
 import { useSettings } from "../../settings/use-settings";
+import { LIGHT_THEME } from "../../../themes/use-theme";
 import ExternalToken = externaltoken.ExternalToken;
 import Host = assistmodel.Host;
-import { DARK_THEME, LIGHT_THEME } from "../../../themes/use-theme";
 
 export const TokenModal = (props: ITokenModel) => {
   const { connUUID = "" } = useParams();
@@ -19,7 +19,7 @@ export const TokenModal = (props: ITokenModel) => {
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState<ExternalToken[]>([]);
-  const [refreshingToken, setRefreshingToken] = useState(false)
+  const [refreshingToken, setRefreshingToken] = useState(false);
   const [isTokenGenerateModalVisible, setIsTokenGenerateModalVisible] = useState(false);
   const loginFormRef = createRef<FormInstance>();
 
@@ -27,16 +27,13 @@ export const TokenModal = (props: ITokenModel) => {
   factory.connectionUUID = connUUID;
   factory.hostUUID = selectedHost.uuid;
 
-  useEffect(() => {
+  const handleClose = () => {
     setJwtToken("");
     setLoading(false);
     setTokens([]);
     setRefreshingToken(false);
     setIsTokenGenerateModalVisible(false);
     loginFormRef?.current?.resetFields();
-  }, [selectedHost])
-
-  const handleClose = () => {
     onCloseModal();
   };
 
@@ -46,40 +43,33 @@ export const TokenModal = (props: ITokenModel) => {
 
   const onFinish = async (values: any) => {
     try {
-      setLoading(true)
-      const response = await factory.EdgeBiosLogin(values.username, values.password)
-      setJwtToken(response.access_token)
-    } catch (error) {
-      console.log("error:", error);
+      setLoading(true);
+      const response = await factory.EdgeBiosLogin(values.username, values.password);
+      setJwtToken(response.access_token);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
-  function sleep(time: number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
-
   const showTokenGenerateModal = (e: any) => {
-    setIsTokenGenerateModalVisible(true)
-  }
+    setIsTokenGenerateModalVisible(true);
+  };
 
   const fetchToken = async () => {
     if (jwtToken != "") {
-      setRefreshingToken(true)
-      await sleep(1000)
+      setRefreshingToken(true);
       try {
-        const tokens = await factory.EdgeBiosTokens(jwtToken)
-        setTokens(tokens || undefined) // restrict to pass null to child
+        const tokens = await factory.EdgeBiosTokens(jwtToken);
+        setTokens(tokens || undefined); // restrict to pass null to child
       } finally {
-        setRefreshingToken(false)
+        setRefreshingToken(false);
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchToken().catch(console.error);
-  }, [jwtToken])
+  }, [jwtToken]);
 
   return (
     <Modal
@@ -94,7 +84,7 @@ export const TokenModal = (props: ITokenModel) => {
     >
       <Spin tip="refreshing tokens..." spinning={refreshingToken}>
         <Card title="Tokens"
-              style={{ backgroundColor: settings.theme == LIGHT_THEME ? 'fff' : '' }}
+              style={{ backgroundColor: settings.theme == LIGHT_THEME ? "fff" : "" }}
               extra={jwtToken && <Button type="primary" icon={<PlusOutlined />}
                                          size="small"
                                          onClick={showTokenGenerateModal}
@@ -113,7 +103,7 @@ export const TokenModal = (props: ITokenModel) => {
               name="username"
               rules={[{
                 required: true,
-                message: 'Please input your username!'
+                message: "Please input your username!"
               }]}
             >
               <Input />
@@ -124,7 +114,7 @@ export const TokenModal = (props: ITokenModel) => {
               name="password"
               rules={[{
                 required: true,
-                message: 'Please input your password!'
+                message: "Please input your password!"
               }]}
             >
               <Input.Password />
