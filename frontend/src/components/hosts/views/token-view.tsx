@@ -11,9 +11,11 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 
 
 export const TokenView = (props: ITokenView) => {
+  const { jwtToken, tokens = [], factory, fetchToken } = props;
+
   const [regeneratedToken, setRegeneratedToken] = useState("")
   const [selectedToken, setSelectedToken] = useState({} as externaltoken.ExternalToken)
-  const { jwtToken, tokens = [], factory, fetchToken } = props;
+
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
     setSelectedToken(token)
     await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked)
@@ -41,7 +43,7 @@ export const TokenView = (props: ITokenView) => {
           <i>{regeneratedToken}</i>
         </div>
       }
-      <List
+      {tokens.length > 0 && <List
         itemLayout="horizontal"
         dataSource={tokens}
         renderItem={item => (
@@ -77,6 +79,7 @@ export const TokenView = (props: ITokenView) => {
           </List.Item>
         )}
       />
+      }
     </>
   );
 };

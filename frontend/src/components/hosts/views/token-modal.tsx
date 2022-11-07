@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input, Modal } from "antd";
+import { Button, Card, Form, Input, Modal, Spin } from "antd";
 import { useParams } from "react-router-dom";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
 import { useEffect, useState } from "react";
@@ -7,10 +7,13 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 import ExternalToken = externaltoken.ExternalToken;
 
 export const TokenModal = (props: any) => {
-  const [jwtToken, setJwtToken] = useState("");
-  const [tokens, setTokens] = useState<ExternalToken[]>([]);
   const { connUUID = "" } = useParams();
   const { isModalVisible, selectedHost, onCloseModal } = props;
+
+  const [jwtToken, setJwtToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [tokens, setTokens] = useState<ExternalToken[]>([]);
+  const [refreshingToken, setRefreshingToken] = useState(false)
 
   const factory = new EdgeBiosTokenFactory();
   factory.connectionUUID = connUUID;
@@ -22,17 +25,30 @@ export const TokenModal = (props: any) => {
 
   const onFinish = async (values: any) => {
     try {
+      setLoading(true)
       const response = await factory.EdgeBiosLogin(values.username, values.password)
       setJwtToken(response.access_token)
     } catch (error) {
       console.log("error:", error);
+    } finally {
+      setLoading(false)
     }
   };
 
+  function sleep(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
   const fetchToken = async () => {
     if (jwtToken != "") {
-      const tokens = await factory.EdgeBiosTokens(jwtToken)
-      setTokens(tokens || undefined) // restrict to pass null to child
+      setRefreshingToken(true)
+      await sleep(1000)
+      try {
+        const tokens = await factory.EdgeBiosTokens(jwtToken)
+        setTokens(tokens || undefined) // restrict to pass null to child
+      } finally {
+        setRefreshingToken(false)
+      }
     }
   }
 
@@ -51,39 +67,48 @@ export const TokenModal = (props: any) => {
       style={{ textAlign: "start" }}
       width="50%"
     >
-      <Card title="External Tokens">
-        <Form
-          name="basic"
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+      <Spin tip="refreshing tokens..." spinning={refreshingToken}>
+        <Card title="External Tokens">
+          <Form
+            name="basic"
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 16 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            autoComplete="off"
           >
-            <Input />
-          </Form.Item>
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[{
+                required: true,
+                message: 'Please input your username!'
+              }]}
+            >
+              <Input />
+            </Form.Item>
 
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{
+                required: true,
+                message: 'Please input your password!'
+              }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
 
-        <TokenView jwtToken={jwtToken} tokens={tokens} factory={factory} fetchToken={fetchToken} />
-      </Card>
+          <TokenView jwtToken={jwtToken} tokens={tokens} factory={factory}
+                     fetchToken={fetchToken} />
+        </Card>
+      </Spin>
     </Modal>
   );
 };
