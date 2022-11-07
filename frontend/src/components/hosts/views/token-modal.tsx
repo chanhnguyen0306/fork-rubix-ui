@@ -1,4 +1,4 @@
-import { Button, Card, Form, FormInstance, Input, Modal, Spin } from "antd";
+import { Button, Card, Form, FormInstance, Input, Modal } from "antd";
 import { useParams } from "react-router-dom";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
 import { createRef, useEffect, useState } from "react";
@@ -19,7 +19,7 @@ export const TokenModal = (props: ITokenModel) => {
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState<ExternalToken[]>([]);
-  const [refreshingToken, setRefreshingToken] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isTokenGenerateModalVisible, setIsTokenGenerateModalVisible] = useState(false);
   const loginFormRef = createRef<FormInstance>();
 
@@ -31,7 +31,7 @@ export const TokenModal = (props: ITokenModel) => {
     setJwtToken("");
     setLoading(false);
     setTokens([]);
-    setRefreshingToken(false);
+    setIsLoading(false);
     setIsTokenGenerateModalVisible(false);
     loginFormRef?.current?.resetFields();
     onCloseModal();
@@ -57,12 +57,12 @@ export const TokenModal = (props: ITokenModel) => {
 
   const fetchToken = async () => {
     if (jwtToken != "") {
-      setRefreshingToken(true);
+      setIsLoading(true);
       try {
         const tokens = await factory.EdgeBiosTokens(jwtToken);
         setTokens(tokens || undefined); // restrict to pass null to child
       } finally {
-        setRefreshingToken(false);
+        setIsLoading(false);
       }
     }
   };
@@ -82,58 +82,60 @@ export const TokenModal = (props: ITokenModel) => {
       style={{ textAlign: "start" }}
       width="50%"
     >
-      <Spin tip="refreshing tokens..." spinning={refreshingToken}>
-        <Card title="Tokens"
-              style={{ backgroundColor: settings.theme == LIGHT_THEME ? "fff" : "" }}
-              extra={jwtToken && <Button type="primary" icon={<PlusOutlined />}
-                                         size="small"
-                                         onClick={showTokenGenerateModal}
-              />}>
-          <Form
-            name="basic"
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 16 }}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            autoComplete="off"
-            ref={loginFormRef}
+      <Card title="Tokens"
+            style={{ backgroundColor: settings.theme == LIGHT_THEME ? "fff" : "" }}
+            extra={jwtToken && <Button type="primary" icon={<PlusOutlined />}
+                                       size="small"
+                                       onClick={showTokenGenerateModal}
+            />}>
+        <Form
+          name="basic"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          autoComplete="off"
+          ref={loginFormRef}
+        >
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{
+              required: true,
+              message: "Please input your username!"
+            }]}
           >
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[{
-                required: true,
-                message: "Please input your username!"
-              }]}
-            >
-              <Input />
-            </Form.Item>
+            <Input />
+          </Form.Item>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{
-                required: true,
-                message: "Please input your password!"
-              }]}
-            >
-              <Input.Password />
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{
+              required: true,
+              message: "Please input your password!"
+            }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
 
-          <TokenView jwtToken={jwtToken} tokens={tokens} factory={factory}
-                     fetchToken={fetchToken} />
-          {isTokenGenerateModalVisible &&
-            <TokenGeneratorModal isModalVisible={true} jwtToken={jwtToken}
-                                 onCloseModal={onCloseTokenGeneratorModal}
-                                 factory={factory} fetchToken={fetchToken} />}
-        </Card>
-      </Spin>
+        <TokenView jwtToken={jwtToken}
+                   tokens={tokens}
+                   isLoading={isLoading}
+                   factory={factory}
+                   fetchToken={fetchToken}
+                   setIsLoading={setIsLoading} />
+        {isTokenGenerateModalVisible &&
+          <TokenGeneratorModal isModalVisible={true} jwtToken={jwtToken}
+                               onCloseModal={onCloseTokenGeneratorModal}
+                               factory={factory} fetchToken={fetchToken} />}
+      </Card>
     </Modal>
   );
 };

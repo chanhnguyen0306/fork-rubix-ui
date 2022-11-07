@@ -1,4 +1,4 @@
-import { List, Popconfirm, Tooltip } from "antd";
+import { List, Popconfirm, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   CheckOutlined,
@@ -12,7 +12,14 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 
 
 export const TokenView = (props: ITokenView) => {
-  const { jwtToken, tokens = [], factory, fetchToken } = props;
+  const {
+    jwtToken,
+    tokens = [],
+    isLoading,
+    factory,
+    fetchToken,
+    setIsLoading
+  } = props;
 
   const [displayToken, setDisplayToken] = useState({} as externaltoken.ExternalToken);
   const [regeneratedToken, setRegeneratedToken] = useState({} as externaltoken.ExternalToken);
@@ -23,8 +30,13 @@ export const TokenView = (props: ITokenView) => {
   }, [jwtToken]);
 
   const getToken = async (token: externaltoken.ExternalToken) => {
-    const externalToken = await factory.EdgeBiosToken(jwtToken, token.uuid);
-    setDisplayToken(externalToken);
+    setIsLoading(true);
+    try {
+      const externalToken = await factory.EdgeBiosToken(jwtToken, token.uuid);
+      setDisplayToken(externalToken);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
@@ -44,7 +56,7 @@ export const TokenView = (props: ITokenView) => {
   };
 
   return (
-    <>
+    <Spin spinning={isLoading}>
       {Object.keys(displayToken).length !== 0 &&
         <div>
           Token of <code>{displayToken.name}</code> is:<br />
@@ -103,15 +115,17 @@ export const TokenView = (props: ITokenView) => {
         )}
       />
       }
-    </>
+    </Spin>
   );
 };
 
 interface ITokenView {
   jwtToken: string;
   tokens: externaltoken.ExternalToken[];
+  isLoading: boolean;
   factory: EdgeBiosTokenFactory;
   fetchToken: any;
+  setIsLoading: any;
 }
 
 export default TokenView;
