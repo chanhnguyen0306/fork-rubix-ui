@@ -9,25 +9,27 @@ export const handleCopyNodesAndEdges = (
   },
   isAutoSelected = true
 ) => {
+  let newEdges: Edge[] = flow.edges;
+
   /* Generate new id of nodes */
-  flow.nodes = flow.nodes.map((item) => {
-    const __newNodeId = generateUuid();
+  const newNodes: NodeInterface[] = flow.nodes.map((item) => {
+    const newNodeId = generateUuid();
 
     /*
      * Generate new id of edges
      * Add new id source and target of edges
      */
-    flow.edges = flow.edges.map((edge) => ({
+    newEdges = newEdges.map((edge) => ({
       ...edge,
       id: generateUuid(),
-      source: edge.source === item.id ? __newNodeId : edge.source,
-      target: edge.target === item.id ? __newNodeId : edge.target,
+      source: edge.source === item.id ? newNodeId : edge.source,
+      target: edge.target === item.id ? newNodeId : edge.target,
       selected: isAutoSelected,
     }));
 
     return {
       ...item,
-      id: __newNodeId,
+      id: newNodeId,
       position: { x: item.position.x + 10, y: item.position.y - 10 },
       selected: isAutoSelected,
       data: {
@@ -38,5 +40,8 @@ export const handleCopyNodesAndEdges = (
     };
   });
 
-  return flow;
+  return {
+    nodes: newNodes,
+    edges: newEdges,
+  };
 };
