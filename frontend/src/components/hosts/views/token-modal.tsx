@@ -6,12 +6,15 @@ import TokenView from "./token-view";
 import { assistmodel, externaltoken } from "../../../../wailsjs/go/models";
 import { PlusOutlined } from "@ant-design/icons";
 import TokenGeneratorModal from "./token-generator-modal";
+import { useSettings } from "../../settings/use-settings";
 import ExternalToken = externaltoken.ExternalToken;
 import Host = assistmodel.Host;
+import { DARK_THEME, LIGHT_THEME } from "../../../themes/use-theme";
 
 export const TokenModal = (props: ITokenModel) => {
   const { connUUID = "" } = useParams();
   const { isModalVisible, selectedHost, onCloseModal } = props;
+  const [settings] = useSettings();
 
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
@@ -91,6 +94,7 @@ export const TokenModal = (props: ITokenModel) => {
     >
       <Spin tip="refreshing tokens..." spinning={refreshingToken}>
         <Card title="Tokens"
+              style={{ backgroundColor: settings.theme == LIGHT_THEME ? 'fff' : '' }}
               extra={jwtToken && <Button type="primary" icon={<PlusOutlined />}
                                          size="small"
                                          onClick={showTokenGenerateModal}
