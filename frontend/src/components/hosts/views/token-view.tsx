@@ -13,34 +13,32 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 export const TokenView = (props: ITokenView) => {
   const { jwtToken, tokens = [], factory, fetchToken } = props;
 
-  const [regeneratedToken, setRegeneratedToken] = useState("")
-  const [selectedToken, setSelectedToken] = useState({} as externaltoken.ExternalToken)
+  const [regeneratedToken, setRegeneratedToken] = useState({} as externaltoken.ExternalToken)
 
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
-    setSelectedToken(token)
     await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked)
     fetchToken().catch(console.error);
   }
 
   const regenerateToken = async (token: externaltoken.ExternalToken) => {
-    setSelectedToken(token)
     const externalToken = await factory.EdgeBiosTokenRegenerate(jwtToken, token.uuid)
-    setRegeneratedToken(externalToken.token)
+    setRegeneratedToken(externalToken)
     fetchToken().catch(console.error);
   }
 
   const deleteToken = async (token: externaltoken.ExternalToken) => {
-    setSelectedToken(token)
     await factory.EdgeBiosTokenDelete(jwtToken, token.uuid)
     fetchToken().catch(console.error);
   }
 
   return (
     <>
-      {regeneratedToken &&
+      {Object.keys(regeneratedToken).length !== 0 &&
         <div>
-          Regenerated token of {selectedToken.name} is:<br />
-          <i>{regeneratedToken}</i>
+          Regenerated token of <code>{regeneratedToken.name}</code> is:<br />
+          <i><code>{regeneratedToken.token}</code></i>
+          <br />
+          <br />
         </div>
       }
       {tokens.length > 0 && <List

@@ -2,6 +2,7 @@ import {
   EdgeBiosLogin,
   EdgeBiosTokenBlock,
   EdgeBiosTokenDelete,
+  EdgeBiosTokenGenerate,
   EdgeBiosTokenRegenerate,
   EdgeBiosTokens
 } from "../../../../wailsjs/go/backend/App";
@@ -16,6 +17,10 @@ export class EdgeBiosTokenFactory {
 
   public EdgeBiosTokens(jwtToken: string): Promise<any> {
     return EdgeBiosTokens(this.connectionUUID, this.hostUUID, jwtToken);
+  }
+
+  public EdgeBiosTokenGenerate(jwtToken: string, name: string): Promise<any> {
+    return EdgeBiosTokenGenerate(this.connectionUUID, this.hostUUID, jwtToken, name);
   }
 
   public EdgeBiosTokenBlock(jwtToken: string, uuid: string, block: boolean): Promise<any> {

@@ -1,12 +1,15 @@
-import { Button, Card, Form, Input, Modal, Spin } from "antd";
+import { Button, Card, Form, FormInstance, Input, Modal, Spin } from "antd";
 import { useParams } from "react-router-dom";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import TokenView from "./token-view";
-import { externaltoken } from "../../../../wailsjs/go/models";
+import { assistmodel, externaltoken } from "../../../../wailsjs/go/models";
+import { PlusOutlined } from "@ant-design/icons";
+import TokenGeneratorModal from "./token-generator-modal";
 import ExternalToken = externaltoken.ExternalToken;
+import Host = assistmodel.Host;
 
-export const TokenModal = (props: any) => {
+export const TokenModal = (props: ITokenModel) => {
   const { connUUID = "" } = useParams();
   const { isModalVisible, selectedHost, onCloseModal } = props;
 
@@ -14,13 +17,28 @@ export const TokenModal = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState<ExternalToken[]>([]);
   const [refreshingToken, setRefreshingToken] = useState(false)
+  const [isTokenGenerateModalVisible, setIsTokenGenerateModalVisible] = useState(false);
+  const loginFormRef = createRef<FormInstance>();
 
   const factory = new EdgeBiosTokenFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = selectedHost.uuid;
 
+  useEffect(() => {
+    setJwtToken("");
+    setLoading(false);
+    setTokens([]);
+    setRefreshingToken(false);
+    setIsTokenGenerateModalVisible(false);
+    loginFormRef?.current?.resetFields();
+  }, [selectedHost])
+
   const handleClose = () => {
     onCloseModal();
+  };
+
+  const onCloseTokenGeneratorModal = () => {
+    setIsTokenGenerateModalVisible(false);
   };
 
   const onFinish = async (values: any) => {
@@ -37,6 +55,10 @@ export const TokenModal = (props: any) => {
 
   function sleep(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  const showTokenGenerateModal = (e: any) => {
+    setIsTokenGenerateModalVisible(true)
   }
 
   const fetchToken = async () => {
@@ -68,7 +90,11 @@ export const TokenModal = (props: any) => {
       width="50%"
     >
       <Spin tip="refreshing tokens..." spinning={refreshingToken}>
-        <Card title="External Tokens">
+        <Card title="Tokens"
+              extra={jwtToken && <Button type="primary" icon={<PlusOutlined />}
+                                         size="small"
+                                         onClick={showTokenGenerateModal}
+              />}>
           <Form
             name="basic"
             labelCol={{ span: 6 }}
@@ -76,6 +102,7 @@ export const TokenModal = (props: any) => {
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete="off"
+            ref={loginFormRef}
           >
             <Form.Item
               label="Username"
@@ -107,8 +134,18 @@ export const TokenModal = (props: any) => {
 
           <TokenView jwtToken={jwtToken} tokens={tokens} factory={factory}
                      fetchToken={fetchToken} />
+          {isTokenGenerateModalVisible &&
+            <TokenGeneratorModal isModalVisible={true} jwtToken={jwtToken}
+                                 onCloseModal={onCloseTokenGeneratorModal}
+                                 factory={factory} fetchToken={fetchToken} />}
         </Card>
       </Spin>
     </Modal>
   );
 };
+
+interface ITokenModel {
+  isModalVisible: boolean;
+  selectedHost: Host;
+  onCloseModal: any;
+}
