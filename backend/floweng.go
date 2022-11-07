@@ -535,3 +535,8 @@ func (inst *App) DownloadFlow(connUUID, hostUUID string, isRemote bool, encodedN
 	}
 	return downloadFlow
 }
+
+func (inst *App) NodePayload(connUUID, hostUUID string, isRemote bool, payload interface{}, nodeUUID string) *flow.Message {
+
+	return nil
+}

@@ -1,18 +1,20 @@
 import {
   AddWiresConnection,
   BulkDeleteWiresConnection,
-  DeleteWiresConnection,
   DownloadFlow,
   GetFlow,
   GetWiresConnection,
-  GetWiresConnections, NodeHelp, NodeHelpByName,
+  GetWiresConnections,
+  NodeHelp,
+  NodeHelpByName,
   NodePallet,
+  NodePayload,
   NodeSchema,
   NodeValue,
   NodeValues,
   UpdateWiresConnection,
 } from "../../../wailsjs/go/backend/App";
-import { db, node } from "../../../wailsjs/go/models";
+import {db, node} from "../../../wailsjs/go/models";
 
 export class FlowFactory {
   // arg1 is the connectionUUID
@@ -109,7 +111,7 @@ export class FlowFactory {
     connUUID: string,
     hostUUID: string,
     isRemote: boolean,
-    nodeName:  string,
+    nodeName: string,
   ): Promise<node.Help> {
     return await NodeHelpByName(connUUID, hostUUID, isRemote, nodeName);
   }
@@ -148,4 +150,24 @@ export class FlowFactory {
       restartFlow
     );
   }
+
+  async NodePayload(
+    connUUID: string,
+    hostUUID: string,
+    isRemote: boolean,
+    encodedNodes: any,
+    nodeUUID: string
+  ) : Promise<any>  {
+    return await NodePayload(
+      connUUID,
+      hostUUID,
+      isRemote,
+      encodedNodes,
+      nodeUUID
+    );
+  }
+
 }
+
+
+//
