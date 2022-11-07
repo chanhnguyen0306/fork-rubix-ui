@@ -43,7 +43,7 @@ export const NodeContainer = ({
       </div>
       <div
         className={`flex flex-col gap-2 py-3 border-l border-r border-b ${borderColor}`}
-        style={{ minHeight: height ? height - 50 : "auto" }}
+        style={{ minHeight: hasChild && height ? height - 50 : "auto" }}
       >
         {children}
       </div>
