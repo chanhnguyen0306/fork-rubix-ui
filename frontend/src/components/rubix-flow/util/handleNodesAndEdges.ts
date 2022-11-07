@@ -9,7 +9,7 @@ export const handleCopyNodesAndEdges = (
   },
   isAutoSelected = true
 ) => {
-  let newEdges: Edge[] = flow.edges;
+  let newEdges: Edge[] = [...flow.edges];
 
   /* Generate new id of nodes */
   const newNodes: NodeInterface[] = flow.nodes.map((item) => {
