@@ -71,6 +71,7 @@ export const Node = (props: NodeProps) => {
   return (
     <NodeContainer
       title={getTitle(spec.type)}
+      icon="🏷️"
       category={spec.category}
       selected={selected}
       height={node?.height ?? 30}
