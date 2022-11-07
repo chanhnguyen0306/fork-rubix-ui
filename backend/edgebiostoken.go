@@ -26,6 +26,15 @@ func (inst *App) EdgeBiosTokens(connUUID, hostUUID, jwtToken string) *[]external
 	return resp
 }
 
+func (inst *App) EdgeBiosToken(connUUID, hostUUID, jwtToken, uuid string) *externaltoken.ExternalToken {
+	resp, err := inst.edgeBiosToken(connUUID, hostUUID, jwtToken, uuid)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
 func (inst *App) EdgeBiosTokenGenerate(connUUID, hostUUID, jwtToken, name string) *externaltoken.ExternalToken {
 	resp, err := inst.edgeBiosTokenGenerate(connUUID, hostUUID, jwtToken, name)
 	if err != nil {
@@ -81,6 +90,14 @@ func (inst *App) edgeBiosTokens(connUUID, hostUUID, jwtToken string) (*[]externa
 		return nil, err
 	}
 	return client.EdgeBiosTokens(hostUUID, jwtToken)
+}
+
+func (inst *App) edgeBiosToken(connUUID, hostUUID, jwtToken, uuid string) (*externaltoken.ExternalToken, error) {
+	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosToken(hostUUID, jwtToken, uuid)
 }
 
 func (inst *App) edgeBiosTokenGenerate(connUUID, hostUUID, jwtToken, name string) (*externaltoken.ExternalToken, error) {

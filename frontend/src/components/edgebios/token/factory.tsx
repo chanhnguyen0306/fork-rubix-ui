@@ -1,5 +1,6 @@
 import {
   EdgeBiosLogin,
+  EdgeBiosToken,
   EdgeBiosTokenBlock,
   EdgeBiosTokenDelete,
   EdgeBiosTokenGenerate,
@@ -17,6 +18,10 @@ export class EdgeBiosTokenFactory {
 
   public EdgeBiosTokens(jwtToken: string): Promise<any> {
     return EdgeBiosTokens(this.connectionUUID, this.hostUUID, jwtToken);
+  }
+
+  public EdgeBiosToken(jwtToken: string, uuid: string): Promise<any> {
+    return EdgeBiosToken(this.connectionUUID, this.hostUUID, jwtToken, uuid);
   }
 
   public EdgeBiosTokenGenerate(jwtToken: string, name: string): Promise<any> {

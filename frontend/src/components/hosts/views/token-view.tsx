@@ -1,9 +1,10 @@
-import { List, Popconfirm } from "antd";
+import { List, Popconfirm, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   CheckOutlined,
   CloseOutlined,
   DeleteOutlined,
+  EyeOutlined,
   RedoOutlined
 } from "@ant-design/icons";
 import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
@@ -13,11 +14,18 @@ import { externaltoken } from "../../../../wailsjs/go/models";
 export const TokenView = (props: ITokenView) => {
   const { jwtToken, tokens = [], factory, fetchToken } = props;
 
+  const [displayToken, setDisplayToken] = useState({} as externaltoken.ExternalToken);
   const [regeneratedToken, setRegeneratedToken] = useState({} as externaltoken.ExternalToken);
 
-  useEffect(()=> {
-    setRegeneratedToken({} as externaltoken.ExternalToken)
-  }, [jwtToken])
+  useEffect(() => {
+    setRegeneratedToken({} as externaltoken.ExternalToken);
+    setDisplayToken({} as externaltoken.ExternalToken);
+  }, [jwtToken]);
+
+  const getToken = async (token: externaltoken.ExternalToken) => {
+    const externalToken = await factory.EdgeBiosToken(jwtToken, token.uuid);
+    setDisplayToken(externalToken);
+  };
 
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
     await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked);
@@ -37,6 +45,14 @@ export const TokenView = (props: ITokenView) => {
 
   return (
     <>
+      {Object.keys(displayToken).length !== 0 &&
+        <div>
+          Token of <code>{displayToken.name}</code> is:<br />
+          <i><code>{displayToken.token}</code></i>
+          <br />
+          <br />
+        </div>
+      }
       {Object.keys(regeneratedToken).length !== 0 &&
         <div>
           Regenerated token of <code>{regeneratedToken.name}</code> is:<br />
@@ -51,6 +67,11 @@ export const TokenView = (props: ITokenView) => {
         renderItem={item => (
           <List.Item
             actions={[
+              <Tooltip title="View">
+                <a key="list-block" onClick={() => getToken(item)}>
+                  <EyeOutlined />
+                </a>
+              </Tooltip>,
               <Popconfirm
                 title={`Are you sure to ${item.blocked ? "un" : ""}block this token?`}
                 onConfirm={() => toggleTokenBlockState(item)}>
