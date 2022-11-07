@@ -21,7 +21,6 @@ export type InputSocketProps = {
   onSetWidthInput: (width: number) => void;
   isHideConnect?: boolean;
   classnames?: string;
-  widthInput?: number;
 } & InputSocketSpecJSON;
 
 const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
@@ -69,7 +68,6 @@ export const InputSocket = ({
   dataInput,
   isHideConnect,
   classnames,
-  widthInput,
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(
@@ -142,17 +140,16 @@ export const InputSocket = ({
         <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
       )}
       {showFlowIcon === false && (
-        <div style={{ display: "flex" }}>
+        <div className="flex w-full gap-4">
           <div
             ref={refName}
-            className="mr-2"
             style={{
               minWidth: minWidth === -1 ? "max-content" : minWidth,
             }}
           >
             {name}
           </div>
-          <div>
+          <div className="flex-1">
             {valueType === "string" && (
               <AutoSizeInput
                 type="text"
@@ -163,7 +160,6 @@ export const InputSocket = ({
                 )}
                 value={getDataByConnected(value || "")}
                 onChangeInput={handleChangeInput}
-                minWidth={widthInput}
               />
             )}
             {valueType === "number" && (
@@ -177,7 +173,6 @@ export const InputSocket = ({
                 value={getDataByConnected(inputNumber)}
                 onChangeInput={onChangeInputNumber}
                 onBlur={onBlurInputNumber}
-                minWidth={widthInput}
               />
             )}
             {valueType === "boolean" &&
@@ -191,7 +186,6 @@ export const InputSocket = ({
                   )}
                   value={findBooleanValueInput()}
                   disabled
-                  minWidth={widthInput}
                 />
               ) : (
                 <select
@@ -202,7 +196,7 @@ export const InputSocket = ({
                       : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
                   )}
                   onChange={onChangeInputBoolean}
-                  style={{ paddingRight: 18, width: widthInput }}
+                  style={{ paddingRight: 18 }}
                 >
                   <option value="0">true</option>
                   <option value="1">false</option>

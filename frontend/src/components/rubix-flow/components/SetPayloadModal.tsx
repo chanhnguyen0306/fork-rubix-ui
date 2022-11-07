@@ -63,19 +63,18 @@ export const SetPayloadModal: FC<SetPayloadModalProps> = ({
         inputs.map((item: InputSocketSpecJSON, i: number) => (
           <div
             key={i}
-            className={`flex flex-row justify-between gap-8 relative px-4 py-3 bg-white`}
+            className="flex flex-row justify-between gap-8 relative my-3 px-4 py-3 bg-white"
           >
             <InputSocket
               {...item}
               value={payload[item.name]}
               onChange={handleChange}
               connected={false}
-              minWidth={widthInput}
+              minWidth={widthInput + 5}
               onSetWidthInput={handleSetWidthInput}
               dataInput={null}
               isHideConnect
-              classnames="border border-gray-300 ml-5 px-2 py-1 align-top"
-              widthInput={300}
+              classnames="border border-gray-300 px-2 py-1 align-top w-full"
             />
           </div>
         ))}
