@@ -7,6 +7,7 @@ import { Modal } from "./Modal";
 import { GraphJSON } from "../lib";
 import { handleNodesEmptySettings } from "../util/handleSettings";
 import { useParams } from "react-router-dom";
+import { handleCopyNodesAndEdges } from "../util/handleNodesAndEdges";
 
 export type LoadModalProps = {
   open?: boolean;
@@ -36,8 +37,19 @@ export const LoadModal: FC<LoadModalProps> = ({ open = false, onClose }) => {
 
     nodes = await handleNodesEmptySettings(connUUID, hostUUID, isRemote, nodes);
 
-    instance.setNodes([...instance.getNodes(), ...nodes]);
-    instance.setEdges([...instance.getEdges(), ...edges]);
+    /* Unselected nodes, edges */
+    const oldNodes = instance.getNodes();
+    const oldEdges = instance.getEdges();
+    oldNodes.forEach((item) => (item.selected = false));
+    oldEdges.forEach((item) => (item.selected = false));
+
+    // Create new uuid for nodes and edges
+    const newFlow = handleCopyNodesAndEdges({ nodes, edges });
+    nodes = newFlow.nodes;
+    edges = newFlow.edges;
+
+    instance.setNodes([...oldNodes, ...nodes]);
+    instance.setEdges([...oldEdges, ...edges]);
 
     // TODO better way to call fit vew after edges render
     setTimeout(() => {
