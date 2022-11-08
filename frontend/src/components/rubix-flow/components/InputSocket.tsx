@@ -13,12 +13,12 @@ import { AutoSizeInput } from "./AutoSizeInput";
 import { InputSocketSpecJSON } from "../lib";
 
 export type InputSocketProps = {
-  connected: boolean;
+  connected?: boolean;
   value: any | undefined;
-  minWidth: number;
-  dataInput: any;
+  minWidth?: number;
+  dataInput?: any;
   onChange: (key: string, value: any) => void;
-  onSetWidthInput: (width: number) => void;
+  onSetWidthInput?: (width: number) => void;
   isHideConnect?: boolean;
   classnames?: string;
 } & InputSocketSpecJSON;
@@ -130,7 +130,7 @@ export const InputSocket = ({
   useEffect(() => {
     if (refName.current) {
       const _width = refName.current.offsetWidth;
-      onSetWidthInput(_width + 1);
+      onSetWidthInput && onSetWidthInput(_width + 1);
     }
   }, [refName]);
 
@@ -140,7 +140,7 @@ export const InputSocket = ({
         <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
       )}
       {showFlowIcon === false && (
-        <div className="flex w-full gap-4">
+        <div className="flex items-center w-full gap-4">
           <div
             ref={refName}
             style={{

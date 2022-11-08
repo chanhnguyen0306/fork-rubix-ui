@@ -192,6 +192,12 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
   );
 };
 
+const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
+  allowSettings: false,
+  type: "",
+  category: "None",
+};
+
 const NodeMenu = ({
   position,
   node,
@@ -201,7 +207,10 @@ const NodeMenu = ({
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
   const [isShowPayload, setIsShowPayload] = useState(false);
-  const [nodeType, setNodeType] = useState<any>({});
+  const [nodeType, setNodeType] = useState<NodeSpecJSON>(
+    DEFAULT_NODE_SPEC_JSON
+  );
+
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
@@ -216,9 +225,9 @@ const NodeMenu = ({
   };
 
   useEffect(() => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC_JSON;
     setNodeType(nodeType);
 
     const isAllowSetting = nodeType?.allowSettings || false;
@@ -252,13 +261,15 @@ const NodeMenu = ({
             instance={instance}
           />
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
-          <div
-            key="Set Payload"
-            className="cursor-pointer ant-menu-item ant-menu-item-only-child"
-            onClick={handleTogglePayload}
-          >
-            Set Payload
-          </div>
+          {nodeType.allowPayload && (
+            <div
+              key="Set Payload"
+              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+              onClick={handleTogglePayload}
+            >
+              Set Payload
+            </div>
+          )}
           {isShowSetting && (
             <div
               key="settings"
@@ -278,12 +289,14 @@ const NodeMenu = ({
         />
       )}
 
-      <SetPayloadModal
-        node={node}
-        inputs={nodeType.inputs}
-        open={isShowPayload}
-        onClose={() => setIsShowPayload(false)}
-      />
+      {nodeType.allowPayload && (
+        <SetPayloadModal
+          node={node}
+          nodeType={nodeType}
+          open={isShowPayload}
+          onClose={() => setIsShowPayload(false)}
+        />
+      )}
     </>
   );
 };
