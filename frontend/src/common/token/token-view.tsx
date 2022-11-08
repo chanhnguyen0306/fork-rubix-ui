@@ -33,7 +33,7 @@ export const TokenView = (props: ITokenView) => {
     setIsLoading(true);
     try {
       const externalToken = await factory.Token(jwtToken, token.uuid);
-      setDisplayToken(externalToken);
+      setDisplayToken(externalToken || {} as externaltoken.ExternalToken);
     } finally {
       setIsLoading(false);
     }

@@ -131,5 +131,3 @@ func (inst *App) edgeBiosTokenDelete(connUUID, hostUUID, jwtToken, uuid string) 
 	}
 	return client.EdgeBiosTokenDelete(hostUUID, jwtToken, uuid)
 }
-
-func (inst *App) InsertFakeExternalTokenModel() *externaltoken.ExternalToken { return nil }
