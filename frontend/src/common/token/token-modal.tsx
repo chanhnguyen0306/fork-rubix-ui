@@ -1,19 +1,17 @@
 import { Button, Card, Form, FormInstance, Input, Modal } from "antd";
-import { useParams } from "react-router-dom";
-import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
 import { createRef, useEffect, useState } from "react";
 import TokenView from "./token-view";
-import { assistmodel, externaltoken } from "../../../../wailsjs/go/models";
+import { externaltoken } from "../../../wailsjs/go/models";
 import { PlusOutlined } from "@ant-design/icons";
 import TokenGeneratorModal from "./token-generator-modal";
-import { useSettings } from "../../settings/use-settings";
-import { LIGHT_THEME } from "../../../themes/use-theme";
+import { useSettings } from "../../components/settings/use-settings";
+import { LIGHT_THEME } from "../../themes/use-theme";
+import { CommonTokenFactory } from "./factory";
 import ExternalToken = externaltoken.ExternalToken;
-import Host = assistmodel.Host;
+
 
 export const TokenModal = (props: ITokenModel) => {
-  const { connUUID = "" } = useParams();
-  const { isModalVisible, selectedHost, onCloseModal } = props;
+  const { isModalVisible, displayName, onCloseModal, factory } = props;
   const [settings] = useSettings();
 
   const [jwtToken, setJwtToken] = useState("");
@@ -23,9 +21,6 @@ export const TokenModal = (props: ITokenModel) => {
   const [isTokenGenerateModalVisible, setIsTokenGenerateModalVisible] = useState(false);
   const loginFormRef = createRef<FormInstance>();
 
-  const factory = new EdgeBiosTokenFactory();
-  factory.connectionUUID = connUUID;
-  factory.hostUUID = selectedHost.uuid;
 
   const handleClose = () => {
     setJwtToken("");
@@ -44,7 +39,7 @@ export const TokenModal = (props: ITokenModel) => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await factory.EdgeBiosLogin(values.username, values.password);
+      const response = await factory.Login(values.username, values.password);
       setJwtToken(response.access_token);
     } finally {
       setLoading(false);
@@ -59,7 +54,7 @@ export const TokenModal = (props: ITokenModel) => {
     if (jwtToken != "") {
       setIsLoading(true);
       try {
-        const tokens = await factory.EdgeBiosTokens(jwtToken);
+        const tokens = await factory.Tokens(jwtToken);
         setTokens(tokens || undefined); // restrict to pass null to child
       } finally {
         setIsLoading(false);
@@ -74,7 +69,7 @@ export const TokenModal = (props: ITokenModel) => {
   return (
     <Modal
       centered
-      title={selectedHost.name}
+      title={displayName}
       visible={isModalVisible}
       maskClosable={false}
       footer={null}
@@ -142,6 +137,7 @@ export const TokenModal = (props: ITokenModel) => {
 
 interface ITokenModel {
   isModalVisible: boolean;
-  selectedHost: Host;
+  displayName: string;
   onCloseModal: any;
+  factory: CommonTokenFactory;
 }

@@ -7,8 +7,8 @@ import {
   EyeOutlined,
   RedoOutlined
 } from "@ant-design/icons";
-import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
-import { externaltoken } from "../../../../wailsjs/go/models";
+import { externaltoken } from "../../../wailsjs/go/models";
+import { CommonTokenFactory } from "./factory";
 
 
 export const TokenView = (props: ITokenView) => {
@@ -32,7 +32,7 @@ export const TokenView = (props: ITokenView) => {
   const getToken = async (token: externaltoken.ExternalToken) => {
     setIsLoading(true);
     try {
-      const externalToken = await factory.EdgeBiosToken(jwtToken, token.uuid);
+      const externalToken = await factory.Token(jwtToken, token.uuid);
       setDisplayToken(externalToken);
     } finally {
       setIsLoading(false);
@@ -40,18 +40,18 @@ export const TokenView = (props: ITokenView) => {
   };
 
   const toggleTokenBlockState = async (token: externaltoken.ExternalToken) => {
-    await factory.EdgeBiosTokenBlock(jwtToken, token.uuid, !token.blocked);
+    await factory.TokenBlock(jwtToken, token.uuid, !token.blocked);
     fetchToken().catch(console.error);
   };
 
   const regenerateToken = async (token: externaltoken.ExternalToken) => {
-    const externalToken = await factory.EdgeBiosTokenRegenerate(jwtToken, token.uuid);
+    const externalToken = await factory.TokenRegenerate(jwtToken, token.uuid);
     setRegeneratedToken(externalToken);
     fetchToken().catch(console.error);
   };
 
   const deleteToken = async (token: externaltoken.ExternalToken) => {
-    await factory.EdgeBiosTokenDelete(jwtToken, token.uuid);
+    await factory.TokenDelete(jwtToken, token.uuid);
     fetchToken().catch(console.error);
   };
 
@@ -123,7 +123,7 @@ interface ITokenView {
   jwtToken: string;
   tokens: externaltoken.ExternalToken[];
   isLoading: boolean;
-  factory: EdgeBiosTokenFactory;
+  factory: CommonTokenFactory;
   fetchToken: any;
   setIsLoading: any;
 }

@@ -6,37 +6,38 @@ import {
   EdgeBiosTokenGenerate,
   EdgeBiosTokenRegenerate,
   EdgeBiosTokens
-} from "../../../../wailsjs/go/backend/App";
+} from "../../../wailsjs/go/backend/App";
+import { CommonTokenFactory } from "../../common/token/factory";
 
-export class EdgeBiosTokenFactory {
+export class EdgeBiosTokenFactory implements CommonTokenFactory {
   connectionUUID!: string;
   hostUUID!: string;
 
-  public EdgeBiosLogin(username: string, password: string): Promise<any> {
+  public Login(username: string, password: string): Promise<any> {
     return EdgeBiosLogin(this.connectionUUID, this.hostUUID, username, password);
   }
 
-  public EdgeBiosTokens(jwtToken: string): Promise<any> {
+  public Tokens(jwtToken: string): Promise<any> {
     return EdgeBiosTokens(this.connectionUUID, this.hostUUID, jwtToken);
   }
 
-  public EdgeBiosToken(jwtToken: string, uuid: string): Promise<any> {
+  public Token(jwtToken: string, uuid: string): Promise<any> {
     return EdgeBiosToken(this.connectionUUID, this.hostUUID, jwtToken, uuid);
   }
 
-  public EdgeBiosTokenGenerate(jwtToken: string, name: string): Promise<any> {
+  public TokenGenerate(jwtToken: string, name: string): Promise<any> {
     return EdgeBiosTokenGenerate(this.connectionUUID, this.hostUUID, jwtToken, name);
   }
 
-  public EdgeBiosTokenBlock(jwtToken: string, uuid: string, block: boolean): Promise<any> {
+  public TokenBlock(jwtToken: string, uuid: string, block: boolean): Promise<any> {
     return EdgeBiosTokenBlock(this.connectionUUID, this.hostUUID, jwtToken, uuid, block);
   }
 
-  public EdgeBiosTokenRegenerate(jwtToken: string, uuid: string): Promise<any> {
+  public TokenRegenerate(jwtToken: string, uuid: string): Promise<any> {
     return EdgeBiosTokenRegenerate(this.connectionUUID, this.hostUUID, jwtToken, uuid);
   }
 
-  public EdgeBiosTokenDelete(jwtToken: string, uuid: string): Promise<any> {
+  public TokenDelete(jwtToken: string, uuid: string): Promise<any> {
     return EdgeBiosTokenDelete(this.connectionUUID, this.hostUUID, jwtToken, uuid);
   }
 }

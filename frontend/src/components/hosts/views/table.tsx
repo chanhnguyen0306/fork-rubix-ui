@@ -39,7 +39,8 @@ import { tagMessageStateResolver } from "./utils";
 import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
 import UpdateApp from "./updateApp";
-import { TokenModal } from "./token-modal";
+import { TokenModal } from "../../../common/token/token-modal";
+import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
@@ -523,11 +524,16 @@ export const HostsTable = (props: any) => {
     setIsTokenModalVisible(true);
   };
 
-
-  const onCloseExternalTokenModal = () => {
+  const onCloseTokenModal = () => {
     setIsTokenModalVisible(false);
     setCurrentHost({} as Host);
   };
+
+  const tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory();
+  tokenFactory.connectionUUID = connUUID;
+  useEffect(() => {
+    tokenFactory.hostUUID = currentHost.uuid;
+  }, [currentHost]);
 
   return (
     <div>
@@ -568,8 +574,9 @@ export const HostsTable = (props: any) => {
       />
       <TokenModal
         isModalVisible={isTokenModalVisible}
-        selectedHost={currentHost}
-        onCloseModal={onCloseExternalTokenModal}
+        displayName={currentHost.name}
+        onCloseModal={onCloseTokenModal}
+        factory={tokenFactory}
       />
       <InstallApp
         isOpen={isOpen(INSTALL_DIALOG)}

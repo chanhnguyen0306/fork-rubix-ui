@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Modal } from "antd";
-import { EdgeBiosTokenFactory } from "../../edgebios/token/factory";
-import { externaltoken } from "../../../../wailsjs/go/models";
+import { externaltoken } from "../../../wailsjs/go/models";
+import { CommonTokenFactory } from "./factory";
 
 
 export const TokenGeneratorModal = (props: ITokenGeneratorModal) => {
@@ -21,7 +21,7 @@ export const TokenGeneratorModal = (props: ITokenGeneratorModal) => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await factory.EdgeBiosTokenGenerate(jwtToken, values.token_name);
+      const response = await factory.TokenGenerate(jwtToken, values.token_name);
       setGeneratedToken(response);
       setIsTokenCreated(true);
     } finally {
@@ -81,7 +81,7 @@ interface ITokenGeneratorModal {
   isModalVisible: boolean;
   jwtToken: string;
   onCloseModal: any;
-  factory: EdgeBiosTokenFactory;
+  factory: CommonTokenFactory;
   fetchToken: any;
 }
 
