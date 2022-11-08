@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, useState } from "react";
-import { Switch } from "antd";
+import { Radio, RadioChangeEvent, Switch } from "antd";
 
 import { Modal } from "./Modal";
 
@@ -10,12 +10,17 @@ export const getFlowSettings = () => {
   return {
     refreshTimeout: config?.refreshTimeout || 5,
     showMiniMap: config?.showMiniMap === undefined ? true : config?.showMiniMap,
+    positionMiniMap:
+      config?.positionMiniMap === undefined
+        ? "bottom"
+        : config?.positionMiniMap,
   };
 };
 
 export type FlowSettings = {
   refreshTimeout: number | string;
   showMiniMap: boolean;
+  positionMiniMap: string;
 };
 
 export type SettingsModalProps = {
@@ -58,6 +63,12 @@ export const FlowSettingsModal: FC<SettingsModalProps> = ({
     onClose();
   };
 
+  const handleChangePosition = (e: RadioChangeEvent) => {
+    const newConfig = { ...configs, positionMiniMap: e.target.value };
+    setConfigs(newConfig);
+    onSaveSettings(newConfig);
+  };
+
   return (
     <Modal
       title="Settings"
@@ -69,6 +80,20 @@ export const FlowSettingsModal: FC<SettingsModalProps> = ({
       onClose={onClose}
     >
       <div className="py-4 px-2">
+        <div className="mb-2">
+          <label className="pr-6 mb-0 mr-9 pt-1">Mini Map Position: </label>
+          <Radio.Group
+            onChange={handleChangePosition}
+            value={configs.positionMiniMap}
+          >
+            <Radio value="top" className="text-black">
+              Top
+            </Radio>
+            <Radio value="bottom" className="text-black">
+              Bottom
+            </Radio>
+          </Radio.Group>
+        </div>
         <div className="mb-2">
           <label className="pr-6 mb-0 mr-16 pt-1">Show Mini Map: </label>
           <Switch

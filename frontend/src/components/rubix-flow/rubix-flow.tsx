@@ -17,6 +17,7 @@ import ReactFlow, {
   XYPosition,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
+import cx from "classnames";
 
 import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
@@ -90,7 +91,7 @@ const Flow = (props: any) => {
     });
   });
 
-  const onMoveEnd = () => setShouldUpdateMiniMap((s) => !s);
+  const onMove = () => setShouldUpdateMiniMap((s) => !s);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -502,7 +503,7 @@ const Flow = (props: any) => {
             edgeTypes={edgeTypes}
             nodes={nodes}
             edges={edges}
-            onMoveEnd={onMoveEnd}
+            onMove={onMove}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onEdgeClick={onEdgeClick}
@@ -526,7 +527,9 @@ const Flow = (props: any) => {
               <MiniMap
                 nodes={nodes}
                 shouldUpdate={shouldUpdateMiniMap}
-                className="absolute top-20 right-4"
+                className={cx("absolute", {
+                  "top-20 right-4": flowSettings.positionMiniMap === "top",
+                })}
                 nodeColor={handleMinimapNodeColor}
                 nodeStrokeColor={handleMinimapBorderColor}
               />
