@@ -37,4 +37,5 @@ export interface NodeInterface<T = any> {
   settings?: any; // Interface Setting cannot be determined
   isParent?: boolean;
   parentId?: string;
+  status?: any;
 }

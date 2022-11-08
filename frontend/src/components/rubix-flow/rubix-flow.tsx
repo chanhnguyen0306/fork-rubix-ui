@@ -298,6 +298,7 @@ const Flow = (props: any) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
       node.data.inputs = outputNodes[index]?.inputs;
       node.data.out = outputNodes[index]?.outputs;
+      node.status = outputNodes[index]?.status;
       return node;
     });
   };
