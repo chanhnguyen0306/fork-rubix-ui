@@ -40,7 +40,7 @@ export const TokenModal = (props: ITokenModel) => {
     try {
       setLoading(true);
       const response = await factory.Login(values.username, values.password);
-      setJwtToken(response.access_token);
+      setJwtToken(response?.access_token);
     } finally {
       setLoading(false);
     }

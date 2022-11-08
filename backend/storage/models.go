@@ -15,7 +15,7 @@ type Backup struct {
 	Time           time.Time   `json:"time"`
 	Timestamp      string      `json:"timestamp"`
 	Application    string      `json:"application"`     // RubixWires
-	SubApplication string      `json:"sub_application"` //WiresFlow
+	SubApplication string      `json:"sub_application"` // WiresFlow
 	Data           interface{} `json:"data,omitempty"`
 }
 
@@ -29,14 +29,11 @@ type Log struct {
 }
 
 type RubixConnection struct {
-	UUID        string `json:"uuid"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Customer    string `json:"customer"`
-	Username    string `json:"username"`
-	Password    string `json:"password"`
-	AssistToken string `json:"assist_token"`
-	IP          string `json:"ip"`
-	Port        int    `json:"port"`
-	HTTPS       bool   `json:"https"`
+	UUID          string `json:"uuid"`
+	Name          string `json:"name"`
+	Description   string `json:"description"`
+	IP            string `json:"ip"`
+	Port          int    `json:"port"`
+	HTTPS         bool   `json:"https"`
+	ExternalToken string `json:"external_token"`
 }

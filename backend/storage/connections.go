@@ -24,9 +24,6 @@ func (inst *db) Add(rc *RubixConnection) (*RubixConnection, error) {
 	if rc.Description == "" {
 		rc.Description = "a rubix connection to devices"
 	}
-	if rc.Customer == "" {
-		rc.Customer = "nube"
-	}
 	if rc.IP == "" {
 		rc.IP = "0.0.0.0"
 	}
@@ -142,7 +139,6 @@ func (inst *db) SelectAll() ([]RubixConnection, error) {
 			if matchConnUUID(data.UUID) {
 				resp = append(resp, data)
 			}
-			// fmt.Printf("key: %s, value: %s", key, value)
 			return true
 		})
 		return err

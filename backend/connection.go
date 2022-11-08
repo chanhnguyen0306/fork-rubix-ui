@@ -15,14 +15,13 @@ type Ip struct {
 }
 
 type ConnectionSchema struct {
-	UUID        schema.UUID        `json:"uuid"`
-	Name        schema.Name        `json:"name"`
-	Description schema.Description `json:"description"`
-	IP          Ip                 `json:"ip"`
-	Port        schema.Port        `json:"port"`
-	HTTPS       schema.HTTPS       `json:"https"`
-	Username    schema.Username    `json:"username"`
-	Password    schema.Password    `json:"password"`
+	UUID          schema.UUID        `json:"uuid"`
+	Name          schema.Name        `json:"name"`
+	Description   schema.Description `json:"description"`
+	IP            Ip                 `json:"ip"`
+	Port          schema.Port        `json:"port"`
+	HTTPS         schema.HTTPS       `json:"https"`
+	ExternalToken schema.Token       `json:"external_token"`
 }
 
 func connectionSchema() *ConnectionSchema {
@@ -74,6 +73,7 @@ func (inst *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConn
 
 func (inst *App) updateConnection(uuid string, conn *storage.RubixConnection) (*storage.RubixConnection, error) {
 	conn, err := inst.DB.Update(uuid, conn)
+	_, _ = inst.forceGetAssistClient(uuid)
 	if err != nil {
 		return nil, err
 	}
