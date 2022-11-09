@@ -17,6 +17,7 @@ import ReactFlow, {
   XYPosition,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
+import cx from "classnames";
 
 import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
@@ -50,6 +51,7 @@ import "./rubix-flow.css";
 import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
+import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -90,7 +92,7 @@ const Flow = (props: any) => {
     });
   });
 
-  const onMoveEnd = () => setShouldUpdateMiniMap((s) => !s);
+  const onMove = () => setShouldUpdateMiniMap((s) => !s);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -298,6 +300,7 @@ const Flow = (props: any) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
       node.data.inputs = outputNodes[index]?.inputs;
       node.data.out = outputNodes[index]?.outputs;
+      node.status = outputNodes[index]?.status;
       return node;
     });
   };
@@ -337,44 +340,21 @@ const Flow = (props: any) => {
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
 
-    /* Generate new id of nodes copied */
-    _copied.nodes = _copied.nodes.map((item: any) => {
-      const __newNodeId = generateUuid();
+    /*
+    * Generate new id of edges copied
+    * Add new id source and target of edges copied
+    */
+    const newFlow = handleCopyNodesAndEdges(_copied);
 
-      /*
-       * Generate new id of edges copied
-       * Add new id source and target of edges copied
-       */
-      _copied.edges = _copied.edges.map((edge: any) => ({
-        ...edge,
-        id: generateUuid(),
-        source: edge.source === item.id ? __newNodeId : edge.source,
-        target: edge.target === item.id ? __newNodeId : edge.target,
-        selected: true,
-      }));
-
-      return {
-        ...item,
-        id: __newNodeId,
-        position: { x: item.position.x + 10, y: item.position.y - 10 },
-        selected: true,
-        data: {
-          ...item.data,
-          input: undefined,
-          output: undefined,
-        },
-      };
-    });
-
-    _copied.nodes = await handleNodesEmptySettings(
+    newFlow.nodes = await handleNodesEmptySettings(
       connUUID,
       hostUUID,
       isRemote,
-      _copied.nodes
+      newFlow.nodes
     );
 
-    const _nodes = [...nodes, ..._copied.nodes];
-    const _edges = [...edges, ..._copied.edges];
+    const _nodes = [...nodes, ...newFlow.nodes];
+    const _edges = [...edges, ...newFlow.edges];
     setNodes(_nodes);
     setEdges(_edges);
     setUndoable({ edges: _edges, nodes: _nodes });
@@ -501,7 +481,7 @@ const Flow = (props: any) => {
             edgeTypes={edgeTypes}
             nodes={nodes}
             edges={edges}
-            onMoveEnd={onMoveEnd}
+            onMove={onMove}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onEdgeClick={onEdgeClick}
@@ -525,7 +505,9 @@ const Flow = (props: any) => {
               <MiniMap
                 nodes={nodes}
                 shouldUpdate={shouldUpdateMiniMap}
-                className="absolute top-20 right-4"
+                className={cx("absolute", {
+                  "top-20 right-4": flowSettings.positionMiniMap === "top",
+                })}
                 nodeColor={handleMinimapNodeColor}
                 nodeStrokeColor={handleMinimapBorderColor}
               />

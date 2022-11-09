@@ -44,7 +44,15 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
             {title}
           </h2>
         </div>
-        <div className="p-3 text-start black--text">{children}</div>
+        <div
+          className="p-3 text-start black--text"
+          style={{
+            maxHeight: "75vh",
+            overflowY: "scroll",
+          }}
+        >
+          {children}
+        </div>
         <div className="flex gap-3 p-3 border-t">
           {actions.map((action, ix) => (
             <button

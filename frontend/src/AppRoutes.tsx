@@ -20,6 +20,7 @@ import { PcNetworking } from "./components/pc/networking/networking";
 import AppStore from "./components/release/appStore";
 import RubixFlow from "./components/rubix-flow/rubix-flow";
 import WiresConnections from "./components/wires-connections/wires-connections";
+import UserGuide from "./components/user-guide/user-guide";
 
 function AppRoutes() {
   return (
@@ -108,6 +109,16 @@ function AppRoutes() {
         key={routes.WIRES_CONNECTIONS}
         path={routes.WIRES_CONNECTIONS_REMOTE}
         element={<WiresConnections />}
+      />
+      <Route
+        key={routes.USER_GUIDE}
+        path={routes.USER_GUIDE}
+        element={<UserGuide />}
+      />
+      <Route
+        key={routes.USER_GUIDE}
+        path={routes.USER_GUIDE_REMOTE}
+        element={<UserGuide />}
       />
     </Routes>
   );
