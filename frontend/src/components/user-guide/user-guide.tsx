@@ -14,6 +14,8 @@ export const UserGuide = () => {
 
   const fetchNodeHelp = async () => {
     const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
+    console.log(res);
+
     setNodeHelps(res);
     setFilterHelps(res);
   };
@@ -49,7 +51,7 @@ export const UserGuide = () => {
         {filterHelps &&
           filterHelps.map((item: any, i: number) => (
             <div key={i} className="text-black mb-5 pb-2">
-              <h1 className="text-white my-5">{item.name}</h1>
+              <h1 className="my-5">{item.name}</h1>
               <div className="text-left">
                 <JsonTable json={item} />
               </div>
