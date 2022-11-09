@@ -1,0 +1,23 @@
+.help-list {
+    text-align: start;
+}
+
+.help-list_item__title {
+    margin: 1em 0 0.6em;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 32px;
+}
+
+.help-list_item__table {
+    text-align: start;
+    color: black;
+}
+
+.help-list_item__table>div>table {
+    width: 100%;
+}
+
+.help-list_item__table>div>table>tbody>tr>td {
+    border-radius: 0 !important;
+}

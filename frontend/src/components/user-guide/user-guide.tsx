@@ -1,7 +1,20 @@
+import { Card, Input } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
 import { JsonTable } from "react-json-to-html";
 import { useParams } from "react-router-dom";
 import { FlowFactory } from "../rubix-flow/factory";
+import "./user-guide.css";
+
+const NodeHelpTable = (props: any) => {
+  const { item } = props;
+  const data = { ...item }; //cloneDeep
+  delete data.name;
+  return (
+    <div className="help-list_item__table">
+      <JsonTable json={data} />
+    </div>
+  );
+};
 
 export const UserGuide = () => {
   const [nodeHelps, setNodeHelps] = useState<any>();
@@ -14,10 +27,10 @@ export const UserGuide = () => {
 
   const fetchNodeHelp = async () => {
     const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
-    console.log(res);
 
     setNodeHelps(res);
     setFilterHelps(res);
+    console.log(res);
   };
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,23 +54,24 @@ export const UserGuide = () => {
 
   return (
     <>
-      <div className="grid place-items-center">
-        <input
-          className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 rounded"
+      <Card bordered={false} className="help-list">
+        <Input
+          placeholder="Search name..."
+          allowClear
           value={search}
           onChange={handleChangeSearch}
-          placeholder="Search name..."
+          style={{ maxWidth: 800 }}
+          size="large"
         />
+
         {filterHelps &&
           filterHelps.map((item: any, i: number) => (
-            <div key={i} className="text-black mb-5 pb-2">
-              <h1 className="my-5">{item.name}</h1>
-              <div className="text-left">
-                <JsonTable json={item} />
-              </div>
+            <div key={i} className="help-list_item">
+              <div className="help-list_item__title">{item.name}</div>
+              <NodeHelpTable item={item} />
             </div>
           ))}
-      </div>
+      </Card>
     </>
   );
 };
