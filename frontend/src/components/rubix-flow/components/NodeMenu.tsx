@@ -122,27 +122,19 @@ const AddNodeComponent = ({
   );
 };
 
-const NodeMenu = ({
-  position,
-  node,
-  isDoubleClick,
-  onClose,
-}: NodeMenuProps) => {
-  const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
-  const [isShowSetting, setIsShowSetting] = useState(false);
-  const [isShowHelpModal, setIsShowHelpModal] = useState(false);
+const SettingComponent = ({ node, onClose, isDoubleClick }: any) => {
   const [nodesSpec] = useNodesSpec();
-  const instance = useReactFlow();
+  const [modelVisibility, setModelVisibility] = useState(false);
+  const [isAllowSetting, setIsAllowSetting] = useState(false);
 
-  useOnPressKey("Escape", onClose);
-
-  const openSettingsModal = () => {
-    setIsModalVisible(true);
+  const openModal = () => {
+    setModelVisibility(true);
   };
 
-  const handleToggleHelpModal = () => {
-    setIsShowHelpModal(p => !p);
-  }
+  const closeModal = () => {
+    setModelVisibility(false);
+    onClose();
+  };
 
   useEffect(() => {
     const nodeType = (nodesSpec as NodeSpecJSON[]).find(
@@ -154,8 +146,47 @@ const NodeMenu = ({
       onClose();
     }
 
-    setIsShowSetting(isAllowSetting);
+    setIsAllowSetting(isAllowSetting);
   }, [nodesSpec]);
+
+  return (
+    <>
+      {isAllowSetting && (
+        <div
+          key="settings"
+          className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
+          onClick={openModal}
+        >
+          Settings
+        </div>
+      )}
+
+      <SettingsModal
+        node={node}
+        isModalVisible={modelVisibility}
+        onCloseModal={closeModal}
+      />
+    </>
+  );
+};
+
+const NodeMenu = ({
+  position,
+  node,
+  isDoubleClick,
+  onClose,
+}: NodeMenuProps) => {
+  const instance = useReactFlow();
+  const [isShowHelpModal, setIsShowHelpModal] = useState(false);
+
+  useOnPressKey("Escape", onClose);
+
+  const handleToggleHelpModal = () => {
+    setIsShowHelpModal((p) => !p);
+  };
+  const handleCloseHelpModal = () => {
+    onClose();
+  };
 
   return (
     <>
@@ -179,17 +210,12 @@ const NodeMenu = ({
             instance={instance}
             isAddSubNode={true}
           />
-
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
-          {isShowSetting && (
-            <div
-              key="settings"
-              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
-              onClick={openSettingsModal}
-            >
-              Settings
-            </div>
-          )}
+          <SettingComponent
+            node={node}
+            onClose={onClose}
+            isDoubleClick={isDoubleClick}
+          />
           <div
             key="help"
             className="cursor-pointer ant-menu-item ant-menu-item-only-child"
@@ -199,17 +225,10 @@ const NodeMenu = ({
           </div>
         </div>
       )}
-      {isShowSetting && (
-        <SettingsModal
-          node={node}
-          isModalVisible={isModalVisible}
-          onCloseModal={onClose}
-        />
-      )}
       <NodeHelpModal
         node={node}
         open={isShowHelpModal}
-        onClose={() => setIsShowHelpModal(false)}
+        onClose={handleCloseHelpModal}
       />
     </>
   );
