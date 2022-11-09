@@ -29,7 +29,3 @@ export type GraphJSON = {
   nodes: NodeJSON[];
   metadata?: Metadata;
 };
-
-export interface NodeExtend extends Node {
-  isParent?: boolean;
-}

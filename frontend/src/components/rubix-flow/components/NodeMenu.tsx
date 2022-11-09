@@ -12,6 +12,7 @@ import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
 import { SetPayloadModal } from "./SetPayloadModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
+import { NodeHelpModal } from "./NodeHelpModal";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -211,6 +212,7 @@ const NodeMenu = ({
     DEFAULT_NODE_SPEC_JSON
   );
 
+  const [isShowHelpModal, setIsShowHelpModal] = useState(false);
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
@@ -218,6 +220,10 @@ const NodeMenu = ({
 
   const openSettingsModal = () => {
     setIsModalVisible(true);
+  };
+
+  const handleToggleHelpModal = () => {
+    setIsShowHelpModal(p => !p);
   };
 
   const handleTogglePayload = () => {
@@ -279,6 +285,13 @@ const NodeMenu = ({
               Settings
             </div>
           )}
+          <div
+            key="help"
+            className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+            onClick={handleToggleHelpModal}
+          >
+            Help
+          </div>
         </div>
       )}
       {isShowSetting && (
@@ -288,7 +301,11 @@ const NodeMenu = ({
           onCloseModal={onClose}
         />
       )}
-
+      <NodeHelpModal
+        node={node}
+        open={isShowHelpModal}
+        onClose={() => setIsShowHelpModal(false)}
+      />
       {nodeType.allowPayload && (
         <SetPayloadModal
           node={node}
