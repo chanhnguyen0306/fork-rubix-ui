@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { Collapse, Layout } from "antd";
+import { Collapse, Layout, Tooltip } from "antd";
+import { CaretRightOutlined, CaretDownOutlined } from "@ant-design/icons";
+import { useState, ChangeEvent, useEffect } from "react";
 import { NodeSpecJSON } from "../lib";
 import { useNodesSpec } from "../use-nodes-spec";
-
 const { Panel } = Collapse;
 const { Sider } = Layout;
 
@@ -49,7 +49,24 @@ export const NodeSideBar = () => {
 
   return (
     <Sider className="rubix-flow__node-sidebar node-picker z-10 text-white border-l border-gray-600">
-      <div className="p-2">Add Node</div>
+      <div className="p-2">
+        Add Node
+        {activeKeyPanel.length !== Object.keys(nodes).length ? (
+          <Tooltip title="expand all">
+            <CaretRightOutlined
+              className="title-icon"
+              onClick={() => onChangeOpenPanels(Object.keys(nodes))}
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip title="collapse all">
+            <CaretDownOutlined
+              className="title-icon"
+              onClick={() => onChangeOpenPanels([])}
+            />
+          </Tooltip>
+        )}
+      </div>
       <div className="p-2">
         <input
           type="text"
