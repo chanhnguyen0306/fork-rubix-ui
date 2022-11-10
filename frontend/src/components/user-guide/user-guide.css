@@ -22,32 +22,25 @@
     border-radius: 0 !important;
 }
 
-/* .help-list_item__table>div>table>tbody>tr>td:first-child {
-    max-width: 600px !important;
-} */
-
 .settings-tr {
-    min-height: 25px;
-    display: flex;
     justify-items: center;
 }
 
-.settings-value-tr {
+.settings-value {
     background-color: #F1F1F1;
 }
 
-.settings-tr>td {
-    padding: 5px;
+.settings-value>pre {
+    padding: 1rem 6rem;
+}
+
+.settings-tr>div {
+    padding: 5px 5px 0 5px;
     border-spacing: 2px;
     background-color: #DDDDDD;
     font-weight: bold;
     flex-grow: 1;
-
 }
-
-/* .settings-label-tr {
-    max-width: 600px !important;
-} */
 
 .settings-divider-tr {
     height: 2px;

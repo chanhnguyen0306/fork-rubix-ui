@@ -13,28 +13,29 @@ const NodeHelpTable = (props: any) => {
     delete data.settings.schema;
     delete data.settings.uiSchema;
   }
+
   return (
-    <div className="help-list_item__table">
+    <div id={`table__${item.name}`} className="help-list_item__table">
       <JsonTable json={data} />
       {item.settings && (
         <div>
-          <tr className="settings-tr">
-            <td className="settings-label-tr">
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema&nbsp;&nbsp;
-            </td>
-            <td className="settings-value-tr">
+          <div className="settings-tr">
+            <div id={`settings-label__${item.name}`}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema
+            </div>
+            <div className="settings-value">
               <pre>{JSON.stringify(item.settings.schema, null, 2)}</pre>
-            </td>
-          </tr>
-          <tr className="settings-divider-tr" />
-          <tr className="settings-tr">
-            <td className="settings-label-tr">
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uiSchema&nbsp;&nbsp;
-            </td>
-            <td className="settings-value-tr">
+            </div>
+          </div>
+          <div className="settings-divider-tr" />
+          <div className="settings-tr">
+            <div id={`settings-label__${item.name}`}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uiSchema
+            </div>
+            <div className="settings-value">
               <pre>{JSON.stringify(item.settings.uiSchema, null, 2)}</pre>
-            </td>
-          </tr>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -52,10 +53,8 @@ export const UserGuide = () => {
 
   const fetchNodeHelp = async () => {
     const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
-
     setNodeHelps(res);
     setFilterHelps(res);
-    console.log(res);
   };
 
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
