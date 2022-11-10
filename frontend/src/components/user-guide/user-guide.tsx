@@ -10,34 +10,17 @@ const NodeHelpTable = (props: any) => {
   const data = JSON.parse(JSON.stringify(item)); //cloneDeep
   delete data.name;
   if (data.settings) {
-    delete data.settings.schema;
-    delete data.settings.uiSchema;
+    //fix duplicate key 'help'
+    Object.keys(data.settings.schema.properties).forEach((key) => {
+      data.settings.schema.properties[key][`${key}_help`] =
+        data.settings.schema.properties[key].help || "";
+      delete data.settings.schema.properties[key].help;
+    });
   }
 
   return (
     <div id={`table__${item.name}`} className="help-list_item__table">
       <JsonTable json={data} />
-      {item.settings && (
-        <div>
-          <div className="settings-tr">
-            <div id={`settings-label__${item.name}`}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema
-            </div>
-            <div className="settings-value">
-              <pre>{JSON.stringify(item.settings.schema, null, 2)}</pre>
-            </div>
-          </div>
-          <div className="settings-divider-tr" />
-          <div className="settings-tr">
-            <div id={`settings-label__${item.name}`}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uiSchema
-            </div>
-            <div className="settings-value">
-              <pre>{JSON.stringify(item.settings.uiSchema, null, 2)}</pre>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

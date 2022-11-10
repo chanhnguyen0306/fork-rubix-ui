@@ -21,27 +21,3 @@
 .help-list_item__table>div>table>tbody>tr>td {
     border-radius: 0 !important;
 }
-
-.settings-tr {
-    justify-items: center;
-}
-
-.settings-value {
-    background-color: #F1F1F1;
-}
-
-.settings-value>pre {
-    padding: 1rem 6rem;
-}
-
-.settings-tr>div {
-    padding: 5px 5px 0 5px;
-    border-spacing: 2px;
-    background-color: #DDDDDD;
-    font-weight: bold;
-    flex-grow: 1;
-}
-
-.settings-divider-tr {
-    height: 2px;
-}
