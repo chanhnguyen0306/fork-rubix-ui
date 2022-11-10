@@ -21,3 +21,34 @@
 .help-list_item__table>div>table>tbody>tr>td {
     border-radius: 0 !important;
 }
+
+/* .help-list_item__table>div>table>tbody>tr>td:first-child {
+    max-width: 600px !important;
+} */
+
+.settings-tr {
+    min-height: 25px;
+    display: flex;
+    justify-items: center;
+}
+
+.settings-value-tr {
+    background-color: #F1F1F1;
+}
+
+.settings-tr>td {
+    padding: 5px;
+    border-spacing: 2px;
+    background-color: #DDDDDD;
+    font-weight: bold;
+    flex-grow: 1;
+
+}
+
+/* .settings-label-tr {
+    max-width: 600px !important;
+} */
+
+.settings-divider-tr {
+    height: 2px;
+}

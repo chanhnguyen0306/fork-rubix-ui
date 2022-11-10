@@ -7,11 +7,36 @@ import "./user-guide.css";
 
 const NodeHelpTable = (props: any) => {
   const { item } = props;
-  const data = { ...item }; //cloneDeep
+  const data = JSON.parse(JSON.stringify(item)); //cloneDeep
   delete data.name;
+  if (data.settings) {
+    delete data.settings.schema;
+    delete data.settings.uiSchema;
+  }
   return (
     <div className="help-list_item__table">
       <JsonTable json={data} />
+      {item.settings && (
+        <div>
+          <tr className="settings-tr">
+            <td className="settings-label-tr">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schema&nbsp;&nbsp;
+            </td>
+            <td className="settings-value-tr">
+              <pre>{JSON.stringify(item.settings.schema, null, 2)}</pre>
+            </td>
+          </tr>
+          <tr className="settings-divider-tr" />
+          <tr className="settings-tr">
+            <td className="settings-label-tr">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uiSchema&nbsp;&nbsp;
+            </td>
+            <td className="settings-value-tr">
+              <pre>{JSON.stringify(item.settings.uiSchema, null, 2)}</pre>
+            </td>
+          </tr>
+        </div>
+      )}
     </div>
   );
 };
@@ -60,7 +85,6 @@ export const UserGuide = () => {
           allowClear
           value={search}
           onChange={handleChangeSearch}
-          style={{ maxWidth: 800 }}
           size="large"
         />
 
