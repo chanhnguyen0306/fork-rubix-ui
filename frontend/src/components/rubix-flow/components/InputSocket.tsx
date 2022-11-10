@@ -21,7 +21,7 @@ export type InputSocketProps = {
   onSetWidthInput: (width: number) => void;
 } & InputSocketSpecJSON;
 
-const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
+export const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
 
 const getValueOptions = (value: number) => {
   switch (value) {

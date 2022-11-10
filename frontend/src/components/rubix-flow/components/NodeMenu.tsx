@@ -12,6 +12,7 @@ import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { NodeHelpModal } from "./NodeHelpModal";
+import { DynamicInputModal } from "./DynamicModal";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -192,6 +193,12 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
   );
 };
 
+export const DEFAULT_NODE_SPEC: NodeSpecJSON = {
+  allowSettings: false,
+  type: "",
+  category: "None",
+};
+
 const NodeMenu = ({
   position,
   node,
@@ -201,6 +208,10 @@ const NodeMenu = ({
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
   const [isShowHelpModal, setIsShowHelpModal] = useState(false);
+  const [isDynamicInputModal, setIsDynamicInputModal] = useState(false);
+  const [isDynamicOutputModal, setIsDynamicOutputModal] = useState(false);
+  const [nodeType, setNodeType] = useState<NodeSpecJSON>(DEFAULT_NODE_SPEC);
+
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 
@@ -211,13 +222,37 @@ const NodeMenu = ({
   };
 
   const handleToggleHelpModal = () => {
-    setIsShowHelpModal(p => !p);
-  }
+    setIsShowHelpModal((p) => !p);
+  };
+
+  const handleToggleDynamicInputModal = () => {
+    setIsDynamicInputModal((p) => !p);
+  };
+
+  const handleToggleDynamicOutputModal = () => {
+    setIsDynamicOutputModal((p) => !p);
+  };
+
+  const handleToggleCloseDynamicModal = () => {
+    isDynamicInputModal && setIsDynamicInputModal(false);
+    isDynamicOutputModal && setIsDynamicOutputModal(false);
+    onClose();
+  };
+
+  const handleSubmitDynamic = (_node: NodeInterface) => {
+    const newNodes: NodeInterface[] = instance
+      .getNodes()
+      .map((item) => (item.id === _node.id ? _node : item));
+    instance.setNodes(newNodes);
+    handleToggleCloseDynamicModal();
+  };
 
   useEffect(() => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC;
+    setNodeType(nodeType);
+
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isDoubleClick && !isAllowSetting) {
@@ -258,6 +293,24 @@ const NodeMenu = ({
               Settings
             </div>
           )}
+          {nodeType?.metadata?.dynamicInputs && (
+            <div
+              key="Input Count"
+              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+              onClick={handleToggleDynamicInputModal}
+            >
+              Input Count
+            </div>
+          )}
+          {nodeType?.metadata?.dynamicOutputs && (
+            <div
+              key="Output Count"
+              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+              onClick={handleToggleDynamicOutputModal}
+            >
+              Output Count
+            </div>
+          )}
           <div
             key="help"
             className="cursor-pointer ant-menu-item ant-menu-item-only-child"
@@ -278,6 +331,13 @@ const NodeMenu = ({
         node={node}
         open={isShowHelpModal}
         onClose={() => setIsShowHelpModal(false)}
+      />
+      <DynamicInputModal
+        node={node}
+        open={isDynamicInputModal || isDynamicOutputModal}
+        isInput={isDynamicInputModal}
+        onClose={handleToggleCloseDynamicModal}
+        onSubmit={handleSubmitDynamic}
       />
     </>
   );

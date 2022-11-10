@@ -8,7 +8,7 @@ import {
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
-import { NodeSpecJSON } from "../lib";
+import { InputSocketSpecJSON, NodeSpecJSON, OutputSocketSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
@@ -35,6 +35,47 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
   return pairs;
 };
 
+const getInputs = (specInputs: InputSocketSpecJSON[], nodeInputs: any) => {
+  if (specInputs.length === 0) return [];
+  if (specInputs.length > 0 && !nodeInputs) return specInputs;
+  
+  let newInputs: InputSocketSpecJSON[] = [];
+  if (nodeInputs.length < specInputs.length) {
+    newInputs = specInputs.filter((item, idx) => idx < nodeInputs.length);
+  } else {
+    newInputs = [...specInputs];
+  }
+
+  nodeInputs.forEach((item: any) => {
+    const isExist = specInputs.find((input) => input.name === item.pin);
+    if (!isExist) {
+      newInputs.push({
+        name: item.pin,
+        valueType: item.dataType,
+        defaultValue: item.value,
+      } as InputSocketSpecJSON);
+    }
+  });
+
+  return newInputs;
+};
+
+const getOutputs = (specOutputs: OutputSocketSpecJSON[], nodeOutputs: any) => {
+  if (specOutputs.length === 0) return [];
+  if (specOutputs.length > 0 && !nodeOutputs) return specOutputs;
+
+  const newOutputs: OutputSocketSpecJSON[] = [];
+  nodeOutputs.forEach((item: any) => {
+    newOutputs.push({
+      name: item.pin,
+      valueType: item.dataType,
+      defaultValue: item.value,
+    } as OutputSocketSpecJSON);
+  });
+
+  return newOutputs;
+};
+
 export const Node = (props: NodeProps) => {
   const { id, data, spec, selected } = props;
   const instance = useReactFlow();
@@ -45,8 +86,11 @@ export const Node = (props: NodeProps) => {
   const [widthOutput, setWidthOutput] = useState(-1);
   const [isSettingModal, setIsSettingModal] = useState(false);
 
-  const pairs = getPairs(spec.inputs || [], spec.outputs || []);
   const node = instance.getNode(id) as NodeInterface;
+  const pairs = getPairs(
+    getInputs(spec.inputs || [], node.data.inputs),
+    getOutputs(spec.outputs || [], node.data.out)
+  );
 
   const handleSetWidthInput = (width: number) => {
     setWidthInput((prev: number) => Math.max(prev, width));
