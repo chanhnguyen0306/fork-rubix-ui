@@ -13,7 +13,6 @@ func (inst *App) EdgeBiosLogin(connUUID, hostUUID, username, password string) *m
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
-
 	return resp
 }
 

@@ -10,6 +10,7 @@ import {
   Typography,
 } from "antd";
 import {
+  CloudDownloadOutlined,
   DownCircleOutlined,
   LeftOutlined,
   MenuFoldOutlined,
@@ -425,6 +426,15 @@ export const HostsTable = (props: any) => {
           >
             Install
           </a>
+          <Tooltip title="Install Rubix Edge">
+            <a
+              onClick={(e) => {
+                showRubixEdgeInstallModal(host, e);
+              }}
+            >
+              <CloudDownloadOutlined />
+            </a>
+          </Tooltip>
           <Tooltip title="Rubix-Wires and Backup">
             <a
               onClick={(e) => {
@@ -511,6 +521,12 @@ export const HostsTable = (props: any) => {
     e.stopPropagation();
     setCurrentHost(host);
     setIsBackupModalVisible(true);
+  };
+
+  const showRubixEdgeInstallModal = (host: Host, e: any) => {
+    e.stopPropagation();
+    setCurrentHost(host);
+    factory.InstallRubixEdge(host.uuid);
   };
 
   const onCloseBackupModal = () => {

@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/lib-systemctl-go/systemd"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/service/systemctl"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
@@ -52,8 +53,8 @@ func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList E
 // if app is FF then we need to upgrade all the plugins
 // if app has plugins to upload the plugins and restart FF
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *systemd.InstallResponse {
-	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
 	var arch string
+	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
 	if getProduct != nil {
 		arch = getProduct.Arch
 	} else {
@@ -404,7 +405,7 @@ func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, rele
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.EdgeUploadService(hostUUID, &appstore.ServiceFile{
+	resp, err := client.EdgeUploadService(hostUUID, &systemctl.ServiceFile{
 		Name:                        appName,
 		Version:                     appVersion,
 		ExecStart:                   nubeApp.ExecStart,
