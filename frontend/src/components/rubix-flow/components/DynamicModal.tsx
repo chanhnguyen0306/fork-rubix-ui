@@ -19,7 +19,7 @@ export type NodeInputJSON = {
 };
 
 const getCountDynamic = (data: any, isInput: boolean) => {
-  if (!data) return 0;
+  if (!data) return 1;
 
   const newData = { ...data };
   if (isInput) {
@@ -81,8 +81,8 @@ export const DynamicInputModal: FC<DynamicInputModalProps> = ({
 
   const handleBlurValue = (e: ChangeEvent<HTMLInputElement>) => {
     const _value = e.target.value;
-    if (_value.match(REGEX_NUMBER)) setValue(_value);
-    else setValue("0");
+    if (_value.match(REGEX_NUMBER)) setValue(Number(_value) > 0 ? _value : "1");
+    else setValue("1");
   };
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export const DynamicInputModal: FC<DynamicInputModalProps> = ({
 
   return (
     <Modal
-      title="Dynamic Input Count"
+      title={`Dynamic ${isInput ? "Input" : "Output"} Count`}
       actions={[
         { label: "Close", onClick: handleClose },
         { label: "Save", onClick: handleSubmit },
@@ -104,7 +104,7 @@ export const DynamicInputModal: FC<DynamicInputModalProps> = ({
         <div>Count</div>
         <input
           className="w-full border border-gray-300 p-2"
-          type="text"
+          type="number"
           value={value}
           onChange={handleChangeValue}
           onBlur={handleBlurValue}
