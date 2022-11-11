@@ -13,12 +13,14 @@ import { AutoSizeInput } from "./AutoSizeInput";
 import { InputSocketSpecJSON } from "../lib";
 
 export type InputSocketProps = {
-  connected: boolean;
+  connected?: boolean;
   value: any | undefined;
-  minWidth: number;
-  dataInput: any;
+  minWidth?: number;
+  dataInput?: any;
   onChange: (key: string, value: any) => void;
-  onSetWidthInput: (width: number) => void;
+  onSetWidthInput?: (width: number) => void;
+  isHideConnect?: boolean;
+  classnames?: string;
 } & InputSocketSpecJSON;
 
 const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
@@ -64,6 +66,8 @@ export const InputSocket = ({
   minWidth,
   onSetWidthInput,
   dataInput,
+  isHideConnect,
+  classnames,
 }: InputSocketProps) => {
   const instance = useReactFlow();
   const [inputNumber, setInputNumber] = useState(
@@ -126,7 +130,7 @@ export const InputSocket = ({
   useEffect(() => {
     if (refName.current) {
       const _width = refName.current.offsetWidth;
-      onSetWidthInput(_width + 1);
+      onSetWidthInput && onSetWidthInput(_width + 1);
     }
   }, [refName]);
 
@@ -136,21 +140,24 @@ export const InputSocket = ({
         <CaretRightOutlined style={{ color: "#ffffff", fontSize: "large" }} />
       )}
       {showFlowIcon === false && (
-        <div style={{ display: "flex" }}>
+        <div className="flex items-center w-full gap-4">
           <div
             ref={refName}
-            className="mr-2"
             style={{
               minWidth: minWidth === -1 ? "max-content" : minWidth,
             }}
           >
             {name}
           </div>
-          <div>
+          <div className="flex-1">
             {valueType === "string" && (
               <AutoSizeInput
                 type="text"
-                className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                className={cx(
+                  classnames
+                    ? classnames
+                    : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                )}
                 value={getDataByConnected(value || "")}
                 onChangeInput={handleChangeInput}
               />
@@ -158,7 +165,11 @@ export const InputSocket = ({
             {valueType === "number" && (
               <AutoSizeInput
                 type="text"
-                className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                className={cx(
+                  classnames
+                    ? classnames
+                    : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                )}
                 value={getDataByConnected(inputNumber)}
                 onChangeInput={onChangeInputNumber}
                 onBlur={onBlurInputNumber}
@@ -168,14 +179,22 @@ export const InputSocket = ({
               (connected ? (
                 <AutoSizeInput
                   type="text"
-                  className=" bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className={cx(
+                    classnames
+                      ? classnames
+                      : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  )}
                   value={findBooleanValueInput()}
                   disabled
                 />
               ) : (
                 <select
                   value={getDataByConnected(getNumberOptions(value))}
-                  className="bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  className={cx(
+                    classnames
+                      ? classnames
+                      : "bg-gray-600 disabled:bg-gray-700 py-1 px-2 nodrag"
+                  )}
                   onChange={onChangeInputBoolean}
                   style={{ paddingRight: 18 }}
                 >
@@ -187,18 +206,20 @@ export const InputSocket = ({
           </div>
         </div>
       )}
-      <Handle
-        id={name}
-        type="target"
-        position={Position.Left}
-        className={cx(
-          borderColor,
-          connected ? backgroundColor : "bg-gray-1100"
-        )}
-        isValidConnection={(connection: Connection) =>
-          isValidConnection(connection, instance)
-        }
-      />
+      {!isHideConnect && (
+        <Handle
+          id={name}
+          type="target"
+          position={Position.Left}
+          className={cx(
+            borderColor,
+            connected ? backgroundColor : "bg-gray-1100"
+          )}
+          isValidConnection={(connection: Connection) =>
+            isValidConnection(connection, instance)
+          }
+        />
+      )}
     </div>
   );
 };

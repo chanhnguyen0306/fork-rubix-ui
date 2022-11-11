@@ -22,7 +22,6 @@ export const useNodesSpec = () => {
     fetch();
   }, [nodesSpec.length, connUUID, hostUUID]);
 
-
   const setDefaultInputValue = (inputs: InputSocketSpecJSON[]) => {
     return inputs.map((input) => {
       let defaultValue = null;
@@ -47,13 +46,18 @@ export const useNodesSpec = () => {
 
   const fetch = async () => {
     setIsFetchingNodeSpec(true);
-    let specJSON = ((await factory.NodePallet(connUUID, hostUUID, isRemote, "")) ||
-      []) as NodeSpecJSON[];
+    let specJSON = ((await factory.NodePallet(
+      connUUID,
+      hostUUID,
+      isRemote,
+      ""
+    )) || []) as NodeSpecJSON[];
     if (specJSON.length > 0) {
       specJSON = specJSON.map((node: NodeSpecJSON) => {
         if (node.inputs && node.inputs.length > 0) {
           node.inputs = setDefaultInputValue(node.inputs);
         }
+        node.allowPayload = true;
         return node;
       });
     }

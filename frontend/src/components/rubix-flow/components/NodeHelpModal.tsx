@@ -1,10 +1,9 @@
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Modal } from "antd";
+import { FC, useState, useEffect } from "react";
 import { JsonTable } from "react-json-to-html";
-
+import { useParams } from "react-router-dom";
 import { FlowFactory } from "../factory";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
-import { Modal } from "./Modal";
 
 export type NodeHelpModalProps = {
   node: NodeInterface;
@@ -41,10 +40,11 @@ export const NodeHelpModal: FC<NodeHelpModalProps> = ({
 
   return (
     <Modal
+      visible={open}
+      onCancel={handleClose}
       title="Node Help"
-      actions={[{ label: "Close", onClick: handleClose }]}
-      open={open}
-      onClose={onClose}
+      footer={null}
+      className="node-help-modal text-black text-start"
     >
       <JsonTable json={value} />
     </Modal>

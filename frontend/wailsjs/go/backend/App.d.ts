@@ -15,9 +15,9 @@ import {appstore} from '../models';
 import {networking} from '../models';
 import {systemd} from '../models';
 import {datelib} from '../models';
+import {node} from '../models';
 import {nodes} from '../models';
 import {flowcli} from '../models';
-import {node} from '../models';
 
 export function AddConnection(arg1:storage.RubixConnection):Promise<storage.RubixConnection>;
 
@@ -25,7 +25,7 @@ export function AddConsumer(arg1:string,arg2:string,arg3:model.Consumer):Promise
 
 export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
 
-export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):void;
+export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):Promise<void>;
 
 export function AddFlowNetwork(arg1:string,arg2:string,arg3:model.FlowNetwork):Promise<model.FlowNetwork>;
 
@@ -39,7 +39,7 @@ export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<m
 
 export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
 
-export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):void;
+export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):Promise<void>;
 
 export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise<model.Producer>;
 
@@ -47,9 +47,11 @@ export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
-export function AddWiresConnection(arg1:db.Connection):Promise<db.Connection>;
+export function AddWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:db.Connection):Promise<db.Connection>;
 
 export function BacnetWhois(arg1:string,arg2:string,arg3:string,arg4:string):Promise<Array<model.Device>>;
+
+export function BulkDeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:Array<string>):Promise<any>;
 
 export function CreateWriter(arg1:string,arg2:string,arg3:model.Writer):Promise<model.Writer>;
 
@@ -113,7 +115,7 @@ export function DeleteStreamBulkClones(arg1:string,arg2:string,arg3:Array<backen
 
 export function DeleteStreamClone(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function DeleteWiresConnection(arg1:string):void;
+export function DeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<void>;
 
 export function DeleteWriter(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -127,9 +129,7 @@ export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.Plu
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
-export function DownloadFlow(arg1:any,arg2:boolean):Promise<flow.Message>;
-
-export function DownloadFlowDecoded(arg1:any,arg2:boolean):Promise<flow.Message>;
+export function DownloadFlow(arg1:string,arg2:string,arg3:boolean,arg4:any,arg5:boolean):Promise<flow.Message>;
 
 export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.SystemCtlBody):Promise<installer.AppSystemState>;
 
@@ -149,7 +149,7 @@ export function EdgeGetNetworks(arg1:string,arg2:string):Promise<Array<networkin
 
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<systemd.InstallResponse>;
 
-export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:backend.EdgeInstallAppsBulk):void;
+export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:backend.EdgeInstallAppsBulk):Promise<void>;
 
 export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
 
@@ -195,7 +195,7 @@ export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer
 
 export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
 
-export function ExportBackup(arg1:string):void;
+export function ExportBackup(arg1:string):Promise<void>;
 
 export function ExportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
@@ -229,7 +229,7 @@ export function GetDevice(arg1:string,arg2:string,arg3:string,arg4:boolean):Prom
 
 export function GetDevices(arg1:string,arg2:string,arg3:boolean):Promise<Array<model.Device>>;
 
-export function GetFlow():Promise<any>;
+export function GetFlow(arg1:string,arg2:string,arg3:boolean):Promise<any>;
 
 export function GetFlowDeviceSchema(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -347,9 +347,9 @@ export function GetStreams(arg1:string,arg2:string):Promise<Array<model.Stream>>
 
 export function GetStreamsByFlowNetwork(arg1:string,arg2:string,arg3:string):Promise<Array<model.Stream>>;
 
-export function GetWiresConnection(arg1:string):Promise<db.Connection>;
+export function GetWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<db.Connection>;
 
-export function GetWiresConnections():Promise<Array<db.Connection>>;
+export function GetWiresConnections(arg1:string,arg2:string,arg3:boolean):Promise<Array<db.Connection>>;
 
 export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.WriterClone>>;
 
@@ -369,35 +369,37 @@ export function ImportNetworksBulk(arg1:string,arg2:string,arg3:string):Promise<
 
 export function ImportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string):Promise<backend.BulkAddResponse>;
 
-export function NodePallet():Promise<Array<nodes.PalletNode>>;
+export function NodeHelp(arg1:string,arg2:string,arg3:boolean):Promise<Array<node.Help>>;
 
-export function NodeSchema(arg1:string):Promise<flowcli.Schema>;
+export function NodeHelpByName(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<node.Help>;
 
-export function NodeValue(arg1:string):Promise<node.Values>;
+export function NodePallet(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<Array<nodes.PalletNode>>;
 
-export function NodeValues():Promise<Array<node.Values>>;
+export function NodePayload(arg1:string,arg2:string,arg3:boolean,arg4:any,arg5:string):Promise<flow.Message>;
 
-export function NubeHelp():void;
+export function NodeSchema(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<flowcli.Schema>;
 
-export function OnQuit():void;
+export function NodeValue(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<node.Values>;
 
-export function OnReload():void;
+export function NodeValues(arg1:string,arg2:string,arg3:boolean):Promise<Array<node.Values>>;
 
-export function OpenURL(arg1:string):void;
+export function NubeHelp():Promise<void>;
+
+export function OnQuit():Promise<void>;
+
+export function OnReload():Promise<void>;
+
+export function OpenURL(arg1:string):Promise<void>;
 
 export function PingHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function PingRubixAssist(arg1:string):Promise<boolean>;
 
-export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):void;
+export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):Promise<void>;
 
 export function RestartPluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
 
 export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
-
-export function StoreCheckAppAndVersionExists(arg1:string,arg2:string,arg3:string):Promise<Error>;
-
-export function StoreCheckAppExists(arg1:string):Promise<Error>;
 
 export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
 
@@ -409,7 +411,7 @@ export function UpdateLocation(arg1:string,arg2:string,arg3:assistmodel.Location
 
 export function UpdateSettings(arg1:string,arg2:storage.Settings):Promise<storage.Settings>;
 
-export function UpdateWiresConnection(arg1:string,arg2:db.Connection):Promise<db.Connection>;
+export function UpdateWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string,arg5:db.Connection):Promise<db.Connection>;
 
 export function WiresBackup(arg1:string,arg2:string,arg3:string):Promise<storage.Backup>;
 
