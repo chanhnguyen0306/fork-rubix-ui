@@ -35,7 +35,8 @@ const NodePicker = ({
 
   useOnPressKey("Escape", onClose);
 
-  let filtered = nodeList ? nodeList : (nodesSpec as NodeSpecJSON[]);
+  let filtered =
+    nodeList && nodeList.length > 0 ? nodeList : (nodesSpec as NodeSpecJSON[]);
   if (filters !== undefined) {
     filtered = filtered.filter((node) => {
       const inputs = node.inputs ?? [];

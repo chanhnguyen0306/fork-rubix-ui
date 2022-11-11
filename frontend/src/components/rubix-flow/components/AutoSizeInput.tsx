@@ -37,7 +37,9 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [styles, setStyles] = useState<CSSProperties>({});
   const [isShowArea, setIsShowArea] = useState<boolean>(false);
-  const [textArea, setTextArea] = useState<string | number | readonly string[] | undefined>(props.value);
+  const [textArea, setTextArea] = useState<
+    string | number | readonly string[] | undefined
+  >(props.value);
 
   // grab the font size of the input on ref mount
   const setRef = useCallback((input: HTMLInputElement | null) => {
@@ -83,13 +85,13 @@ export const AutoSizeInput: FC<AutoSizeInputProps> = ({
       inputRef.current.style.width = `${MAX_WIDTH_INPUT}px`;
     }
 
-    const height = measureRef.current.clientHeight;
-    inputRef.current.style.height = Math.max(minHeight, height) + "px";
+    // const height = measureRef.current.clientHeight;
+    // inputRef.current.style.height = Math.max(minHeight, height) + "px";
   }, [props.value, minWidth, styles]);
 
   useEffect(() => {
     setTextArea(props.value);
-  }, [props.value])
+  }, [props.value]);
 
   return (
     <>
