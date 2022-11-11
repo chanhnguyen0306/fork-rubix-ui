@@ -109,7 +109,7 @@ export const NodeSideBar = () => {
                 className="panel-no-padding border-gray-600"
               >
                 <div className="bg-gray-800">
-                  {nodes[category].map(({ type, isParent }, index) => (
+                  {nodes[category].map(({ info, type, isParent }, index) => (
                     <div
                       key={type}
                       className={`py-2 cursor-po inter text-white flex flex-row justify-between
@@ -121,10 +121,19 @@ export const NodeSideBar = () => {
                       draggable
                       style={{ paddingLeft: 24 }}
                     >
-                      {type.split("/")[1]}
-                      <QuestionCircleOutlined
-                        onClick={(e) => onClickHelpIcon(e, type)}
-                      />
+                      <div>
+                        {info && info.icon && (
+                          <span className="pr-3" style={{ fontSize: 12 }}>
+                            {info.icon}
+                          </span>
+                        )}
+                        {type.split("/")[1]}
+                      </div>
+                      <div>
+                        <QuestionCircleOutlined
+                          onClick={(e) => onClickHelpIcon(e, type)}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
