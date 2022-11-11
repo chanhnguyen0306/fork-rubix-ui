@@ -52,7 +52,6 @@ import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
 import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
-import { NodeInputJSON } from "./components/DynamicModal";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -294,30 +293,13 @@ const Flow = (props: any) => {
     }
   };
 
-  const handleInputs = (nodeInputs: any, inputs: any) => {
-    if (!nodeInputs) return inputs;
-
-    const newInputs = [...nodeInputs];
-    inputs.forEach((item: any) => {
-      const idx = nodeInputs.findIndex((input: any) => input.pin === item.pin);
-      if (idx !== -1) newInputs[idx] = item;
-    });
-
-    return newInputs;
-  };
-
   const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
     if (outputNodes && outputNodes.length === 0) return prevNodes;
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
-      node.data.inputs = !node.data.inputs
-        ? outputNodes[index]?.inputs
-        : handleInputs(node.data.inputs, outputNodes[index]?.inputs);
-      node.data.out = !node.data.out
-        ? outputNodes[index]?.outputs
-        : handleInputs(node.data.out, outputNodes[index]?.outputs);
-
+      node.data.inputs = outputNodes[index]?.inputs;
+      node.data.out = outputNodes[index]?.outputs;
       node.status = outputNodes[index]?.status;
       return node;
     });

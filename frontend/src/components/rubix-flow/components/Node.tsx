@@ -8,12 +8,17 @@ import {
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
-import { InputSocketSpecJSON, NodeSpecJSON, OutputSocketSpecJSON } from "../lib";
+import {
+  InputSocketSpecJSON,
+  NodeSpecJSON,
+  OutputSocketSpecJSON,
+} from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
 import { SettingsModal } from "./SettingsModal";
 import { useNodesSpec } from "../use-nodes-spec";
+import { DEFAULT_NODE_SPEC_JSON } from "./NodeMenu";
 
 type NodeProps = FlowNodeProps & {
   spec: NodeSpecJSON;
@@ -38,7 +43,7 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
 const getInputs = (specInputs: InputSocketSpecJSON[], nodeInputs: any) => {
   if (specInputs.length === 0) return [];
   if (specInputs.length > 0 && !nodeInputs) return specInputs;
-  
+
   let newInputs: InputSocketSpecJSON[] = [];
   if (nodeInputs.length < specInputs.length) {
     newInputs = specInputs.filter((item, idx) => idx < nodeInputs.length);
@@ -101,9 +106,9 @@ export const Node = (props: NodeProps) => {
   };
 
   const handleDbClickTitle = () => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC_JSON;
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isAllowSetting) setIsSettingModal(true);

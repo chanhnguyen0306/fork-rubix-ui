@@ -13,7 +13,6 @@ import { useParams } from "react-router-dom";
 import { SetPayloadModal } from "./SetPayloadModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { NodeHelpModal } from "./NodeHelpModal";
-import { DynamicInputModal } from "./DynamicModal";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -124,7 +123,7 @@ const AddNodeComponent = ({
   );
 };
 
-const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
+export const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
   allowSettings: false,
   type: "",
   category: "None",
@@ -142,10 +141,7 @@ const NodeMenu = ({
   const [nodeType, setNodeType] = useState<NodeSpecJSON>(
     DEFAULT_NODE_SPEC_JSON
   );
-
   const [isShowHelpModal, setIsShowHelpModal] = useState(false);
-  const [isDynamicInputModal, setIsDynamicInputModal] = useState(false);
-  const [isDynamicOutputModal, setIsDynamicOutputModal] = useState(false);
 
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
@@ -160,30 +156,8 @@ const NodeMenu = ({
     setIsShowHelpModal((p) => !p);
   };
 
-  const handleToggleDynamicInputModal = () => {
-    setIsDynamicInputModal((p) => !p);
-  };
-
-  const handleToggleDynamicOutputModal = () => {
-    setIsDynamicOutputModal((p) => !p);
-  };
-
-  const handleToggleCloseDynamicModal = () => {
-    isDynamicInputModal && setIsDynamicInputModal(false);
-    isDynamicOutputModal && setIsDynamicOutputModal(false);
-    onClose();
-  };
-
   const handleTogglePayload = () => {
     setIsShowPayload(!isShowPayload);
-  };
-
-  const handleSubmitDynamic = (_node: NodeInterface) => {
-    const newNodes: NodeInterface[] = instance
-      .getNodes()
-      .map((item) => (item.id === _node.id ? _node : item));
-    instance.setNodes(newNodes);
-    handleToggleCloseDynamicModal();
   };
 
   useEffect(() => {
@@ -240,24 +214,6 @@ const NodeMenu = ({
               Settings
             </div>
           )}
-          {nodeType?.metadata?.dynamicInputs && (
-            <div
-              key="Input Count"
-              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
-              onClick={handleToggleDynamicInputModal}
-            >
-              Input Count
-            </div>
-          )}
-          {nodeType?.metadata?.dynamicOutputs && (
-            <div
-              key="Output Count"
-              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
-              onClick={handleToggleDynamicOutputModal}
-            >
-              Output Count
-            </div>
-          )}
           <div
             key="help"
             className="cursor-pointer ant-menu-item"
@@ -287,13 +243,6 @@ const NodeMenu = ({
           onClose={() => setIsShowPayload(false)}
         />
       )}
-      <DynamicInputModal
-        node={node}
-        open={isDynamicInputModal || isDynamicOutputModal}
-        isInput={isDynamicInputModal}
-        onClose={handleToggleCloseDynamicModal}
-        onSubmit={handleSubmitDynamic}
-      />
     </>
   );
 };
