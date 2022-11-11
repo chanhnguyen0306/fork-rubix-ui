@@ -132,18 +132,12 @@ export const NodeSideBar = () => {
             ))}
           </Collapse>
         </div>
-        <Modal
-          visible={isShowHelpModal}
-          okButtonProps={{}}
-          closable={false}
-          style={{ backgroundColor: "unset", marginTop: "-6rem" }}
-        >
-          <NodeHelpModal
-            node={{ type: selectedNodeType } as NodeInterface}
-            open={isShowHelpModal}
-            onClose={() => setIsShowHelpModal(false)}
-          />
-        </Modal>
+
+        <NodeHelpModal
+          node={{ type: selectedNodeType } as NodeInterface}
+          open={isShowHelpModal}
+          onClose={() => setIsShowHelpModal(false)}
+        />
       </Sider>
     </div>
   );
