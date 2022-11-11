@@ -15,7 +15,7 @@ export const writeNodeSpecsToJSON = (
 
     const nodeSpecJSON: NodeSpecJSON = {
       allowSettings: false,
-      info: {},
+      info: { icon: "" },
       type: nodeType,
       category: node.category,
       inputs: [],
