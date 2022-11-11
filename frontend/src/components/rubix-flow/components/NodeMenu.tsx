@@ -10,6 +10,7 @@ import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
 import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
+import { SetPayloadModal } from "./SetPayloadModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { NodeHelpModal } from "./NodeHelpModal";
 
@@ -192,6 +193,12 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
   );
 };
 
+const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
+  allowSettings: false,
+  type: "",
+  category: "None",
+};
+
 const NodeMenu = ({
   position,
   node,
@@ -200,6 +207,11 @@ const NodeMenu = ({
 }: NodeMenuProps) => {
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
+  const [isShowPayload, setIsShowPayload] = useState(false);
+  const [nodeType, setNodeType] = useState<NodeSpecJSON>(
+    DEFAULT_NODE_SPEC_JSON
+  );
+
   const [isShowHelpModal, setIsShowHelpModal] = useState(false);
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
@@ -212,12 +224,18 @@ const NodeMenu = ({
 
   const handleToggleHelpModal = () => {
     setIsShowHelpModal(p => !p);
-  }
+  };
+
+  const handleTogglePayload = () => {
+    setIsShowPayload(!isShowPayload);
+  };
 
   useEffect(() => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC_JSON;
+    setNodeType(nodeType);
+
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isDoubleClick && !isAllowSetting) {
@@ -225,7 +243,7 @@ const NodeMenu = ({
     }
 
     setIsShowSetting(isAllowSetting);
-  }, [nodesSpec]);
+  }, [node, nodesSpec]);
 
   return (
     <>
@@ -249,6 +267,15 @@ const NodeMenu = ({
             instance={instance}
           />
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
+          {nodeType.allowPayload && (
+            <div
+              key="Set Payload"
+              className="cursor-pointer ant-menu-item ant-menu-item-only-child"
+              onClick={handleTogglePayload}
+            >
+              Set Payload
+            </div>
+          )}
           {isShowSetting && (
             <div
               key="settings"
@@ -279,6 +306,14 @@ const NodeMenu = ({
         open={isShowHelpModal}
         onClose={() => setIsShowHelpModal(false)}
       />
+      {nodeType.allowPayload && (
+        <SetPayloadModal
+          node={node}
+          nodeType={nodeType}
+          open={isShowPayload}
+          onClose={() => setIsShowPayload(false)}
+        />
+      )}
     </>
   );
 };

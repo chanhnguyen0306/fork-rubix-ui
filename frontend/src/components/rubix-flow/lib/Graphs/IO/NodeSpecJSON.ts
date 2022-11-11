@@ -21,4 +21,6 @@ export type NodeSpecJSON = {
   info?: {};
   style?: CSSProperties;
   isParent?: boolean;
+  payloadType?: string;
+  allowPayload?: boolean;
 };
