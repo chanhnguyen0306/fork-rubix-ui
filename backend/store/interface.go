@@ -10,7 +10,6 @@ type IAppStore interface {
 	GitListReleases(token string) ([]ReleaseList, error)
 	StoreListPlugins() ([]installer.BuildDetails, string, error)
 	DownloadReleases(token, path string) (*Release, error)
-	GetRubixEdgeVersions(token string) (*[]string, error)
 	GetAppStoreAppPath(appName, arch, version string) string
 	SaveBackup(fileName string, data interface{}) error
 	StoreCheckAppExists(appName string) error

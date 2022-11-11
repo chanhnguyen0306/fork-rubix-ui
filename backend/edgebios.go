@@ -7,15 +7,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *App) EdgeBiosRubixEdgeInstall(connUUID, hostUUID string) *string {
-	err := inst.edgeBiosRubixEdgeInstall(connUUID, hostUUID)
+func (inst *App) EdgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) *string {
+	err := inst.edgeBiosRubixEdgeInstall(connUUID, hostUUID, version)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 	}
 	return nil
 }
 
-func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID string) error {
+func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) error {
 	const appName = "rubix-edge"
 	const lastStep = "5"
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
@@ -27,17 +27,7 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID string) error {
 	if err != nil {
 		return err
 	}
-	// githubToken, err := inst.DB.GetGitToken(constants.SettingUUID, false)
-	// if err != nil {
-	// 	return err
-	// }
-	// versions := inst.appStore.GetRubixEdgeVersions(githubToken)
-	// fmt.Println("versions", versions)
 
-	version := "v0.3.2" // TODO: get version from UI
-
-	fmt.Println("version", version)
-	fmt.Println("deviceType", deviceType.DeviceType)
 	token, err := inst.GetGitToken(constants.SettingUUID, false)
 	err = inst.appStore.StoreCheckAppAndVersionExists(appName, deviceType.DeviceType, version)
 	if err != nil {
@@ -59,12 +49,16 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID string) error {
 	}
 	_, err = assistClient.EdgeBiosRubixEdgeUpload(hostUUID, assistmodel.FileUpload{Arch: deviceType.DeviceType, Version: version})
 	if err != nil {
+		log.Errorf(fmt.Sprintf("(step 4 of %s) failed to upload rubix-edge to edge device", lastStep))
 		return err
 	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) uploaded rubix-edge to edge device", lastStep))
 	_, err = assistClient.EdgeBiosRubixEdgeInstall(hostUUID, assistmodel.FileUpload{Arch: deviceType.DeviceType, Version: version})
 	if err != nil {
+		log.Errorf(fmt.Sprintf("(step 5 of %s) failed to install rubix-edge to edge device", lastStep))
 		return err
 	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 5 of %s) installed rubix-edge to edge device", lastStep))
 	return nil
 }
 

@@ -46,6 +46,8 @@ import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
+import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
+import { InstallFactory } from "./install-rubix-edge/factory";
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
@@ -375,11 +377,14 @@ export const HostsTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] = useState(false);
   const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
+  let installFactory = new InstallFactory();
   factory.connectionUUID = connUUID;
+  installFactory.connectionUUID = connUUID;
 
   const columns = [
     ...HOST_HEADERS,
@@ -526,7 +531,11 @@ export const HostsTable = (props: any) => {
   const showRubixEdgeInstallModal = (host: Host, e: any) => {
     e.stopPropagation();
     setCurrentHost(host);
-    factory.InstallRubixEdge(host.uuid);
+    setIsInstallRubixEdgeModalVisible(true)
+  };
+
+  const onCloseRubixEdgeInstallModal = () => {
+    setIsInstallRubixEdgeModalVisible(false)
   };
 
   const onCloseBackupModal = () => {
@@ -588,16 +597,22 @@ export const HostsTable = (props: any) => {
         fetchBackups={fetchBackups}
         onCloseModal={onCloseBackupModal}
       />
+      <InstallApp
+        isOpen={isOpen(INSTALL_DIALOG)}
+        closeDialog={() => closeDialog(INSTALL_DIALOG)}
+        dialogData={dialogData[INSTALL_DIALOG]}
+      />
+      <InstallRubixEdgeModal
+        isModalVisible={isInstallRubixEdgeModalVisible}
+        onCloseModal={onCloseRubixEdgeInstallModal}
+        installFactory={installFactory}
+        host={currentHost}
+      />
       <TokenModal
         isModalVisible={isTokenModalVisible}
         displayName={currentHost.name}
         onCloseModal={onCloseTokenModal}
         factory={tokenFactory}
-      />
-      <InstallApp
-        isOpen={isOpen(INSTALL_DIALOG)}
-        closeDialog={() => closeDialog(INSTALL_DIALOG)}
-        dialogData={dialogData[INSTALL_DIALOG]}
       />
     </div>
   );

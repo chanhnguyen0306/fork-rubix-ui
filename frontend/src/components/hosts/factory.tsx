@@ -60,8 +60,4 @@ export class HostsFactory {
   async Ping(hostUUID: string): Promise<boolean> {
     return true;
   }
-
-  public InstallRubixEdge(hostUUID: string): Promise<any> {
-    return EdgeBiosRubixEdgeInstall(this.connectionUUID, hostUUID)
-  }
 }
