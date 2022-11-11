@@ -12,10 +12,14 @@ export type OutputSocketSpecJSON = {
   valueType: string;
 };
 
+export type InfoSpecJson = {
+  icon: string;
+};
+
 export type MetadataSpecJSON = {
   dynamicInputs: boolean;
   dynamicOutputs: boolean;
-};
+}
 
 export type NodeSpecJSON = {
   allowSettings: boolean;
@@ -23,8 +27,10 @@ export type NodeSpecJSON = {
   category: NodeCategory;
   inputs?: InputSocketSpecJSON[];
   outputs?: OutputSocketSpecJSON[];
-  info?: {};
+  info?: InfoSpecJson;
   style?: CSSProperties;
   isParent?: boolean;
+  payloadType?: string;
+  allowPayload?: boolean;
   metadata?: MetadataSpecJSON;
 };

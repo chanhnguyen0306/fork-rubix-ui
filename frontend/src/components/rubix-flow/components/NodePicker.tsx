@@ -35,7 +35,8 @@ const NodePicker = ({
 
   useOnPressKey("Escape", onClose);
 
-  let filtered = nodeList ? nodeList : (nodesSpec as NodeSpecJSON[]);
+  let filtered =
+    nodeList && nodeList.length > 0 ? nodeList : (nodesSpec as NodeSpecJSON[]);
   if (filters !== undefined) {
     filtered = filtered.filter((node) => {
       const inputs = node.inputs ?? [];
@@ -52,16 +53,14 @@ const NodePicker = ({
 
   return (
     <div
-      className="node-picker absolute z-10 text-white border rounded border-gray-500  ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
+      className="node-picker absolute z-10 border rounded border-gray-500 ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
       style={{
         top: position.y,
         left: position.x,
         width: 210,
       }}
     >
-      <div className="bg-gray-500 mt-0 ant-menu-item ant-menu-item-only-child">
-        Add Node
-      </div>
+      <div className="bg-gray-500 mt-0 ant-menu-item">Add Node</div>
       <div className="p-2">
         <input
           type="text"
@@ -76,7 +75,7 @@ const NodePicker = ({
         {filtered.map(({ type, isParent, style }) => (
           <div
             key={type}
-            className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
+            className="cursor-pointer border-b border-gray-600 ant-menu-item text-white"
             onClick={() =>
               onPickNode(
                 isParent ?? false,

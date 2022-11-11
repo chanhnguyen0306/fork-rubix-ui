@@ -12,3 +12,14 @@
     flex-grow: 1;
     height: 100vh;
 }
+
+.title-icon {
+    float: right;
+    margin-top: 5px;
+    margin-right: 16px;
+    cursor: pointer;
+}
+
+.node-help-modal>.ant-modal-content>.ant-modal-body>div>table {
+    width: 100%;
+}

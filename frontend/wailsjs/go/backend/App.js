@@ -58,12 +58,16 @@ export function AddStream(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['AddStream'](arg1, arg2, arg3, arg4);
 }
 
-export function AddWiresConnection(arg1) {
-  return window['go']['backend']['App']['AddWiresConnection'](arg1);
+export function AddWiresConnection(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['AddWiresConnection'](arg1, arg2, arg3, arg4);
 }
 
 export function BacnetWhois(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['BacnetWhois'](arg1, arg2, arg3, arg4);
+}
+
+export function BulkDeleteWiresConnection(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['BulkDeleteWiresConnection'](arg1, arg2, arg3, arg4);
 }
 
 export function CreateWriter(arg1, arg2, arg3) {
@@ -190,8 +194,8 @@ export function DeleteStreamClone(arg1, arg2, arg3) {
   return window['go']['backend']['App']['DeleteStreamClone'](arg1, arg2, arg3);
 }
 
-export function DeleteWiresConnection(arg1) {
-  return window['go']['backend']['App']['DeleteWiresConnection'](arg1);
+export function DeleteWiresConnection(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['DeleteWiresConnection'](arg1, arg2, arg3, arg4);
 }
 
 export function DeleteWriter(arg1, arg2, arg3) {
@@ -218,12 +222,8 @@ export function DoBackup(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['backend']['App']['DoBackup'](arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
-export function DownloadFlow(arg1, arg2) {
-  return window['go']['backend']['App']['DownloadFlow'](arg1, arg2);
-}
-
-export function DownloadFlowDecoded(arg1, arg2) {
-  return window['go']['backend']['App']['DownloadFlowDecoded'](arg1, arg2);
+export function DownloadFlow(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['backend']['App']['DownloadFlow'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function EdgeCtlStatus(arg1, arg2, arg3) {
@@ -422,8 +422,8 @@ export function GetDevices(arg1, arg2, arg3) {
   return window['go']['backend']['App']['GetDevices'](arg1, arg2, arg3);
 }
 
-export function GetFlow() {
-  return window['go']['backend']['App']['GetFlow']();
+export function GetFlow(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['GetFlow'](arg1, arg2, arg3);
 }
 
 export function GetFlowDeviceSchema(arg1, arg2, arg3) {
@@ -658,12 +658,12 @@ export function GetStreamsByFlowNetwork(arg1, arg2, arg3) {
   return window['go']['backend']['App']['GetStreamsByFlowNetwork'](arg1, arg2, arg3);
 }
 
-export function GetWiresConnection(arg1) {
-  return window['go']['backend']['App']['GetWiresConnection'](arg1);
+export function GetWiresConnection(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['GetWiresConnection'](arg1, arg2, arg3, arg4);
 }
 
-export function GetWiresConnections() {
-  return window['go']['backend']['App']['GetWiresConnections']();
+export function GetWiresConnections(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['GetWiresConnections'](arg1, arg2, arg3);
 }
 
 export function GetWriterClones(arg1, arg2) {
@@ -702,20 +702,32 @@ export function ImportPointBulk(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['ImportPointBulk'](arg1, arg2, arg3, arg4);
 }
 
-export function NodePallet() {
-  return window['go']['backend']['App']['NodePallet']();
+export function NodeHelp(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['NodeHelp'](arg1, arg2, arg3);
 }
 
-export function NodeSchema(arg1) {
-  return window['go']['backend']['App']['NodeSchema'](arg1);
+export function NodeHelpByName(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['NodeHelpByName'](arg1, arg2, arg3, arg4);
 }
 
-export function NodeValue(arg1) {
-  return window['go']['backend']['App']['NodeValue'](arg1);
+export function NodePallet(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['NodePallet'](arg1, arg2, arg3, arg4);
 }
 
-export function NodeValues() {
-  return window['go']['backend']['App']['NodeValues']();
+export function NodePayload(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['backend']['App']['NodePayload'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function NodeSchema(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['NodeSchema'](arg1, arg2, arg3, arg4);
+}
+
+export function NodeValue(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['NodeValue'](arg1, arg2, arg3, arg4);
+}
+
+export function NodeValues(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['NodeValues'](arg1, arg2, arg3);
 }
 
 export function NubeHelp() {
@@ -754,14 +766,6 @@ export function Scanner(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['Scanner'](arg1, arg2, arg3, arg4);
 }
 
-export function StoreCheckAppAndVersionExists(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['StoreCheckAppAndVersionExists'](arg1, arg2, arg3);
-}
-
-export function StoreCheckAppExists(arg1) {
-  return window['go']['backend']['App']['StoreCheckAppExists'](arg1);
-}
-
 export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['backend']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5);
 }
@@ -782,8 +786,8 @@ export function UpdateSettings(arg1, arg2) {
   return window['go']['backend']['App']['UpdateSettings'](arg1, arg2);
 }
 
-export function UpdateWiresConnection(arg1, arg2) {
-  return window['go']['backend']['App']['UpdateWiresConnection'](arg1, arg2);
+export function UpdateWiresConnection(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['backend']['App']['UpdateWiresConnection'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function WiresBackup(arg1, arg2, arg3) {
