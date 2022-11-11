@@ -57,7 +57,6 @@ export const useNodesSpec = () => {
         if (node.inputs && node.inputs.length > 0) {
           node.inputs = setDefaultInputValue(node.inputs);
         }
-        node.allowPayload = true;
         return node;
       });
     }
