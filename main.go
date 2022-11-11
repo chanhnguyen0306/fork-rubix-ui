@@ -21,9 +21,10 @@ func main() {
 	if err != nil {
 		log.Errorln(err)
 	}
+
 	FileMenu := AppMenu.AddSubmenu("Options")
 	FileMenu.AddSeparator()
-	FileMenu.AddText("Reload", keys.CmdOrCtrl("r"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("Reload", keys.Key("f5"), func(_ *menu.CallbackData) {
 		app.OnReload()
 	})
 	FileMenu.AddText("Help", keys.CmdOrCtrl("h"), func(_ *menu.CallbackData) {
@@ -32,7 +33,6 @@ func main() {
 	FileMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		app.OnQuit()
 	})
-
 	err = wails.Run(&options.App{
 		Title:       "rubix",
 		Width:       1300,
