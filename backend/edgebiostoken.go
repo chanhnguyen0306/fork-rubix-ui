@@ -70,13 +70,17 @@ func (inst *App) EdgeBiosTokenDelete(connUUID, hostUUID, jwtToken, uuid string) 
 	return resp
 }
 
-func (inst *App) edgeBiosLogin(connUUID, hostUUID, username, password string) (*model.TokenResponse, error) {
+func (inst *App) edgeBiosLogin(connUUID, hostUUID string, username, password string) (*model.TokenResponse, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
 	body := user.User{Username: username, Password: password}
-	resp, err := client.EdgeBiosLogin(hostUUID, &body)
+	resp, err := client.EdgeBiosLogin(hostUUID, connection.ExternalToken, &body)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +92,11 @@ func (inst *App) edgeBiosTokens(connUUID, hostUUID, jwtToken string) (*[]externa
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeBiosTokens(hostUUID, jwtToken)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosTokens(hostUUID, connection.ExternalToken, jwtToken)
 }
 
 func (inst *App) edgeBiosToken(connUUID, hostUUID, jwtToken, uuid string) (*externaltoken.ExternalToken, error) {
@@ -96,7 +104,11 @@ func (inst *App) edgeBiosToken(connUUID, hostUUID, jwtToken, uuid string) (*exte
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeBiosToken(hostUUID, jwtToken, uuid)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosToken(hostUUID, connection.ExternalToken, jwtToken, uuid)
 }
 
 func (inst *App) edgeBiosTokenGenerate(connUUID, hostUUID, jwtToken, name string) (*externaltoken.ExternalToken, error) {
@@ -104,7 +116,11 @@ func (inst *App) edgeBiosTokenGenerate(connUUID, hostUUID, jwtToken, name string
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeBiosTokenGenerate(hostUUID, jwtToken, name)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosTokenGenerate(hostUUID, connection.ExternalToken, jwtToken, name)
 }
 
 func (inst *App) edgeBiosTokenBlock(connUUID, hostUUID, jwtToken, uuid string, block bool) (*externaltoken.ExternalToken, error) {
@@ -112,7 +128,11 @@ func (inst *App) edgeBiosTokenBlock(connUUID, hostUUID, jwtToken, uuid string, b
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeBiosTokenBlock(hostUUID, jwtToken, uuid, block)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosTokenBlock(hostUUID, connection.ExternalToken, jwtToken, uuid, block)
 }
 
 func (inst *App) edgeBiosTokenRegenerate(connUUID, hostUUID, jwtToken, uuid string) (*externaltoken.ExternalToken, error) {
@@ -120,7 +140,11 @@ func (inst *App) edgeBiosTokenRegenerate(connUUID, hostUUID, jwtToken, uuid stri
 	if err != nil {
 		return nil, err
 	}
-	return client.EdgeBiosTokenRegenerate(hostUUID, jwtToken, uuid)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return nil, err
+	}
+	return client.EdgeBiosTokenRegenerate(hostUUID, connection.ExternalToken, jwtToken, uuid)
 }
 
 func (inst *App) edgeBiosTokenDelete(connUUID, hostUUID, jwtToken, uuid string) (bool, error) {
@@ -128,5 +152,9 @@ func (inst *App) edgeBiosTokenDelete(connUUID, hostUUID, jwtToken, uuid string) 
 	if err != nil {
 		return false, err
 	}
-	return client.EdgeBiosTokenDelete(hostUUID, jwtToken, uuid)
+	connection, err := inst.DB.Select(connUUID)
+	if err != nil {
+		return false, err
+	}
+	return client.EdgeBiosTokenDelete(hostUUID, connection.ExternalToken, jwtToken, uuid)
 }
