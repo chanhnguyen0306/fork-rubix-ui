@@ -379,6 +379,7 @@ export const HostsTable = (props: any) => {
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
   const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] = useState(false);
   const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
+  const [tokenFactory, setTokenFactory] = useState(new EdgeBiosTokenFactory(connUUID));
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
@@ -451,8 +452,8 @@ export const HostsTable = (props: any) => {
           </Tooltip>
           <Tooltip title="Tokens">
             <a
-              onClick={(e) => {
-                showTokenModal(host, e);
+              onClick={() => {
+                showTokenModal(host);
               }}
             >
               <SnippetsOutlined />
@@ -543,8 +544,7 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
-  const showTokenModal = (host: Host, e: any) => {
-    e.stopPropagation();
+  const showTokenModal = (host: Host) => {
     setCurrentHost(host);
     setIsTokenModalVisible(true);
   };
@@ -554,10 +554,10 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
-  const tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory();
-  tokenFactory.connectionUUID = connUUID;
   useEffect(() => {
-    tokenFactory.hostUUID = currentHost.uuid;
+    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(connUUID)
+    _tokenFactory.hostUUID = currentHost.uuid
+    setTokenFactory(_tokenFactory)
   }, [currentHost]);
 
   return (

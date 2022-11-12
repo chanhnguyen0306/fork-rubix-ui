@@ -10,6 +10,9 @@ import {
 import { CommonTokenFactory } from "../../common/token/factory";
 
 export class EdgeBiosTokenFactory implements CommonTokenFactory {
+  constructor(connectionUUID: string) {
+    this.connectionUUID = connectionUUID
+  }
   connectionUUID!: string;
   hostUUID!: string;
 
