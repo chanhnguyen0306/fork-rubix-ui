@@ -40,13 +40,17 @@ export const TokenModal = (props: ITokenModel) => {
     try {
       setLoading(true);
       const response = await factory.Login(values.username, values.password);
-      setJwtToken(response?.access_token);
+      if (response?.access_token) {
+        setJwtToken(response?.access_token);
+      } else {
+        setTokens([]);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const showTokenGenerateModal = (e: any) => {
+  const showTokenGenerateModal = () => {
     setIsTokenGenerateModalVisible(true);
   };
 
