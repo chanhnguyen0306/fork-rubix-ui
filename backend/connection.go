@@ -68,6 +68,7 @@ func (inst *App) AddConnection(conn *storage.RubixConnection) *storage.RubixConn
 	if err != nil {
 		return nil
 	}
+	_, _ = inst.forceGetAssistClient(conn.UUID)
 	return conn
 }
 
