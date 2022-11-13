@@ -226,6 +226,46 @@ export function DownloadFlow(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['backend']['App']['DownloadFlow'](arg1, arg2, arg3, arg4, arg5);
 }
 
+export function EdgeBiosInstalledRubixEdgeVersion(arg1, arg2) {
+  return window['go']['backend']['App']['EdgeBiosInstalledRubixEdgeVersion'](arg1, arg2);
+}
+
+export function EdgeBiosLogin(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeBiosLogin'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeBiosRubixEdgeInstall(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['EdgeBiosRubixEdgeInstall'](arg1, arg2, arg3);
+}
+
+export function EdgeBiosRubixEdgeVersions() {
+  return window['go']['backend']['App']['EdgeBiosRubixEdgeVersions']();
+}
+
+export function EdgeBiosToken(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeBiosToken'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeBiosTokenBlock(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['backend']['App']['EdgeBiosTokenBlock'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function EdgeBiosTokenDelete(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeBiosTokenDelete'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeBiosTokenGenerate(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeBiosTokenGenerate'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeBiosTokenRegenerate(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeBiosTokenRegenerate'](arg1, arg2, arg3, arg4);
+}
+
+export function EdgeBiosTokens(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['EdgeBiosTokens'](arg1, arg2, arg3);
+}
+
 export function EdgeCtlStatus(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeCtlStatus'](arg1, arg2, arg3);
 }
@@ -760,6 +800,34 @@ export function RcSetNetworks(arg1, arg2, arg3) {
 
 export function RestartPluginBulk(arg1, arg2, arg3) {
   return window['go']['backend']['App']['RestartPluginBulk'](arg1, arg2, arg3);
+}
+
+export function RubixAssistLogin(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['RubixAssistLogin'](arg1, arg2, arg3);
+}
+
+export function RubixAssistToken(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['RubixAssistToken'](arg1, arg2, arg3);
+}
+
+export function RubixAssistTokenBlock(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['RubixAssistTokenBlock'](arg1, arg2, arg3, arg4);
+}
+
+export function RubixAssistTokenDelete(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['RubixAssistTokenDelete'](arg1, arg2, arg3);
+}
+
+export function RubixAssistTokenGenerate(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['RubixAssistTokenGenerate'](arg1, arg2, arg3);
+}
+
+export function RubixAssistTokenRegenerate(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['RubixAssistTokenRegenerate'](arg1, arg2, arg3);
+}
+
+export function RubixAssistTokens(arg1, arg2) {
+  return window['go']['backend']['App']['RubixAssistTokens'](arg1, arg2);
 }
 
 export function Scanner(arg1, arg2, arg3, arg4) {
