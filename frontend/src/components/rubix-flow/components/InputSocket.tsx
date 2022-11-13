@@ -23,7 +23,7 @@ export type InputSocketProps = {
   classnames?: string;
 } & InputSocketSpecJSON;
 
-const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
+export const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
 
 const getValueOptions = (value: number) => {
   switch (value) {

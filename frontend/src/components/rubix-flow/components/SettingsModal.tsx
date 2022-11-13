@@ -4,10 +4,11 @@ import { JsonForm } from "../../../common/json-schema-form";
 import { FlowFactory } from "../factory";
 import { useChangeNodeProprerties } from "../hooks/useChangeNodeData";
 import { useParams } from "react-router-dom";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 type SettingsModalProps = {
   isModalVisible: boolean;
-  node: any;
+  node: NodeInterface;
   onCloseModal: () => void;
 };
 
@@ -25,13 +26,10 @@ export const SettingsModal = ({
 
   const factory = new FlowFactory();
 
-  useEffect(() => {
-    if (isModalVisible) fetchSchemaJson();
-  }, [isModalVisible]);
-
   const fetchSchemaJson = async () => {
     setIsLoadingForm(true);
-    const type = node.type.split("/")[1];
+
+    const type = (node.type && node.type.split("/")[1]) || "";
     const res =
       (await factory.NodeSchema(connUUID, hostUUID, isRemote, type)) || {};
     setSettings(res);
@@ -70,6 +68,10 @@ export const SettingsModal = ({
     handleChange("settings", formData);
     handleClose();
   };
+
+  useEffect(() => {
+    if (isModalVisible) fetchSchemaJson();
+  }, [isModalVisible]);
 
   return (
     <Modal

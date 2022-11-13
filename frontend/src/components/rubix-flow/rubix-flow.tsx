@@ -136,7 +136,7 @@ const Flow = (props: any) => {
         style,
         type: nodeType,
         position,
-        data: {},
+        data: { inputs: [] },
         settings: nodeSettings,
       };
       onNodesChange([
@@ -239,6 +239,27 @@ const Flow = (props: any) => {
           const { x, y } = setMousePosition(evt);
           setNodePickerVisibility({ x, y });
         }
+
+        /* Add connect for input added by InputCount setting */
+        if (lastConnectStart && nodeId && handleId) {
+          const isSource = lastConnectStart.handleType === "source" || false;
+          const conNodeId = lastConnectStart.nodeId || "";
+          const conHandleId = lastConnectStart.handleId || "";
+          const newEdge = {
+            id: generateUuid(),
+            source: isSource ? conNodeId : nodeId,
+            sourceHandle: isSource ? conHandleId : handleId,
+            target: !isSource ? conNodeId : nodeId,
+            targetHandle: !isSource ? conHandleId : handleId,
+          };
+
+          onEdgesChange([
+            {
+              type: "add",
+              item: newEdge,
+            },
+          ]);
+        }
       }
     }
   };
@@ -293,14 +314,35 @@ const Flow = (props: any) => {
     }
   };
 
+  const handleBeforeAddOutput = (nodeInputs: any, inputs: any) => {
+    if (!nodeInputs || !inputs) return inputs;
+
+    const oldInputs: any = inputs ? inputs : nodeInputs;
+    const newInputs = [...nodeInputs];
+
+    oldInputs.forEach((item: any) => {
+      const idx = nodeInputs.findIndex((input: any) => input.pin === item.pin);
+      if (idx !== -1) newInputs[idx] = item;
+    });
+
+    return newInputs;
+  };
+
   const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
     if (outputNodes && outputNodes.length === 0) return prevNodes;
 
     return prevNodes.map((node) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
-      node.data.inputs = outputNodes[index]?.inputs;
-      node.data.out = outputNodes[index]?.outputs;
-      node.status = outputNodes[index]?.status;
+      if (index > -1) {
+        node.data.inputs = !node.data.inputs
+          ? outputNodes[index]?.inputs
+          : handleBeforeAddOutput(node.data.inputs, outputNodes[index]?.inputs);
+        node.data.out = !node.data.out
+          ? outputNodes[index]?.outputs
+          : handleBeforeAddOutput(node.data.out, outputNodes[index]?.outputs);
+        node.status = outputNodes[index]?.status;
+      }
+
       return node;
     });
   };
@@ -427,6 +469,9 @@ const Flow = (props: any) => {
           nodes: newNodes,
           edges: _edges,
         });
+
+        /* Get output Nodes */
+        handleRefreshValues();
       })
       .catch(() => {});
   }, [connUUID, hostUUID]);

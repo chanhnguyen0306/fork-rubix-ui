@@ -16,6 +16,11 @@ export type InfoSpecJson = {
   icon: string;
 };
 
+export type MetadataSpecJSON = {
+  dynamicInputs: boolean;
+  dynamicOutputs: boolean;
+}
+
 export type NodeSpecJSON = {
   allowSettings: boolean;
   type: string;
@@ -27,4 +32,5 @@ export type NodeSpecJSON = {
   isParent?: boolean;
   payloadType?: string;
   allowPayload?: boolean;
+  metadata?: MetadataSpecJSON;
 };

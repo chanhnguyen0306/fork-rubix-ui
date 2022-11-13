@@ -123,7 +123,7 @@ const AddNodeComponent = ({
   );
 };
 
-const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
+export const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
   allowSettings: false,
   type: "",
   category: "None",
@@ -141,8 +141,8 @@ const NodeMenu = ({
   const [nodeType, setNodeType] = useState<NodeSpecJSON>(
     DEFAULT_NODE_SPEC_JSON
   );
-
   const [isShowHelpModal, setIsShowHelpModal] = useState(false);
+
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
 

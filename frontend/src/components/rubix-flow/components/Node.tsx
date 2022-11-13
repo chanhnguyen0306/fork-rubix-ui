@@ -2,18 +2,23 @@ import { useState } from "react";
 import {
   NodeProps as FlowNodeProps,
   useEdges,
-  useReactFlow,
+  useNodes,
 } from "react-flow-renderer/nocss";
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
-import { NodeSpecJSON } from "../lib";
+import {
+  InputSocketSpecJSON,
+  NodeSpecJSON,
+  OutputSocketSpecJSON,
+} from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
 import { SettingsModal } from "./SettingsModal";
 import { useNodesSpec } from "../use-nodes-spec";
+import { DEFAULT_NODE_SPEC_JSON } from "./NodeMenu";
 
 type NodeProps = FlowNodeProps & {
   spec: NodeSpecJSON;
@@ -35,18 +40,85 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
   return pairs;
 };
 
+const getInputs = (
+  specInputs: InputSocketSpecJSON[],
+  nodeInputs: any,
+  node: NodeInterface
+) => {
+  if (specInputs.length === 0) return [];
+  if (specInputs.length > 0 && !nodeInputs) return specInputs;
+
+  /* Is check InputCount setting equals node inputs length? */
+  if (node.settings.inputCount !== nodeInputs.length) {
+    let newData: any = [];
+    for (let i = 1; i <= node.settings.inputCount; i++) {
+      const item = {
+        pin: `in${i}`,
+        dataType: "number",
+        value: null,
+      };
+      if (newData) {
+        newData.push(item);
+      } else {
+        newData = [item];
+      }
+    }
+    nodeInputs = newData;
+  }
+
+  let newInputs: InputSocketSpecJSON[] = [];
+  if (nodeInputs.length > 0 && nodeInputs.length < specInputs.length) {
+    newInputs = specInputs.filter((item, idx) => idx < nodeInputs.length);
+  } else {
+    newInputs = [...specInputs];
+  }
+
+  /* Add new inputs when set InputCount setting */
+  nodeInputs.forEach((item: any) => {
+    const isExist = specInputs.find((input) => input.name === item.pin);
+    if (!isExist) {
+      newInputs.push({
+        name: item.pin,
+        valueType: item.dataType,
+        defaultValue: item.value,
+      } as InputSocketSpecJSON);
+    }
+  });
+
+  return newInputs;
+};
+
+const getOutputs = (specOutputs: OutputSocketSpecJSON[], nodeOutputs: any) => {
+  if (specOutputs.length === 0) return [];
+  if (specOutputs.length > 0 && !nodeOutputs) return specOutputs;
+
+  const newOutputs: OutputSocketSpecJSON[] = [];
+  nodeOutputs.forEach((item: any) => {
+    newOutputs.push({
+      name: item.pin,
+      valueType: item.dataType,
+      defaultValue: item.value,
+    } as OutputSocketSpecJSON);
+  });
+
+  return newOutputs;
+};
+
 export const Node = (props: NodeProps) => {
   const { id, data, spec, selected } = props;
-  const instance = useReactFlow();
   const edges = useEdges();
+  const nodes = useNodes();
   const [nodesSpec] = useNodesSpec();
   const handleChange = useChangeNodeData(id);
   const [widthInput, setWidthInput] = useState(-1);
   const [widthOutput, setWidthOutput] = useState(-1);
   const [isSettingModal, setIsSettingModal] = useState(false);
 
-  const pairs = getPairs(spec.inputs || [], spec.outputs || []);
-  const node = instance.getNode(id) as NodeInterface;
+  const node: NodeInterface | any = nodes.find((item) => item.id === id);
+  const pairs = getPairs(
+    getInputs(spec.inputs || [], node.data.inputs, node),
+    getOutputs(spec.outputs || [], node.data.out),
+  );
 
   const handleSetWidthInput = (width: number) => {
     setWidthInput((prev: number) => Math.max(prev, width));
@@ -57,9 +129,9 @@ export const Node = (props: NodeProps) => {
   };
 
   const handleDbClickTitle = () => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC_JSON;
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isAllowSetting) setIsSettingModal(true);
