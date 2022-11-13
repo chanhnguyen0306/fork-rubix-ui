@@ -8,6 +8,8 @@ import {db} from '../models';
 import {backend} from '../models';
 import {assistcli} from '../models';
 import {flow} from '../models';
+import {ebmodel} from '../models';
+import {externaltoken} from '../models';
 import {installer} from '../models';
 import {system} from '../models';
 import {dhcpd} from '../models';
@@ -25,7 +27,7 @@ export function AddConsumer(arg1:string,arg2:string,arg3:model.Consumer):Promise
 
 export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
 
-export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):Promise<void>;
+export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):void;
 
 export function AddFlowNetwork(arg1:string,arg2:string,arg3:model.FlowNetwork):Promise<model.FlowNetwork>;
 
@@ -39,7 +41,7 @@ export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<m
 
 export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
 
-export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):Promise<void>;
+export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):void;
 
 export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise<model.Producer>;
 
@@ -115,7 +117,7 @@ export function DeleteStreamBulkClones(arg1:string,arg2:string,arg3:Array<backen
 
 export function DeleteStreamClone(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function DeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<void>;
+export function DeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):void;
 
 export function DeleteWriter(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -130,6 +132,26 @@ export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.Plu
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
 export function DownloadFlow(arg1:string,arg2:string,arg3:boolean,arg4:any,arg5:boolean):Promise<flow.Message>;
+
+export function EdgeBiosInstalledRubixEdgeVersion(arg1:string,arg2:string):Promise<ebmodel.Version>;
+
+export function EdgeBiosLogin(arg1:string,arg2:string,arg3:string,arg4:string):Promise<model.TokenResponse>;
+
+export function EdgeBiosRubixEdgeInstall(arg1:string,arg2:string,arg3:string):Promise<any>;
+
+export function EdgeBiosRubixEdgeVersions():Promise<Array<string>>;
+
+export function EdgeBiosToken(arg1:string,arg2:string,arg3:string,arg4:string):Promise<externaltoken.ExternalToken>;
+
+export function EdgeBiosTokenBlock(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<externaltoken.ExternalToken>;
+
+export function EdgeBiosTokenDelete(arg1:string,arg2:string,arg3:string,arg4:string):Promise<boolean>;
+
+export function EdgeBiosTokenGenerate(arg1:string,arg2:string,arg3:string,arg4:string):Promise<externaltoken.ExternalToken>;
+
+export function EdgeBiosTokenRegenerate(arg1:string,arg2:string,arg3:string,arg4:string):Promise<externaltoken.ExternalToken>;
+
+export function EdgeBiosTokens(arg1:string,arg2:string,arg3:string):Promise<externaltoken.ExternalToken>;
 
 export function EdgeCtlStatus(arg1:string,arg2:string,arg3:installer.SystemCtlBody):Promise<installer.AppSystemState>;
 
@@ -149,7 +171,7 @@ export function EdgeGetNetworks(arg1:string,arg2:string):Promise<Array<networkin
 
 export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<systemd.InstallResponse>;
 
-export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:backend.EdgeInstallAppsBulk):Promise<void>;
+export function EdgeInstallAppsBulk(arg1:string,arg2:string,arg3:backend.EdgeInstallAppsBulk):void;
 
 export function EdgeListPlugins(arg1:string,arg2:string):Promise<Array<appstore.Plugin>>;
 
@@ -195,7 +217,7 @@ export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer
 
 export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
 
-export function ExportBackup(arg1:string):Promise<void>;
+export function ExportBackup(arg1:string):void;
 
 export function ExportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
@@ -383,21 +405,35 @@ export function NodeValue(arg1:string,arg2:string,arg3:boolean,arg4:string):Prom
 
 export function NodeValues(arg1:string,arg2:string,arg3:boolean):Promise<Array<node.Values>>;
 
-export function NubeHelp():Promise<void>;
+export function NubeHelp():void;
 
-export function OnQuit():Promise<void>;
+export function OnQuit():void;
 
-export function OnReload():Promise<void>;
+export function OnReload():void;
 
-export function OpenURL(arg1:string):Promise<void>;
+export function OpenURL(arg1:string):void;
 
 export function PingHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function PingRubixAssist(arg1:string):Promise<boolean>;
 
-export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):Promise<void>;
+export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):void;
 
 export function RestartPluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
+
+export function RubixAssistLogin(arg1:string,arg2:string,arg3:string):Promise<model.TokenResponse>;
+
+export function RubixAssistToken(arg1:string,arg2:string,arg3:string):Promise<externaltoken.ExternalToken>;
+
+export function RubixAssistTokenBlock(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<externaltoken.ExternalToken>;
+
+export function RubixAssistTokenDelete(arg1:string,arg2:string,arg3:string):Promise<boolean>;
+
+export function RubixAssistTokenGenerate(arg1:string,arg2:string,arg3:string):Promise<externaltoken.ExternalToken>;
+
+export function RubixAssistTokenRegenerate(arg1:string,arg2:string,arg3:string):Promise<externaltoken.ExternalToken>;
+
+export function RubixAssistTokens(arg1:string,arg2:string):Promise<externaltoken.ExternalToken>;
 
 export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
 

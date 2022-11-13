@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-var token = "Z2hwX3pIdklCZFZPWmd5N1M2YXFtcHBWMHRkcndIbUk5eTNEMnlQMg=="
+const token = "Z2hwX3pIdklCZFZPWmd5N1M2YXFtcHBWMHRkcndIbUk5eTNEMnlQMg=="
 
 func TestApp_ListReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
 	appStore, err := New(&Store{}, installer.New(&installer.App{}))

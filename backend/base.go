@@ -86,34 +86,60 @@ func matchConnectionUUID(uuid string) bool {
 }
 
 func (inst *App) getAssistClient(body *AssistClient) (*assistcli.Client, error) {
-	var err error
 	if body.ConnUUID == "" {
-		err = inst.errMsg(err)
-		return nil, errors.New("conn can not be empty")
+		return nil, errors.New("connection.uuid can not be empty")
 	}
-	connection := &storage.RubixConnection{}
-	if matchConnectionUUID(body.ConnUUID) {
-		connection, err = inst.DB.Select(body.ConnUUID)
-		if err != nil {
-			err = inst.errMsg(err)
-			return nil, err
-		}
-	} else {
-		connection, err = inst.DB.SelectByName(body.ConnUUID)
-		if err != nil {
-			err = inst.errMsg(err)
-			return nil, err
-		}
+	connection, err := inst.getRubixAssistConnection(body.ConnUUID)
+	if err != nil {
+		return nil, err
 	}
-	if connection == nil {
-		err = inst.errMsg(errors.New("failed to find a connection"))
-		return nil, errors.New("failed to find a connection")
-	}
-	cli := assistcli.New(&assistcli.Client{
+	client := &assistcli.Client{
 		Ip:            connection.IP,
 		Port:          connection.Port,
 		HTTPS:         boolean.NewFalse(),
-		ExternalToken: connection.AssistToken,
-	})
-	return cli, nil
+		ExternalToken: connection.ExternalToken,
+	}
+	cli := assistcli.New(client)
+	if cli != nil {
+		return cli, nil
+	} else {
+		return nil, errors.New("error on creating assist client cli")
+	}
+}
+
+func (inst *App) forceGetAssistClient(uuid string) (*assistcli.Client, error) {
+	connection, err := inst.getRubixAssistConnection(uuid)
+	if err != nil {
+		return nil, err
+	}
+	client := &assistcli.Client{
+		Ip:            connection.IP,
+		Port:          connection.Port,
+		HTTPS:         boolean.NewFalse(),
+		ExternalToken: connection.ExternalToken,
+	}
+	cli := assistcli.ForceNew(client)
+	if cli != nil {
+		return cli, nil
+	} else {
+		return nil, errors.New("error on creating assist client cli")
+	}
+}
+
+func (inst *App) getRubixAssistConnection(connectionUuid string) (*storage.RubixConnection, error) {
+	if matchConnectionUUID(connectionUuid) {
+		connection, err := inst.DB.Select(connectionUuid)
+		if err != nil {
+			err = inst.errMsg(err)
+			return nil, err
+		}
+		return connection, nil
+	} else {
+		connection, err := inst.DB.SelectByName(connectionUuid)
+		if err != nil {
+			err = inst.errMsg(err)
+			return nil, err
+		}
+		return connection, nil
+	}
 }

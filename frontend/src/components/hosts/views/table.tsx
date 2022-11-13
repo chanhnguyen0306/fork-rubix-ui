@@ -1,24 +1,29 @@
 import {
-  Typography,
-  List,
   Button,
+  Card,
+  Dropdown,
+  List,
+  Menu,
   Space,
   Spin,
   Tooltip,
-  Dropdown,
-  Menu,
-  Card,
+  Typography,
 } from "antd";
-import { MenuFoldOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { DownCircleOutlined, LeftOutlined } from "@ant-design/icons";
-import { assistmodel, storage, backend } from "../../../../wailsjs/go/models";
+import {
+  CloudDownloadOutlined,
+  DownCircleOutlined,
+  LeftOutlined,
+  MenuFoldOutlined,
+  SnippetsOutlined
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { assistmodel, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import RbTag from "../../../common/rb-tag";
 import {
-  RbDeleteButton,
   RbAddButton,
+  RbDeleteButton,
   RbRefreshButton,
 } from "../../../common/rb-table-actions";
 import { HOST_HEADERS } from "../../../constants/headers";
@@ -34,12 +39,15 @@ import RbConfirmPopover from "../../../common/rb-confirm-popover";
 import { tagMessageStateResolver } from "./utils";
 import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
-
+import UpdateApp from "./updateApp";
+import { TokenModal } from "../../../common/token/token-modal";
+import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
-import UpdateApp from "./updateApp";
+import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
+import { InstallFactory } from "./install-rubix-edge/factory";
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
@@ -369,10 +377,15 @@ export const HostsTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
+  const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] = useState(false);
+  const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
+  const [tokenFactory, setTokenFactory] = useState(new EdgeBiosTokenFactory(connUUID));
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
+  let installFactory = new InstallFactory();
   factory.connectionUUID = connUUID;
+  installFactory.connectionUUID = connUUID;
 
   const columns = [
     ...HOST_HEADERS,
@@ -419,6 +432,15 @@ export const HostsTable = (props: any) => {
           >
             Install
           </a>
+          <Tooltip title="Install Rubix Edge">
+            <a
+              onClick={(e) => {
+                showRubixEdgeInstallModal(host, e);
+              }}
+            >
+              <CloudDownloadOutlined />
+            </a>
+          </Tooltip>
           <Tooltip title="Rubix-Wires and Backup">
             <a
               onClick={(e) => {
@@ -426,6 +448,15 @@ export const HostsTable = (props: any) => {
               }}
             >
               <MenuFoldOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Tokens">
+            <a
+              onClick={() => {
+                showTokenModal(host);
+              }}
+            >
+              <SnippetsOutlined />
             </a>
           </Tooltip>
         </Space>
@@ -498,10 +529,36 @@ export const HostsTable = (props: any) => {
     setIsBackupModalVisible(true);
   };
 
+  const showRubixEdgeInstallModal = (host: Host, e: any) => {
+    e.stopPropagation();
+    setCurrentHost(host);
+    setIsInstallRubixEdgeModalVisible(true)
+  };
+
+  const onCloseRubixEdgeInstallModal = () => {
+    setIsInstallRubixEdgeModalVisible(false)
+  };
+
   const onCloseBackupModal = () => {
     setIsBackupModalVisible(false);
     setCurrentHost({} as Host);
   };
+
+  const showTokenModal = (host: Host) => {
+    setCurrentHost(host);
+    setIsTokenModalVisible(true);
+  };
+
+  const onCloseTokenModal = () => {
+    setIsTokenModalVisible(false);
+    setCurrentHost({} as Host);
+  };
+
+  useEffect(() => {
+    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(connUUID)
+    _tokenFactory.hostUUID = currentHost.uuid
+    setTokenFactory(_tokenFactory)
+  }, [currentHost]);
 
   return (
     <div>
@@ -544,6 +601,18 @@ export const HostsTable = (props: any) => {
         isOpen={isOpen(INSTALL_DIALOG)}
         closeDialog={() => closeDialog(INSTALL_DIALOG)}
         dialogData={dialogData[INSTALL_DIALOG]}
+      />
+      <InstallRubixEdgeModal
+        isModalVisible={isInstallRubixEdgeModalVisible}
+        onCloseModal={onCloseRubixEdgeInstallModal}
+        installFactory={installFactory}
+        host={currentHost}
+      />
+      <TokenModal
+        isModalVisible={isTokenModalVisible}
+        displayName={currentHost.name}
+        onCloseModal={onCloseTokenModal}
+        factory={tokenFactory}
       />
     </div>
   );

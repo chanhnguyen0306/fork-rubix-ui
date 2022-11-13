@@ -101,7 +101,7 @@ func (inst *db) GetReleases() ([]store.Release, error) {
 				return false
 			}
 			if matchReleaseUUID(data.Uuid) {
-				resp = append(resp, data) // put into arry
+				resp = append(resp, data) // put into array
 			}
 			return true
 		})

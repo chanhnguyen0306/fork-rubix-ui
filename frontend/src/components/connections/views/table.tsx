@@ -1,4 +1,4 @@
-import { Space, Spin } from "antd";
+import { Space, Spin, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PingRubixAssist } from "../../../../wailsjs/go/backend/App";
@@ -14,7 +14,9 @@ import { ROUTES } from "../../../constants/routes";
 import { isObjectEmpty, openNotificationWithIcon } from "../../../utils/utils";
 import { ConnectionFactory } from "../factory";
 import { CreateEditModal } from "./create";
-
+import { SnippetsOutlined } from "@ant-design/icons";
+import { TokenModal } from "../../../common/token/token-modal";
+import { RubixAssistTokenFactory } from "./token-factory";
 import RubixConnection = storage.RubixConnection;
 import UUIDs = backend.UUIDs;
 
@@ -28,6 +30,7 @@ export const ConnectionsTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
 
   const factory = new ConnectionFactory();
 
@@ -42,20 +45,29 @@ export const ConnectionsTable = () => {
           <Link to={ROUTES.LOCATIONS.replace(":connUUID", conn.uuid)}>
             View
           </Link>
-          <a // edit
+          <a
             onClick={() => {
               showModal(conn);
             }}
           >
             Edit
           </a>
-          <a //ping
+          <a
             onClick={() => {
               pingConnection(conn.uuid);
             }}
           >
             Ping
           </a>
+          <Tooltip title="Tokens">
+            <a
+              onClick={(e) => {
+                showTokenModal(conn, e);
+              }}
+            >
+              <SnippetsOutlined />
+            </a>
+          </Tooltip>
         </Space>
       ),
     },
@@ -64,6 +76,12 @@ export const ConnectionsTable = () => {
   useEffect(() => {
     fetch();
   }, []);
+
+  const showTokenModal = (connection: RubixConnection, e: any) => {
+    e.stopPropagation();
+    setCurrentConnection(connection);
+    setIsTokenModalVisible(true);
+  };
 
   const fetch = async () => {
     try {
@@ -111,8 +129,8 @@ export const ConnectionsTable = () => {
     },
   };
 
-  const pingConnection = async (uuid: string) => {
-    await PingRubixAssist(uuid).then((ok) => {
+  const pingConnection = (uuid: string) => {
+    PingRubixAssist(uuid).then((ok) => {
       if (ok) {
         openNotificationWithIcon("success", `ping success`);
       } else {
@@ -121,6 +139,16 @@ export const ConnectionsTable = () => {
     });
     fetch();
   };
+
+  const onCloseTokenModal = () => {
+    setIsTokenModalVisible(false);
+    setCurrentConnection({} as RubixConnection);
+  };
+
+  const tokenFactory: RubixAssistTokenFactory = new RubixAssistTokenFactory();
+  useEffect(() => {
+    tokenFactory.connectionUUID = currentConnection.uuid;
+  }, [currentConnection]);
 
   return (
     <div>
@@ -142,6 +170,12 @@ export const ConnectionsTable = () => {
         isLoadingForm={isLoadingForm}
         refreshList={fetch}
         onCloseModal={onCloseModal}
+      />
+      <TokenModal
+        isModalVisible={isTokenModalVisible}
+        displayName={currentConnection.name}
+        onCloseModal={onCloseTokenModal}
+        factory={tokenFactory}
       />
     </div>
   );
