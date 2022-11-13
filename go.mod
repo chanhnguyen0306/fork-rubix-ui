@@ -10,7 +10,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.3.4
+	github.com/NubeDev/flow-eng v0.5.3
 	github.com/NubeIO/git v0.0.7
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
@@ -25,7 +25,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
 	github.com/NubeIO/rubix-assist v0.5.3
 	github.com/NubeIO/rubix-edge v0.3.0
-	github.com/NubeIO/rubix-edge-wires v0.1.1
+	github.com/NubeIO/rubix-edge-wires v0.1.4
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
@@ -38,7 +38,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.14.3
-	github.com/wailsapp/wails/v2 v2.0.0
+	github.com/wailsapp/wails/v2 v2.1.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
@@ -58,6 +58,7 @@ require (
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/dop251/goja v0.0.0-20220915101355-d79e1b125a30 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.1 // indirect
+	github.com/enescakir/emoji v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-co-op/gocron v1.17.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -77,7 +78,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
-	github.com/labstack/echo/v4 v4.7.2 // indirect
+	github.com/labstack/echo/v4 v4.9.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leaanthony/go-ansi-parser v1.0.1 // indirect
 	github.com/leaanthony/gosod v1.0.3 // indirect
@@ -86,6 +87,7 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect

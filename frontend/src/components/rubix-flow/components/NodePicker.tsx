@@ -3,10 +3,6 @@ import { useReactFlow, XYPosition } from "react-flow-renderer/nocss";
 import { useOnPressKey } from "../hooks/useOnPressKey";
 import { NodeSpecJSON } from "../lib";
 import { useNodesSpec } from "../use-nodes-spec";
-import {
-  deviantMousePositionX,
-  deviantMousePositionY,
-} from "../util/autoLayout";
 
 export type NodePickerFilters = {
   handleType: "source" | "target";
@@ -36,14 +32,11 @@ const NodePicker = ({
   const [search, setSearch] = useState("");
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
-  const mousePosition = {
-    x: position.x - deviantMousePositionX,
-    y: position.y - deviantMousePositionY,
-  };
 
   useOnPressKey("Escape", onClose);
 
-  let filtered = nodeList ? nodeList : (nodesSpec as NodeSpecJSON[]);
+  let filtered =
+    nodeList && nodeList.length > 0 ? nodeList : (nodesSpec as NodeSpecJSON[]);
   if (filters !== undefined) {
     filtered = filtered.filter((node) => {
       const inputs = node.inputs ?? [];
@@ -60,14 +53,14 @@ const NodePicker = ({
 
   return (
     <div
-      className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
+      className="node-picker absolute z-10 border rounded border-gray-500 ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
       style={{
-        top: mousePosition.y || "unset",
-        left: mousePosition.x || "unset",
-        minWidth: 210,
+        top: position.y,
+        left: position.x,
+        width: 210,
       }}
     >
-      <div className="bg-gray-500 p-2">Add Node</div>
+      <div className="bg-gray-500 mt-0 ant-menu-item">Add Node</div>
       <div className="p-2">
         <input
           type="text"
@@ -82,13 +75,13 @@ const NodePicker = ({
         {filtered.map(({ type, isParent, style }) => (
           <div
             key={type}
-            className="p-2 cursor-pointer border-b border-gray-600"
+            className="cursor-pointer border-b border-gray-600 ant-menu-item text-white"
             onClick={() =>
               onPickNode(
                 isParent ?? false,
                 style ?? {},
                 type,
-                instance.project({ x: mousePosition.x, y: mousePosition.y })
+                instance.project({ x: position.x, y: position.y })
               )
             }
           >

@@ -16,6 +16,10 @@ select {
   background-size: 1.5em 1.5em;
 }
 
+.react-flow--font {
+  font-family: Verdana, sans-serif;
+}
+
 .react-flow__handle {
   width: 16px !important;
   height: 16px !important;
@@ -73,4 +77,17 @@ input::-webkit-inner-spin-button {
 
 .node-picker ::-webkit-scrollbar-thumb {
   @apply bg-gray-600;
+}
+
+.panel-no-padding .ant-collapse-content .ant-collapse-content-box {
+  padding: 0;
+  margin-bottom: -3px;
+}
+
+.panel-no-padding .ant-collapse-content {
+  border: 0;
+}
+
+.ant-collapse>.ant-collapse-item>.ant-collapse-header {
+  color: rgba(255, 255, 255, 0.65) !important;
 }

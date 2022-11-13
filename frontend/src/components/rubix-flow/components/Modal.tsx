@@ -13,6 +13,11 @@ export type ModalProps = {
   actions: ModalAction[];
 };
 
+const actionColors = {
+  primary: "bg-blue-400 hover:bg-blue-500",
+  secondary: "bg-gray-400 hover:bg-gray-500",
+};
+
 export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   open = false,
   onClose,
@@ -23,11 +28,6 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   useOnPressKey("Escape", onClose);
 
   if (open === false) return null;
-
-  const actionColors = {
-    primary: "bg-blue-400 hover:bg-blue-500",
-    secondary: "bg-gray-400 hover:bg-gray-500",
-  };
 
   return (
     <>
@@ -44,7 +44,15 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
             {title}
           </h2>
         </div>
-        <div className="p-3 text-start black--text">{children}</div>
+        <div
+          className="p-3 text-start black--text"
+          style={{
+            maxHeight: "75vh",
+            overflowY: "scroll",
+          }}
+        >
+          {children}
+        </div>
         <div className="flex gap-3 p-3 border-t">
           {actions.map((action, ix) => (
             <button

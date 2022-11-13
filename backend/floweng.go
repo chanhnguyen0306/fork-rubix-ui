@@ -8,7 +8,7 @@ import (
 	"github.com/NubeDev/flow-eng/node"
 	"github.com/NubeDev/flow-eng/nodes"
 	"github.com/NubeIO/rubix-edge-wires/flow"
-	"github.com/NubeIO/rubix-ui/flowcli"
+	"github.com/NubeIO/rubix-ui/backend/flowcli"
 )
 
 var flowEngIP = "0.0.0.0"
@@ -297,6 +297,78 @@ func (inst *App) NodeValues(connUUID, hostUUID string, isRemote bool) []node.Val
 	return resp
 }
 
+func (inst *App) nodeHelp(connUUID, hostUUID string) ([]node.Help, error) {
+	c, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/wires/api/nodes/values")
+	resp, err := c.ProxyGET(hostUUID, path)
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsSuccess() {
+		var out []node.Help
+		err := json.Unmarshal(resp.Body(), &out)
+		return out, err
+	}
+	return nil, errors.New(fmt.Sprintf("failed to edit %s:", path))
+}
+
+func (inst *App) NodeHelp(connUUID, hostUUID string, isRemote bool) []node.Help {
+	if isRemote {
+		resp, err := inst.nodeHelp(connUUID, hostUUID)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+			return resp
+		}
+		return resp
+	}
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.NodesHelp()
+	if err != nil {
+		inst.uiErrorMessage("flow runtime is not running")
+		return resp
+	}
+	return resp
+}
+
+func (inst *App) nodeHelpByName(connUUID, hostUUID, nodeName string) (*node.Help, error) {
+	c, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	path := fmt.Sprintf("/wires/api/nodes/help/%s", nodeName)
+	resp, err := c.ProxyGET(hostUUID, path)
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsSuccess() {
+		var out *node.Help
+		err := json.Unmarshal(resp.Body(), &out)
+		return out, err
+	}
+	return nil, errors.New(fmt.Sprintf("failed to edit %s:", path))
+}
+
+func (inst *App) NodeHelpByName(connUUID, hostUUID string, isRemote bool, nodeName string) *node.Help {
+	if isRemote {
+		resp, err := inst.nodeHelpByName(connUUID, hostUUID, nodeName)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+			return resp
+		}
+		return resp
+	}
+	var client = flowcli.New(&flowcli.Connection{Ip: flowEngIP})
+	resp, err := client.NodeHelpByName(nodeName)
+	if err != nil {
+		inst.uiErrorMessage("download the node first to edit the settings")
+		return resp
+	}
+	return resp
+}
+
 func (inst *App) getFlow(connUUID, hostUUID string) (interface{}, error) {
 	c, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
@@ -462,4 +534,9 @@ func (inst *App) DownloadFlow(connUUID, hostUUID string, isRemote bool, encodedN
 		inst.uiSuccessMessage(fmt.Sprintf(downloadFlow.Message))
 	}
 	return downloadFlow
+}
+
+func (inst *App) NodePayload(connUUID, hostUUID string, isRemote bool, payload interface{}, nodeUUID string) *flow.Message {
+
+	return nil
 }

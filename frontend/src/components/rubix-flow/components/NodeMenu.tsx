@@ -8,112 +8,41 @@ import { getNodePickerFilters } from "../util/getPickerFilters";
 import { useNodesSpec } from "../use-nodes-spec";
 import { SettingsModal } from "./SettingsModal";
 import NodePicker from "./NodePicker";
-import {
-  deviantMousePositionX,
-  deviantMousePositionY,
-} from "../util/autoLayout";
 import { FlowFactory } from "../factory";
 import { useParams } from "react-router-dom";
+import { SetPayloadModal } from "./SetPayloadModal";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
+import { NodeHelpModal } from "./NodeHelpModal";
 
 type NodeMenuProps = {
   position: XYPosition;
-  node: { type: string };
+  node: NodeInterface;
   isDoubleClick: boolean;
   onClose: () => void;
 };
 
-const AddNodeComponent = ({ node, onClose, instance }: any) => {
+const AddNodeComponent = ({
+  node,
+  onClose,
+  instance,
+  isAddSubNode = false,
+}: any) => {
   if (!node.isParent) return null;
 
-  const nodes = instance.getNodes();
-  const [nodePickerVisibility, setNodePickerVisibility] = useState(false);
-
-  const openModal = () => {
-    setNodePickerVisibility(true);
-  };
-
-  const closeNodePicker = () => {
-    setNodePickerVisibility(false);
-    onClose();
-  };
-
-  const handleAddNode = (
-    isParent: boolean,
-    style: any,
-    nodeType: string,
-    position: XYPosition
-  ) => {
-    closeNodePicker();
-
-    const newNode = {
-      id: generateUuid(),
-      isParent,
-      style,
-      type: nodeType,
-      position: {
-        x: node.position.x + 10,
-        y:
-          node.position.y +
-          (node.originalHeight ? node.originalHeight : node.height),
-      },
-      data: {},
-      parentId: node.id,
-    };
-
-    //to handle sub-node's position
-    if (!node.originalHeight) {
-      node.originalHeight = node.height;
-    }
-
-    const index = nodes.findIndex((n: NodeJSON) => n.id === node.id);
-    const parentStyle = { width: 300, height: 300 };
-    nodes[index] = {
-      ...node,
-      style: isObjectEmpty(nodes[index].style)
-        ? parentStyle
-        : nodes[index].style,
-    };
-    const newNodes = nodes.concat(newNode);
-    instance.setNodes(newNodes);
-  };
-
-  return (
-    <>
-      <div
-        key="settings"
-        className="p-2 cursor-pointer border-b border-gray-600"
-        onClick={openModal}
-      >
-        Add node
-      </div>
-
-      {nodePickerVisibility && (
-        <NodePicker
-          position={{} as XYPosition}
-          filters={getNodePickerFilters(nodes, undefined)}
-          onPickNode={handleAddNode}
-          onClose={closeNodePicker}
-        />
-      )}
-    </>
-  );
-};
-
-const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
-  if (!node.isParent) return null;
-
+  const { connUUID = "", hostUUID = "" } = useParams();
   const [nodePickerVisibility, setNodePickerVisibility] = useState(false);
   const [nodeList, setNodeList] = useState([] as any[]);
   const nodes = instance.getNodes();
-  const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
   const category = node.type.split("/")[0];
-
+  const title = isAddSubNode ? "Add sub node" : "Add node";
   const factory = new FlowFactory();
 
   const openModal = () => {
+    if (isAddSubNode) {
+      fetchNodeList();
+    }
     setNodePickerVisibility(true);
-    fetchNodeList();
   };
 
   const closeNodePicker = () => {
@@ -175,10 +104,10 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
     <>
       <div
         key="settings"
-        className="p-2 cursor-pointer border-b border-gray-600"
+        className="cursor-pointer border-b border-gray-600 ant-menu-item ant-menu-item-only-child"
         onClick={openModal}
       >
-        Add sub node
+        {title}
       </div>
 
       {nodePickerVisibility && (
@@ -194,38 +123,11 @@ const AddSubNodeComponent = ({ node, onClose, instance }: any) => {
   );
 };
 
-// const AddStyleComponent = ({ node, onClose }: any) => {
-//   if (isObjectEmpty(node.style)) return null;
-
-//   const [isModalVisible, setIsModalVisible] = useState(false);
-
-//   const openModal = () => {
-//     setIsModalVisible(true);
-//   };
-
-//   const closeModal = () => {
-//     setIsModalVisible(false);
-//     onClose();
-//   };
-
-//   return (
-//     <>
-//       <div
-//         key="settings"
-//         className="p-2 cursor-pointer border-b border-gray-600"
-//         onClick={openModal}
-//       >
-//         Add style
-//       </div>
-
-//       <AddStyleModal
-//         node={node}
-//         isModalVisible={isModalVisible}
-//         onCloseModal={closeModal}
-//       />
-//     </>
-//   );
-// };
+const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
+  allowSettings: false,
+  type: "",
+  category: "None",
+};
 
 const NodeMenu = ({
   position,
@@ -235,13 +137,14 @@ const NodeMenu = ({
 }: NodeMenuProps) => {
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
+  const [isShowPayload, setIsShowPayload] = useState(false);
+  const [nodeType, setNodeType] = useState<NodeSpecJSON>(
+    DEFAULT_NODE_SPEC_JSON
+  );
+
+  const [isShowHelpModal, setIsShowHelpModal] = useState(false);
   const [nodesSpec] = useNodesSpec();
   const instance = useReactFlow();
-
-  const mousePosition = {
-    x: position.x - deviantMousePositionX,
-    y: position.y - deviantMousePositionY,
-  };
 
   useOnPressKey("Escape", onClose);
 
@@ -249,10 +152,20 @@ const NodeMenu = ({
     setIsModalVisible(true);
   };
 
+  const handleToggleHelpModal = () => {
+    setIsShowHelpModal((p) => !p);
+  };
+
+  const handleTogglePayload = () => {
+    setIsShowPayload(!isShowPayload);
+  };
+
   useEffect(() => {
-    const nodeType = (nodesSpec as NodeSpecJSON[]).find(
-      (item) => item.type === node.type
-    );
+    const nodeType =
+      (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
+      DEFAULT_NODE_SPEC_JSON;
+    setNodeType(nodeType);
+
     const isAllowSetting = nodeType?.allowSettings || false;
 
     if (isDoubleClick && !isAllowSetting) {
@@ -260,32 +173,53 @@ const NodeMenu = ({
     }
 
     setIsShowSetting(isAllowSetting);
-  }, [nodesSpec]);
+  }, [node, nodesSpec]);
 
   return (
     <>
       {!isDoubleClick && (
         <div
-          className="node-picker absolute z-10 text-white bg-gray-800 border rounded border-gray-500"
-          style={{ top: mousePosition.y, left: mousePosition.x }}
+          className="node-picker node-menu absolute z-10 text-white border rounded border-gray-500 ant-menu ant-menu-root ant-menu-inline ant-menu-dark"
+          style={{
+            top: position.y,
+            left: position.x,
+            width: "auto",
+            borderRight: "1px solid #303030",
+            minWidth: 120,
+          }}
         >
-          <div className="bg-gray-500 p-2">Node Menu</div>
-          <AddSubNodeComponent
+          <div className="bg-gray-500 mt-0 ant-menu-item">Node Menu</div>
+          <AddNodeComponent
             node={node}
             onClose={onClose}
             instance={instance}
+            isAddSubNode={true}
           />
           <AddNodeComponent node={node} onClose={onClose} instance={instance} />
-          <div className="overflow-y-scroll" style={{ maxHeight: "23rem" }}>
-            {isShowSetting && (
-              <div
-                key="settings"
-                className="p-2 cursor-pointer border-b border-gray-600"
-                onClick={openSettingsModal}
-              >
-                Settings
-              </div>
-            )}
+          {nodeType.allowPayload && (
+            <div
+              key="Set Payload"
+              className="cursor-pointer border-b border-gray-600  ant-menu-item"
+              onClick={handleTogglePayload}
+            >
+              Set Payload
+            </div>
+          )}
+          {isShowSetting && (
+            <div
+              key="settings"
+              className="cursor-pointer border-b border-gray-600  ant-menu-item"
+              onClick={openSettingsModal}
+            >
+              Settings
+            </div>
+          )}
+          <div
+            key="help"
+            className="cursor-pointer ant-menu-item"
+            onClick={handleToggleHelpModal}
+          >
+            Help
           </div>
         </div>
       )}
@@ -294,6 +228,19 @@ const NodeMenu = ({
           node={node}
           isModalVisible={isModalVisible}
           onCloseModal={onClose}
+        />
+      )}
+      <NodeHelpModal
+        node={node}
+        open={isShowHelpModal}
+        onClose={() => setIsShowHelpModal(false)}
+      />
+      {nodeType.allowPayload && (
+        <SetPayloadModal
+          node={node}
+          nodeType={nodeType}
+          open={isShowPayload}
+          onClose={() => setIsShowPayload(false)}
         />
       )}
     </>

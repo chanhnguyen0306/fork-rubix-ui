@@ -7,7 +7,8 @@ import {
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
 import { isHandleConnected } from "../util/isHandleConnected";
-import { NodeExtend, NodeSpecJSON } from "../lib";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
+import { NodeSpecJSON } from "../lib";
 import { NodeContainer } from "./NodeContainer";
 import { InputSocket } from "./InputSocket";
 import { OutputSocket } from "./OutputSocket";
@@ -45,7 +46,7 @@ export const Node = (props: NodeProps) => {
   const [isSettingModal, setIsSettingModal] = useState(false);
 
   const pairs = getPairs(spec.inputs || [], spec.outputs || []);
-  const node = instance.getNode(id) as NodeExtend;
+  const node = instance.getNode(id) as NodeInterface;
 
   const handleSetWidthInput = (width: number) => {
     setWidthInput((prev: number) => Math.max(prev, width));
@@ -71,10 +72,12 @@ export const Node = (props: NodeProps) => {
   return (
     <NodeContainer
       title={getTitle(spec.type)}
+      icon={spec?.info?.icon || ""}
       category={spec.category}
       selected={selected}
       height={node?.height ?? 30}
       hasChild={node?.style?.height ? true : false}
+      status={node.status}
       onDbClickTitle={handleDbClickTitle}
     >
       {pairs.map(([input, output], ix) => {

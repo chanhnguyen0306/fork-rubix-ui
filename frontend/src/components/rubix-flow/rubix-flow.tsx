@@ -15,10 +15,11 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   XYPosition,
-  MiniMap,
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
+import cx from "classnames";
 
+import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
 import NodePicker from "./components/NodePicker";
 import NodeMenu from "./components/NodeMenu";
@@ -27,7 +28,7 @@ import { calculateNewEdge } from "./util/calculateNewEdge";
 import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
-import { ReactFlowProvider } from "react-flow-renderer";
+import { ReactFlowInstance, ReactFlowProvider } from "react-flow-renderer";
 import { useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { NodeSpecJSON } from "./lib";
@@ -41,13 +42,16 @@ import {
 } from "./util/handleSettings";
 import { useParams } from "react-router-dom";
 import {
-  getNumberRefresh,
-  NUMBER_REFRESH,
-} from "./components/SettingRefreshModal";
+  getFlowSettings,
+  FLOW_SETTINGS,
+  FlowSettings,
+} from "./components/FlowSettingsModal";
 import { NodeSideBar } from "./components/NodeSidebar";
 import "./rubix-flow.css";
 import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
+import { useOnPressKey } from "./hooks/useOnPressKey";
+import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -57,6 +61,7 @@ const Flow = (props: any) => {
   const { customNodeTypes } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([] as NodeInterface[]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [shouldUpdateMiniMap, setShouldUpdateMiniMap] = useState(false);
   const [selectedNode, setSelectedNode] = useState({} as any);
   const [nodePickerVisibility, setNodePickerVisibility] =
     useState<XYPosition>();
@@ -67,13 +72,27 @@ const Flow = (props: any) => {
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] =
     useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
-  const [numberRefresh, setNumberRefresh] = useState(getNumberRefresh());
+  const [flowSettings, setFlowSettings] = useState(getFlowSettings());
   const rubixFlowWrapper = useRef<null | any>(null);
-  const [rubixFlowInstance, setRubixFlowInstance] = useState<null | any>(null);
+  const [rubixFlowInstance, setRubixFlowInstance] = useState<
+    ReactFlowInstance | any
+  >(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
 
   const factory = new FlowFactory();
+
+  // delete selected wires
+  useOnPressKey("Backspace", () => {
+    const newEdges = edges.filter((item) => !item.selected);
+    setEdges(newEdges);
+    setUndoable({
+      nodes,
+      edges: newEdges,
+    });
+  });
+
+  const onMove = () => setShouldUpdateMiniMap((s) => !s);
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -156,12 +175,71 @@ const Flow = (props: any) => {
     setLastConnectStart(params);
   };
 
-  const handleStopConnect = (e: MouseEvent) => {
-    const element = e.target as HTMLElement;
-    if (element.classList.contains("react-flow__pane")) {
-      setNodePickerVisibility({ x: e.clientX, y: e.clientY });
-    } else {
-      setLastConnectStart(undefined);
+  const onEdgeContextMenu = useCallback(
+    (evt: ReactMouseEvent, edge: any) => {
+      evt.preventDefault();
+      const newEdges = edges.map((item) =>
+        item.id === edge.id ? { ...edge, selected: !item.selected } : item
+      );
+      setEdges(newEdges);
+    },
+    [edges, setEdges]
+  );
+
+  const onConnectEnd = (evt: ReactMouseEvent | any) => {
+    const {
+      nodeid: nodeId,
+      handleid: handleId,
+      handlepos: position,
+    } = (evt.target as HTMLDivElement).dataset;
+    const isTarget = position === "left";
+
+    if (lastConnectStart) {
+      const isDragSelected = edges.some((item) => {
+        const isChangeTarget =
+          lastConnectStart.handleType === "target" &&
+          item.targetHandle === lastConnectStart.handleId;
+        const isChangeSource =
+          lastConnectStart.handleId === "out" &&
+          item.source === lastConnectStart.nodeId;
+
+        return item.selected && (isChangeTarget || isChangeSource);
+      });
+
+      if (isDragSelected) {
+        let newEdges;
+        if (nodeId) {
+          // update selected lines to new node if start and end are same type
+          newEdges = edges.map((item) => {
+            if (
+              item.selected &&
+              lastConnectStart.nodeId === item[lastConnectStart.handleType!!]
+            ) {
+              const updateKey = isTarget ? "target" : "source";
+              item[`${updateKey}Handle`] = handleId;
+              item[updateKey] = nodeId;
+            }
+            return item;
+          });
+        } else {
+          // remove selected lines
+          newEdges = edges.filter((item) => !item.selected);
+        }
+
+        if (newEdges) {
+          setEdges(newEdges);
+          setUndoable({
+            edges: newEdges,
+            nodes,
+          });
+        }
+      } else {
+        const element = evt.target as HTMLElement;
+        if (element.classList.contains("react-flow__pane")) {
+          const { x, y } = setMousePosition(evt);
+          setNodePickerVisibility({ x, y });
+        }
+      }
     }
   };
 
@@ -174,16 +252,38 @@ const Flow = (props: any) => {
 
   const handlePaneClick = () => closeNodePicker();
 
-  const handlePaneContextMenu = (e: ReactMouseEvent) => {
-    e.preventDefault();
-    setNodePickerVisibility({ x: e.clientX, y: e.clientY });
+  const handlePaneContextMenu = (event: ReactMouseEvent) => {
+    const { x, y } = setMousePosition(event);
+    setNodePickerVisibility({ x, y });
   };
 
-  const handleNodeContextMenu = (e: ReactMouseEvent, node: NodeInterface) => {
-    e.preventDefault();
-    setNodeMenuVisibility({ x: e.clientX, y: e.clientY });
+  const handleNodeContextMenu = (
+    event: React.MouseEvent,
+    node: NodeInterface
+  ) => {
+    const { x, y } = setMousePosition(event);
+    setNodeMenuVisibility({ x, y });
     setSelectedNode(node);
   };
+
+  const setMousePosition = useCallback(
+    (event: React.MouseEvent, fromSidebar?: boolean) => {
+      event.preventDefault();
+      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
+      if (!fromSidebar) {
+        return {
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        };
+      } else {
+        return rubixFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+      }
+    },
+    [rubixFlowInstance]
+  );
 
   const fetchOutput = async () => {
     try {
@@ -200,6 +300,7 @@ const Flow = (props: any) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
       node.data.inputs = outputNodes[index]?.inputs;
       node.data.out = outputNodes[index]?.outputs;
+      node.status = outputNodes[index]?.status;
       return node;
     });
   };
@@ -231,44 +332,29 @@ const Flow = (props: any) => {
     });
   };
 
-  const handleCopyNodes = async (_copied: { nodes: any; edges: any }) => {
+  const handleCopyNodes = async (_copied: {
+    nodes: NodeInterface[];
+    edges: any;
+  }) => {
     /* Unselected nodes, edges */
     nodes.forEach((item) => (item.selected = false));
     edges.forEach((item) => (item.selected = false));
 
-    /* Generate new id of nodes copied */
-    _copied.nodes = _copied.nodes.map((item: any) => {
-      const __newNodeId = generateUuid();
+    /*
+    * Generate new id of edges copied
+    * Add new id source and target of edges copied
+    */
+    const newFlow = handleCopyNodesAndEdges(_copied);
 
-      /*
-       * Generate new id of edges copied
-       * Add new id source and target of edges copied
-       */
-      _copied.edges = _copied.edges.map((edge: any) => ({
-        ...edge,
-        id: generateUuid(),
-        source: edge.source === item.id ? __newNodeId : edge.source,
-        target: edge.target === item.id ? __newNodeId : edge.target,
-        selected: true,
-      }));
-
-      return {
-        ...item,
-        id: __newNodeId,
-        position: { x: item.position.x + 10, y: item.position.y - 10 },
-        selected: true,
-      };
-    });
-
-    _copied.nodes = await handleNodesEmptySettings(
+    newFlow.nodes = await handleNodesEmptySettings(
       connUUID,
       hostUUID,
       isRemote,
-      _copied.nodes
+      newFlow.nodes
     );
 
-    const _nodes = [...nodes, ..._copied.nodes];
-    const _edges = [...edges, ..._copied.edges];
+    const _nodes = [...nodes, ...newFlow.nodes];
+    const _edges = [...edges, ...newFlow.edges];
     setNodes(_nodes);
     setEdges(_edges);
     setUndoable({ edges: _edges, nodes: _nodes });
@@ -279,9 +365,9 @@ const Flow = (props: any) => {
     setNodes((prevNodes) => addOutputToNodes(_outputNodes, prevNodes));
   };
 
-  const handleChangeNumberRefresh = (value: number) => {
-    localStorage.setItem(NUMBER_REFRESH, value.toString());
-    setNumberRefresh(value);
+  const onSaveFlowSettings = (config: FlowSettings) => {
+    localStorage.setItem(FLOW_SETTINGS, JSON.stringify(config));
+    setFlowSettings(config);
   };
 
   const onDragOver = (event: any) => {
@@ -289,21 +375,13 @@ const Flow = (props: any) => {
     event.dataTransfer.dropEffect = "move";
   };
 
-  const onDrop = useCallback(
-    (event: any) => {
-      event.preventDefault();
-      const reactFlowBounds = rubixFlowWrapper.current.getBoundingClientRect();
-      const { isParent, nodeType } = JSON.parse(
-        event.dataTransfer.getData("from-node-sidebar")
-      );
-      const position = rubixFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-      handleAddNode(isParent, null, nodeType, position);
-    },
-    [rubixFlowInstance]
-  );
+  const onDrop = (event: any) => {
+    const { isParent, nodeType } = JSON.parse(
+      event.dataTransfer.getData("from-node-sidebar")
+    );
+    const position = setMousePosition(event, true);
+    handleAddNode(isParent, null, nodeType, position);
+  };
 
   const handleMinimapNodeColor = (node: NodeInterface) => {
     if (node.type) {
@@ -317,6 +395,18 @@ const Flow = (props: any) => {
     if (node.selected) return "red";
     return "none";
   };
+
+  const onEdgeClick = useCallback(
+    (evt: ReactMouseEvent) => {
+      const { id } = evt.target as HTMLElement;
+      const newEdge = edges.map((item) => {
+        item.selected = item.id === id;
+        return item;
+      });
+      setEdges(newEdge);
+    },
+    [edges, setEdges]
+  );
 
   useEffect(() => {
     closeNodePicker();
@@ -373,45 +463,55 @@ const Flow = (props: any) => {
 
     refreshInterval.current = setInterval(
       handleRefreshValues,
-      numberRefresh * 1000
+      flowSettings.refreshTimeout * 1000
     );
 
     return () => {
       if (refreshInterval.current) clearInterval(refreshInterval.current);
     };
-  }, [numberRefresh]);
+  }, [flowSettings.refreshTimeout]);
 
   return (
     <div className="rubix-flow">
       <ReactFlowProvider>
-        <NodeSideBar onPickNode={handleAddNode} />
+        <NodeSideBar />
         <div className="rubix-flow__wrapper" ref={rubixFlowWrapper}>
           <ReactFlow
             nodeTypes={customNodeTypes}
             edgeTypes={edgeTypes}
             nodes={nodes}
             edges={edges}
+            onMove={onMove}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onEdgeClick={onEdgeClick}
             onConnect={onConnect}
             onConnectStart={handleStartConnect}
-            onConnectStop={handleStopConnect}
+            onEdgeContextMenu={onEdgeContextMenu}
+            // onConnectStop={handleStopConnect}
+            onConnectEnd={onConnectEnd}
             onPaneClick={handlePaneClick}
             onPaneContextMenu={handlePaneContextMenu}
-            onNodeContextMenu={(e, node: any) => handleNodeContextMenu(e, node)}
+            onNodeContextMenu={handleNodeContextMenu}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onInit={setRubixFlowInstance}
-            fitViewOptions={{ maxZoom: 1 }}
+            fitView
             deleteKeyCode={["Delete"]}
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
-            <MiniMap
-              className="absolute top-20 right-4"
-              nodeColor={handleMinimapNodeColor}
-              nodeStrokeColor={handleMinimapBorderColor}
-            />
+            {flowSettings.showMiniMap && (
+              <MiniMap
+                nodes={nodes}
+                shouldUpdate={shouldUpdateMiniMap}
+                className={cx("absolute", {
+                  "top-20 right-4": flowSettings.positionMiniMap === "top",
+                })}
+                nodeColor={handleMinimapNodeColor}
+                nodeStrokeColor={handleMinimapBorderColor}
+              />
+            )}
             <ControlUndoable
               canUndo={canUndo && past && past.length !== 0}
               onUndo={undo}
@@ -430,7 +530,8 @@ const Flow = (props: any) => {
               onUndo={undo}
               onRedo={handleRedo}
               onRefreshValues={handleRefreshValues}
-              onNumberRefresh={handleChangeNumberRefresh}
+              settings={flowSettings}
+              onSaveSettings={onSaveFlowSettings}
             />
             {nodePickerVisibility && (
               <NodePicker
