@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   NodeProps as FlowNodeProps,
   useEdges,
-  useReactFlow,
+  useNodes,
 } from "react-flow-renderer/nocss";
 
 import { useChangeNodeData } from "../hooks/useChangeNodeData";
@@ -40,17 +40,40 @@ const getPairs = <T, U>(arr1: T[], arr2: U[]) => {
   return pairs;
 };
 
-const getInputs = (specInputs: InputSocketSpecJSON[], nodeInputs: any) => {
+const getInputs = (
+  specInputs: InputSocketSpecJSON[],
+  nodeInputs: any,
+  node: NodeInterface
+) => {
   if (specInputs.length === 0) return [];
   if (specInputs.length > 0 && !nodeInputs) return specInputs;
 
+  /* Is check InputCount setting equals node inputs length? */
+  if (node.settings.inputCount !== nodeInputs.length) {
+    let newData: any = [];
+    for (let i = 1; i <= node.settings.inputCount; i++) {
+      const item = {
+        pin: `in${i}`,
+        dataType: "number",
+        value: null,
+      };
+      if (newData) {
+        newData.push(item);
+      } else {
+        newData = [item];
+      }
+    }
+    nodeInputs = newData;
+  }
+
   let newInputs: InputSocketSpecJSON[] = [];
-  if (nodeInputs.length < specInputs.length) {
+  if (nodeInputs.length > 0 && nodeInputs.length < specInputs.length) {
     newInputs = specInputs.filter((item, idx) => idx < nodeInputs.length);
   } else {
     newInputs = [...specInputs];
   }
 
+  /* Add new inputs when set InputCount setting */
   nodeInputs.forEach((item: any) => {
     const isExist = specInputs.find((input) => input.name === item.pin);
     if (!isExist) {
@@ -83,18 +106,18 @@ const getOutputs = (specOutputs: OutputSocketSpecJSON[], nodeOutputs: any) => {
 
 export const Node = (props: NodeProps) => {
   const { id, data, spec, selected } = props;
-  const instance = useReactFlow();
   const edges = useEdges();
+  const nodes = useNodes();
   const [nodesSpec] = useNodesSpec();
   const handleChange = useChangeNodeData(id);
   const [widthInput, setWidthInput] = useState(-1);
   const [widthOutput, setWidthOutput] = useState(-1);
   const [isSettingModal, setIsSettingModal] = useState(false);
 
-  const node = instance.getNode(id) as NodeInterface;
+  const node: NodeInterface | any = nodes.find((item) => item.id === id);
   const pairs = getPairs(
-    getInputs(spec.inputs || [], node.data.inputs),
-    getOutputs(spec.outputs || [], node.data.out)
+    getInputs(spec.inputs || [], node.data.inputs, node),
+    getOutputs(spec.outputs || [], node.data.out),
   );
 
   const handleSetWidthInput = (width: number) => {
