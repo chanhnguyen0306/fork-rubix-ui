@@ -19,9 +19,12 @@ export const Installation = (props: IInstallation) => {
     setLoading(true);
     try {
       const versions = await installFactory.GetRubixEdgeVersions();
-      const installedVersion = await installFactory.GetInstalledRubixEdgeVersion(host.uuid);
+      const _installedVersion = await installFactory.GetInstalledRubixEdgeVersion(host.uuid);
+      setInstalledVersion(_installedVersion?.version)
       setVersions(versions);
-      setInstalledVersion(installedVersion?.version);
+      if (selectedVersion == "") {
+        setSelectedVersion(_installedVersion?.version)
+      }
     } finally {
       setLoading(false);
     }
@@ -44,7 +47,7 @@ export const Installation = (props: IInstallation) => {
       <b>Installed version:</b> <i>{installedVersion}</i> <br /><br />
       <b>Select version:</b>
       <Select
-        value={selectedVersion || installedVersion}
+        value={selectedVersion}
         style={{ width: 100, margin: "0 8px" }}
         onChange={onChangeVersion}
         options={options}
