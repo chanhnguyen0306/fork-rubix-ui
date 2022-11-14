@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
-	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
 

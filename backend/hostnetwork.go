@@ -6,7 +6,7 @@ import (
 	"github.com/NubeIO/lib-uuid/uuid"
 
 	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
-	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 )
 
 func (inst *App) GetNetworkSchema(connUUID string) interface{} {
