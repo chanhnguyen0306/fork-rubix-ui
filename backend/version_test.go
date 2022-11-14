@@ -7,6 +7,6 @@ import (
 
 func TestApp_GetRubixEdgeVersions(t *testing.T) {
 	app := MockNewApp()
-	releases := app.EdgeBiosGetRubixEdgeVersions()
+	releases := app.EdgeBiosRubixEdgeVersions()
 	fmt.Println("releases", releases)
 }
