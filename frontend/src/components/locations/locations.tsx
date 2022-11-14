@@ -1,9 +1,9 @@
-import { Typography, Space, Card } from "antd";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { GetLocations, GetConnection } from "../../../wailsjs/go/backend/App";
+import { Card, Space, Tooltip, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { GetConnection, GetLocations } from "../../../wailsjs/go/backend/App";
 import { assistmodel, storage } from "../../../wailsjs/go/models";
-import { RbRefreshButton, RbAddButton } from "../../common/rb-table-actions";
+import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 import { ROUTES } from "../../constants/routes";
 import { isObjectEmpty } from "../../utils/utils";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
@@ -11,7 +11,7 @@ import { LocationFactory } from "./factory";
 import { CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
 import useTitlePrefix from "../../hooks/usePrefixedTitle";
-
+import { ArrowRightOutlined, FormOutlined, } from "@ant-design/icons";
 import Location = assistmodel.Location;
 import RubixConnection = storage.RubixConnection;
 
@@ -101,8 +101,7 @@ export const Locations = () => {
 
   const getSchemaTable = async () => {
     try {
-      const r = await locationFactory.TableSchema();
-      let tableSchema = r;
+      let tableSchema = await locationFactory.TableSchema();
       tableSchema = [
         ...tableSchema,
         {
@@ -117,27 +116,30 @@ export const Locations = () => {
           key: "actions",
           render: (_: any, location: Location) => (
             <Space size="middle">
+              <Tooltip title="Edit">
+                <a onClick={() => {
+                  showModal(location);
+                }}>
+                  <FormOutlined />
+                </a>
+              </Tooltip>
               <Link
                 to={ROUTES.LOCATION_NETWORKS.replace(
                   ":connUUID",
                   connUUID || ""
                 ).replace(":locUUID", location.uuid)}
               >
-                View
+                <Tooltip title="View">
+                  <ArrowRightOutlined />
+                </Tooltip>
               </Link>
-              <a
-                onClick={() => {
-                  showModal(location);
-                }}
-              >
-                Edit
-              </a>
             </Space>
           ),
         },
       ];
       setTableSchema(tableSchema);
-    } catch (error) {}
+    } catch (error) {
+    }
   };
 
   const routes = [

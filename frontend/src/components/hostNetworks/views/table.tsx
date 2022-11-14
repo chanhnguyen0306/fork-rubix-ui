@@ -1,7 +1,7 @@
-import { Space, Spin } from "antd";
+import { Space, Spin, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { backend, assistmodel } from "../../../../wailsjs/go/models";
+import { assistmodel, backend } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
@@ -14,7 +14,7 @@ import { isObjectEmpty } from "../../../utils/utils";
 import { LocationFactory } from "../../locations/factory";
 import { NetworksFactory } from "../factory";
 import { CreateEditModal } from "./create";
-
+import { ArrowRightOutlined, FormOutlined, } from "@ant-design/icons";
 import Network = assistmodel.Network;
 import Location = assistmodel.Location;
 import UUIDs = backend.UUIDs;
@@ -50,20 +50,22 @@ export const NetworksTable = () => {
       key: "actions",
       render: (_: any, network: assistmodel.Network) => (
         <Space size="middle">
+          <Tooltip title="Edit">
+            <a onClick={() => {
+              showModal(network);
+            }}>
+              <FormOutlined />
+            </a>
+          </Tooltip>
           <Link
             to={ROUTES.LOCATION_NETWORK_HOSTS.replace(":connUUID", connUUID)
               .replace(":locUUID", locUUID)
               .replace(":netUUID", network.uuid)}
           >
-            View
+            <Tooltip title="View">
+              <ArrowRightOutlined />
+            </Tooltip>
           </Link>
-          <a
-            onClick={() => {
-              showModal(network);
-            }}
-          >
-            Edit
-          </a>
         </Space>
       ),
     },

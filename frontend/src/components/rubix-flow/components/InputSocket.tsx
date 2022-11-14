@@ -119,9 +119,13 @@ export const InputSocket = ({
   };
 
   const findBooleanValueInput = () => {
-    let value =
-      dataInput &&
-      dataInput.find((item: { pin: string }) => item.pin === name).value;
+    let value: any = "";
+    if (dataInput.length > 0) {
+      const input = dataInput.find(
+        (item: { pin: string }) => item.pin === name
+      );
+      value = input && input.value;
+    }
     if (value === null) value = "null";
     else if (value === false) value = "false";
     return value || "";

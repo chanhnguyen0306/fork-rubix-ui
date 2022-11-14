@@ -10,11 +10,15 @@ import {
   Typography,
 } from "antd";
 import {
+  ArrowRightOutlined,
   CloudDownloadOutlined,
   DownCircleOutlined,
+  DownloadOutlined,
+  FormOutlined,
   LeftOutlined,
+  LinkOutlined,
   MenuFoldOutlined,
-  SnippetsOutlined
+  ScanOutlined
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -42,12 +46,14 @@ import "./style.css";
 import UpdateApp from "./updateApp";
 import { TokenModal } from "../../../common/token/token-modal";
 import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
+import {
+  InstallRubixEdgeModal
+} from "./install-rubix-edge/install-rubix-edge-modal";
+import { InstallFactory } from "./install-rubix-edge/factory";
 import Host = assistmodel.Host;
 import Location = assistmodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
-import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
-import { InstallFactory } from "./install-rubix-edge/factory";
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
@@ -77,7 +83,7 @@ interface AvailableAppI {
 const ExpandedRow = (props: any) => {
   return (
     <div>
-      <AppInstallInfo {...props}></AppInstallInfo>
+      <AppInstallInfo {...props} />
     </div>
   );
 };
@@ -155,7 +161,7 @@ const AppInstallInfo = (props: any) => {
   const [product, updateProduct] = useState({});
   const [isLoading, updateIsLoading] = useState(false);
   const [isActionLoading, updateActionLoading] = useState({} as any);
-  const [isUpdating, updateIsUpdading] = useState(false);
+  const [isUpdating, updateIsUpdating] = useState(false);
   const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
   const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
   const [appInfoMsg, updateAppInfoMsg] = useState("");
@@ -166,7 +172,7 @@ const AppInstallInfo = (props: any) => {
   ]);
 
   useEffect(() => {
-    fetchAppInfo();
+    fetchAppInfo().catch(console.error);
     return () => {
       timeout = null;
     };
@@ -212,7 +218,7 @@ const AppInstallInfo = (props: any) => {
           closeDialog(UPDATE_DIALOG);
         }
       })
-      .catch((err) => {
+      .catch(() => {
         return updateAppInfoMsg("Error to fetch edge device info and apps");
       })
       .finally(() => {
@@ -245,7 +251,7 @@ const AppInstallInfo = (props: any) => {
       })
       .then(() => {
         timeout = setTimeout(() => {
-          fetchAppInfo();
+          fetchAppInfo().catch(console.log);
         }, REFRESH_TIMEOUT);
       })
       .finally(() => {
@@ -309,7 +315,7 @@ const AppInstallInfo = (props: any) => {
               title="Install App"
               buttonTitle="Install"
               handleOk={() => installApp(item)}
-            ></RbConfirmPopover>
+            />
           </List.Item>
         )}
       />
@@ -355,7 +361,7 @@ const AppInstallInfo = (props: any) => {
                 overlay={() => (
                   <ConfirmActionMenu item={item} onMenuClick={onMenuClick} />
                 )}
-              ></Dropdown.Button>
+              />
             </span>
           </List.Item>
         )}
@@ -403,62 +409,58 @@ export const HostsTable = (props: any) => {
       key: "actions",
       render: (_: any, host: Host) => (
         <Space size="middle">
-          <a
-            onClick={(e) => {
+          <Tooltip title="Ping">
+            <a onClick={(e) => {
               handlePing(host.uuid, e);
-            }}
-          >
-            Ping
-          </a>
+            }}>
+              <LinkOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Edit">
+            <a onClick={(e) => {
+              showModal(host, e);
+            }}>
+              <FormOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Install">
+            <a onClick={() => {
+              openDialog(INSTALL_DIALOG, { state: host });
+            }}>
+              <DownloadOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Rubix-Wires and Backup">
+            <a onClick={(e) => {
+              showBackupModal(host, e);
+            }}>
+              <MenuFoldOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Install Rubix Edge">
+            <a onClick={(e) => {
+              showRubixEdgeInstallModal(host, e);
+            }}>
+              <CloudDownloadOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Tokens">
+            <a onClick={(e) => {
+              showTokenModal(host, e);
+            }}>
+              <ScanOutlined />
+            </a>
+          </Tooltip>
           <Link
             to={ROUTES.HOST.replace(":connUUID", connUUID)
               .replace(":locUUID", locUUID)
               .replace(":netUUID", netUUID)
               .replace(":hostUUID", host.uuid)}
           >
-            View Networks
+            <Tooltip title="View Networks">
+              <ArrowRightOutlined />
+            </Tooltip>
           </Link>
-          <a
-            onClick={(e) => {
-              showModal(host, e);
-            }}
-          >
-            Edit
-          </a>
-          <a
-            onClick={() => {
-              openDialog(INSTALL_DIALOG, { state: host });
-            }}
-          >
-            Install
-          </a>
-          <Tooltip title="Install Rubix Edge">
-            <a
-              onClick={(e) => {
-                showRubixEdgeInstallModal(host, e);
-              }}
-            >
-              <CloudDownloadOutlined />
-            </a>
-          </Tooltip>
-          <Tooltip title="Rubix-Wires and Backup">
-            <a
-              onClick={(e) => {
-                showBackupModal(host, e);
-              }}
-            >
-              <MenuFoldOutlined />
-            </a>
-          </Tooltip>
-          <Tooltip title="Tokens">
-            <a
-              onClick={() => {
-                showTokenModal(host);
-              }}
-            >
-              <SnippetsOutlined />
-            </a>
-          </Tooltip>
         </Space>
       ),
     },
@@ -471,16 +473,12 @@ export const HostsTable = (props: any) => {
   };
 
   useEffect(() => {
-    fetchBackups();
+    fetchBackups().catch(console.log);
   }, []);
 
   const fetchBackups = async () => {
-    try {
-      let res = (await backupFactory.GetBackupsRubixWires()) || [];
-      setBackups(res);
-    } catch (error) {
-      console.log(error);
-    }
+    let res = (await backupFactory.GetBackupsRubixWires()) || [];
+    setBackups(res);
   };
 
   const getSchema = async () => {
@@ -498,10 +496,10 @@ export const HostsTable = (props: any) => {
     refreshList();
   };
 
-  const handlePing = async (uuid: string, e: any) => {
+  const handlePing = (uuid: string, e: any) => {
     e.stopPropagation();
     factory.uuid = uuid;
-    await factory.PingHost();
+    factory.PingHost().catch(console.error);
   };
 
   const getNetworkNameByUUID = (uuid: string) => {
@@ -532,11 +530,11 @@ export const HostsTable = (props: any) => {
   const showRubixEdgeInstallModal = (host: Host, e: any) => {
     e.stopPropagation();
     setCurrentHost(host);
-    setIsInstallRubixEdgeModalVisible(true)
+    setIsInstallRubixEdgeModalVisible(true);
   };
 
   const onCloseRubixEdgeInstallModal = () => {
-    setIsInstallRubixEdgeModalVisible(false)
+    setIsInstallRubixEdgeModalVisible(false);
   };
 
   const onCloseBackupModal = () => {
@@ -544,7 +542,8 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
-  const showTokenModal = (host: Host) => {
+  const showTokenModal = (host: Host, e: any) => {
+    e.stopPropagation();
     setCurrentHost(host);
     setIsTokenModalVisible(true);
   };
@@ -555,9 +554,9 @@ export const HostsTable = (props: any) => {
   };
 
   useEffect(() => {
-    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(connUUID)
-    _tokenFactory.hostUUID = currentHost.uuid
-    setTokenFactory(_tokenFactory)
+    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(connUUID);
+    _tokenFactory.hostUUID = currentHost.uuid;
+    setTokenFactory(_tokenFactory);
   }, [currentHost]);
 
   return (
@@ -574,7 +573,7 @@ export const HostsTable = (props: any) => {
         loading={{ indicator: <Spin />, spinning: isFetching }}
         expandable={{
           expandedRowRender: (host: any) => (
-            <ExpandedRow host={host}></ExpandedRow>
+            <ExpandedRow host={host} />
           ),
           rowExpandable: (record: any) => record.name !== "Not Expandable",
         }}
