@@ -348,25 +348,37 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enable";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
 ];
 
 export const FLOW_POINT_HEADERS = [
   {
-    title: "io number",
-    dataIndex: "io_number",
-    key: "io_number",
-    render(io_number: string) {
-      if (io_number != undefined) {
-        let colour = "#4d4dff";
-        let text = io_number.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enable";
       }
+      return <Tag color={colour}>{text}</Tag>;
     },
-    sorter: (a: any, b: any) => a.io_number - b.io_number,
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
   {
     title: "object type",
@@ -394,6 +406,19 @@ export const FLOW_POINT_HEADERS = [
     sorter: (a: any, b: any) => a.object_id - b.object_id,
   },
   {
+    title: "io number",
+    dataIndex: "io_number",
+    key: "io_number",
+    render(io_number: string) {
+      if (io_number != undefined) {
+        let colour = "#4d4dff";
+        let text = io_number.toUpperCase();
+        return <Tag color={colour}>{text}</Tag>;
+      }
+    },
+    sorter: (a: any, b: any) => a.io_number - b.io_number,
+  },
+  {
     title: "io type",
     dataIndex: "io_type",
     key: "io_type",
@@ -417,34 +442,6 @@ export const FLOW_POINT_HEADERS = [
       }
     },
     sorter: (a: any, b: any) => a.present_value - b.present_value,
-  },
-  {
-    title: "original value value",
-    dataIndex: "original_value",
-    key: "original_value",
-    sorter: (a: any, b: any) => a.original_value - b.original_value,
-  },
-  {
-    title: "write value",
-    dataIndex: "write_value",
-    key: "write_value",
-    sorter: (a: any, b: any) => a.write_value - b.write_value,
-  },
-  {
-    title: "write value original",
-    dataIndex: "write_value_original",
-    key: "write_value_original",
-    sorter: (a: any, b: any) => a.write_value_original - b.write_value_original,
-  },
-  {
-    title: "device-uuid",
-    dataIndex: "device_uuid",
-    key: "device_uuid",
-  },
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
   },
 ];
 

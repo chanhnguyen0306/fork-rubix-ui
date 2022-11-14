@@ -42,6 +42,7 @@ export const FlowPointsTable = (props: any) => {
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
+  const [tableHeaders, setTableHeaders] = useState<any[]>([]);
   const [dataSource, setDataSource] = useState(data);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
@@ -64,66 +65,11 @@ export const FlowPointsTable = (props: any) => {
     flowPluginFactory.hostUUID =
       hostUUID;
 
-  const columns = [
-    {
-      title: "name",
-      dataIndex: "name",
-      key: "name",
-      render(name: string) {
-        if (name != undefined) {
-          let colour = "#4d4dff";
-          return <Tag color={colour}>{name}</Tag>;
-        }
-      },
-      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-      filterDropdown: () => {
-        return (
-          <RbTableFilterNameInput
-            defaultData={data}
-            setFilteredData={setDataSource}
-          />
-        );
-      },
-    },
-    ...FLOW_POINT_HEADERS,
-    {
-      title: "Actions",
-      dataIndex: "actions",
-      key: "actions",
-      render: (_: any, point: Point) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              showEditModal(point);
-            }}
-          >
-            Edit
-          </a>
-          <a
-            onClick={() => {
-              showWritePointModal(point);
-            }}
-          >
-            Write Point
-          </a>
-        </Space>
-      ),
-    },
-  ];
-
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
     },
   };
-
-  useEffect(() => {
-    setPlugin();
-  }, []);
-
-  useEffect(() => {
-    return setDataSource(data);
-  }, [data.length]);
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
@@ -159,14 +105,102 @@ export const FlowPointsTable = (props: any) => {
     };
     setSchema(jsonSchema);
     setIsLoadingForm(false);
+    getTableHeaders(jsonSchema.properties);
+  };
+
+  const getTableHeaders = (schema: any) => {
+    if (!schema) return;
+
+    const columns = [
+      {
+        title: "name",
+        dataIndex: "name",
+        key: "name",
+        render(name: string) {
+          if (name != undefined) {
+            let colour = "#4d4dff";
+            return <Tag color={colour}>{name}</Tag>;
+          }
+        },
+        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+        filterDropdown: () => {
+          return (
+            <RbTableFilterNameInput
+              defaultData={data}
+              setFilteredData={setDataSource}
+            />
+          );
+        },
+      },
+      {
+        title: "plugin name",
+        key: "plugin_name",
+        dataIndex: "plugin_name",
+        render() {
+          let colour = "#4d4dff";
+          let text = pluginName.toUpperCase();
+          return <Tag color={colour}>{text}</Tag>;
+        },
+        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      },
+      ...FLOW_POINT_HEADERS,
+    ] as any;
+    const columnKeys = columns.map((c: any) => c.key);
+
+    let headers = Object.keys(schema).map((key) => {
+      return {
+        title: key.replaceAll("_", " "),
+        dataIndex: key,
+        key: key,
+        sorter: (a: any, b: any) =>
+          schema[key].type === "string"
+            ? a[key].localeCompare(b[key])
+            : a[key] - b[key],
+      };
+    });
+
+    //styling columns
+    headers = headers.map((header: any) => {
+      if (columnKeys.includes(header.key)) {
+        return columns.find((col: any) => col.key === header.key);
+      } else {
+        return header;
+      }
+    });
+
+    const headerWithActions = [
+      ...headers,
+      {
+        title: "Actions",
+        dataIndex: "actions",
+        key: "actions",
+        render: (_: any, point: Point) => (
+          <Space size="middle">
+            <a
+              onClick={() => {
+                showEditModal(point);
+              }}
+            >
+              Edit
+            </a>
+            <a
+              onClick={() => {
+                showWritePointModal(point);
+              }}
+            >
+              Write Point
+            </a>
+          </Space>
+        ),
+      },
+    ];
+
+    setTableHeaders(headerWithActions);
   };
 
   const showEditModal = (item: Point) => {
     setCurrentItem(item);
     setIsEditModalVisible(true);
-    if (isObjectEmpty(schema)) {
-      getSchema(pluginName);
-    }
   };
 
   const closeEditModal = () => {
@@ -175,9 +209,6 @@ export const FlowPointsTable = (props: any) => {
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
-    if (isObjectEmpty(schema)) {
-      getSchema(pluginName);
-    }
   };
 
   const closeCreateModal = () => {
@@ -188,6 +219,18 @@ export const FlowPointsTable = (props: any) => {
     setIsWritePointModalVisible(true);
     setCurrentItem(item);
   };
+
+  useEffect(() => {
+    setPlugin();
+  }, []);
+
+  useEffect(() => {
+    return setDataSource(data);
+  }, [data.length]);
+
+  useEffect(() => {
+    getSchema(pluginName);
+  }, [pluginName]);
 
   return (
     <>
@@ -201,7 +244,7 @@ export const FlowPointsTable = (props: any) => {
         rowKey="uuid"
         rowSelection={rowSelection}
         dataSource={dataSource}
-        columns={columns}
+        columns={tableHeaders}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
       <EditModal
