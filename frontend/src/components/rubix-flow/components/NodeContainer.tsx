@@ -7,6 +7,7 @@ import { Tooltip } from "antd";
 type NodeProps = {
   title: string;
   icon: string;
+  nodeName: string;
   category?: NodeSpecJSON["category"];
   selected: boolean;
   height: number;
@@ -18,6 +19,7 @@ type NodeProps = {
 export const NodeContainer = ({
   title,
   icon,
+  nodeName,
   category = "None",
   selected,
   children,
@@ -42,6 +44,7 @@ export const NodeContainer = ({
         }}
       >
         <span>{title}</span>
+        {nodeName && <span className="text-gray-400 ml-1">{nodeName}</span>}
         {status?.activeMessage && renderStatusMessages()}
       </div>
     );
