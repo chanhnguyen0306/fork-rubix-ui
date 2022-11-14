@@ -348,9 +348,19 @@ export const NETWORK_HEADERS = [
 
 export const FLOW_DEVICE_HEADERS = [
   {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enable";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
 ];
 
