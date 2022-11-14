@@ -445,8 +445,8 @@ export const HostsTable = (props: any) => {
             </a>
           </Tooltip>
           <Tooltip title="Tokens">
-            <a onClick={() => {
-              showTokenModal(host);
+            <a onClick={(e) => {
+              showTokenModal(host, e);
             }}>
               <ScanOutlined />
             </a>
@@ -542,7 +542,8 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
-  const showTokenModal = (host: Host) => {
+  const showTokenModal = (host: Host, e: any) => {
+    e.stopPropagation();
     setCurrentHost(host);
     setIsTokenModalVisible(true);
   };
