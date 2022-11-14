@@ -142,3 +142,7 @@ aside .active {
 .flow-layout-content {
     padding: 0;
 }
+
+.rb-btn>.anticon {
+    margin: auto;
+}
