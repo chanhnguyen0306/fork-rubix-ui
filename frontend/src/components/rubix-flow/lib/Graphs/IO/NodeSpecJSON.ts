@@ -14,7 +14,6 @@ export type OutputSocketSpecJSON = {
 
 export type InfoSpecJson = {
   icon: string;
-  nodeName?: string;
 };
 
 export type MetadataSpecJSON = {

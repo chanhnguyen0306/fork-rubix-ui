@@ -120,7 +120,7 @@ export const InputSocket = ({
 
   const findBooleanValueInput = () => {
     let value: any = "";
-    if (dataInput.length > 0) {
+    if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
       );

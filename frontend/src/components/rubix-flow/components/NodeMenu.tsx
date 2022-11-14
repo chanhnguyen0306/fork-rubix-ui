@@ -166,6 +166,11 @@ const NodeMenu = ({
     setIsShowSetName(!isShowSetName);
   };
 
+  const handleCloseSetNameModal = () => {
+    setIsShowSetName(false);
+    onClose();
+  };
+
   useEffect(() => {
     const nodeType =
       (nodesSpec as NodeSpecJSON[]).find((item) => item.type === node.type) ||
@@ -258,9 +263,8 @@ const NodeMenu = ({
       )}
       <SetNameModal
         node={node}
-        nodeType={nodeType}
         open={isShowSetName}
-        onClose={() => setIsShowSetName(false)}
+        onClose={handleCloseSetNameModal}
       />
     </>
   );

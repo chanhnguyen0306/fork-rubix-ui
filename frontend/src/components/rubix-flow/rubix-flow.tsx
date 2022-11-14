@@ -331,7 +331,7 @@ const Flow = (props: any) => {
   const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
     if (outputNodes && outputNodes.length === 0) return prevNodes;
 
-    return prevNodes.map((node) => {
+    return prevNodes.map((node: NodeInterface) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
       if (index > -1) {
         node.data.inputs = !node.data.inputs
@@ -341,6 +341,7 @@ const Flow = (props: any) => {
           ? outputNodes[index]?.outputs
           : handleBeforeAddOutput(node.data.out, outputNodes[index]?.outputs);
         node.status = outputNodes[index]?.status;
+        node.info = { ...node.info, ...outputNodes[index]?.info };
       }
 
       return node;
