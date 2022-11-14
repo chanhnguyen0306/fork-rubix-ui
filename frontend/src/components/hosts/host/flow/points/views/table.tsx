@@ -133,7 +133,7 @@ export const FlowPointsTable = (props: any) => {
         },
       },
       {
-        title: "plugin_name",
+        title: "plugin name",
         key: "plugin_name",
         dataIndex: "plugin_name",
         render() {
@@ -144,6 +144,32 @@ export const FlowPointsTable = (props: any) => {
         sorter: (a: any, b: any) => a.name.localeCompare(b.name),
       },
       ...FLOW_POINT_HEADERS,
+    ] as any;
+    const columnKeys = columns.map((c: any) => c.key);
+
+    let headers = Object.keys(schema).map((key) => {
+      return {
+        title: key.replaceAll("_", " "),
+        dataIndex: key,
+        key: key,
+        sorter: (a: any, b: any) =>
+          schema[key].type === "string"
+            ? a[key].localeCompare(b[key])
+            : a[key] - b[key],
+      };
+    });
+
+    //styling columns
+    headers = headers.map((header: any) => {
+      if (columnKeys.includes(header.key)) {
+        return columns.find((col: any) => col.key === header.key);
+      } else {
+        return header;
+      }
+    });
+
+    const headerWithActions = [
+      ...headers,
       {
         title: "Actions",
         dataIndex: "actions",
@@ -167,29 +193,9 @@ export const FlowPointsTable = (props: any) => {
           </Space>
         ),
       },
-    ] as any;
-    const columnKeys = columns.map((c: any) => c.title);
+    ];
 
-    let headers = Object.keys(schema).map((key) => {
-      return {
-        title: key,
-        dataIndex: key,
-        key: key,
-        sorter: (a: any, b: any) =>
-          schema[key].type === "string"
-            ? a[key].localeCompare(b[key])
-            : a[key] - b[key],
-      };
-    });
-
-    headers = headers.map((header: any) => {
-      if (columnKeys.includes(header.title)) {
-        return columns.find((col: any) => col.title === header.title);
-      } else {
-        return header;
-      }
-    });
-    setTableHeaders(headers);
+    setTableHeaders(headerWithActions);
   };
 
   const showEditModal = (item: Point) => {
