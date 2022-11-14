@@ -4,8 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/clients/wirescli"
 )
+
+type WiresExport struct {
+	Objects     interface{}
+	Errors      []interface{} `json:"errors"`
+	ContainerId string        `json:"containerId"`
+	Total       int           `json:"total"`
+	Message     string        `json:"message"`
+}
 
 func (inst *Client) WiresUpload(hostID string, body interface{}) (data interface{}, response *Response) {
 	path := fmt.Sprintf("%s/upload", Paths.Wires.Path)
@@ -25,7 +32,7 @@ func (inst *Client) WiresBackup(hostID string) (data interface{}, err error) {
 		SetHeader("host_name", hostID).
 		Get(path)
 	if resp.IsSuccess() {
-		r := &wirescli.WiresExport{}
+		r := &WiresExport{}
 		json.Unmarshal(resp.Body(), r)
 		return r.Objects, err
 	} else {
