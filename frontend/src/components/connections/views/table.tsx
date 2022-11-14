@@ -14,7 +14,12 @@ import { ROUTES } from "../../../constants/routes";
 import { isObjectEmpty, openNotificationWithIcon } from "../../../utils/utils";
 import { ConnectionFactory } from "../factory";
 import { CreateEditModal } from "./create";
-import { SnippetsOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  FormOutlined,
+  LinkOutlined,
+  ScanOutlined
+} from "@ant-design/icons";
 import { TokenModal } from "../../../common/token/token-modal";
 import { RubixAssistTokenFactory } from "./token-factory";
 import RubixConnection = storage.RubixConnection;
@@ -42,39 +47,41 @@ export const ConnectionsTable = () => {
       key: "actions",
       render: (_: any, conn: RubixConnection) => (
         <Space size="middle">
-          <Link to={ROUTES.LOCATIONS.replace(":connUUID", conn.uuid)}>
-            View
-          </Link>
-          <a
-            onClick={() => {
-              showModal(conn);
-            }}
-          >
-            Edit
-          </a>
-          <a
-            onClick={() => {
+          <Tooltip title="Ping">
+            <a onClick={() => {
               pingConnection(conn.uuid);
-            }}
-          >
-            Ping
-          </a>
+            }}>
+              <LinkOutlined />
+            </a>
+          </Tooltip>
+          <Tooltip title="Edit">
+            <a onClick={() => {
+              showModal(conn);
+            }}>
+              <FormOutlined />
+            </a>
+          </Tooltip>
           <Tooltip title="Tokens">
             <a
               onClick={(e) => {
                 showTokenModal(conn, e);
               }}
             >
-              <SnippetsOutlined />
+              <ScanOutlined />
             </a>
           </Tooltip>
+          <Link to={ROUTES.LOCATIONS.replace(":connUUID", conn.uuid)}>
+            <Tooltip title="View">
+              <ArrowRightOutlined />
+            </Tooltip>
+          </Link>
         </Space>
       ),
     },
   ];
 
   useEffect(() => {
-    fetch();
+    fetch().catch(console.error);
   }, []);
 
   const showTokenModal = (connection: RubixConnection, e: any) => {
@@ -132,12 +139,12 @@ export const ConnectionsTable = () => {
   const pingConnection = (uuid: string) => {
     PingRubixAssist(uuid).then((ok) => {
       if (ok) {
-        openNotificationWithIcon("success", `ping success`);
+        openNotificationWithIcon("success", "rubix assist server accessible");
       } else {
-        openNotificationWithIcon("error", `ping fail`);
+        openNotificationWithIcon("error", "check rubix assist server");
       }
     });
-    fetch();
+    fetch().catch(console.error);
   };
 
   const onCloseTokenModal = () => {
