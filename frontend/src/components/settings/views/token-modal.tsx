@@ -54,7 +54,7 @@ export const TokenModal = (props: any) => {
     <Modal
       title="Token Update"
       centered
-      width={1000}
+      width={600}
       visible={isModalVisible}
       onOk={handleOk}
       onCancel={onClose}

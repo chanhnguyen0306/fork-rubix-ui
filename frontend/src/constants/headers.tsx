@@ -355,96 +355,123 @@ export const FLOW_DEVICE_HEADERS = [
 ];
 
 export const FLOW_POINT_HEADERS = [
+  // {
+  //   title: "plugin_name",
+  //   key: "plugin_name",
+  //   dataIndex: "plugin_name",
+  //   render(plugin_name: string) {
+  //     if (!plugin_name) return;
+  //     let colour = "#4d4dff";
+  //     let text = plugin_name.toUpperCase();
+  //     return <Tag color={colour}>{text}</Tag>;
+  //   },
+  //   sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+  // },
+  // {
+  //   title: "io number",
+  //   dataIndex: "io_number",
+  //   key: "io_number",
+  //   render(io_number: string) {
+  //     if (io_number != undefined) {
+  //       let colour = "#4d4dff";
+  //       let text = io_number.toUpperCase();
+  //       return <Tag color={colour}>{text}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.io_number - b.io_number,
+  // },
+  // {
+  //   title: "object type",
+  //   dataIndex: "object_type",
+  //   key: "object_type",
+  //   render(object_type: string) {
+  //     if (object_type != undefined) {
+  //       let colour = "#4d4dff";
+  //       let text = object_type.toUpperCase();
+  //       return <Tag color={colour}>{text}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.object_type.localeCompare(b.object_type),
+  // },
+  // {
+  //   title: "object id",
+  //   dataIndex: "object_id",
+  //   key: "object_id",
+  //   render(object_id: number) {
+  //     if (object_id != undefined) {
+  //       let colour = "#4d4dff";
+  //       return <Tag color={colour}>{object_id}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.object_id - b.object_id,
+  // },
+  // {
+  //   title: "io type",
+  //   dataIndex: "io_type",
+  //   key: "io_type",
+  //   render(io_type: string) {
+  //     if (io_type != undefined) {
+  //       let colour = "#4d4dff";
+  //       let text = io_type.toUpperCase();
+  //       return <Tag color={colour}>{text}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.io_type.localeCompare(b.io_type),
+  // },
+  // {
+  //   title: "present value",
+  //   dataIndex: "present_value",
+  //   key: "present_value",
+  //   render(present_value: number) {
+  //     if (present_value != undefined) {
+  //       let colour = "#4d4dff";
+  //       return <Tag color={colour}>{present_value}</Tag>;
+  //     }
+  //   },
+  //   sorter: (a: any, b: any) => a.present_value - b.present_value,
+  // },
+  // {
+  //   title: "original value value",
+  //   dataIndex: "original_value",
+  //   key: "original_value",
+  //   sorter: (a: any, b: any) => a.original_value - b.original_value,
+  // },
+  // {
+  //   title: "write value",
+  //   dataIndex: "write_value",
+  //   key: "write_value",
+  //   sorter: (a: any, b: any) => a.write_value - b.write_value,
+  // },
+  // {
+  //   title: "write value original",
+  //   dataIndex: "write_value_original",
+  //   key: "write_value_original",
+  //   sorter: (a: any, b: any) => a.write_value_original - b.write_value_original,
+  // },
+  // {
+  //   title: "device-uuid",
+  //   dataIndex: "device_uuid",
+  //   key: "device_uuid",
+  // },
+  // {
+  //   title: "uuid",
+  //   dataIndex: "uuid",
+  //   key: "uuid",
+  // },
   {
-    title: "io number",
-    dataIndex: "io_number",
-    key: "io_number",
-    render(io_number: string) {
-      if (io_number != undefined) {
-        let colour = "#4d4dff";
-        let text = io_number.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enable";
       }
+      return <Tag color={colour}>{text}</Tag>;
     },
-    sorter: (a: any, b: any) => a.io_number - b.io_number,
-  },
-  {
-    title: "object type",
-    dataIndex: "object_type",
-    key: "object_type",
-    render(object_type: string) {
-      if (object_type != undefined) {
-        let colour = "#4d4dff";
-        let text = object_type.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.object_type.localeCompare(b.object_type),
-  },
-  {
-    title: "object id",
-    dataIndex: "object_id",
-    key: "object_id",
-    render(object_id: number) {
-      if (object_id != undefined) {
-        let colour = "#4d4dff";
-        return <Tag color={colour}>{object_id}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.object_id - b.object_id,
-  },
-  {
-    title: "io type",
-    dataIndex: "io_type",
-    key: "io_type",
-    render(io_type: string) {
-      if (io_type != undefined) {
-        let colour = "#4d4dff";
-        let text = io_type.toUpperCase();
-        return <Tag color={colour}>{text}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.io_type.localeCompare(b.io_type),
-  },
-  {
-    title: "present value",
-    dataIndex: "present_value",
-    key: "present_value",
-    render(present_value: number) {
-      if (present_value != undefined) {
-        let colour = "#4d4dff";
-        return <Tag color={colour}>{present_value}</Tag>;
-      }
-    },
-    sorter: (a: any, b: any) => a.present_value - b.present_value,
-  },
-  {
-    title: "original value value",
-    dataIndex: "original_value",
-    key: "original_value",
-    sorter: (a: any, b: any) => a.original_value - b.original_value,
-  },
-  {
-    title: "write value",
-    dataIndex: "write_value",
-    key: "write_value",
-    sorter: (a: any, b: any) => a.write_value - b.write_value,
-  },
-  {
-    title: "write value original",
-    dataIndex: "write_value_original",
-    key: "write_value_original",
-    sorter: (a: any, b: any) => a.write_value_original - b.write_value_original,
-  },
-  {
-    title: "device-uuid",
-    dataIndex: "device_uuid",
-    key: "device_uuid",
-  },
-  {
-    title: "uuid",
-    dataIndex: "uuid",
-    key: "uuid",
+    sorter: (a: any, b: any) => a.enable - b.enable,
   },
 ];
 
