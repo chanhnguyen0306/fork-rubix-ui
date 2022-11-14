@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 )
 
 const bacnetMasterPlg = "bacnetmaster"

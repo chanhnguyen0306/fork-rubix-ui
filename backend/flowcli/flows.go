@@ -2,7 +2,7 @@ package flowcli
 
 import (
 	"github.com/NubeDev/flow-eng/nodes"
-	"github.com/NubeDev/flow-eng/services/clients/ffclient/nresty"
+	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 	"github.com/NubeIO/rubix-edge-wires/flow"
 )
 

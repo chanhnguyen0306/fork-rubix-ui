@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 )
 
 func (inst *App) EdgeListPlugins(connUUID, hostUUID string) []appstore.Plugin {
