@@ -33,15 +33,15 @@ func (inst *App) PingHost(connUUID, hostUUID string) bool {
 	}
 	host, err := inst.getHost(connUUID, hostUUID)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("no device on ip: %s", host.IP))
+		inst.uiErrorMessage(err)
 		return false
 	}
 	_, err = client.EdgeBiosPing(hostUUID)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("ping fail on ip: %s", host.IP))
+		inst.uiErrorMessage(fmt.Sprintf("see the ip: %s & BIOS installation on it", host.IP))
 		return false
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("ping ok ip: %s", host.IP))
+	inst.uiSuccessMessage(fmt.Sprintf("ip: %s is reachable", host.IP))
 	return true
 }
 
