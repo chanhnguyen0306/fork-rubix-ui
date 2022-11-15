@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/lib-systemctl-go/systemd"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/systemctl"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
@@ -135,7 +136,12 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
 
 	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
-	assistUpload, err := inst.assistAddUploadApp(connUUID, appName, appVersion, arch, doNotValidateArch)
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		inst.uiErrorMessage(err.Error())
+		return nil
+	}
+	assistUpload, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, doNotValidateArch)
 	if err != nil {
 		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
@@ -152,7 +158,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		MoveExtractedFileToNameApp:      moveExtractedFileToNameApp,
 		MoveOneLevelInsideFileToOutside: moveOneLevelInsideFileToOutside,
 	}
-	uploadApp, err := inst.edgeUploadEdgeApp(connUUID, hostUUID, upload)
+	uploadApp, err := assistClient.EdgeUploadApp(hostUUID, &upload)
 	if err != nil {
 		log.Errorf("Install App > upload app to edge failed, app_name: %s, err: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
@@ -160,7 +166,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded app to rubix-edge, app_name: %s", lastStep, uploadApp.Name))
 
-	uploadEdgeService, err := inst.uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion)
+	uploadEdgeService, err := inst.uploadEdgeService(assistClient, hostUUID, appName, appVersion, releaseVersion)
 	if err != nil {
 		log.Errorf("Install App > upload linux service to edge failed, app_name: %s", appName)
 		inst.uiErrorMessage(err.Error())
@@ -169,7 +175,11 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) uploaded linux-service to rubix-edge, app_name: %s", lastStep, uploadEdgeService.UploadedFile))
 
 	serviceFile := uploadEdgeService.UploadedFile
-	installEdgeService, err := inst.installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFile)
+	installEdgeService, err := assistClient.InstallEdgeService(hostUUID, &installer.Install{
+		Name:    appName,
+		Version: appVersion,
+		Source:  serviceFile,
+	})
 	if err != nil {
 		log.Errorf("Install App > install edge service failed, app_name: %s, err: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
@@ -358,7 +368,6 @@ func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, 
 		filteredApps = append(filteredApps, filteredApp)
 	}
 	return filteredApps, nil
-
 }
 
 // edgeListApps apps that are in the app dir
@@ -374,69 +383,17 @@ func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]installer.Apps
 	return resp, err
 }
 
-// edgeListAppsAndService list all the apps in the rubix-service dir that have a service
-func (inst *App) edgeListAppsAndService(connUUID, hostUUID string) ([]installer.Apps, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.EdgeListApps(hostUUID)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
-}
-
-func (inst *App) edgeUploadEdgeApp(connUUID, hostUUID string, upload installer.Upload) (*installer.AppResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.EdgeUploadApp(hostUUID, &upload)
-	return resp, err
-}
-
-func (inst *App) uploadEdgeService(connUUID, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
+func (inst *App) uploadEdgeService(assistClient *assistcli.Client, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
 	nubeApp, err := inst.getAppFromReleases(releaseVersion, appName)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.EdgeUploadService(hostUUID, &systemctl.ServiceFile{
+	resp, err := assistClient.EdgeUploadService(hostUUID, &systemctl.ServiceFile{
 		Name:                        appName,
 		Version:                     appVersion,
 		ExecStart:                   nubeApp.ExecStart,
 		AttachWorkingDirOnExecStart: nubeApp.AttachWorkingDirOnExecStart,
 		EnvironmentVars:             nubeApp.EnvironmentVars,
-	})
-	return resp, err
-}
-
-func (inst *App) installEdgeService(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*systemd.InstallResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.InstallEdgeService(hostUUID, &installer.Install{
-		Name:    appName,
-		Version: appVersion,
-		Source:  serviceFilePath,
-	})
-	return resp, err
-}
-
-func (inst *App) edgeAppInstall(connUUID, hostUUID, appName, appVersion, serviceFilePath string) (*systemd.InstallResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.InstallEdgeService(hostUUID, &installer.Install{
-		Name:    appName,
-		Version: appVersion,
-		Source:  serviceFilePath,
 	})
 	return resp, err
 }

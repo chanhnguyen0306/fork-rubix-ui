@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"os"
 	"path"
 )
@@ -21,12 +22,8 @@ func (inst *App) assistListStore(connUUID string) ([]appstore.ListApps, error) {
 	return resp, err
 }
 
-func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doNotValidateArch bool) (*appstore.UploadResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	err = inst.appStore.StoreCheckAppExists(appName)
+func (inst *App) assistAddUploadApp(assistClient *assistcli.Client, appName, version, arch string, doNotValidateArch bool) (*appstore.UploadResponse, error) {
+	err := inst.appStore.StoreCheckAppExists(appName)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +46,7 @@ func (inst *App) assistAddUploadApp(connUUID, appName, version, arch string, doN
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("error open file: %s err: %s", fileAndPath, err.Error()))
 	}
-	uploadApp, err := client.UploadAddOnAppStore(appName, version, arch, fileName, reader)
+	uploadApp, err := assistClient.UploadAddOnAppStore(appName, version, arch, fileName, reader)
 	if err != nil {
 		return nil, err
 	}
