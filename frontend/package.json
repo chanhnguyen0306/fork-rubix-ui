@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@air/react-drag-to-select": "^5.0.5",
     "@langleyfoxall/react-dynamic-data-table": "^7.18.0",
     "@rjsf/core": "^4.2.0",
     "@use-gesture/react": "^10.2.21",

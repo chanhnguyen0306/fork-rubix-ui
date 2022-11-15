@@ -18,6 +18,11 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 import cx from "classnames";
+import {
+  Box,
+  boxesIntersect,
+  useSelectionContainer,
+} from "@air/react-drag-to-select";
 
 import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
@@ -58,6 +63,11 @@ const edgeTypes = {
   default: CustomEdge,
 };
 
+type SelectableBoxType = {
+  edgeId: string,
+  rect: DOMRect | null,
+}
+
 const Flow = (props: any) => {
   const { customNodeTypes } = props;
   const [nodes, setNodes, onNodesChange] = useNodesState([] as NodeInterface[]);
@@ -78,11 +88,37 @@ const Flow = (props: any) => {
   const [rubixFlowInstance, setRubixFlowInstance] = useState<
     ReactFlowInstance | any
   >(null);
+  const selectableBoxes = useRef<SelectableBoxType[]>([]);
+
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
   const [nodesSpec] = useNodesSpec();
 
   const factory = new FlowFactory();
+
+  const { DragSelection } = useSelectionContainer({
+    onSelectionChange: (box: Box) => {
+      const selectedEdgeIds: string[] = [];
+      selectableBoxes.current.forEach((item: SelectableBoxType) => {
+        if (item.rect && boxesIntersect(box, item.rect)) {
+          selectedEdgeIds.push(item.edgeId);
+        }
+      });
+      handleSelectEdges(selectedEdgeIds);
+    },
+    onSelectionStart: () => {
+      const elemEdges: SelectableBoxType[] = [];
+      edges.forEach((item) => {
+        const eleEdgeId = document.getElementById(item.id);
+        elemEdges.push({
+          edgeId: item.id,
+          rect: eleEdgeId?.getBoundingClientRect() || null,
+        });
+      });
+      selectableBoxes.current = elemEdges;
+    },
+    onSelectionEnd: () => (selectableBoxes.current = []),
+  });
 
   // delete selected wires
   useOnPressKey("Backspace", () => {
@@ -462,6 +498,13 @@ const Flow = (props: any) => {
     [edges, setEdges]
   );
 
+  const handleSelectEdges = (edgeIds: string[]) => {
+    const newEdges = edges.map((item) =>
+      edgeIds.includes(item.id) ? { ...item, selected: true } : item
+    );
+    setEdges(newEdges);
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -558,6 +601,7 @@ const Flow = (props: any) => {
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
+            <DragSelection />
             {flowSettings.showMiniMap && (
               <MiniMap
                 nodes={nodes}
