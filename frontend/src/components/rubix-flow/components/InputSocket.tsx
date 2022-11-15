@@ -112,7 +112,9 @@ export const InputSocket = ({
     if (valueType === "boolean") {
       return getNumberOptions(input.value);
     } else if (valueType === "number") {
-      return input.value === null ? "null" : input.value.toString();
+      return input.value === null || input.value === undefined
+        ? "null"
+        : `${input.value}`;
     }
 
     return input.value;
