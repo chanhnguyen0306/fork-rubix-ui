@@ -6,6 +6,11 @@ import {
   internalsSymbol,
   NodeHandleBounds,
 } from "react-flow-renderer";
+
+export type NodeInterfaceInfo = {
+  nodeName?: string;
+};
+
 export interface NodeInterface<T = any> {
   id: string;
   position: XYPosition;
@@ -38,4 +43,5 @@ export interface NodeInterface<T = any> {
   isParent?: boolean;
   parentId?: string;
   status?: any;
+  info?: NodeInterfaceInfo;
 }
