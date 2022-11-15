@@ -1,5 +1,9 @@
 import { Space, Spin, Tag, Tooltip } from "antd";
-import { FormOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  FormOutlined,
+  EditOutlined,
+  HighlightOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
@@ -13,10 +17,7 @@ import {
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
-import {
-  isObjectEmpty,
-  openNotificationWithIcon,
-} from "../../../../../../utils/utils";
+import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
@@ -28,6 +29,7 @@ import { WritePointValueModal } from "./write-point-value";
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
 import PluginUUIDs = backend.PluginUUIDs;
+import MassEdit from "../../../../../../common/mass-edit";
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -143,6 +145,42 @@ export const FlowPointsTable = (props: any) => {
         },
         sorter: (a: any, b: any) => a.name.localeCompare(b.name),
       },
+      {
+        title: () => {
+          return (
+            <MassEdit
+              fullSchema={schema}
+              keyName="description"
+              handleOk={handleMassEdit}
+            />
+          );
+        },
+        dataIndex: "description",
+        key: "description",
+      },
+      {
+        title: () => {
+          return (
+            <MassEdit
+              fullSchema={schema}
+              keyName="enable"
+              handleOk={handleMassEdit}
+            />
+          );
+        },
+        key: "enable",
+        dataIndex: "enable",
+        render(enable: boolean) {
+          let colour = "blue";
+          let text = "disabled";
+          if (enable) {
+            colour = "orange";
+            text = "enable";
+          }
+          return <Tag color={colour}>{text}</Tag>;
+        },
+        sorter: (a: any, b: any) => a.enable - b.enable,
+      },
       ...FLOW_POINT_HEADERS,
     ] as any;
     const columnKeys = columns.map((c: any) => c.key);
@@ -222,6 +260,19 @@ export const FlowPointsTable = (props: any) => {
   const showWritePointModal = (item: Point) => {
     setIsWritePointModalVisible(true);
     setCurrentItem(item);
+  };
+
+  const edit = async (item: any) => {
+    await flowPointFactory.Update(item.uuid, item);
+  };
+
+  const handleMassEdit = (updateData: any) => {
+    const promises = [];
+    for (let item of selectedUUIDs) {
+      item = { ...item, ...updateData };
+      promises.push(edit(item));
+    }
+    Promise.all(promises);
   };
 
   useEffect(() => {
