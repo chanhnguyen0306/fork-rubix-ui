@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { HighlightOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { JsonForm } from "./json-schema-form";
@@ -10,7 +10,8 @@ const MassEdit = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const openModal = async () => {
+  const openModal = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     const schema = { properties: { [keyName]: fullSchema[keyName] } };
     const formData = { [keyName]: fullSchema[keyName].default || null };
     setSchema(schema);
@@ -31,12 +32,14 @@ const MassEdit = (props: any) => {
   };
 
   return (
-    <div>
-      <div className="flex justify-between">
-        {keyName}
-        <a>
-          <HighlightOutlined onClick={openModal} />
-        </a>
+    <>
+      <div className="flex justify-between" style={{ alignItems: "center" }}>
+        {keyName.replaceAll("_", " ")}
+        <Button
+          icon={<HighlightOutlined />}
+          onClick={openModal}
+          className="ml-2 mr-3"
+        />
       </div>
 
       <Modal
@@ -55,7 +58,7 @@ const MassEdit = (props: any) => {
           jsonSchema={schema}
         />
       </Modal>
-    </div>
+    </>
   );
 };
 

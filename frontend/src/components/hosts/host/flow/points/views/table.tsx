@@ -41,7 +41,7 @@ export const FlowPointsTable = (props: any) => {
     pluginName = "",
   } = useParams();
   const [pluginUUID, setPluginUUID] = useState<any>();
-  const [schema, setSchema] = useState({});
+  const [schema, setSchema] = useState({} as any);
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
@@ -134,60 +134,19 @@ export const FlowPointsTable = (props: any) => {
           );
         },
       },
-      {
-        title: "plugin name",
-        key: "plugin_name",
-        dataIndex: "plugin_name",
-        render() {
-          let colour = "#4d4dff";
-          let text = pluginName.toUpperCase();
-          return <Tag color={colour}>{text}</Tag>;
-        },
-        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-      },
-      {
-        title: () => {
-          return (
-            <MassEdit
-              fullSchema={schema}
-              keyName="description"
-              handleOk={handleMassEdit}
-            />
-          );
-        },
-        dataIndex: "description",
-        key: "description",
-      },
-      {
-        title: () => {
-          return (
-            <MassEdit
-              fullSchema={schema}
-              keyName="enable"
-              handleOk={handleMassEdit}
-            />
-          );
-        },
-        key: "enable",
-        dataIndex: "enable",
-        render(enable: boolean) {
-          let colour = "blue";
-          let text = "disabled";
-          if (enable) {
-            colour = "orange";
-            text = "enable";
-          }
-          return <Tag color={colour}>{text}</Tag>;
-        },
-        sorter: (a: any, b: any) => a.enable - b.enable,
-      },
+
       ...FLOW_POINT_HEADERS,
     ] as any;
     const columnKeys = columns.map((c: any) => c.key);
 
+    delete schema.plugin_name; //prevent mass edit on plugin_name
+
     let headers = Object.keys(schema).map((key) => {
       return {
-        title: key.replaceAll("_", " "),
+        title:
+          key === "name" || key === "uuid"
+            ? key.replaceAll("_", " ")
+            : MassEditTitle(key, schema),
         dataIndex: key,
         key: key,
         sorter: (a: any, b: any) =>
@@ -200,7 +159,11 @@ export const FlowPointsTable = (props: any) => {
     //styling columns
     headers = headers.map((header: any) => {
       if (columnKeys.includes(header.key)) {
-        return columns.find((col: any) => col.key === header.key);
+        const headerFromColumns = columns.find(
+          (col: any) => col.key === header.key
+        );
+        headerFromColumns.title = header.title;
+        return headerFromColumns;
       } else {
         return header;
       }
@@ -208,6 +171,16 @@ export const FlowPointsTable = (props: any) => {
 
     const headerWithActions = [
       ...headers,
+      {
+        title: "plugin name",
+        key: "plugin_name",
+        dataIndex: "plugin_name",
+        render() {
+          let colour = "#4d4dff";
+          let text = pluginName.toUpperCase();
+          return <Tag color={colour}>{text}</Tag>;
+        },
+      },
       {
         title: "Actions",
         dataIndex: "actions",
@@ -240,6 +213,12 @@ export const FlowPointsTable = (props: any) => {
     setTableHeaders(headerWithActions);
   };
 
+  const MassEditTitle = (key: string, schema: any) => {
+    return (
+      <MassEdit fullSchema={schema} keyName={key} handleOk={handleMassEdit} />
+    );
+  };
+
   const showEditModal = (item: Point) => {
     setCurrentItem(item);
     setIsEditModalVisible(true);
@@ -267,6 +246,9 @@ export const FlowPointsTable = (props: any) => {
   };
 
   const handleMassEdit = (updateData: any) => {
+    if (selectedUUIDs.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
     const promises = [];
     for (let item of selectedUUIDs) {
       item = { ...item, ...updateData };

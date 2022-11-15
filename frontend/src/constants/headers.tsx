@@ -366,6 +366,21 @@ export const FLOW_DEVICE_HEADERS = [
 
 export const FLOW_POINT_HEADERS = [
   {
+    title: "enable",
+    key: "enable",
+    dataIndex: "enable",
+    render(enable: boolean) {
+      let colour = "blue";
+      let text = "disabled";
+      if (enable) {
+        colour = "orange";
+        text = "enable";
+      }
+      return <Tag color={colour}>{text}</Tag>;
+    },
+    sorter: (a: any, b: any) => a.enable - b.enable,
+  },
+  {
     title: "object type",
     dataIndex: "object_type",
     key: "object_type",
