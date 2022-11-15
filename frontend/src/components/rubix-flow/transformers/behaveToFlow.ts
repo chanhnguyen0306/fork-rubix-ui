@@ -26,6 +26,7 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
         settings: nodeJson?.settings || {},
         isParent: nodeJson.isParent || false,
         parentId: nodeJson.parentId || undefined,
+        info: { nodeName: nodeJson.nodeName || "" },
       };
 
       nodes.push(node);

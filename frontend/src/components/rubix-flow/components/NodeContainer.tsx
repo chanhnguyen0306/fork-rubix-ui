@@ -7,6 +7,7 @@ import { Tooltip } from "antd";
 type NodeProps = {
   title: string;
   icon: string;
+  nodeName: string;
   category?: NodeSpecJSON["category"];
   selected: boolean;
   height: number;
@@ -18,6 +19,7 @@ type NodeProps = {
 export const NodeContainer = ({
   title,
   icon,
+  nodeName,
   category = "None",
   selected,
   children,
@@ -33,15 +35,15 @@ export const NodeContainer = ({
     borderColor = "border-gray-800";
   }
 
-  const renderTitle = () => {
+  const renderFirstRow = () => {
     return (
       <div
         style={{
-          justifyContent: "space-between",
           display: "flex",
         }}
       >
-        <span>{title}</span>
+        {icon && <span className="pr-3 pt-1">{icon}</span>}
+        {nodeName && <span>{nodeName}</span>}
         {status?.activeMessage && renderStatusMessages()}
       </div>
     );
@@ -74,10 +76,10 @@ export const NodeContainer = ({
         className={`flex ${backgroundColor} ${textColor} px-3 py-1 rounded-t`}
         onDoubleClick={onDbClickTitle}
       >
-        {icon && <div className="pr-3">{icon}</div>}
         <div>
-          {renderTitle()}
+          {renderFirstRow()}
           <div>
+            <span>{title}</span> {" | "}
             {category} {status?.subTitle ? " | " + status.subTitle : null}
           </div>
         </div>

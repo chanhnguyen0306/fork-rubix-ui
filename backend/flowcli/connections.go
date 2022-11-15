@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/flow-eng/db"
 	"github.com/NubeDev/flow-eng/node"
-	"github.com/NubeDev/flow-eng/services/clients/ffclient/nresty"
+	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 )
 
 func (inst *FlowClient) AddConnection(body *db.Connection) (*db.Connection, error) {

@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { SetPayloadModal } from "./SetPayloadModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { NodeHelpModal } from "./NodeHelpModal";
+import { SetNameModal } from "./Modals";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -138,6 +139,7 @@ const NodeMenu = ({
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
   const [isShowPayload, setIsShowPayload] = useState(false);
+  const [isShowSetName, setIsShowSetName] = useState(false);
   const [nodeType, setNodeType] = useState<NodeSpecJSON>(
     DEFAULT_NODE_SPEC_JSON
   );
@@ -158,6 +160,15 @@ const NodeMenu = ({
 
   const handleTogglePayload = () => {
     setIsShowPayload(!isShowPayload);
+  };
+
+  const handleToggleSetName = () => {
+    setIsShowSetName(!isShowSetName);
+  };
+
+  const handleCloseSetNameModal = () => {
+    setIsShowSetName(false);
+    onClose();
   };
 
   useEffect(() => {
@@ -215,6 +226,13 @@ const NodeMenu = ({
             </div>
           )}
           <div
+            key="Set Name"
+            className="cursor-pointer border-b border-gray-600 ant-menu-item"
+            onClick={handleToggleSetName}
+          >
+            Set Name
+          </div>
+          <div
             key="help"
             className="cursor-pointer ant-menu-item"
             onClick={handleToggleHelpModal}
@@ -243,6 +261,11 @@ const NodeMenu = ({
           onClose={() => setIsShowPayload(false)}
         />
       )}
+      <SetNameModal
+        node={node}
+        open={isShowSetName}
+        onClose={handleCloseSetNameModal}
+      />
     </>
   );
 };

@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"github.com/NubeIO/rubix-assist/service/clients/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/assistcli"
 )
 
 func (inst *App) edgeReadFile(connUUID, hostUUID, path string) ([]byte, error) {
