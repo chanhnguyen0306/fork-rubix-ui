@@ -232,6 +232,8 @@ export const FlowPointsTable = (props: any) => {
   };
 
   const showEditModal = (item: Point) => {
+    console.log(item);
+
     setCurrentItem(item);
     setIsEditModalVisible(true);
   };
