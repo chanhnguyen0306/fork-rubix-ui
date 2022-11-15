@@ -29,7 +29,7 @@ import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowInstance, ReactFlowProvider } from "react-flow-renderer";
-import { useNodesSpec } from "./use-nodes-spec";
+import { convertDataSpec, getNodeSpecDetail, useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
@@ -52,6 +52,7 @@ import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
 import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
+import { isValidConnection } from "./util/isCanConnection";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -79,6 +80,7 @@ const Flow = (props: any) => {
   >(null);
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
+  const [nodesSpec] = useNodesSpec();
 
   const factory = new FlowFactory();
 
@@ -130,13 +132,17 @@ const Flow = (props: any) => {
         isRemote,
         nodeType
       );
+      const spec: NodeSpecJSON = getNodeSpecDetail(nodesSpec, nodeType);
       const newNode = {
         id: generateUuid(),
         isParent,
         style,
         type: nodeType,
         position,
-        data: { inputs: [] },
+        data: {
+          inputs: convertDataSpec(spec.inputs || []),
+          out: convertDataSpec(spec.outputs || []),
+        },
         settings: nodeSettings,
       };
       onNodesChange([
@@ -241,7 +247,12 @@ const Flow = (props: any) => {
         }
 
         /* Add connect for input added by InputCount setting */
-        if (lastConnectStart && nodeId && handleId) {
+        if (
+          lastConnectStart &&
+          nodeId &&
+          handleId &&
+          isValidConnection(nodes, lastConnectStart, { nodeId, handleId })
+        ) {
           const isSource = lastConnectStart.handleType === "source" || false;
           const conNodeId = lastConnectStart.nodeId || "";
           const conHandleId = lastConnectStart.handleId || "";

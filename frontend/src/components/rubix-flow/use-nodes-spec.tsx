@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { DEFAULT_NODE_SPEC_JSON } from "./components/NodeMenu";
 import { FlowFactory } from "./factory";
-import { InputSocketSpecJSON, NodeSpecJSON } from "./lib";
+import { InputSocketSpecJSON, NodeSpecJSON, OutputSocketSpecJSON } from "./lib";
 
 export const SPEC_JSON = "spec-json";
 export const NODES_JSON = "nodes-json";
@@ -67,4 +68,25 @@ export const useNodesSpec = () => {
   };
 
   return [nodesSpec, setNodesSpec, isFetchingNodeSpec];
+};
+
+export const getNodeSpecDetail = (
+  nodesSpec: NodeSpecJSON[] | any,
+  nodeType: string
+) => {
+  return (
+    nodesSpec.find((item: NodeSpecJSON) => item.type === nodeType) ||
+    DEFAULT_NODE_SPEC_JSON
+  );
+};
+
+export const convertDataSpec = (
+  specs: InputSocketSpecJSON[] | OutputSocketSpecJSON[]
+) => {
+  if (!specs || specs.length === 0) return [];
+  return specs.map((item) => ({
+    ...item,
+    pin: item.name,
+    dataType: item.valueType,
+  }));
 };
