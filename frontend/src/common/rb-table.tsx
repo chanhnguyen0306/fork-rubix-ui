@@ -1,4 +1,3 @@
-import React from "react";
 import Table from "antd/lib/table";
 
 const DISPLAY_MAX_WIDTH = 1024;

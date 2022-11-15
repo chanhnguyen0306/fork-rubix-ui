@@ -20,6 +20,7 @@ import { FlowDeviceFactory } from "../factory";
 import { CreateModal } from "./create";
 import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
+import MassEdit from "../../../../../../common/mass-edit";
 
 import Device = model.Device;
 import UUIDs = backend.UUIDs;
@@ -127,23 +128,16 @@ export const FlowDeviceTable = (props: any) => {
         },
       },
       ...FLOW_DEVICE_HEADERS,
-      {
-        title: "plugin name",
-        key: "plugin_name",
-        dataIndex: "plugin_name",
-        render() {
-          let colour = "#4d4dff";
-          let text = pluginName.toUpperCase();
-          return <Tag color={colour}>{text}</Tag>;
-        },
-        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
-      },
     ];
-    const columnKeys = columns.map((c: any) => c.key);
 
+    delete schema.plugin_name; //prevent mass edit on plugin_name
+    const columnKeys = columns.map((c: any) => c.key);
     let headers = Object.keys(schema).map((key) => {
       return {
-        title: key.replaceAll("_", " "),
+        title:
+          key === "name" || key === "uuid"
+            ? key.replaceAll("_", " ")
+            : MassEditTitle(key, schema),
         dataIndex: key,
         key: key,
         sorter: (a: any, b: any) =>
@@ -156,7 +150,11 @@ export const FlowDeviceTable = (props: any) => {
     //styling columns
     headers = headers.map((header: any) => {
       if (columnKeys.includes(header.key)) {
-        return columns.find((col: any) => col.key === header.key);
+        const headerFromColumns = columns.find(
+          (col: any) => col.key === header.key
+        );
+        if (headerFromColumns) headerFromColumns.title = header.title;
+        return headerFromColumns;
       } else {
         return header;
       }
@@ -164,6 +162,17 @@ export const FlowDeviceTable = (props: any) => {
 
     const headerWithActions = [
       ...headers,
+      {
+        title: "plugin name",
+        key: "plugin_name",
+        dataIndex: "plugin_name",
+        render() {
+          let colour = "#4d4dff";
+          let text = pluginName.toUpperCase();
+          return <Tag color={colour}>{text}</Tag>;
+        },
+        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+      },
       {
         title: "Actions",
         dataIndex: "actions",
@@ -190,6 +199,25 @@ export const FlowDeviceTable = (props: any) => {
     ];
 
     setTableHeaders(headerWithActions);
+  };
+
+  const MassEditTitle = (key: string, schema: any) => {
+    return (
+      <MassEdit fullSchema={schema} keyName={key} handleOk={handleMassEdit} />
+    );
+  };
+
+  const handleMassEdit = (updateData: any) => {
+    const promises = [];
+    for (let item of dataSource) {
+      item = { ...item, ...updateData };
+      promises.push(edit(item));
+    }
+    Promise.all(promises);
+  };
+
+  const edit = async (item: any) => {
+    await flowDeviceFactory.Update(item.uuid, item);
   };
 
   const showEditModal = (item: any) => {

@@ -137,10 +137,9 @@ export const FlowPointsTable = (props: any) => {
 
       ...FLOW_POINT_HEADERS,
     ] as any;
-    const columnKeys = columns.map((c: any) => c.key);
 
     delete schema.plugin_name; //prevent mass edit on plugin_name
-
+    const columnKeys = columns.map((c: any) => c.key);
     let headers = Object.keys(schema).map((key) => {
       return {
         title:
@@ -219,6 +218,19 @@ export const FlowPointsTable = (props: any) => {
     );
   };
 
+  const handleMassEdit = (updateData: any) => {
+    const promises = [];
+    for (let item of dataSource) {
+      item = { ...item, ...updateData };
+      promises.push(edit(item));
+    }
+    Promise.all(promises);
+  };
+
+  const edit = async (item: any) => {
+    await flowPointFactory.Update(item.uuid, item);
+  };
+
   const showEditModal = (item: Point) => {
     setCurrentItem(item);
     setIsEditModalVisible(true);
@@ -239,22 +251,6 @@ export const FlowPointsTable = (props: any) => {
   const showWritePointModal = (item: Point) => {
     setIsWritePointModalVisible(true);
     setCurrentItem(item);
-  };
-
-  const edit = async (item: any) => {
-    await flowPointFactory.Update(item.uuid, item);
-  };
-
-  const handleMassEdit = (updateData: any) => {
-    if (selectedUUIDs.length === 0) {
-      return openNotificationWithIcon("warning", `please select at least one`);
-    }
-    const promises = [];
-    for (let item of selectedUUIDs) {
-      item = { ...item, ...updateData };
-      promises.push(edit(item));
-    }
-    Promise.all(promises);
   };
 
   useEffect(() => {
