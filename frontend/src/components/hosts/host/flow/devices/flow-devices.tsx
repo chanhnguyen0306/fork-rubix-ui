@@ -14,9 +14,8 @@ import { BacnetFactory } from "../bacnet/factory";
 import { FlowNetworkFactory } from "../networks/factory";
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
-
-import Device = model.Device;
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+import Device = model.Device;
 
 const { TabPane } = Tabs;
 const { Title } = Typography;

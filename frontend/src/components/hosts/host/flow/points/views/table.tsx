@@ -1,5 +1,5 @@
-import { Input, Space, Spin, Tag } from "antd";
-import { ColumnType } from "antd/lib/table";
+import { Space, Spin, Tag, Tooltip } from "antd";
+import { FormOutlined, EditOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
@@ -176,20 +176,24 @@ export const FlowPointsTable = (props: any) => {
         key: "actions",
         render: (_: any, point: Point) => (
           <Space size="middle">
-            <a
-              onClick={() => {
-                showEditModal(point);
-              }}
-            >
-              Edit
-            </a>
-            <a
-              onClick={() => {
-                showWritePointModal(point);
-              }}
-            >
-              Write Point
-            </a>
+            <Tooltip title="Edit">
+              <a
+                onClick={() => {
+                  showEditModal(point);
+                }}
+              >
+                <FormOutlined />
+              </a>
+            </Tooltip>
+            <Tooltip title="Write Point">
+              <a
+                onClick={() => {
+                  showWritePointModal(point);
+                }}
+              >
+                <EditOutlined />
+              </a>
+            </Tooltip>
           </Space>
         ),
       },

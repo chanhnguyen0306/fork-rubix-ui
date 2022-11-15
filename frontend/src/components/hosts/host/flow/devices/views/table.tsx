@@ -1,4 +1,5 @@
-import { Space, Spin, Tag } from "antd";
+import { Space, Spin, Tag, Tooltip } from "antd";
+import { FormOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
@@ -13,10 +14,7 @@ import {
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import { FLOW_DEVICE_HEADERS } from "../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../constants/routes";
-import {
-  isObjectEmpty,
-  openNotificationWithIcon,
-} from "../../../../../../utils/utils";
+import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowDeviceFactory } from "../factory";
 import { CreateModal } from "./create";
@@ -172,14 +170,20 @@ export const FlowDeviceTable = (props: any) => {
         key: "actions",
         render: (_: any, device: Device) => (
           <Space size="middle">
-            <Link to={getNavigationLink(device.uuid)}>View Points</Link>
-            <a
-              onClick={() => {
-                showEditModal(device);
-              }}
-            >
-              Edit
-            </a>
+            <Tooltip title="Edit">
+              <a
+                onClick={() => {
+                  showEditModal(device);
+                }}
+              >
+                <FormOutlined />
+              </a>
+            </Tooltip>
+            <Link to={getNavigationLink(device.uuid)}>
+              <Tooltip title="View Points">
+                <ArrowRightOutlined />
+              </Tooltip>
+            </Link>
           </Space>
         ),
       },
@@ -205,7 +209,6 @@ export const FlowDeviceTable = (props: any) => {
   const closeCreateModal = () => {
     setIsCreateModalVisible(false);
   };
-  console.log(data);
 
   useEffect(() => {
     setDataSource(data);
