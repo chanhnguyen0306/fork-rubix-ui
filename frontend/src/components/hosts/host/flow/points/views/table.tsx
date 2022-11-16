@@ -149,10 +149,15 @@ export const FlowPointsTable = (props: any) => {
             : MassEditTitle(key, schema),
         dataIndex: key,
         key: key,
-        sorter: (a: any, b: any) =>
-          schema[key].type === "string"
-            ? a[key].localeCompare(b[key])
-            : a[key] - b[key],
+        sorter: (a: any, b: any) => {
+          if (schema[key].type === "string") {
+            a[key] = a[key] ?? ""; //case item not have a[key] property
+            b[key] = b[key] ?? "";
+            return a[key].localeCompare(a[key]);
+          } else {
+            a[key] - b[key];
+          }
+        },
       };
     });
 
