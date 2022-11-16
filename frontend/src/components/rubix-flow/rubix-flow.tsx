@@ -98,6 +98,7 @@ const Flow = (props: any) => {
 
   const { DragSelection } = useSelectionContainer({
     onSelectionChange: (box: Box) => {
+      if (lastConnectStart) return;
       const selectedEdgeIds: string[] = [];
       selectableBoxes.current.forEach((item: SelectableBoxType) => {
         if (item.rect && boxesIntersect(box, item.rect)) {
@@ -309,6 +310,8 @@ const Flow = (props: any) => {
         }
       }
     }
+
+    setLastConnectStart(undefined);
   };
 
   const closeNodePicker = () => {
