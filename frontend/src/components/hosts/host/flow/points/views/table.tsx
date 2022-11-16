@@ -16,6 +16,7 @@ import {
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
+import MassEdit from "../../../../../../common/mass-edit";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
@@ -25,11 +26,11 @@ import { CreateModal } from "./create";
 import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
+import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
 import PluginUUIDs = backend.PluginUUIDs;
-import MassEdit from "../../../../../../common/mass-edit";
 
 export const FlowPointsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
@@ -70,6 +71,7 @@ export const FlowPointsTable = (props: any) => {
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
+      localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedRows));
     },
   };
 
@@ -134,7 +136,6 @@ export const FlowPointsTable = (props: any) => {
           );
         },
       },
-
       ...FLOW_POINT_HEADERS,
     ] as any;
 
@@ -219,8 +220,10 @@ export const FlowPointsTable = (props: any) => {
   };
 
   const handleMassEdit = (updateData: any) => {
+    const selectedItems =
+      JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
     const promises = [];
-    for (let item of dataSource) {
+    for (let item of selectedItems) {
       item = { ...item, ...updateData };
       promises.push(edit(item));
     }
@@ -232,8 +235,6 @@ export const FlowPointsTable = (props: any) => {
   };
 
   const showEditModal = (item: Point) => {
-    console.log(item);
-
     setCurrentItem(item);
     setIsEditModalVisible(true);
   };
@@ -257,6 +258,9 @@ export const FlowPointsTable = (props: any) => {
 
   useEffect(() => {
     setPlugin();
+    return () => {
+      localStorage.removeItem(SELECTED_ITEMS);
+    };
   }, []);
 
   useEffect(() => {

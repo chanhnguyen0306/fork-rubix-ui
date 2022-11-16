@@ -21,6 +21,7 @@ import { CreateModal } from "./create";
 import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 import MassEdit from "../../../../../../common/mass-edit";
+import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 
 import Device = model.Device;
 import UUIDs = backend.UUIDs;
@@ -57,6 +58,7 @@ export const FlowDeviceTable = (props: any) => {
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
+      localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedRows));
     },
   };
 
@@ -208,8 +210,10 @@ export const FlowDeviceTable = (props: any) => {
   };
 
   const handleMassEdit = (updateData: any) => {
+    const selectedItems =
+      JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
     const promises = [];
-    for (let item of dataSource) {
+    for (let item of selectedItems) {
       item = { ...item, ...updateData };
       promises.push(edit(item));
     }
@@ -241,6 +245,12 @@ export const FlowDeviceTable = (props: any) => {
   useEffect(() => {
     setDataSource(data);
   }, [data.length]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem(SELECTED_ITEMS);
+    };
+  }, []);
 
   useEffect(() => {
     getSchema();

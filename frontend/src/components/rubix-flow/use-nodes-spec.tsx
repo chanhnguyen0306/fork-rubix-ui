@@ -5,7 +5,7 @@ import { FlowFactory } from "./factory";
 import { InputSocketSpecJSON, NodeSpecJSON, OutputSocketSpecJSON } from "./lib";
 
 export const SPEC_JSON = "spec-json";
-export const NODES_JSON = "nodes-json";
+export const SELECTED_ITEMS = "selected-items";
 
 const _nodesSpec = JSON.parse("" + localStorage.getItem(SPEC_JSON)) || [];
 

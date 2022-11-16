@@ -2,6 +2,8 @@ import { Button, Modal } from "antd";
 import { HighlightOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { JsonForm } from "./json-schema-form";
+import { SELECTED_ITEMS } from "../components/rubix-flow/use-nodes-spec";
+import { openNotificationWithIcon } from "../utils/utils";
 
 const MassEdit = (props: any) => {
   const { handleOk, fullSchema, keyName } = props;
@@ -10,8 +12,13 @@ const MassEdit = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const openModal = async (e: React.MouseEvent) => {
+  const openModal = async (e: any) => {
     e.stopPropagation();
+    const selectedItems =
+      JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
+    if (selectedItems.length === 0) {
+      return openNotificationWithIcon("warning", `please select at least one`);
+    }
     const schema = { properties: { [keyName]: fullSchema[keyName] } };
     const formData = { [keyName]: fullSchema[keyName].default || null };
     setSchema(schema);
