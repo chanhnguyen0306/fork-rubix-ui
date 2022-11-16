@@ -247,8 +247,9 @@ export const FlowDeviceTable = (props: any) => {
   }, [data.length]);
 
   useEffect(() => {
+    localStorage.removeItem(SELECTED_ITEMS); //run when init component
     return () => {
-      localStorage.removeItem(SELECTED_ITEMS);
+      localStorage.removeItem(SELECTED_ITEMS); //run when destroy component
     };
   }, []);
 

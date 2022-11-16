@@ -1,6 +1,6 @@
 import { Button, Modal } from "antd";
 import { HighlightOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import React, { useState } from "react";
 import { JsonForm } from "./json-schema-form";
 import { SELECTED_ITEMS } from "../components/rubix-flow/use-nodes-spec";
 import { openNotificationWithIcon } from "../utils/utils";
@@ -12,7 +12,7 @@ const MassEdit = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const openModal = async (e: any) => {
+  const openModal = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const selectedItems =
       JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];

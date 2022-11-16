@@ -257,6 +257,7 @@ export const FlowPointsTable = (props: any) => {
   };
 
   useEffect(() => {
+    localStorage.removeItem(SELECTED_ITEMS);
     setPlugin();
     return () => {
       localStorage.removeItem(SELECTED_ITEMS);
