@@ -178,7 +178,6 @@ export const FlowDeviceTable = (props: any) => {
           let text = pluginName.toUpperCase();
           return <Tag color={colour}>{text}</Tag>;
         },
-        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
       },
       {
         title: "Actions",
