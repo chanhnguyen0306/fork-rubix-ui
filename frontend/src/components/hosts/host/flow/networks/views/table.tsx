@@ -98,19 +98,12 @@ export const FlowNetworkTable = () => {
     },
   };
 
-  useEffect(() => {
-    fetchNetworks();
-  }, []);
-
-  useEffect(() => {
-    setDataSource(networks);
-  }, [networks.length]);
-
   const fetchNetworks = async () => {
     try {
       setIsFetching(true);
       const res = (await networkFactory.GetAll(false)) || [];
       setNetworks(res);
+      setDataSource(res);
     } catch (error) {
     } finally {
       setIsFetching(false);
@@ -175,6 +168,10 @@ export const FlowNetworkTable = () => {
       .replace(":networkUUID", networkUUID)
       .replace(":pluginName", pluginName);
   };
+
+  useEffect(() => {
+    fetchNetworks();
+  }, []);
 
   return (
     <>
