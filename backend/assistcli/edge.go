@@ -5,6 +5,7 @@ import (
 	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 )
 
 // EdgeProductInfo get edge product info
@@ -91,4 +92,11 @@ func (inst *Client) EdgeServiceMassStatus(hostIDName string, body *installer.Sys
 	}
 	data := resp.Result().(*[]installer.AppSystemState)
 	return *data, nil
+}
+
+func (inst *Client) EdgeSystemRestartFlowFramework(hostIDName string) (*installer.SystemResponse, error) {
+	return inst.EdgeSystemCtlAction(hostIDName, &installer.SystemCtlBody{
+		ServiceName: constants.FlowFrameworkService,
+		Action:      "restart",
+	})
 }

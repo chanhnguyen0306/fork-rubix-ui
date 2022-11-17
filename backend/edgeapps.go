@@ -13,224 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// EdgeDeviceInfoAndApps list the installed apps
-func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
-	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return edgeAppsAndService
-}
-
-// EdgeUnInstallApp uninstall an app
-func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *systemd.UninstallResponse {
-	resp, err := inst.edgeUnInstallApp(connUUID, hostUUID, appName)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return resp
-}
-
-type EdgeInstallAppBulk struct {
-	AppName  string `json:"app_name"`
-	Version  string `json:"version"`
-	Arch     string `json:"arch"`
-	HostUUID string `json:"host_uuid"`
-}
-
-type EdgeInstallAppsBulk struct {
-	AppsList []EdgeInstallAppBulk `json:"apps_list"`
-}
-
-func (inst *App) EdgeInstallAppsBulk(connUUID, releaseVersion string, appsList EdgeInstallAppsBulk) {
-	for _, app := range appsList.AppsList {
-		inst.EdgeInstallApp(connUUID, app.HostUUID, app.AppName, app.Version, releaseVersion)
-	}
-}
-
-// EdgeInstallApp install an app
-// if app is FF then we need to upgrade all the plugins
-// if app has plugins to upload the plugins and restart FF
-func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *systemd.InstallResponse {
-	var arch string
-	getProduct := inst.EdgeProductInfo(connUUID, hostUUID) // TODO remove this as arch is meant to be provided by the UI
-	if getProduct != nil {
-		arch = getProduct.Arch
-	} else {
-		inst.uiErrorMessage(fmt.Sprintf("failed to find device app: %s arch: %s", appName, arch))
-		return nil
-	}
-	log.Infof("start app install app: %s version: %s arch: %s", appName, appVersion, arch)
-	releaseVersion = getProduct.FlowVersion // TODO UI needs to pass this in
-
-	err := inst.writeAppConfig(connUUID, hostUUID, appName)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("write app config: %s", err.Error()))
-	}
-
-	if releaseVersion == "" {
-		release, err := inst.getLatestRelease()
-		if release == "" || err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version"))
-			return nil
-		}
-		releaseVersion = release
-	}
-
-	var lastStep = "5"
-	if releaseVersion == "" {
-		inst.uiErrorMessage("release_version can't be empty")
-		return nil
-	}
-	if appName == "" {
-		inst.uiErrorMessage("app_name can't be empty")
-		return nil
-	}
-	if appVersion == "" {
-		inst.uiErrorMessage("app_version can't be empty")
-		return nil
-	}
-	if arch == "" {
-		inst.uiErrorMessage("arch can't be empty")
-		return nil
-	}
-
-	release, err := inst.getReleaseByVersion(releaseVersion)
-	if release == nil {
-		inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version: %s", releaseVersion))
-		return nil
-	}
-	var appHasPlugins bool
-	var doNotValidateArch bool
-	var moveExtractedFileToNameApp bool
-	var moveOneLevelInsideFileToOutside bool
-	for _, app := range release.Apps {
-		if app.Name == appName {
-			doNotValidateArch = app.DoNotValidateArch
-			moveExtractedFileToNameApp = app.MoveExtractedFileToNameApp
-			moveOneLevelInsideFileToOutside = app.MoveOneLevelInsideFileToOutside
-			for _, plg := range app.PluginDependency {
-				appHasPlugins = true
-				inst.uiSuccessMessage(fmt.Sprintf("plugin will be installed (plugin: %s)", plg))
-			}
-		}
-	}
-	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion) // check if app is in the appStore and if not then try and download it
-	if err != nil {
-		inst.uiSuccessMessage(fmt.Sprintf("app: %s not found in appStore so download", appName))
-		token, err := inst.GetGitToken(constants.SettingUUID, false)
-		if err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
-			return nil
-		}
-		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
-	}
-	product := getProduct.Product
-	log.Println("Install App > add check to make its correct arch and product")
-	if product == "" {
-		inst.uiErrorMessage("product can't be empty")
-		return nil
-	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
-
-	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
-	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		inst.uiErrorMessage(err.Error())
-		return nil
-	}
-	assistUpload, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, doNotValidateArch)
-	if err != nil {
-		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
-		inst.uiErrorMessage(err.Error())
-		return nil
-	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) uploaded app to rubix-assist, app_name: %s", lastStep, assistUpload.Name))
-
-	upload := installer.Upload{
-		Name:                            appName,
-		Version:                         appVersion,
-		Product:                         product,
-		Arch:                            arch,
-		DoNotValidateArch:               doNotValidateArch,
-		MoveExtractedFileToNameApp:      moveExtractedFileToNameApp,
-		MoveOneLevelInsideFileToOutside: moveOneLevelInsideFileToOutside,
-	}
-	uploadApp, err := assistClient.EdgeUploadApp(hostUUID, &upload)
-	if err != nil {
-		log.Errorf("Install App > upload app to edge failed, app_name: %s, err: %s", appName, err.Error())
-		inst.uiErrorMessage(err.Error())
-		return nil
-	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded app to rubix-edge, app_name: %s", lastStep, uploadApp.Name))
-
-	uploadEdgeService, err := inst.uploadEdgeService(assistClient, hostUUID, appName, appVersion, releaseVersion)
-	if err != nil {
-		log.Errorf("Install App > upload linux service to edge failed, app_name: %s", appName)
-		inst.uiErrorMessage(err.Error())
-		return nil
-	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) uploaded linux-service to rubix-edge, app_name: %s", lastStep, uploadEdgeService.UploadedFile))
-
-	serviceFile := uploadEdgeService.UploadedFile
-	installEdgeService, err := assistClient.InstallEdgeService(hostUUID, &installer.Install{
-		Name:    appName,
-		Version: appVersion,
-		Source:  serviceFile,
-	})
-	if err != nil {
-		log.Errorf("Install App > install edge service failed, app_name: %s, err: %s", appName, err.Error())
-		inst.uiErrorMessage(err.Error())
-		return nil
-	}
-
-	if appHasPlugins { // install the plugins
-		for _, app := range release.Apps {
-			if app.Name == appName {
-				for _, plg := range app.PluginDependency {
-					appHasPlugins = true
-					inst.EdgeUploadPlugin(connUUID, hostUUID, &appstore.Plugin{
-						Name:    plg,
-						Arch:    arch,
-						Version: releaseVersion,
-					}, false)
-				}
-			}
-		}
-		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
-		if err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("restart flow-framework, err: %s", err.Error()))
-		} else {
-			inst.uiSuccessMessage(fmt.Sprintf("restart flow-framework, msg: %s", restart.Message))
-		}
-	}
-
-	if appName == constants.FlowFramework { // if app is FF then update all the plugins
-		inst.uiSuccessMessage(fmt.Sprintf("update all plugins for flow-framework"))
-		_, err := inst.EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion)
-		if err != nil {
-			return nil
-		}
-		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
-		if err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("restart flow-framework, err: %s", err.Error()))
-		} else {
-			inst.uiSuccessMessage(fmt.Sprintf("restart flow-framework, msg: %s", restart.Message))
-		}
-	}
-
-	inst.uiSuccessMessage(fmt.Sprintf("(step 5 of %s) installed successfully, app_name: %s", lastStep, appName))
-	return installEdgeService
-}
-
-type EdgeDeviceInfo struct {
-	Product                 *installer.Product        `json:"product,omitempty"`
-	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
-	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
-}
-
 type InstalledApps struct {
 	AppName             string `json:"app_name,omitempty"`
 	Version             string `json:"version,omitempty"`
@@ -252,21 +34,230 @@ type AppsAvailableForInstall struct {
 	LatestVersion string `json:"latest_version,omitempty"`
 }
 
+type EdgeDeviceInfo struct {
+	Product                 *installer.Product        `json:"product,omitempty"`
+	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
+	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
+}
+
+// EdgeInstallApp install an app
+// if app is FF then we need to upgrade all the plugins
+// if app has plugins to upload the plugins and restart FF
+func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *systemd.InstallResponse {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		inst.uiErrorMessage(err)
+		return nil
+	}
+
+	var arch string
+	productInfo, err := assistClient.EdgeProductInfo(hostUUID)
+	if err != nil {
+		inst.uiErrorMessage(err)
+		return nil
+	}
+	arch = productInfo.Arch
+
+	log.Infof("start app install app: %s version: %s arch: %s", appName, appVersion, arch)
+	releaseVersion = productInfo.FlowVersion
+
+	_, err = assistClient.EdgeWriteConfig(hostUUID, appName)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("write app config: %s", err.Error()))
+	}
+
+	if releaseVersion == "" {
+		release, err := inst.getLatestRelease()
+		if release == "" || err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version"))
+			return nil
+		}
+		releaseVersion = release
+	}
+
+	if releaseVersion == "" {
+		inst.uiErrorMessage("release_version can't be empty")
+		return nil
+	}
+	if appName == "" {
+		inst.uiErrorMessage("app_name can't be empty")
+		return nil
+	}
+	if appVersion == "" {
+		inst.uiErrorMessage("app_version can't be empty")
+		return nil
+	}
+	if arch == "" {
+		inst.uiErrorMessage("arch can't be empty")
+		return nil
+	}
+
+	var lastStep = "5"
+	release, err := inst.getReleaseByVersion(releaseVersion)
+	if release == nil {
+		inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version: %s", releaseVersion))
+		return nil
+	}
+	var appHasPlugins bool
+	var doNotValidateArch bool
+	var moveExtractedFileToNameApp bool
+	var moveOneLevelInsideFileToOutside bool
+	for _, app := range release.Apps {
+		if app.Name == appName {
+			doNotValidateArch = app.DoNotValidateArch
+			moveExtractedFileToNameApp = app.MoveExtractedFileToNameApp
+			moveOneLevelInsideFileToOutside = app.MoveOneLevelInsideFileToOutside
+			for _, plg := range app.PluginDependency {
+				appHasPlugins = true
+				inst.uiSuccessMessage(fmt.Sprintf("plugin will be installed (plugin: %s)", plg))
+			}
+		}
+	}
+	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion)
+	if err != nil {
+		inst.uiSuccessMessage(fmt.Sprintf("%s app not found in app store so downloading it", appName))
+		token, err := inst.GetGitToken(constants.SettingUUID, false)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
+			return nil
+		}
+		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
+	}
+	product := productInfo.Product
+	log.Println("Install App > add check to make its correct arch and product")
+	if product == "" {
+		inst.uiErrorMessage("product can't be empty")
+		return nil
+	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
+
+	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
+	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, doNotValidateArch)
+	if err != nil {
+		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
+		inst.uiErrorMessage(err.Error())
+		return nil
+	}
+	if skip {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s already exists on rubix-assist server", lastStep, appName))
+	} else {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s is uploaded app to rubix-assist server", lastStep, appName))
+	}
+
+	upload := installer.Upload{
+		Name:                            appName,
+		Version:                         appVersion,
+		Product:                         product,
+		Arch:                            arch,
+		DoNotValidateArch:               doNotValidateArch,
+		MoveExtractedFileToNameApp:      moveExtractedFileToNameApp,
+		MoveOneLevelInsideFileToOutside: moveOneLevelInsideFileToOutside,
+	}
+	uploadApp, err := assistClient.EdgeUploadApp(hostUUID, &upload)
+	if err != nil {
+		log.Errorf("Install App > app upload to rubix-edge is failed: %s", appName)
+		inst.uiErrorMessage(err.Error())
+		return nil
+	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) %s app is uploaded to rubix-edge", lastStep, uploadApp.Name))
+
+	uploadEdgeService, err := inst.uploadEdgeService(assistClient, hostUUID, appName, appVersion, releaseVersion)
+	if err != nil {
+		log.Errorf("Install App > %s app's linux service upload to rubix-edge is failed", appName)
+		inst.uiErrorMessage(err.Error())
+		return nil
+	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app's linux service is uploaded to rubix-edge", lastStep, uploadEdgeService.UploadedFile))
+
+	serviceFile := uploadEdgeService.UploadedFile
+	installEdgeService, err := assistClient.InstallEdgeService(hostUUID, &installer.Install{
+		Name:    appName,
+		Version: appVersion,
+		Source:  serviceFile,
+	})
+	if err != nil {
+		log.Errorf("Install App > %s app installation got failed", appName)
+		inst.uiErrorMessage(err.Error())
+		return nil
+	}
+
+	if appHasPlugins { // install the plugins
+		for _, app := range release.Apps {
+			if app.Name == appName {
+				for _, plg := range app.PluginDependency {
+					inst.EdgeUploadPlugin(assistClient, hostUUID, &appstore.Plugin{
+						Name:    plg,
+						Arch:    arch,
+						Version: releaseVersion,
+					}, false)
+				}
+			}
+		}
+		restart, err := assistClient.EdgeSystemRestartFlowFramework(hostUUID)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("error on restarting flow-framework: %s", err.Error()))
+		} else {
+			inst.uiSuccessMessage(fmt.Sprintf("successfully restarted flow-framework: %s", restart.Message))
+		}
+	}
+
+	if appName == constants.FlowFramework { // if app is FF then update all the plugins
+		inst.uiSuccessMessage(fmt.Sprintf("need to update all plugins for flow-framework"))
+		err := inst.edgeUpgradePlugins(assistClient, hostUUID, releaseVersion)
+		if err != nil {
+			return nil
+		}
+		restart, err := assistClient.EdgeSystemRestartFlowFramework(hostUUID)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("error on restarting flow-framework: %s", err.Error()))
+		} else {
+			inst.uiSuccessMessage(fmt.Sprintf("successfully restarted flow-framework: %s", restart.Message))
+		}
+	}
+
+	inst.uiSuccessMessage(fmt.Sprintf("(step 5 of %s) %s installed successfully", lastStep, appName))
+	return installEdgeService
+}
+
+// EdgeUnInstallApp uninstall an app
+func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *systemd.UninstallResponse {
+	resp, err := inst.edgeUnInstallApp(connUUID, hostUUID, appName)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return resp
+}
+
+// EdgeDeviceInfoAndApps list the installed apps
+func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
+	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		return nil
+	}
+	return edgeAppsAndService
+}
+
 // edgeDeviceInfoAndApps get the complete app info of the device, installed apps, what apps can be installed and the product info
 func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
-	pro, err := inst.edgeProductInfo(connUUID, hostUUID)
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return nil, err
+	}
+	product, err := assistClient.EdgeProductInfo(hostUUID)
 	if err != nil {
 		return nil, err
 	}
 	if releaseVersion == "" {
-		releaseVersion = pro.FlowVersion
+		releaseVersion = product.FlowVersion
 	}
-	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, pro)
+	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, product)
 	if err != nil {
 		return nil, err
 	}
 	return &EdgeDeviceInfo{
-		Product:                 pro,
+		Product:                 product,
 		InstalledApps:           installed.InstalledApps,
 		AppsAvailableForInstall: installed.AppsAvailableForInstall,
 	}, nil

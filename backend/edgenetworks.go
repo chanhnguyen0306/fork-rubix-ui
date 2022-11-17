@@ -78,14 +78,14 @@ type RcNetworkBody struct {
 }
 
 func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetworkBody) {
-	info, err := inst.edgeProductInfo(connUUID, hostUUID)
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		return
+		inst.uiErrorMessage(err)
 	}
-	product := info.Product
+	pro, err := assistClient.EdgeProductInfo(hostUUID)
+	product := pro.Product
 	if rcNetworkBody != nil {
 		inst.uiErrorMessage(fmt.Sprintf("body can not be empty"))
-
 	}
 	if rcNetworkBody.Eth0Ip != "" {
 		inst.uiSuccessMessage(fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth0Ip))

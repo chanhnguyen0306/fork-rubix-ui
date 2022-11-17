@@ -47,14 +47,14 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 		return err
 	}
 
-	if err := assistClient.CheckAppExistence(appName, deviceType.DeviceType, version); err != nil {
-		_, err = inst.assistAddUploadApp(assistClient, appName, version, deviceType.DeviceType, true)
-		if err != nil {
-			log.Errorf(fmt.Sprintf("(step 3 of %s) failed to upload rubix-edge to rubix-assist server", lastStep))
-		}
-		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded rubix-edge to rubix-assist server", lastStep))
-	} else {
+	_, skip, err := inst.assistAddUploadApp(assistClient, appName, version, deviceType.DeviceType, true)
+	if err != nil {
+		log.Errorf(fmt.Sprintf("(step 3 of %s) failed to upload rubix-edge to rubix-assist server", lastStep))
+	}
+	if skip {
 		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) rubix-edge already exists on rubix-assist server", lastStep))
+	} else {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded rubix-edge to rubix-assist server", lastStep))
 	}
 
 	_, err = assistClient.EdgeBiosRubixEdgeUpload(hostUUID, assistmodel.FileUpload{Arch: deviceType.DeviceType, Version: version})
@@ -74,7 +74,7 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 
 func (inst *App) downloadRubixEdge(token, appName, version, arch string, cleanDownload bool) error {
 	log.Info(fmt.Sprintf("try to download app: %s version: %s", appName, version))
-	_, err := inst.appStore.GitDownloadZip(token, appName, version, appName, arch, version, false, false, cleanDownload)
+	_, err := inst.appStore.GitDownloadZip(token, appName, version, appName, arch, false, false, cleanDownload)
 	if err != nil {
 		return err
 	}

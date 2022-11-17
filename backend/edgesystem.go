@@ -103,14 +103,6 @@ func (inst *App) edgeServiceDisable(connUUID, hostUUID, appName string) (*instal
 	return resp, nil
 }
 
-func (inst *App) edgeRestartFlowFramework(connUUID, hostUUID string) (*installer.SystemResponse, error) {
-	restart, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, &installer.SystemCtlBody{ // restart flow to reload the plugins
-		ServiceName: "nubeio-flow-framework.service",
-		Action:      "restart",
-	})
-	return restart, err
-}
-
 func (inst *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *installer.SystemCtlBody) (*installer.SystemResponse, error) {
 	if body.ServiceName == "" && body.AppName == "" {
 		return nil, errors.New("app_name & service_name both can not be empty")
