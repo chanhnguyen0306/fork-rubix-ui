@@ -262,7 +262,7 @@ export const FlowPointsTable = (props: any) => {
   };
 
   useEffect(() => {
-    localStorage.removeItem(SELECTED_ITEMS);
+    localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedUUIDs));
     setPlugin();
     return () => {
       localStorage.removeItem(SELECTED_ITEMS);
@@ -271,7 +271,7 @@ export const FlowPointsTable = (props: any) => {
 
   useEffect(() => {
     return setDataSource(data);
-  }, [data.length]);
+  }, [data]);
 
   useEffect(() => {
     getSchema(pluginName);

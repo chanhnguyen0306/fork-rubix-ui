@@ -248,10 +248,10 @@ export const FlowDeviceTable = (props: any) => {
 
   useEffect(() => {
     setDataSource(data);
-  }, [data.length]);
+  }, [data]);
 
   useEffect(() => {
-    localStorage.removeItem(SELECTED_ITEMS); //run when init component
+    localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedUUIDs)); //run when init component
     return () => {
       localStorage.removeItem(SELECTED_ITEMS); //run when destroy component
     };
