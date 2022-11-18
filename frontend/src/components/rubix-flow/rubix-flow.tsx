@@ -249,7 +249,14 @@ const Flow = (props: any) => {
         return item.selected && (isChangeTarget || isChangeSource);
       });
 
-      if (isDragSelected) {
+      const lastHandleId = lastConnectStart.handleId;
+      const isTrueHandleId =
+        handleId &&
+        lastHandleId &&
+        ((handleId.indexOf("in") > -1 && lastHandleId.indexOf("in") > -1) ||
+          (handleId.indexOf("out") > -1 && lastHandleId.indexOf("out") > -1));
+
+      if (isDragSelected && isTrueHandleId) {
         let newEdges;
         if (nodeId) {
           // update selected lines to new node if start and end are same type
@@ -288,6 +295,7 @@ const Flow = (props: any) => {
           lastConnectStart &&
           nodeId &&
           handleId &&
+          !isTrueHandleId &&
           isValidConnection(nodes, lastConnectStart, { nodeId, handleId })
         ) {
           const isSource = lastConnectStart.handleType === "source" || false;
