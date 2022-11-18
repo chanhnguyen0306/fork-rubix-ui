@@ -36,12 +36,18 @@ export const FlowDeviceTable = (props: any) => {
     networkUUID = "",
     pluginName = "",
   } = useParams();
-  const { data, isFetching, refreshList, pluginUUID } = props;
+  const {
+    data,
+    isFetching,
+    refreshList,
+    pluginUUID,
+    dataSource,
+    setDataSource,
+  } = props;
   const [schema, setSchema] = useState({});
   const [currentItem, setCurrentItem] = useState({});
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
-  const [dataSource, setDataSource] = useState(data);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -213,7 +219,7 @@ export const FlowDeviceTable = (props: any) => {
     );
   };
 
-  const handleMassEdit = (updateData: any) => {
+  const handleMassEdit = async (updateData: any) => {
     const selectedItems =
       JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
     const promises = [];
@@ -222,6 +228,7 @@ export const FlowDeviceTable = (props: any) => {
       promises.push(edit(item));
     }
     Promise.all(promises);
+    refreshList();
   };
 
   const edit = async (item: any) => {
@@ -245,10 +252,6 @@ export const FlowDeviceTable = (props: any) => {
   const closeCreateModal = () => {
     setIsCreateModalVisible(false);
   };
-
-  useEffect(() => {
-    setDataSource(data);
-  }, [data]);
 
   useEffect(() => {
     localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedUUIDs)); //run when init component

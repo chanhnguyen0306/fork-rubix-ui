@@ -16,6 +16,7 @@ import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
 import Device = model.Device;
+import { SELECTED_ITEMS } from "../../../../rubix-flow/use-nodes-spec";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -34,6 +35,7 @@ export const FlowDevices = () => {
   } = useParams();
   const [pluginUUID, setPluginUUID] = useState<any>();
   const [data, setDevices] = useState([] as Device[]);
+  const [dataSource, setDataSource] = useState([] as Device[]);
   const [whoIs, setWhoIs] = useState([] as Device[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
@@ -103,11 +105,27 @@ export const FlowDevices = () => {
       setDevices(devices);
       setPluginUUID(res.plugin_conf_id);
       addPrefix(res.name);
+      setDataSource(devices);
+      setDataLocalStorage(devices); //handle mass edit
     } catch (error) {
       console.log(error);
     } finally {
       setIsFetching(false);
     }
+  };
+
+  const setDataLocalStorage = (list: any) => {
+    const selectedItems = JSON.parse("" + localStorage.getItem(SELECTED_ITEMS));
+    if (!selectedItems || selectedItems.length === 0) return;
+
+    const newSelectedItems = [] as any[];
+    selectedItems.forEach((storedItem: any) => {
+      const updatingItem = list.find(
+        (item: any) => item.uuid === storedItem.uuid
+      );
+      if (updatingItem) newSelectedItems.push(updatingItem);
+    });
+    localStorage.setItem(SELECTED_ITEMS, JSON.stringify(newSelectedItems));
   };
 
   const runWhois = async () => {
@@ -148,6 +166,8 @@ export const FlowDevices = () => {
               data={data}
               pluginUUID={pluginUUID}
               isFetching={isFetching}
+              dataSource={dataSource}
+              setDataSource={setDataSource}
               refreshList={fetch}
             />
           </TabPane>
