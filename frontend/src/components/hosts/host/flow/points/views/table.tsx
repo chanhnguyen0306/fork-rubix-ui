@@ -33,7 +33,6 @@ import UUIDs = backend.UUIDs;
 import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowPointsTable = (props: any) => {
-  const { data, isFetching, refreshList } = props;
   const {
     connUUID = "",
     networkUUID = "",
@@ -41,12 +40,12 @@ export const FlowPointsTable = (props: any) => {
     deviceUUID = "",
     pluginName = "",
   } = useParams();
+  const { data, isFetching, refreshList, dataSource, setDataSource } = props;
   const [pluginUUID, setPluginUUID] = useState<any>();
   const [schema, setSchema] = useState({} as any);
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
-  const [dataSource, setDataSource] = useState(data);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -233,6 +232,7 @@ export const FlowPointsTable = (props: any) => {
       promises.push(edit(item));
     }
     Promise.all(promises);
+    refreshList();
   };
 
   const edit = async (item: any) => {
@@ -268,10 +268,6 @@ export const FlowPointsTable = (props: any) => {
       localStorage.removeItem(SELECTED_ITEMS);
     };
   }, []);
-
-  useEffect(() => {
-    return setDataSource(data);
-  }, [data]);
 
   useEffect(() => {
     getSchema(pluginName);

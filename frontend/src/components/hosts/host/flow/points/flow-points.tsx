@@ -14,9 +14,10 @@ import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 import { BacnetWhoIsTable } from "../bacnet/table";
 import { FlowPointsTable } from "./views/table";
 import { FlowDeviceFactory } from "../devices/factory";
-import Point = model.Point;
 import { useSettings } from "../../../../settings/use-settings";
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+import { setDataLocalStorage } from "../flow-service";
+import Point = model.Point;
 
 const flowDeviceFactory = new FlowDeviceFactory();
 
@@ -39,6 +40,7 @@ export const FlowPoints = () => {
   const { prefixedTitle, addPrefix } = useTitlePrefix("Points");
   const [settings] = useSettings();
   const [data, setPoints] = useState([] as Point[]);
+  const [dataSource, setDataSource] = useState([] as Point[]);
   const [discoveries, setDiscoveries] = useState([] as Point[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
@@ -128,6 +130,8 @@ export const FlowPoints = () => {
     try {
       const res = (await flowPointFactory.GetPointsForDevice(deviceUUID)) || [];
       setPoints(res);
+      setDataSource(res);
+      setDataLocalStorage(res); //handle mass edit
     } catch {
       setIsFetching(false);
     }
@@ -176,8 +180,10 @@ export const FlowPoints = () => {
             <FlowPointsTable
               data={data}
               isFetching={isFetching}
-              refreshList={refresh}
               pluginName={pluginName}
+              dataSource={dataSource}
+              setDataSource={setDataSource}
+              refreshList={refresh}
             />
           </TabPane>
           {pluginName === PLUGINS.bacnetmaster ? (

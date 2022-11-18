@@ -15,8 +15,8 @@ import { FlowNetworkFactory } from "../networks/factory";
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+import { setDataLocalStorage } from "../flow-service";
 import Device = model.Device;
-import { SELECTED_ITEMS } from "../../../../rubix-flow/use-nodes-spec";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -112,20 +112,6 @@ export const FlowDevices = () => {
     } finally {
       setIsFetching(false);
     }
-  };
-
-  const setDataLocalStorage = (list: any) => {
-    const selectedItems = JSON.parse("" + localStorage.getItem(SELECTED_ITEMS));
-    if (!selectedItems || selectedItems.length === 0) return;
-
-    const newSelectedItems = [] as any[];
-    selectedItems.forEach((storedItem: any) => {
-      const updatingItem = list.find(
-        (item: any) => item.uuid === storedItem.uuid
-      );
-      if (updatingItem) newSelectedItems.push(updatingItem);
-    });
-    localStorage.setItem(SELECTED_ITEMS, JSON.stringify(newSelectedItems));
   };
 
   const runWhois = async () => {
