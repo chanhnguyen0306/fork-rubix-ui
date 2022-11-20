@@ -22,7 +22,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { assistmodel, backend, storage } from "../../../../wailsjs/go/models";
+import { model, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import RbTag from "../../../common/rb-tag";
 import {
@@ -50,8 +50,8 @@ import {
   InstallRubixEdgeModal
 } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
-import Host = assistmodel.Host;
-import Location = assistmodel.Location;
+import Host = model.Host;
+import Location = model.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
 

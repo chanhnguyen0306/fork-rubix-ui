@@ -2,9 +2,9 @@ import { Button, message, Modal, Spin, Steps } from "antd";
 import { useEffect, useState } from "react";
 import { Installation } from "./installation";
 import { InstallFactory } from "./factory";
-import { assistmodel } from "../../../../../wailsjs/go/models";
+import { model } from "../../../../../wailsjs/go/models";
 import { Completion } from "./completion";
-import Host = assistmodel.Host;
+import Host = model.Host;
 
 export const InstallRubixEdgeModal = (props: IInstallRubixEdgeModal) => {
   const { isModalVisible, onCloseModal, host, installFactory } = props;

@@ -1,12 +1,12 @@
 import { Descriptions, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { assistmodel } from "../../../../../wailsjs/go/models";
+import { model } from "../../../../../wailsjs/go/models";
 import { HostNetworking } from "../../../edge/system/networking/host-networking";
 import { HostTime } from "../../../edge/system/time/host-time";
 import { HostsFactory } from "../../factory";
 
-import Host = assistmodel.Host;
+import Host = model.Host;
 
 const { TabPane } = Tabs;
 

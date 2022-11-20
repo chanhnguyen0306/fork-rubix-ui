@@ -1,4 +1,4 @@
-import { assistmodel, assistcli, backend } from "../../../wailsjs/go/models";
+import { model, assistcli, backend } from "../../../wailsjs/go/models";
 import {
   AddHost,
   DeleteHost,
@@ -11,8 +11,8 @@ import {
 } from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
 
-import Host = assistmodel.Host;
-import HostSchema = assistmodel.HostSchema;
+import Host = model.Host;
+import HostSchema = model.HostSchema;
 import Response = assistcli.Response;
 import UUIDs = backend.UUIDs;
 
