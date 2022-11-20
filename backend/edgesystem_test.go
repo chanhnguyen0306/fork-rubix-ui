@@ -1,14 +1,14 @@
 package backend
 
 import (
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/model"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
 
 func TestApp_EdgeEdgeCtlAction(t *testing.T) {
 	app := MockNewApp()
-	body := &installer.SystemCtlBody{
+	body := &model.SystemCtlBody{
 		AppName: "flow-framework",
 		Action:  "enable",
 	}
@@ -18,7 +18,7 @@ func TestApp_EdgeEdgeCtlAction(t *testing.T) {
 
 func TestApp_EdgeCtlStatus(t *testing.T) {
 	app := MockNewApp()
-	body := &installer.SystemCtlBody{
+	body := &model.SystemCtlBody{
 		AppName: "flow-framework",
 	}
 	resp := app.EdgeCtlStatus(connection, "rc", body)
@@ -27,7 +27,7 @@ func TestApp_EdgeCtlStatus(t *testing.T) {
 
 func TestApp_EdgeServiceMassStatus(t *testing.T) {
 	app := MockNewApp()
-	body := &installer.SystemCtlBody{
+	body := &model.SystemCtlBody{
 		AppNames: []string{"flow-framework"},
 		Action:   "isInstalled",
 	}

@@ -2,7 +2,7 @@ package assistcli
 
 import (
 	"fmt"
-	model "github.com/NubeIO/rubix-assist/pkg/assistmodel"
+	"github.com/NubeIO/rubix-assist/model"
 )
 
 func (inst *Client) GetTasks() (data []model.Task, response *Response) {

@@ -3,8 +3,8 @@ package backend
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"path"
 )
@@ -31,7 +31,7 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 	return out
 }
 
-func (inst *App) storeGetPluginPath(body *appstore.Plugin) (absPath string, flowPlugin *installer.BuildDetails, err error) {
+func (inst *App) storeGetPluginPath(body *appstore.Plugin) (absPath string, flowPlugin *builds.BuildDetails, err error) {
 	plugins, pluginPath, err := inst.appStore.StoreListPlugins()
 	if err != nil {
 		return "", nil, err

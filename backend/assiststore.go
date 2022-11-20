@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"os"
 	"path"
 )
@@ -22,7 +23,7 @@ func (inst *App) assistAddUploadApp(assistClient *assistcli.Client, appName, ver
 		return nil, false, err
 	}
 	p := inst.appStore.GetAppStoreAppPath(appName, arch, version)
-	buildDetails, err := inst.App.GetBuildZipNameByArch(p, arch, doNotValidateArch)
+	buildDetails, err := builds.GetBuildZipNameByArch(p, arch, doNotValidateArch)
 	if err != nil {
 		return nil, false, err
 	}

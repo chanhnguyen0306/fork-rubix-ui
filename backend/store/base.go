@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/NubeIO/git/pkg/git"
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"os"
 	"path"
 )
@@ -33,10 +32,9 @@ type Store struct {
 
 type AppStore struct {
 	Store *Store
-	App   *installer.App
 }
 
-func New(store *Store, app *installer.App) (*AppStore, error) {
+func New(store *Store) (*AppStore, error) {
 	homeDir, _ := fileutils.HomeDir()
 	if store == nil {
 		return nil, errors.New("store can not be empty")
@@ -69,7 +67,7 @@ func New(store *Store, app *installer.App) (*AppStore, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &AppStore{Store: store, App: app}, nil
+	return &AppStore{Store: store}, nil
 }
 
 func (inst *Store) initMakeAllDirs() error {

@@ -3,6 +3,7 @@ package store
 import (
 	"errors"
 	"github.com/NubeIO/git/pkg/git"
+	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"os"
 )
 
@@ -59,7 +60,7 @@ func (inst *AppStore) gitDownloadZip(token, appName, version, repo, arch string,
 		runDownload = true
 	} else {
 		path_ := inst.GetAppStoreAppPath(appName, arch, version)
-		buildDetails, err := inst.App.GetBuildZipNameByArch(path_, arch, false)
+		buildDetails, err := builds.GetBuildZipNameByArch(path_, arch, false)
 		if err != nil {
 			return nil, err
 		}

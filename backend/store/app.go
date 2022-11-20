@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-files/fileutils"
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/helpers"
 	"io/ioutil"
 	"path"
 )
@@ -35,7 +35,7 @@ func (inst *AppStore) StoreCheckAppAndVersionExists(appName, arch, version strin
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
-	if err := installer.CheckVersion(version); err != nil {
+	if err := helpers.CheckVersion(version); err != nil {
 		return err
 	}
 	p := inst.GetAppStoreAppPath(appName, arch, version)

@@ -2,7 +2,7 @@ package assistcli
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/model"
 	pprint "github.com/NubeIO/rubix-assist/pkg/helpers/print"
 	"github.com/go-resty/resty/v2"
 	"testing"
@@ -21,7 +21,7 @@ func TestClient_EdgeProductInfo(t *testing.T) {
 }
 
 func TestClient_EdgeCtlAction(t *testing.T) {
-	data, err := client.EdgeSystemCtlAction("rc", &installer.SystemCtlBody{
+	data, err := client.EdgeSystemCtlAction("rc", &model.SystemCtlBody{
 		AppName: "flow-framework",
 		Action:  "start",
 	})
@@ -30,7 +30,7 @@ func TestClient_EdgeCtlAction(t *testing.T) {
 }
 
 func TestClient_EdgeCtlStatus(t *testing.T) {
-	data, err := client.EdgeSystemCtlStatus("rc", &installer.SystemCtlBody{
+	data, err := client.EdgeSystemCtlStatus("rc", &model.SystemCtlBody{
 		AppName: "flow-framework",
 		Action:  "isInstalled",
 	})
@@ -39,7 +39,7 @@ func TestClient_EdgeCtlStatus(t *testing.T) {
 }
 
 func TestClient_EdgeServiceMassStatus(t *testing.T) {
-	data, err := client.EdgeServiceMassStatus("rc", &installer.SystemCtlBody{
+	data, err := client.EdgeServiceMassStatus("rc", &model.SystemCtlBody{
 		AppNames: []string{"flow-framewor"},
 		Action:   "isInstalled",
 	})

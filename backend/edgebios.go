@@ -2,7 +2,7 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
+	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	log "github.com/sirupsen/logrus"
 )
@@ -57,13 +57,13 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded rubix-edge to rubix-assist server", lastStep))
 	}
 
-	_, err = assistClient.EdgeBiosRubixEdgeUpload(hostUUID, assistmodel.FileUpload{Arch: deviceType.DeviceType, Version: version})
+	_, err = assistClient.EdgeBiosRubixEdgeUpload(hostUUID, model.FileUpload{Arch: deviceType.DeviceType, Version: version})
 	if err != nil {
 		log.Errorf(fmt.Sprintf("(step 4 of %s) failed to upload rubix-edge to edge device", lastStep))
 		return err
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) uploaded rubix-edge to edge device", lastStep))
-	_, err = assistClient.EdgeBiosRubixEdgeInstall(hostUUID, assistmodel.FileUpload{Arch: deviceType.DeviceType, Version: version})
+	_, err = assistClient.EdgeBiosRubixEdgeInstall(hostUUID, model.FileUpload{Arch: deviceType.DeviceType, Version: version})
 	if err != nil {
 		log.Errorf(fmt.Sprintf("(step 5 of %s) failed to install rubix-edge to edge device", lastStep))
 		return err

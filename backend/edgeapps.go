@@ -3,8 +3,8 @@ package backend
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	"github.com/NubeIO/lib-systemctl-go/systemd"
+	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/systemctl"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
@@ -35,7 +35,7 @@ type AppsAvailableForInstall struct {
 }
 
 type EdgeDeviceInfo struct {
-	Product                 *installer.Product        `json:"product,omitempty"`
+	Product                 *model.Product            `json:"product,omitempty"`
 	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
 	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
 }
@@ -144,7 +144,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s is uploaded app to rubix-assist server", lastStep, appName))
 	}
 
-	upload := installer.Upload{
+	upload := model.Upload{
 		Name:                            appName,
 		Version:                         appVersion,
 		Product:                         product,
@@ -170,7 +170,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app's linux service is uploaded to rubix-edge", lastStep, uploadEdgeService.UploadedFile))
 
 	serviceFile := uploadEdgeService.UploadedFile
-	installEdgeService, err := assistClient.InstallEdgeService(hostUUID, &installer.Install{
+	installEdgeService, err := assistClient.InstallEdgeService(hostUUID, &model.Install{
 		Name:    appName,
 		Version: appVersion,
 		Source:  serviceFile,
@@ -264,7 +264,7 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string
 }
 
 // edgeAppsInstalledVersions list the installed apps on the edge device and what is available for install
-func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *installer.Product) (*EdgeDeviceInfo, error) {
+func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *model.Product) (*EdgeDeviceInfo, error) {
 	installedApps, err := inst.edgeInstalledApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
@@ -362,7 +362,7 @@ func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, 
 }
 
 // edgeListApps apps that are in the app dir
-func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]installer.AppsStatus, error) {
+func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]model.AppsStatus, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err

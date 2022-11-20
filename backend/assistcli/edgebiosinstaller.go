@@ -3,12 +3,11 @@ package assistcli
 import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/model"
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/edgebioscli/ebmodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 )
 
-func (inst *Client) EdgeBiosRubixEdgeUpload(hostIDName string, upload assistmodel.FileUpload) (*model.Message, error) {
+func (inst *Client) EdgeBiosRubixEdgeUpload(hostIDName string, upload model.FileUpload) (*model.Message, error) {
 	url := fmt.Sprintf("/api/eb/re/upload")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
@@ -22,7 +21,7 @@ func (inst *Client) EdgeBiosRubixEdgeUpload(hostIDName string, upload assistmode
 	return resp.Result().(*model.Message), nil
 }
 
-func (inst *Client) EdgeBiosRubixEdgeInstall(hostIDName string, upload assistmodel.FileUpload) (*model.Message, error) {
+func (inst *Client) EdgeBiosRubixEdgeInstall(hostIDName string, upload model.FileUpload) (*model.Message, error) {
 	url := fmt.Sprintf("/api/eb/re/install")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
