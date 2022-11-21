@@ -1,4 +1,4 @@
-import { OnConnectStartParams } from "react-flow-renderer";
+import { Edge, OnConnectStartParams } from "react-flow-renderer/nocss";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 type LastConnectParams = {
@@ -36,4 +36,13 @@ const getNodeType = (node: NodeInterface, handleId: string) => {
     nodeHandle = node?.data?.out.find((item: any) => item.pin === handleId);
   }
   return nodeHandle && nodeHandle.dataType;
+};
+
+/* Max one connection per input */
+export const isInputExistConnection = (
+  edges: Edge[],
+  connectionTarget: string,
+  param: "target" | "source" = "target"
+) => {
+  return !!edges.find((edge) => edge[param] === connectionTarget);
 };

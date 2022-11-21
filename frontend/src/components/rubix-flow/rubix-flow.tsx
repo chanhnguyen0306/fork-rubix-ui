@@ -52,7 +52,7 @@ import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
 import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
-import { isValidConnection } from "./util/isCanConnection";
+import { isValidConnection, isInputExistConnection } from "./util/isCanConnection";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -100,6 +100,7 @@ const Flow = (props: any) => {
     (connection: Connection) => {
       if (connection.source === null) return;
       if (connection.target === null) return;
+      if ( isInputExistConnection(edges, connection.target)) return;
 
       const newEdge = {
         id: generateUuid(),
@@ -115,7 +116,7 @@ const Flow = (props: any) => {
         },
       ]);
     },
-    [onEdgesChange]
+    [onEdgesChange, edges]
   );
 
   const handleAddNode = useCallback(
@@ -159,15 +160,20 @@ const Flow = (props: any) => {
         (node) => node.id === lastConnectStart.nodeId
       );
       if (originNode === undefined) return;
+      
+      const newEdge = calculateNewEdge(
+        originNode,
+        nodeType,
+        newNode.id,
+        lastConnectStart
+      )
+
+      if (isInputExistConnection(edges, newEdge.target)) return;
+
       onEdgesChange([
         {
           type: "add",
-          item: calculateNewEdge(
-            originNode,
-            nodeType,
-            newNode.id,
-            lastConnectStart
-          ),
+          item: newEdge,
         },
       ]);
     },
@@ -256,11 +262,15 @@ const Flow = (props: any) => {
           const isSource = lastConnectStart.handleType === "source" || false;
           const conNodeId = lastConnectStart.nodeId || "";
           const conHandleId = lastConnectStart.handleId || "";
+          const target = !isSource ? conNodeId : nodeId;
+
+          if (isInputExistConnection(edges, target)) return;
+
           const newEdge = {
             id: generateUuid(),
             source: isSource ? conNodeId : nodeId,
             sourceHandle: isSource ? conHandleId : handleId,
-            target: !isSource ? conNodeId : nodeId,
+            target: target,
             targetHandle: !isSource ? conHandleId : handleId,
           };
 
