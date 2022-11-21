@@ -124,6 +124,32 @@ const AddNodeComponent = ({
   );
 };
 
+const HelpComponent = ({ node, onClose }: any) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    onClose();
+  };
+
+  return (
+    <>
+      <div
+        key="help"
+        className="cursor-pointer ant-menu-item"
+        onClick={openModal}
+      >
+        Help
+      </div>
+      <NodeHelpModal node={node} open={isModalVisible} onClose={closeModal} />
+    </>
+  );
+};
+
 export const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
   allowSettings: false,
   type: "",
@@ -152,10 +178,6 @@ const NodeMenu = ({
 
   const openSettingsModal = () => {
     setIsModalVisible(true);
-  };
-
-  const handleToggleHelpModal = () => {
-    setIsShowHelpModal((p) => !p);
   };
 
   const handleTogglePayload = () => {
@@ -232,13 +254,7 @@ const NodeMenu = ({
           >
             Set Name
           </div>
-          <div
-            key="help"
-            className="cursor-pointer ant-menu-item"
-            onClick={handleToggleHelpModal}
-          >
-            Help
-          </div>
+          <HelpComponent node={node} onClose={onClose} />
         </div>
       )}
       {isShowSetting && (
@@ -248,11 +264,7 @@ const NodeMenu = ({
           onCloseModal={onClose}
         />
       )}
-      <NodeHelpModal
-        node={node}
-        open={isShowHelpModal}
-        onClose={() => setIsShowHelpModal(false)}
-      />
+
       {nodeType.allowPayload && (
         <SetPayloadModal
           node={node}

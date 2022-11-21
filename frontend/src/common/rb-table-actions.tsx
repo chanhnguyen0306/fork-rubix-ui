@@ -1,7 +1,7 @@
 import { Button, Popconfirm } from "antd";
 import {
   PlusOutlined,
-  RedoOutlined,
+  ReloadOutlined,
   DeleteOutlined,
   ImportOutlined,
   ExportOutlined,
@@ -9,18 +9,23 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 
-const btn: React.CSSProperties = { margin: "0 6px 10px 0", float: "left" };
+const btn: React.CSSProperties = {
+  margin: "0 6px 10px 0",
+  float: "left",
+  display: "inline-flex",
+};
 
 export const RbAddButton = (props: any) => {
   const { handleClick, disabled, label } = props;
   return (
     <Button
-      className="nube-green white--text"
+      className="rb-btn nube-green white--text"
       onClick={handleClick}
       disabled={disabled}
+      icon={<PlusOutlined />}
       style={btn}
     >
-      <PlusOutlined /> {label ? label : "Create"}
+      {label ? label : "Create"}
     </Button>
   );
 };
@@ -29,12 +34,13 @@ export const RbRefreshButton = (props: any) => {
   const { refreshList, disabled, style = {} } = props;
   return (
     <Button
-      className="nube-primary white--text"
+      className="rb-btn nube-primary white--text"
       onClick={refreshList}
       disabled={disabled}
+      icon={<ReloadOutlined />}
       style={{ ...btn, ...style }}
     >
-      <RedoOutlined /> Refresh
+      Refresh
     </Button>
   );
 };
@@ -43,8 +49,13 @@ export const RbDeleteButton = (props: any) => {
   const { bulkDelete, disabled } = props;
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
-      <Button className="danger white--text" disabled={disabled} style={btn}>
-        <DeleteOutlined /> Delete
+      <Button
+        className="danger white--text"
+        disabled={disabled}
+        icon={<DeleteOutlined />}
+        style={btn}
+      >
+        Delete
       </Button>
     </Popconfirm>
   );
@@ -54,12 +65,13 @@ export const RbImportButton = (props: any) => {
   const { showModal, disabled } = props;
   return (
     <Button
-      className="nube-primary white--text"
+      className="rb-btn nube-primary white--text"
       onClick={showModal}
       disabled={disabled}
+      icon={<ImportOutlined />}
       style={btn}
     >
-      <ImportOutlined /> Import
+      Import
     </Button>
   );
 };
@@ -68,12 +80,13 @@ export const RbExportButton = (props: any) => {
   const { handleExport, disabled } = props;
   return (
     <Button
-      className="export-color white--text"
+      className="rb-btn export-color white--text"
       onClick={handleExport}
       disabled={disabled}
+      icon={<ExportOutlined />}
       style={btn}
     >
-      <ExportOutlined /> Export
+      Export
     </Button>
   );
 };
@@ -82,12 +95,13 @@ export const RbDownloadButton = (props: any) => {
   const { handleClick, disabled } = props;
   return (
     <Button
-      className="download-color white--text"
+      className="rb-btn download-color white--text"
       onClick={handleClick}
       disabled={disabled}
+      icon={<DownloadOutlined />}
       style={btn}
     >
-      <DownloadOutlined /> Download
+      Download
     </Button>
   );
 };
@@ -96,13 +110,14 @@ export const RbRestartButton = (props: any) => {
   const { handleClick, disabled, loading } = props;
   return (
     <Button
-      className="restart-color white--text"
+      className="rb-btn restart-color white--text"
       onClick={handleClick}
       disabled={disabled}
       loading={loading}
+      icon={<PlayCircleOutlined />}
       style={btn}
     >
-      <PlayCircleOutlined /> Restart
+      Restart
     </Button>
   );
 };
