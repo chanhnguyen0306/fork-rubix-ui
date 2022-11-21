@@ -227,7 +227,7 @@ export const FlowDeviceTable = (props: any) => {
       item = { ...item, ...updateData };
       promises.push(edit(item));
     }
-    Promise.all(promises);
+    await Promise.all(promises);
     refreshList();
   };
 

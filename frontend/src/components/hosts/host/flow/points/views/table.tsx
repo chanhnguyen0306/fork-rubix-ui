@@ -223,7 +223,7 @@ export const FlowPointsTable = (props: any) => {
     );
   };
 
-  const handleMassEdit = (updateData: any) => {
+  const handleMassEdit = async (updateData: any) => {
     const selectedItems =
       JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
     const promises = [];
@@ -231,7 +231,7 @@ export const FlowPointsTable = (props: any) => {
       item = { ...item, ...updateData };
       promises.push(edit(item));
     }
-    Promise.all(promises);
+    await Promise.all(promises);
     refreshList();
   };
 

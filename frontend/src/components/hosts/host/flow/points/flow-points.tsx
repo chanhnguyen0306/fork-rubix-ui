@@ -98,7 +98,7 @@ export const FlowPoints = () => {
   ];
 
   useEffect(() => {
-    refresh();
+    fetch();
     flowDeviceFactory.GetOne(false).then((flowDevice) => {
       addPrefix(flowDevice.name);
     });
@@ -127,12 +127,15 @@ export const FlowPoints = () => {
   };
 
   const fetch = async () => {
+    setIsFetching(true);
     try {
       const res = (await flowPointFactory.GetPointsForDevice(deviceUUID)) || [];
       setPoints(res);
       setDataSource(res);
       setDataLocalStorage(res); //handle mass edit
     } catch {
+      setIsFetching(false);
+    } finally {
       setIsFetching(false);
     }
   };
@@ -161,12 +164,6 @@ export const FlowPoints = () => {
     fetch();
   };
 
-  const refresh = async () => {
-    setIsFetching(true);
-    await fetch();
-    setIsFetching(false);
-  };
-
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
@@ -176,14 +173,14 @@ export const FlowPoints = () => {
         <RbxBreadcrumb routes={routes} />
         <Tabs defaultActiveKey={points}>
           <TabPane tab={points} key={points}>
-            <RbRefreshButton refreshList={refresh} />
+            <RbRefreshButton refreshList={fetch} />
             <FlowPointsTable
               data={data}
               isFetching={isFetching}
               pluginName={pluginName}
               dataSource={dataSource}
               setDataSource={setDataSource}
-              refreshList={refresh}
+              refreshList={fetch}
             />
           </TabPane>
           {pluginName === PLUGINS.bacnetmaster ? (
