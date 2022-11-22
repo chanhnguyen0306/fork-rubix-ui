@@ -17,6 +17,7 @@ export type InputSocketProps = {
   value: any | undefined;
   minWidth?: number;
   dataInput?: any;
+  dataOutput?: any;
   onChange: (key: string, value: any) => void;
   onSetWidthInput?: (width: number) => void;
   isHideConnect?: boolean;
@@ -66,6 +67,7 @@ export const InputSocket = ({
   minWidth,
   onSetWidthInput,
   dataInput,
+  dataOutput,
   isHideConnect,
   classnames,
 }: InputSocketProps) => {
@@ -103,10 +105,14 @@ export const InputSocket = ({
   };
 
   const getDataByConnected = (valueCurrent: number | string | boolean) => {
-    if (!connected) return valueCurrent;
+    if (!connected) return `${valueCurrent}`;
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
     const input = dataInput.find((item: { pin: string }) => item.pin === name);
+    if (!input && dataOutput && dataOutput.length > 0) {
+      return dataOutput[0].value;
+    }
+
     if (!input) return valueType === "boolean" ? 1 : "";
 
     if (valueType === "boolean") {
