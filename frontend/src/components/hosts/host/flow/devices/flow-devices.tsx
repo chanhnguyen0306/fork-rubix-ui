@@ -14,9 +14,9 @@ import { BacnetFactory } from "../bacnet/factory";
 import { FlowNetworkFactory } from "../networks/factory";
 import { FlowDeviceFactory } from "./factory";
 import { FlowDeviceTable } from "./views/table";
-
-import Device = model.Device;
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+import { setDataLocalStorage } from "../flow-service";
+import Device = model.Device;
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -35,6 +35,7 @@ export const FlowDevices = () => {
   } = useParams();
   const [pluginUUID, setPluginUUID] = useState<any>();
   const [data, setDevices] = useState([] as Device[]);
+  const [dataSource, setDataSource] = useState([] as Device[]);
   const [whoIs, setWhoIs] = useState([] as Device[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingWhoIs, setIsFetchingWhoIs] = useState(false);
@@ -104,6 +105,8 @@ export const FlowDevices = () => {
       setDevices(devices);
       setPluginUUID(res.plugin_conf_id);
       addPrefix(res.name);
+      setDataSource(devices);
+      setDataLocalStorage(devices); //handle mass edit
     } catch (error) {
       console.log(error);
     } finally {
@@ -149,6 +152,8 @@ export const FlowDevices = () => {
               data={data}
               pluginUUID={pluginUUID}
               isFetching={isFetching}
+              dataSource={dataSource}
+              setDataSource={setDataSource}
               refreshList={fetch}
             />
           </TabPane>

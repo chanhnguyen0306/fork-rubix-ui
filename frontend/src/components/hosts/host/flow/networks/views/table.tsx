@@ -1,4 +1,5 @@
-import { Space, Spin } from "antd";
+import { Space, Spin, Tooltip } from "antd";
+import { FormOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { backend, model } from "../../../../../../../wailsjs/go/models";
@@ -72,16 +73,20 @@ export const FlowNetworkTable = () => {
       key: "actions",
       render: (_: any, network: model.Network) => (
         <Space size="middle">
+          <Tooltip title="Edit">
+            <a
+              onClick={() => {
+                showModal(network);
+              }}
+            >
+              <FormOutlined />
+            </a>
+          </Tooltip>
           <Link to={getNavigationLink(network.uuid, network.plugin_name || "")}>
-            View Devices
+            <Tooltip title="View Devices">
+              <ArrowRightOutlined />
+            </Tooltip>
           </Link>
-          <a // edit
-            onClick={() => {
-              showModal(network);
-            }}
-          >
-            Edit Network
-          </a>
         </Space>
       ),
     },
@@ -93,19 +98,12 @@ export const FlowNetworkTable = () => {
     },
   };
 
-  useEffect(() => {
-    fetchNetworks();
-  }, []);
-
-  useEffect(() => {
-    setDataSource(networks);
-  }, [networks.length]);
-
   const fetchNetworks = async () => {
     try {
       setIsFetching(true);
       const res = (await networkFactory.GetAll(false)) || [];
       setNetworks(res);
+      setDataSource(res);
     } catch (error) {
     } finally {
       setIsFetching(false);
@@ -170,6 +168,10 @@ export const FlowNetworkTable = () => {
       .replace(":networkUUID", networkUUID)
       .replace(":pluginName", pluginName);
   };
+
+  useEffect(() => {
+    fetchNetworks();
+  }, []);
 
   return (
     <>
