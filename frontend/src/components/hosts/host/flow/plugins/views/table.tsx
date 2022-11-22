@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Spin } from "antd";
+import { Button, notification, Spin } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -10,11 +10,13 @@ import { FlowNetworkFactory } from "../../networks/factory";
 import { backend, model } from "../../../../../../../wailsjs/go/models";
 import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
+import { RbButton } from "../../../../../../common/rb-table-actions";
 import { CreateModal } from "./create";
 import { useParams } from "react-router-dom";
 
 import PluginConf = model.PluginConf;
 import PluginUUIDs = backend.PluginUUIDs;
+import { openNotificationWithIcon } from "../../../../../../utils/utils";
 
 export const FlowPluginsTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
@@ -39,28 +41,72 @@ export const FlowPluginsTable = (props: any) => {
     },
   };
 
-  useEffect(() => {
-    fetchPlugins();
-  }, []);
+  const EnablePluginsButton = () => {
+    const enable = async () => {
+      await factory.BulkEnable(pluginsUUIDs);
+      fetchPlugins();
+    };
 
-  useEffect(() => {
-    if (isModalVisible) {
-      getSchema();
-    }
-  }, [pluginsUUIDs, isModalVisible]);
-
-  const showModal = () => {
-    setIsModalVisible(true);
+    return (
+      <RbButton
+        type="primary"
+        text="enable plugins"
+        icon={<PlayCircleOutlined />}
+        onClick={enable}
+      />
+    );
   };
 
-  const enable = async () => {
-    await factory.BulkEnable(pluginsUUIDs);
-    fetchPlugins();
+  const DisablePluginsButton = () => {
+    const disable = async () => {
+      await factory.BulkDisable(pluginsUUIDs);
+      fetchPlugins();
+    };
+
+    return (
+      <RbButton
+        type="ghost"
+        text="disable plugins"
+        onClick={disable}
+        icon={<StopOutlined />}
+      />
+    );
   };
 
-  const disable = async () => {
-    await factory.BulkDisable(pluginsUUIDs);
-    fetchPlugins();
+  const AddNetworkButton = () => {
+    const showModal = () => {
+      setIsModalVisible(true);
+    };
+
+    return (
+      <RbButton
+        type="ghost"
+        text="add network"
+        onClick={showModal}
+        icon={<PlusOutlined />}
+      />
+    );
+  };
+
+  const InstallButton = () => {
+    const install = async () => {
+      if (pluginsUUIDs.length !== 1)
+        return openNotificationWithIcon("warning", `please select ONE plugin`);
+      const plugin = pluginsUUIDs[0] as any;
+      try {
+        await factory.InstallPlugin(connUUID, hostUUID, plugin);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    return (
+      <RbButton
+        text="install"
+        onClick={install}
+        style={{ backgroundColor: "#fa8c16", color: "white" }}
+      />
+    );
   };
 
   const getSchema = async () => {
@@ -89,29 +135,22 @@ export const FlowPluginsTable = (props: any) => {
     }
   };
 
+  useEffect(() => {
+    fetchPlugins();
+  }, []);
+
+  useEffect(() => {
+    if (isModalVisible) {
+      getSchema();
+    }
+  }, [pluginsUUIDs, isModalVisible]);
+
   return (
     <>
-      <Button
-        type="primary"
-        onClick={enable}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <PlayCircleOutlined /> Enable Plugins
-      </Button>
-      <Button
-        type="ghost"
-        onClick={disable}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <StopOutlined /> Disable Plugins
-      </Button>
-      <Button
-        type="ghost"
-        onClick={showModal}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <PlusOutlined /> Add Network
-      </Button>
+      <EnablePluginsButton />
+      <DisablePluginsButton />
+      <AddNetworkButton />
+      <InstallButton />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
