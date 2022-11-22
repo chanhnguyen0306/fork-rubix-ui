@@ -100,7 +100,10 @@ const Flow = (props: any) => {
     (connection: Connection) => {
       if (connection.source === null) return;
       if (connection.target === null) return;
-      if ( isInputExistConnection(edges, connection.target)) return;
+      if (
+        connection.targetHandle &&
+        isInputExistConnection(edges, connection.target, connection.targetHandle)
+      ) return;
 
       const newEdge = {
         id: generateUuid(),
@@ -168,7 +171,10 @@ const Flow = (props: any) => {
         lastConnectStart
       )
 
-      if (isInputExistConnection(edges, newEdge.target)) return;
+      if (
+        newEdge.targetHandle &&
+        isInputExistConnection(edges, newEdge.target, newEdge.targetHandle)
+      ) return;
 
       onEdgesChange([
         {
@@ -263,15 +269,16 @@ const Flow = (props: any) => {
           const conNodeId = lastConnectStart.nodeId || "";
           const conHandleId = lastConnectStart.handleId || "";
           const target = !isSource ? conNodeId : nodeId;
+          const targetHandle = !isSource ? conHandleId : handleId;
 
-          if (isInputExistConnection(edges, target)) return;
+          if (isInputExistConnection(edges, target, targetHandle)) return;
 
           const newEdge = {
             id: generateUuid(),
             source: isSource ? conNodeId : nodeId,
             sourceHandle: isSource ? conHandleId : handleId,
             target: target,
-            targetHandle: !isSource ? conHandleId : handleId,
+            targetHandle: targetHandle,
           };
 
           onEdgesChange([

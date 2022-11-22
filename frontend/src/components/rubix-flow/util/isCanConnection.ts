@@ -41,8 +41,12 @@ const getNodeType = (node: NodeInterface, handleId: string) => {
 /* Max one connection per input */
 export const isInputExistConnection = (
   edges: Edge[],
-  connectionTarget: string,
-  param: "target" | "source" = "target"
+  connTarget: string,
+  connTargetHandle: string,
+  param: "target" | "source" = "target",
 ) => {
-  return !!edges.find((edge) => edge[param] === connectionTarget);
+  return !!edges.find(
+    (edge) =>
+      edge[param] === connTarget && edge[`${param}Handle`] === connTargetHandle
+  );
 };
