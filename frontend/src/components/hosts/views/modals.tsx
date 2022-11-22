@@ -176,7 +176,7 @@ export const BackupModal = (props: any) => {
       style={{ textAlign: "start" }}
     >
       <Card title="Rubix-Wires">
-        <Row style={actionRow}>
+        {/* <Row style={actionRow}>
           <Col span={10}>
             <Button
               type="primary"
@@ -186,7 +186,7 @@ export const BackupModal = (props: any) => {
               open Rubix-Wires
             </Button>
           </Col>
-        </Row>
+        </Row> */}
         <Row style={actionRow}>
           <Col span={10}>
             <Button
