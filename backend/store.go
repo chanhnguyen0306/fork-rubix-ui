@@ -11,6 +11,38 @@ import (
 	"path"
 )
 
+func (inst *App) StoreListPluginsAll() ([]installer.BuildDetails, string, error) {
+	return inst.appStore.StoreListPlugins()
+}
+
+func (inst *App) StoreListPluginsArm() ([]installer.BuildDetails, error) {
+	var out []installer.BuildDetails
+	plugins, _, err := inst.appStore.StoreListPlugins()
+	if err != nil {
+		return nil, err
+	}
+	for _, plg := range plugins {
+		if plg.Arch == "armv7" {
+			out = append(out, plg)
+		}
+	}
+	return out, nil
+}
+
+func (inst *App) StoreListPluginsAmd64() ([]installer.BuildDetails, error) {
+	var out []installer.BuildDetails
+	plugins, _, err := inst.appStore.StoreListPlugins()
+	if err != nil {
+		return nil, err
+	}
+	for _, plg := range plugins {
+		if plg.Arch == "amd64" {
+			out = append(out, plg)
+		}
+	}
+	return out, nil
+}
+
 func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch string, cleanDownload bool, release *store.Release) (*store.InstallResponse, error) {
 	out := &store.InstallResponse{}
 	if release == nil {
