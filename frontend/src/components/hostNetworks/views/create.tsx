@@ -48,7 +48,7 @@ export const CreateEditModal = (props: any) => {
       setConfirmLoading(true);
       if (currentNetwork.uuid) {
         network.uuid = currentNetwork.uuid;
-        network.hosts = currentNetwork.hosts;
+        network.host = currentNetwork.hosts;
         await editNetwork(network);
       } else {
         await addNetwork(network);

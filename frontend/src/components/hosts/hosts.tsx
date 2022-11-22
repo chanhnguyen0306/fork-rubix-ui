@@ -3,13 +3,13 @@ import { ApartmentOutlined, RedoOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { GetHosts, GetHostNetworks } from "../../../wailsjs/go/backend/App";
-import { assistmodel } from "../../../wailsjs/go/models";
 import { ROUTES } from "../../constants/routes";
 import RbxBreadcrumb from "../breadcrumbs/breadcrumbs";
 import { PcScanner } from "../pc/scanner/table";
 import { HostsTable } from "./views/table";
 import useTitlePrefix from "../../hooks/usePrefixedTitle";
 import { NetworksFactory } from "../hostNetworks/factory";
+import { model } from "../../../wailsjs/go/models";
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
@@ -34,8 +34,8 @@ const networksFactory = new NetworksFactory();
 
 export const Hosts = () => {
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-  const [hosts, setHosts] = useState([] as assistmodel.Host[]);
-  const [networks, setNetworks] = useState([] as assistmodel.Network[]);
+  const [hosts, setHosts] = useState([] as model.Host[]);
+  const [networks, setNetworks] = useState([] as model.Network[]);
   const [isFetching, setIsFetching] = useState(false);
   const { prefixedTitle, addPrefix } = useTitlePrefix("Controllers");
 

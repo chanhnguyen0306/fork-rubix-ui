@@ -30,7 +30,7 @@ func GetZipBuildDetails(zipName string) *BuildDetails {
 		archContent := parts[len(parts)-1]
 		archParts := strings.Split(archContent, ".")
 		arch := ""
-		if len(parts) > 1 {
+		if len(archParts) > 1 {
 			arch = archParts[1]
 		}
 		nameParts := parts[:len(parts)-2]

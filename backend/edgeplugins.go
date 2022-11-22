@@ -2,37 +2,33 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/installer"
+	"github.com/NubeIO/rubix-assist/model"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"os"
 )
 
-func (inst *App) edgeUpgradePlugins(assistCli *assistcli.Client, hostUUID, releaseVersion string) error {
+func (inst *App) edgeUploadPlugins(assistCli *assistcli.Client, hostUUID, releaseVersion string) error {
 	plugins, err := assistCli.ListPlugins(hostUUID)
 	if err != nil {
 		return err
 	}
 	if len(plugins) == 0 {
-		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be upgraded"))
+		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be uploaded"))
 		return err
-	} else {
-		_, err = assistCli.DeleteAllPlugins(hostUUID) // TODO: too risky to delete before completing it...
-		if err != nil {
-			return err
-		}
 	}
 
 	for _, plugin := range plugins {
-		inst.uiSuccessMessage(fmt.Sprintf("start upgrade of plugin: %s", plugin.Name))
+		inst.uiSuccessMessage(fmt.Sprintf("start uploading of plugin: %s", plugin.Name))
 		plugin.Version = releaseVersion
-		inst.EdgeUploadPlugin(assistCli, hostUUID, &plugin, false)
+		inst.EdgeUploadPlugin(assistCli, hostUUID, &plugin)
 	}
 	return nil
 }
 
-func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *appstore.Plugin, restartFlow bool) *assistcli.EdgeUploadResponse {
-	var lastStep = "4"
+func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *installer.Plugin) *model.Message {
+	var lastStep = "3"
 	var hasPluginOnRubixAssist bool
 	if body == nil {
 		inst.uiErrorMessage(fmt.Sprintf("plugin interface can not be empty"))
@@ -64,6 +60,8 @@ func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 			return nil
 		}
 		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) plugin didn't exist and it's downloaded (plugin: %s, version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
+	} else {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) plugin already existed and download is skipped (plugin: %s, version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
 	}
 
 	plugins, err := assistClient.StoreListPlugins()
@@ -101,14 +99,5 @@ func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 		return nil
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) uploaded plugin %s to edge device", lastStep, body.Name))
-	if restartFlow {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) try and to restart flow-framework", lastStep))
-		_, err = assistClient.EdgeSystemRestartFlowFramework(hostUUID)
-		if err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("(step 4 of %s) restarted flow-framework error: %s", lastStep, err.Error()))
-		} else {
-			inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) restarted flow-framework successfully", lastStep))
-		}
-	}
 	return resp
 }

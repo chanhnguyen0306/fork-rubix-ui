@@ -41,11 +41,11 @@ func (inst *AppStore) StoreCheckAppAndVersionExists(appName, arch, version strin
 	p := inst.GetAppStoreAppPath(appName, arch, version)
 	found := fileutils.DirExists(p)
 	if !found {
-		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s with  in app store", appName, arch, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
 	}
 	files, _ := ioutil.ReadDir(p)
 	if len(files) == 0 {
-		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s with  in app store", appName, arch, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
 	}
 	return nil
 }

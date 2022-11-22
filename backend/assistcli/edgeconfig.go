@@ -43,9 +43,11 @@ func (inst *Client) EdgeWriteConfig(hostIDName, appName string) (*Message, error
 		if requestErr != nil {
 			config = ConfigBACnetServer{}
 		}
-		err := yaml.Unmarshal(resp.Data, &config)
-		if err != nil {
-			return nil, err
+		if resp != nil {
+			err := yaml.Unmarshal(resp.Data, &config)
+			if err != nil {
+				return nil, err
+			}
 		}
 		writeConfig = model.EdgeConfig{
 			AppName:    constants.BacnetServerDriver,

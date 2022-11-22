@@ -16,7 +16,7 @@ import (
 
 func (inst *App) errMsg(err error) error {
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(err.Error())
 		return err
 	}
 	return nil

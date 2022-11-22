@@ -1,32 +1,18 @@
 package backend
 
 import (
-	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/namings"
 )
 
-func (inst *App) EdgeServiceStart(connUUID, hostUUID, appName string) *model.SystemResponse {
-	ctl, err := inst.edgeServiceEnable(connUUID, hostUUID, appName)
+func (inst *App) EdgeServiceStart(connUUID, hostUUID, appName string) *model.Message {
+	ctl, err := inst.edgeSystemCtlAction(connUUID, hostUUID, appName, model.Enable)
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
 	}
-	ctl, err = inst.edgeServiceStart(connUUID, hostUUID, appName)
-	err = inst.errMsg(err)
-	if err != nil {
-		return nil
-	}
-	return ctl
-}
-
-func (inst *App) EdgeServiceStop(connUUID, hostUUID, appName string) *model.SystemResponse {
-	ctl, err := inst.edgeServiceDisable(connUUID, hostUUID, appName)
-	err = inst.errMsg(err)
-	if err != nil {
-		return nil
-	}
-	ctl, err = inst.edgeServiceStop(connUUID, hostUUID, appName)
+	ctl, err = inst.edgeSystemCtlAction(connUUID, hostUUID, appName, model.Start)
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -34,8 +20,13 @@ func (inst *App) EdgeServiceStop(connUUID, hostUUID, appName string) *model.Syst
 	return ctl
 }
 
-func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appName string) *model.SystemResponse {
-	ctl, err := inst.edgeServiceRestart(connUUID, hostUUID, appName)
+func (inst *App) EdgeServiceStop(connUUID, hostUUID, appName string) *model.Message {
+	ctl, err := inst.edgeSystemCtlAction(connUUID, hostUUID, appName, model.Disable)
+	err = inst.errMsg(err)
+	if err != nil {
+		return nil
+	}
+	ctl, err = inst.edgeSystemCtlAction(connUUID, hostUUID, appName, model.Stop)
 	err = inst.errMsg(err)
 	if err != nil {
 		return nil
@@ -43,83 +34,17 @@ func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appName string) *model.S
 	return ctl
 }
 
-func (inst *App) edgeServiceStart(connUUID, hostUUID, appName string) (*model.SystemResponse, error) {
-	body := &model.SystemCtlBody{
-		AppName: appName,
-		Action:  "start",
-	}
-	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
+func (inst *App) EdgeServiceRestart(connUUID, hostUUID, appName string) *model.Message {
+	ctl, err := inst.edgeSystemCtlAction(connUUID, hostUUID, appName, model.Restart)
+	err = inst.errMsg(err)
 	if err != nil {
-		return nil, err
+		return nil
 	}
-	return resp, nil
+	return ctl
 }
 
-func (inst *App) edgeServiceStop(connUUID, hostUUID, appName string) (*model.SystemResponse, error) {
-	body := &model.SystemCtlBody{
-		AppName: appName,
-		Action:  "stop",
-	}
-	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (inst *App) edgeServiceRestart(connUUID, hostUUID, appName string) (*model.SystemResponse, error) {
-	body := &model.SystemCtlBody{
-		AppName: appName,
-		Action:  "restart",
-	}
-	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (inst *App) edgeServiceEnable(connUUID, hostUUID, appName string) (*model.SystemResponse, error) {
-	body := &model.SystemCtlBody{
-		AppName: appName,
-		Action:  "enable",
-	}
-	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (inst *App) edgeServiceDisable(connUUID, hostUUID, appName string) (*model.SystemResponse, error) {
-	body := &model.SystemCtlBody{
-		AppName: appName,
-		Action:  "disable",
-	}
-	resp, err := inst.edgeEdgeCtlAction(connUUID, hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (inst *App) edgeEdgeCtlAction(connUUID, hostUUID string, body *model.SystemCtlBody) (*model.SystemResponse, error) {
-	if body.ServiceName == "" && body.AppName == "" {
-		return nil, errors.New("app_name & service_name both can not be empty")
-	}
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.EdgeSystemCtlAction(hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
-}
-
-func (inst *App) EdgeCtlStatus(connUUID, hostUUID string, body *model.SystemCtlBody) *model.AppSystemState {
-	resp, err := inst.edgeCtlStatus(connUUID, hostUUID, body)
+func (inst *App) EdgeSystemCtlState(connUUID, hostUUID, appName string) *model.AppSystemState {
+	resp, err := inst.edgeSystemCtlState(connUUID, hostUUID, appName)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
@@ -127,54 +52,22 @@ func (inst *App) EdgeCtlStatus(connUUID, hostUUID string, body *model.SystemCtlB
 	return resp
 }
 
-func (inst *App) edgeCtlStatus(connUUID, hostUUID string, body *model.SystemCtlBody) (*model.AppSystemState, error) {
+func (inst *App) edgeSystemCtlAction(connUUID, hostUUID, appName string, action model.Action) (*model.Message, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.EdgeSystemCtlStatus(hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
+	serviceName := namings.GetServiceNameFromAppName(appName)
+	return client.EdgeSystemCtlAction(hostUUID, serviceName, action)
 }
 
-func (inst *App) EdgeServiceMassAction(connUUID, hostUUID string, body *model.SystemCtlBody) []model.MassSystemResponse {
-	resp, err := inst.edgeServiceMassAction(connUUID, hostUUID, body)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return resp
-}
-
-func (inst *App) edgeServiceMassAction(connUUID, hostUUID string, body *model.SystemCtlBody) ([]model.MassSystemResponse, error) {
+func (inst *App) edgeSystemCtlState(connUUID, hostUUID, appName string) (*model.AppSystemState, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.EdgeServiceMassAction(hostUUID, body)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
-}
-
-func (inst *App) EdgeServiceMassStatus(connUUID, hostUUID string, body *model.SystemCtlBody) []model.AppSystemState {
-	resp, err := inst.edgeServiceMassStatus(connUUID, hostUUID, body)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return resp
-}
-
-func (inst *App) edgeServiceMassStatus(connUUID, hostUUID string, body *model.SystemCtlBody) ([]model.AppSystemState, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.EdgeServiceMassStatus(hostUUID, body)
+	serviceName := namings.GetServiceNameFromAppName(appName)
+	resp, err := client.EdgeSystemCtlState(hostUUID, serviceName)
 	if err != nil {
 		return nil, err
 	}

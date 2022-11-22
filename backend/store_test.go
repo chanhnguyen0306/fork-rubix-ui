@@ -2,13 +2,13 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/installer"
 	"testing"
 )
 
 func TestApp_storeGetPluginPath(t *testing.T) {
 	app := MockNewApp()
-	body := &appstore.Plugin{
+	body := &installer.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",

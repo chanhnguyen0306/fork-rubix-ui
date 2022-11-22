@@ -91,7 +91,7 @@ export const NetworksTable = () => {
     try {
       setIsFetching(true);
       const res = await factory.GetAll();
-      const networksByLocUUID = res.filter((n) => n.location_uuid === locUUID);
+      const networksByLocUUID = res.filter((n) => n.uuid === locUUID);
       setNetworks(networksByLocUUID);
     } catch (error) {
       console.log(error);

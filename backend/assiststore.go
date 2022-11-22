@@ -14,11 +14,7 @@ func (inst *App) assistAddUploadApp(assistClient *assistcli.Client, appName, ver
 	if assistClient.CheckAppExistence(appName, arch, version) == nil {
 		return nil, true, nil
 	}
-	err := inst.appStore.StoreCheckAppExists(appName)
-	if err != nil {
-		return nil, false, err
-	}
-	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, version)
+	err := inst.appStore.StoreCheckAppAndVersionExists(appName, arch, version)
 	if err != nil {
 		return nil, false, err
 	}
