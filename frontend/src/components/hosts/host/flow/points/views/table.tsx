@@ -1,9 +1,5 @@
 import { Space, Spin, Tag, Tooltip } from "antd";
-import {
-  FormOutlined,
-  EditOutlined,
-  HighlightOutlined,
-} from "@ant-design/icons";
+import { FormOutlined, EditOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
@@ -277,6 +273,7 @@ export const FlowPointsTable = (props: any) => {
     <>
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
       <RbAddButton handleClick={showCreateModal} />
+      <RbAddButton handleClick={showCreateModal} text="create bulk" />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbExportButton handleExport={handleExport} />
