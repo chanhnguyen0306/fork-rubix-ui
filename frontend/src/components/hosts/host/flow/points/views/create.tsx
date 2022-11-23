@@ -1,5 +1,5 @@
 import { Modal, Spin } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlowPointFactory } from "../factory";
 import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
@@ -20,11 +20,11 @@ export const CreateModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Point);
 
-  let factory = new FlowPointFactory();
+  const factory = new FlowPointFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
   const add = async (point: Point) => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
     await factory.Add(deviceUUID, point);
   };
 
@@ -77,6 +77,7 @@ export const CreateBulkModal = (props: any) => {
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Point);
+  const [bulkSchema, setbulkSchema] = useState({} as any);
 
   const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
@@ -91,15 +92,44 @@ export const CreateBulkModal = (props: any) => {
     onCloseModal();
   };
 
-  const handleSubmit = async (point: Point) => {
-    setConfirmLoading(true);
-    await add([point]);
-    refreshList();
-    setConfirmLoading(false);
-    handleClose();
+  const handleSubmit = async (formData: any) => {
+    try {
+      setConfirmLoading(true);
+      const { count } = formData;
+      if (count && count > 0) {
+        const points = [] as Point[];
+        for (let i = 0; i < count; i++) {
+          const point = { ...formData, device_uuid: deviceUUID };
+          delete point.count;
+          points.push(point);
+        }
+        await add(points);
+        refreshList();
+        handleClose();
+      }
+    } finally {
+      setConfirmLoading(false);
+    }
   };
 
-  console.log("schema", schema);
+  useEffect(() => {
+    //add count input
+    if (!isLoadingForm) {
+      const countSchema = {
+        type: "number",
+        title: "count",
+        minimum: 1,
+      };
+      const bulkSchema = {
+        properties: {
+          count: countSchema,
+          ...schema.properties,
+        },
+        required: ["count"],
+      };
+      setbulkSchema(bulkSchema);
+    }
+  }, [isLoadingForm]);
 
   return (
     <Modal
@@ -115,7 +145,7 @@ export const CreateBulkModal = (props: any) => {
       <Spin spinning={isLoadingForm}>
         <JsonForm
           formData={formData}
-          jsonSchema={schema}
+          jsonSchema={bulkSchema}
           setFormData={setFormData}
           handleSubmit={handleSubmit}
         />

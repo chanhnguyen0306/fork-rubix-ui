@@ -18,7 +18,7 @@ import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
-import { CreateModal } from "./create";
+import { CreateBulkModal, CreateModal } from "./create";
 import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
@@ -46,6 +46,8 @@ export const FlowPointsTable = (props: any) => {
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isCreateBulkModalVisible, setIsCreateBulkModalVisible] =
+    useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
@@ -252,6 +254,14 @@ export const FlowPointsTable = (props: any) => {
     setIsCreateModalVisible(false);
   };
 
+  const showCreateBulkModal = () => {
+    setIsCreateBulkModalVisible(true);
+  };
+
+  const closeCreateBulkModal = () => {
+    setIsCreateBulkModalVisible(false);
+  };
+
   const showWritePointModal = (item: Point) => {
     setIsWritePointModalVisible(true);
     setCurrentItem(item);
@@ -273,7 +283,7 @@ export const FlowPointsTable = (props: any) => {
     <>
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
       <RbAddButton handleClick={showCreateModal} />
-      <RbAddButton handleClick={showCreateModal} text="create bulk" />
+      <RbAddButton handleClick={showCreateBulkModal} text="Create bulk" />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbImportButton showModal={() => setIsImportModalVisible(true)} />
       <RbExportButton handleExport={handleExport} />
@@ -303,6 +313,16 @@ export const FlowPointsTable = (props: any) => {
         deviceUUID={deviceUUID}
         schema={schema}
         onCloseModal={closeCreateModal}
+        refreshList={refreshList}
+      />
+      <CreateBulkModal
+        isModalVisible={isCreateBulkModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        deviceUUID={deviceUUID}
+        schema={schema}
+        onCloseModal={closeCreateBulkModal}
         refreshList={refreshList}
       />
       <ExportModal
