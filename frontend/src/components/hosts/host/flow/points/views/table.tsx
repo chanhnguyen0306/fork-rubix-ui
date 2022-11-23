@@ -1,5 +1,9 @@
-import { Input, Space, Spin, Tag } from "antd";
-import { ColumnType } from "antd/lib/table";
+import { Space, Spin, Tag, Tooltip } from "antd";
+import {
+  FormOutlined,
+  EditOutlined,
+  HighlightOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
@@ -12,11 +16,9 @@ import {
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
+import MassEdit from "../../../../../../common/mass-edit";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
-import {
-  isObjectEmpty,
-  openNotificationWithIcon,
-} from "../../../../../../utils/utils";
+import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
@@ -24,13 +26,13 @@ import { CreateModal } from "./create";
 import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
+import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
 import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowPointsTable = (props: any) => {
-  const { data, isFetching, refreshList } = props;
   const {
     connUUID = "",
     networkUUID = "",
@@ -38,12 +40,12 @@ export const FlowPointsTable = (props: any) => {
     deviceUUID = "",
     pluginName = "",
   } = useParams();
+  const { data, isFetching, refreshList, dataSource, setDataSource } = props;
   const [pluginUUID, setPluginUUID] = useState<any>();
-  const [schema, setSchema] = useState({});
+  const [schema, setSchema] = useState({} as any);
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
-  const [dataSource, setDataSource] = useState(data);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -68,6 +70,7 @@ export const FlowPointsTable = (props: any) => {
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
+      localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedRows));
     },
   };
 
@@ -132,6 +135,46 @@ export const FlowPointsTable = (props: any) => {
           );
         },
       },
+      ...FLOW_POINT_HEADERS,
+    ] as any;
+
+    delete schema.plugin_name; //prevent mass edit on plugin_name
+    const columnKeys = columns.map((c: any) => c.key);
+    let headers = Object.keys(schema).map((key) => {
+      return {
+        title:
+          key === "name" || key === "uuid"
+            ? key.replaceAll("_", " ")
+            : MassEditTitle(key, schema),
+        dataIndex: key,
+        key: key,
+        sorter: (a: any, b: any) => {
+          if (schema[key].type === "string") {
+            a[key] = a[key] ?? ""; //case item not have a[key] property
+            b[key] = b[key] ?? "";
+            return a[key].localeCompare(a[key]);
+          } else {
+            a[key] - b[key];
+          }
+        },
+      };
+    });
+
+    //styling columns
+    headers = headers.map((header: any) => {
+      if (columnKeys.includes(header.key)) {
+        const headerFromColumns = columns.find(
+          (col: any) => col.key === header.key
+        );
+        headerFromColumns.title = header.title;
+        return headerFromColumns;
+      } else {
+        return header;
+      }
+    });
+
+    const headerWithActions = [
+      ...headers,
       {
         title: "plugin name",
         key: "plugin_name",
@@ -141,61 +184,59 @@ export const FlowPointsTable = (props: any) => {
           let text = pluginName.toUpperCase();
           return <Tag color={colour}>{text}</Tag>;
         },
-        sorter: (a: any, b: any) => a.name.localeCompare(b.name),
       },
-      ...FLOW_POINT_HEADERS,
-    ] as any;
-    const columnKeys = columns.map((c: any) => c.key);
-
-    let headers = Object.keys(schema).map((key) => {
-      return {
-        title: key.replaceAll("_", " "),
-        dataIndex: key,
-        key: key,
-        sorter: (a: any, b: any) =>
-          schema[key].type === "string"
-            ? a[key].localeCompare(b[key])
-            : a[key] - b[key],
-      };
-    });
-
-    //styling columns
-    headers = headers.map((header: any) => {
-      if (columnKeys.includes(header.key)) {
-        return columns.find((col: any) => col.key === header.key);
-      } else {
-        return header;
-      }
-    });
-
-    const headerWithActions = [
-      ...headers,
       {
         title: "Actions",
         dataIndex: "actions",
         key: "actions",
         render: (_: any, point: Point) => (
           <Space size="middle">
-            <a
-              onClick={() => {
-                showEditModal(point);
-              }}
-            >
-              Edit
-            </a>
-            <a
-              onClick={() => {
-                showWritePointModal(point);
-              }}
-            >
-              Write Point
-            </a>
+            <Tooltip title="Edit">
+              <a
+                onClick={() => {
+                  showEditModal(point);
+                }}
+              >
+                <FormOutlined />
+              </a>
+            </Tooltip>
+            <Tooltip title="Write Point">
+              <a
+                onClick={() => {
+                  showWritePointModal(point);
+                }}
+              >
+                <EditOutlined />
+              </a>
+            </Tooltip>
           </Space>
         ),
       },
     ];
 
     setTableHeaders(headerWithActions);
+  };
+
+  const MassEditTitle = (key: string, schema: any) => {
+    return (
+      <MassEdit fullSchema={schema} keyName={key} handleOk={handleMassEdit} />
+    );
+  };
+
+  const handleMassEdit = async (updateData: any) => {
+    const selectedItems =
+      JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
+    const promises = [];
+    for (let item of selectedItems) {
+      item = { ...item, ...updateData };
+      promises.push(edit(item));
+    }
+    await Promise.all(promises);
+    refreshList();
+  };
+
+  const edit = async (item: any) => {
+    await flowPointFactory.Update(item.uuid, item);
   };
 
   const showEditModal = (item: Point) => {
@@ -221,12 +262,12 @@ export const FlowPointsTable = (props: any) => {
   };
 
   useEffect(() => {
+    localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedUUIDs));
     setPlugin();
+    return () => {
+      localStorage.removeItem(SELECTED_ITEMS);
+    };
   }, []);
-
-  useEffect(() => {
-    return setDataSource(data);
-  }, [data.length]);
 
   useEffect(() => {
     getSchema(pluginName);

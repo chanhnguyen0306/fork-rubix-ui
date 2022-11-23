@@ -112,7 +112,9 @@ export const InputSocket = ({
     if (valueType === "boolean") {
       return getNumberOptions(input.value);
     } else if (valueType === "number") {
-      return input.value === null ? "null" : input.value.toString();
+      return input.value === null || input.value === undefined
+        ? "null"
+        : `${input.value}`;
     }
 
     return input.value;
@@ -120,7 +122,7 @@ export const InputSocket = ({
 
   const findBooleanValueInput = () => {
     let value: any = "";
-    if (dataInput.length > 0) {
+    if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
       );

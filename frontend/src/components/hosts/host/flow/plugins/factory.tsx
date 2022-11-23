@@ -1,8 +1,12 @@
-import {backend, model} from "../../../../../../wailsjs/go/models";
+import {appstore, backend, model} from "../../../../../../wailsjs/go/models";
 import {
   DisablePluginBulk,
   EnablePluginBulk,
-  GetPlugins, RestartPluginBulk,
+  GetPlugins,
+  InstallPlugin,
+  RestartPluginBulk, StoreListPluginsAmd64,
+  StoreListPluginsArm,
+  UnInstallPlugin,
 } from "../../../../../../wailsjs/go/backend/App";
 import {Helpers} from "../../../../../helpers/checks";
 
@@ -63,4 +67,21 @@ export class FlowPluginFactory {
     })
     return resp
   }
+
+  async StoreListPluginsArm(): Promise<any> {
+    return await StoreListPluginsArm();
+  }
+
+  async StoreListPluginsAmd64(): Promise<any> {
+    return await StoreListPluginsAmd64();
+  }
+
+  async InstallPlugin(connUUID:string,hostUUID:string,plugin:appstore.Plugin): Promise<any> {
+    return await InstallPlugin(connUUID, hostUUID, plugin);
+  }
+
+  async UnInstallPlugin(connUUID:string,hostUUID:string,plugin:appstore.Plugin): Promise<any> {
+    return await UnInstallPlugin(connUUID, hostUUID, plugin);
+  }
+
 }

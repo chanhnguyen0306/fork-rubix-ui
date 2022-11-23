@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { SetPayloadModal } from "./SetPayloadModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 import { NodeHelpModal } from "./NodeHelpModal";
+import { SetNameModal } from "./Modals";
 
 type NodeMenuProps = {
   position: XYPosition;
@@ -123,6 +124,32 @@ const AddNodeComponent = ({
   );
 };
 
+const HelpComponent = ({ node, onClose }: any) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    onClose();
+  };
+
+  return (
+    <>
+      <div
+        key="help"
+        className="cursor-pointer ant-menu-item"
+        onClick={openModal}
+      >
+        Help
+      </div>
+      <NodeHelpModal node={node} open={isModalVisible} onClose={closeModal} />
+    </>
+  );
+};
+
 export const DEFAULT_NODE_SPEC_JSON: NodeSpecJSON = {
   allowSettings: false,
   type: "",
@@ -138,6 +165,7 @@ const NodeMenu = ({
   const [isModalVisible, setIsModalVisible] = useState(isDoubleClick);
   const [isShowSetting, setIsShowSetting] = useState(false);
   const [isShowPayload, setIsShowPayload] = useState(false);
+  const [isShowSetName, setIsShowSetName] = useState(false);
   const [nodeType, setNodeType] = useState<NodeSpecJSON>(
     DEFAULT_NODE_SPEC_JSON
   );
@@ -152,12 +180,17 @@ const NodeMenu = ({
     setIsModalVisible(true);
   };
 
-  const handleToggleHelpModal = () => {
-    setIsShowHelpModal((p) => !p);
-  };
-
   const handleTogglePayload = () => {
     setIsShowPayload(!isShowPayload);
+  };
+
+  const handleToggleSetName = () => {
+    setIsShowSetName(!isShowSetName);
+  };
+
+  const handleCloseSetNameModal = () => {
+    setIsShowSetName(false);
+    onClose();
   };
 
   useEffect(() => {
@@ -215,12 +248,13 @@ const NodeMenu = ({
             </div>
           )}
           <div
-            key="help"
-            className="cursor-pointer ant-menu-item"
-            onClick={handleToggleHelpModal}
+            key="Set Name"
+            className="cursor-pointer border-b border-gray-600 ant-menu-item"
+            onClick={handleToggleSetName}
           >
-            Help
+            Set Name
           </div>
+          <HelpComponent node={node} onClose={onClose} />
         </div>
       )}
       {isShowSetting && (
@@ -230,11 +264,7 @@ const NodeMenu = ({
           onCloseModal={onClose}
         />
       )}
-      <NodeHelpModal
-        node={node}
-        open={isShowHelpModal}
-        onClose={() => setIsShowHelpModal(false)}
-      />
+
       {nodeType.allowPayload && (
         <SetPayloadModal
           node={node}
@@ -243,6 +273,11 @@ const NodeMenu = ({
           onClose={() => setIsShowPayload(false)}
         />
       )}
+      <SetNameModal
+        node={node}
+        open={isShowSetName}
+        onClose={handleCloseSetNameModal}
+      />
     </>
   );
 };

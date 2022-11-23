@@ -23,6 +23,7 @@ export const flowToBehave = (nodes: Node[], edges: Edge[]): GraphJSON => {
         positionY: String(node.position.y),
       },
       settings: node.settings,
+      nodeName: node.info?.nodeName,
     };
 
     if (node.parentId) behaveNode.parentId = node.parentId;

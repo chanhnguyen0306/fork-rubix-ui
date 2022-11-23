@@ -92,13 +92,21 @@ const getOutputs = (specOutputs: OutputSocketSpecJSON[], nodeOutputs: any) => {
   if (specOutputs.length === 0) return [];
   if (specOutputs.length > 0 && !nodeOutputs) return specOutputs;
 
-  const newOutputs: OutputSocketSpecJSON[] = [];
+  let newOutputs: OutputSocketSpecJSON[] = [];
+  if (nodeOutputs.length > 0 && nodeOutputs.length < specOutputs.length) {
+    newOutputs = specOutputs.filter((item, idx) => idx < nodeOutputs.length);
+  } else {
+    newOutputs = [...specOutputs];
+  }
+
   nodeOutputs.forEach((item: any) => {
-    newOutputs.push({
-      name: item.pin,
-      valueType: item.dataType,
-      defaultValue: item.value,
-    } as OutputSocketSpecJSON);
+    const isExist = specOutputs.find((input) => input.name === item.pin);
+    if (!isExist) {
+      newOutputs.push({
+        name: item.pin,
+        valueType: item.dataType,
+      } as OutputSocketSpecJSON);
+    }
   });
 
   return newOutputs;
@@ -145,6 +153,7 @@ export const Node = (props: NodeProps) => {
     <NodeContainer
       title={getTitle(spec.type)}
       icon={spec?.info?.icon || ""}
+      nodeName={node?.info?.nodeName || ""}
       category={spec.category}
       selected={selected}
       height={node?.height ?? 30}

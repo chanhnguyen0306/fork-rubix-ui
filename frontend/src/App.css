@@ -126,7 +126,7 @@ aside .active {
 }
 
 .app-layout {
-    padding: 0 24px 24px;
+    padding: 0 0 24px;
 }
 
 .app-layout-content {
@@ -141,4 +141,8 @@ aside .active {
 
 .flow-layout-content {
     padding: 0;
+}
+
+.rb-btn>.anticon {
+    margin: auto;
 }

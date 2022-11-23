@@ -18,13 +18,9 @@ export const EditModal = (props: any) => {
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [formData, setFormData] = useState(currentItem);
+  const [formData, setFormData] = useState({} as any);
 
-  let factory = new FlowPointFactory();
-
-  useEffect(() => {
-    setFormData(currentItem);
-  }, [currentItem]);
+  const factory = new FlowPointFactory();
 
   const edit = async (point: Point) => {
     factory.connectionUUID = connUUID;
@@ -33,7 +29,6 @@ export const EditModal = (props: any) => {
   };
 
   const handleClose = () => {
-    setFormData({});
     onCloseModal();
   };
 
@@ -44,6 +39,10 @@ export const EditModal = (props: any) => {
     handleClose();
     refreshList();
   };
+
+  useEffect(() => {
+    setFormData(currentItem);
+  }, [currentItem]);
 
   return (
     <>

@@ -18,6 +18,11 @@ import ReactFlow, {
 } from "react-flow-renderer/nocss";
 import useUndoable from "use-undoable";
 import cx from "classnames";
+import {
+  Box,
+  boxesIntersect,
+  useSelectionContainer,
+} from "@air/react-drag-to-select";
 
 import MiniMap from "./components/MiniMap";
 import BehaveControls from "./components/Controls";
@@ -29,7 +34,7 @@ import { getNodePickerFilters } from "./util/getPickerFilters";
 import { CustomEdge } from "./components/CustomEdge";
 import { generateUuid } from "./lib/generateUuid";
 import { ReactFlowInstance, ReactFlowProvider } from "react-flow-renderer";
-import { useNodesSpec } from "./use-nodes-spec";
+import { convertDataSpec, getNodeSpecDetail, useNodesSpec } from "./use-nodes-spec";
 import { Spin } from "antd";
 import { NodeSpecJSON } from "./lib";
 import { FlowFactory } from "./factory";
@@ -52,10 +57,16 @@ import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
 import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
+import { isValidConnection } from "./util/isCanConnection";
 
 const edgeTypes = {
   default: CustomEdge,
 };
+
+type SelectableBoxType = {
+  edgeId: string,
+  rect: DOMRect | null,
+}
 
 const Flow = (props: any) => {
   const { customNodeTypes } = props;
@@ -77,10 +88,38 @@ const Flow = (props: any) => {
   const [rubixFlowInstance, setRubixFlowInstance] = useState<
     ReactFlowInstance | any
   >(null);
+  const selectableBoxes = useRef<SelectableBoxType[]>([]);
+
   const { connUUID = "", hostUUID = "" } = useParams();
   const isRemote = connUUID && hostUUID ? true : false;
+  const [nodesSpec] = useNodesSpec();
 
   const factory = new FlowFactory();
+
+  const { DragSelection } = useSelectionContainer({
+    onSelectionChange: (box: Box) => {
+      if (lastConnectStart) return;
+      const selectedEdgeIds: string[] = [];
+      selectableBoxes.current.forEach((item: SelectableBoxType) => {
+        if (item.rect && boxesIntersect(box, item.rect)) {
+          selectedEdgeIds.push(item.edgeId);
+        }
+      });
+      handleSelectEdges(selectedEdgeIds);
+    },
+    onSelectionStart: () => {
+      const elemEdges: SelectableBoxType[] = [];
+      edges.forEach((item) => {
+        const eleEdgeId = document.getElementById(item.id);
+        elemEdges.push({
+          edgeId: item.id,
+          rect: eleEdgeId?.getBoundingClientRect() || null,
+        });
+      });
+      selectableBoxes.current = elemEdges;
+    },
+    onSelectionEnd: () => (selectableBoxes.current = []),
+  });
 
   // delete selected wires
   useOnPressKey("Backspace", () => {
@@ -130,13 +169,17 @@ const Flow = (props: any) => {
         isRemote,
         nodeType
       );
+      const spec: NodeSpecJSON = getNodeSpecDetail(nodesSpec, nodeType);
       const newNode = {
         id: generateUuid(),
         isParent,
         style,
         type: nodeType,
         position,
-        data: { inputs: [] },
+        data: {
+          inputs: convertDataSpec(spec.inputs || []),
+          out: convertDataSpec(spec.outputs || []),
+        },
         settings: nodeSettings,
       };
       onNodesChange([
@@ -206,7 +249,14 @@ const Flow = (props: any) => {
         return item.selected && (isChangeTarget || isChangeSource);
       });
 
-      if (isDragSelected) {
+      const lastHandleId = lastConnectStart.handleId;
+      const isTrueHandleId =
+        handleId &&
+        lastHandleId &&
+        ((handleId.indexOf("in") > -1 && lastHandleId.indexOf("in") > -1) ||
+          (handleId.indexOf("out") > -1 && lastHandleId.indexOf("out") > -1));
+
+      if (isDragSelected && isTrueHandleId) {
         let newEdges;
         if (nodeId) {
           // update selected lines to new node if start and end are same type
@@ -241,7 +291,13 @@ const Flow = (props: any) => {
         }
 
         /* Add connect for input added by InputCount setting */
-        if (lastConnectStart && nodeId && handleId) {
+        if (
+          lastConnectStart &&
+          nodeId &&
+          handleId &&
+          !isTrueHandleId &&
+          isValidConnection(nodes, lastConnectStart, { nodeId, handleId })
+        ) {
           const isSource = lastConnectStart.handleType === "source" || false;
           const conNodeId = lastConnectStart.nodeId || "";
           const conHandleId = lastConnectStart.handleId || "";
@@ -262,6 +318,8 @@ const Flow = (props: any) => {
         }
       }
     }
+
+    setLastConnectStart(undefined);
   };
 
   const closeNodePicker = () => {
@@ -331,7 +389,7 @@ const Flow = (props: any) => {
   const addOutputToNodes = (outputNodes: Array<any>, prevNodes: Array<any>) => {
     if (outputNodes && outputNodes.length === 0) return prevNodes;
 
-    return prevNodes.map((node) => {
+    return prevNodes.map((node: NodeInterface) => {
       const index = outputNodes.findIndex((item) => item.nodeId === node.id);
       if (index > -1) {
         node.data.inputs = !node.data.inputs
@@ -341,6 +399,7 @@ const Flow = (props: any) => {
           ? outputNodes[index]?.outputs
           : handleBeforeAddOutput(node.data.out, outputNodes[index]?.outputs);
         node.status = outputNodes[index]?.status;
+        node.info = { ...node.info, ...outputNodes[index]?.info };
       }
 
       return node;
@@ -450,6 +509,13 @@ const Flow = (props: any) => {
     [edges, setEdges]
   );
 
+  const handleSelectEdges = (edgeIds: string[]) => {
+    const newEdges = edges.map((item) =>
+      edgeIds.includes(item.id) ? { ...item, selected: true } : item
+    );
+    setEdges(newEdges);
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
@@ -546,6 +612,7 @@ const Flow = (props: any) => {
             onNodeDragStop={handleNodeDragStop}
             multiSelectionKeyCode={["ControlLeft", "ControlRight"]}
           >
+            <DragSelection />
             {flowSettings.showMiniMap && (
               <MiniMap
                 nodes={nodes}

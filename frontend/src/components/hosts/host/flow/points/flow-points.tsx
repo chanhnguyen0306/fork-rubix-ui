@@ -14,9 +14,10 @@ import { RbRefreshButton } from "../../../../../common/rb-table-actions";
 import { BacnetWhoIsTable } from "../bacnet/table";
 import { FlowPointsTable } from "./views/table";
 import { FlowDeviceFactory } from "../devices/factory";
-import Point = model.Point;
 import { useSettings } from "../../../../settings/use-settings";
 import useTitlePrefix from "../../../../../hooks/usePrefixedTitle";
+import { setDataLocalStorage } from "../flow-service";
+import Point = model.Point;
 
 const flowDeviceFactory = new FlowDeviceFactory();
 
@@ -39,6 +40,7 @@ export const FlowPoints = () => {
   const { prefixedTitle, addPrefix } = useTitlePrefix("Points");
   const [settings] = useSettings();
   const [data, setPoints] = useState([] as Point[]);
+  const [dataSource, setDataSource] = useState([] as Point[]);
   const [discoveries, setDiscoveries] = useState([] as Point[]);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingDiscoveries, setIsFetchingDiscoveries] = useState(false);
@@ -96,7 +98,7 @@ export const FlowPoints = () => {
   ];
 
   useEffect(() => {
-    refresh();
+    fetch();
     flowDeviceFactory.GetOne(false).then((flowDevice) => {
       addPrefix(flowDevice.name);
     });
@@ -125,10 +127,15 @@ export const FlowPoints = () => {
   };
 
   const fetch = async () => {
+    setIsFetching(true);
     try {
       const res = (await flowPointFactory.GetPointsForDevice(deviceUUID)) || [];
       setPoints(res);
+      setDataSource(res);
+      setDataLocalStorage(res); //handle mass edit
     } catch {
+      setIsFetching(false);
+    } finally {
       setIsFetching(false);
     }
   };
@@ -157,12 +164,6 @@ export const FlowPoints = () => {
     fetch();
   };
 
-  const refresh = async () => {
-    setIsFetching(true);
-    await fetch();
-    setIsFetching(false);
-  };
-
   return (
     <>
       <Title level={3} style={{ textAlign: "left" }}>
@@ -172,12 +173,14 @@ export const FlowPoints = () => {
         <RbxBreadcrumb routes={routes} />
         <Tabs defaultActiveKey={points}>
           <TabPane tab={points} key={points}>
-            <RbRefreshButton refreshList={refresh} />
+            <RbRefreshButton refreshList={fetch} />
             <FlowPointsTable
               data={data}
               isFetching={isFetching}
-              refreshList={refresh}
               pluginName={pluginName}
+              dataSource={dataSource}
+              setDataSource={setDataSource}
+              refreshList={fetch}
             />
           </TabPane>
           {pluginName === PLUGINS.bacnetmaster ? (
