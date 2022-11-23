@@ -1,11 +1,11 @@
 import { Modal, Spin } from "antd";
-import { model } from "../../../../wailsjs/go/models";
+import { amodel } from "../../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
 import { JsonForm } from "../../../common/json-schema-form";
 import { useParams } from "react-router-dom";
 import { NetworksFactory } from "../factory";
 
-import Network = model.Network;
+import Network = amodel.Network;
 
 export const CreateEditModal = (props: any) => {
   const { connUUID = "" } = useParams();
@@ -48,7 +48,7 @@ export const CreateEditModal = (props: any) => {
       setConfirmLoading(true);
       if (currentNetwork.uuid) {
         network.uuid = currentNetwork.uuid;
-        network.host = currentNetwork.hosts;
+        network.hosts = currentNetwork.hosts;
         await editNetwork(network);
       } else {
         await addNetwork(network);

@@ -2,7 +2,7 @@ package assistcli
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"gopkg.in/yaml.v3"
@@ -32,7 +32,7 @@ type ConfigBACnetServer struct {
 // EdgeWriteConfig replace the config file of a nube app
 func (inst *Client) EdgeWriteConfig(hostIDName, appName string) (*Message, error) {
 	pushConfig := false
-	var writeConfig model.EdgeConfig
+	var writeConfig amodel.EdgeConfig
 	if appName == constants.BacnetServerDriver {
 		pushConfig = true
 		resp, connectionErr, requestErr := inst.EdgeReadConfig(hostIDName, appName, constants.ConfigYml)
@@ -49,7 +49,7 @@ func (inst *Client) EdgeWriteConfig(hostIDName, appName string) (*Message, error
 				return nil, err
 			}
 		}
-		writeConfig = model.EdgeConfig{
+		writeConfig = amodel.EdgeConfig{
 			AppName:    constants.BacnetServerDriver,
 			Body:       inst.defaultWrapperBACnetConfig(config),
 			ConfigName: constants.ConfigYml,
@@ -61,7 +61,7 @@ func (inst *Client) EdgeWriteConfig(hostIDName, appName string) (*Message, error
 PORT=1313
 SECRET_KEY=__SECRET_KEY__
 `
-		writeConfig = model.EdgeConfig{
+		writeConfig = amodel.EdgeConfig{
 			AppName:      constants.RubixWires,
 			BodyAsString: config,
 			ConfigName:   constants.ConfigEnv,
@@ -83,17 +83,17 @@ SECRET_KEY=__SECRET_KEY__
 	return nil, nil
 }
 
-func (inst *Client) EdgeReadConfig(hostIDName, appName, configName string) (*model.EdgeConfigResponse, error, error) {
+func (inst *Client) EdgeReadConfig(hostIDName, appName, configName string) (*amodel.EdgeConfigResponse, error, error) {
 	url := fmt.Sprintf("/api/edge/config?app_name=%s&config_name=%s", appName, configName)
 	resp, connectionError, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.EdgeConfigResponse{}).
+		SetResult(&amodel.EdgeConfigResponse{}).
 		Get(url))
 	if connectionError != nil || requestErr != nil {
 		return nil, connectionError, requestErr
 	}
-	return resp.Result().(*model.EdgeConfigResponse), nil, nil
+	return resp.Result().(*amodel.EdgeConfigResponse), nil, nil
 }
 
 func (inst *Client) defaultWrapperBACnetConfig(config ConfigBACnetServer) ConfigBACnetServer {

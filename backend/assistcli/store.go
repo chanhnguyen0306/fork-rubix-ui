@@ -2,7 +2,7 @@ package assistcli
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 	"io"
@@ -36,7 +36,7 @@ func (inst *Client) UploadAddOnAppStore(appName, version, arch, fileName string,
 func (inst *Client) CheckAppExistence(appName, arch, version string) error {
 	url := fmt.Sprintf("/api/store/apps/exists?name=%s&arch=%s&version=%s", appName, arch, version)
 	_, err := nresty.FormatRestyResponse(inst.Rest.R().
-		SetResult(&model.FoundMessage{}).
+		SetResult(&amodel.FoundMessage{}).
 		Get(url))
 	return err
 }

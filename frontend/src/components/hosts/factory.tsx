@@ -1,8 +1,8 @@
-import { model, assistcli, backend } from "../../../wailsjs/go/models";
+import { amodel, assistcli, backend } from "../../../wailsjs/go/models";
 import {
   AddHost,
   DeleteHost,
-  DeleteHostBulk, EdgeBiosRubixEdgeInstall,
+  DeleteHostBulk,
   EditHost,
   GetHost,
   GetHosts,
@@ -10,9 +10,8 @@ import {
   PingHost,
 } from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
-
-import Host = model.Host;
-import HostSchema = model.HostSchema;
+import Host = amodel.Host;
+import HostSchema = amodel.HostSchema;
 import Response = assistcli.Response;
 import UUIDs = backend.UUIDs;
 
@@ -21,9 +20,9 @@ function hasUUID(uuid: string): Error {
 }
 
 export class HostsFactory {
-  private _this!: Host;
   uuid!: string;
   connectionUUID!: string;
+  private _this!: Host;
 
   async Schema(): Promise<HostSchema> {
     return await GetHostSchema(this.connectionUUID);

@@ -1,8 +1,8 @@
 import { Card, Select } from "antd";
 import { InstallFactory } from "./factory";
-import { model } from "../../../../../wailsjs/go/models";
+import { amodel } from "../../../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
-import Host = model.Host;
+import Host = amodel.Host;
 
 export const Installation = (props: IInstallation) => {
   const {

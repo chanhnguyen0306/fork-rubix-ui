@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AddHost, EditHost } from "../../../../../wailsjs/go/backend/App";
 import { openNotificationWithIcon } from "../../../../utils/utils";
 import { JsonForm } from "../../../../common/json-schema-form";
-import { model } from "../../../../../wailsjs/go/models";
+import { amodel } from "../../../../../wailsjs/go/models";
 
 export const AddButton = (props: any) => {
   const { showModal } = props;
@@ -12,7 +12,7 @@ export const AddButton = (props: any) => {
   return (
     <Button
       type="primary"
-      onClick={() => showModal({} as model.Host)}
+      onClick={() => showModal({} as amodel.Host)}
       style={{ margin: "0 6px 10px 0", float: "left" }}
     >
       <PlusOutlined /> Host
@@ -38,7 +38,7 @@ export const CreateEditModal = (props: any) => {
     setFormData(currentHost);
   }, [currentHost]);
 
-  const addHost = async (host: model.Host) => {
+  const addHost = async (host: amodel.Host) => {
     try {
       const res = await AddHost(connUUID, host);
       openNotificationWithIcon("success", `added ${host.name} success`);
@@ -47,11 +47,11 @@ export const CreateEditModal = (props: any) => {
     }
   };
 
-  const editHost = async (host: model.Host) => {
+  const editHost = async (host: amodel.Host) => {
     try {
       const res = await EditHost(connUUID, host.uuid, host);
       const index = hosts.findIndex(
-        (n: model.Host) => n.uuid === host.uuid
+        (n: amodel.Host) => n.uuid === host.uuid
       );
       openNotificationWithIcon("success", `updated ${host.name} success`);
     } catch (error) {
@@ -60,11 +60,11 @@ export const CreateEditModal = (props: any) => {
   };
 
   const handleClose = () => {
-    setFormData({} as model.Host);
+    setFormData({} as amodel.Host);
     onCloseModal();
   };
 
-  const handleSubmit = (host: model.Host) => {
+  const handleSubmit = (host: amodel.Host) => {
     setConfirmLoading(true);
     if (currentHost.uuid) {
       host.uuid = currentHost.uuid;

@@ -2,8 +2,7 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/installer"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"os"
@@ -27,7 +26,7 @@ func (inst *App) edgeUploadPlugins(assistCli *assistcli.Client, hostUUID, releas
 	return nil
 }
 
-func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *installer.Plugin) *model.Message {
+func (inst *App) EdgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) *amodel.Message {
 	var lastStep = "3"
 	var hasPluginOnRubixAssist bool
 	if body == nil {

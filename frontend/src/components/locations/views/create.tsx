@@ -1,10 +1,12 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { AddLocation, UpdateLocation } from "../../../../wailsjs/go/backend/App";
+import {
+  AddLocation,
+  UpdateLocation
+} from "../../../../wailsjs/go/backend/App";
 import { JsonForm } from "../../../common/json-schema-form";
-
-import Location = model.Location;
-import { model } from "../../../../wailsjs/go/models";
+import { amodel } from "../../../../wailsjs/go/models";
+import Location = amodel.Location;
 
 export const CreateEditModal = (props: any) => {
   const {

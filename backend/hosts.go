@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	log "github.com/sirupsen/logrus"
 )
 
-func (inst *App) GetHostSchema(connUUID string) *model.HostSchema {
+func (inst *App) GetHostSchema(connUUID string) *amodel.HostSchema {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -23,7 +23,7 @@ func (inst *App) GetHostSchema(connUUID string) *model.HostSchema {
 	return data
 }
 
-func (inst *App) AddHost(connUUID string, host *model.Host) *model.Host {
+func (inst *App) AddHost(connUUID string, host *amodel.Host) *amodel.Host {
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("host-%s", uuid.ShortUUID("")[5:10])
 	}
@@ -81,7 +81,7 @@ func (inst *App) DeleteHost(connUUID string, uuid string) *assistcli.Response {
 	return res
 }
 
-func (inst *App) getHost(connUUID string, uuid string) (*model.Host, error) {
+func (inst *App) getHost(connUUID string, uuid string) (*amodel.Host, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (inst *App) getHost(connUUID string, uuid string) (*model.Host, error) {
 	return host, nil
 }
 
-func (inst *App) GetHost(connUUID string, uuid string) *model.Host {
+func (inst *App) GetHost(connUUID string, uuid string) *amodel.Host {
 	host, err := inst.getHost(connUUID, uuid)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -104,7 +104,7 @@ func (inst *App) GetHost(connUUID string, uuid string) *model.Host {
 	return host
 }
 
-func (inst *App) EditHost(connUUID string, uuid string, host *model.Host) *model.Host {
+func (inst *App) EditHost(connUUID string, uuid string, host *amodel.Host) *amodel.Host {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -118,8 +118,8 @@ func (inst *App) EditHost(connUUID string, uuid string, host *model.Host) *model
 	return data
 }
 
-func (inst *App) GetHosts(connUUID string) (resp []model.Host) {
-	resp = []model.Host{}
+func (inst *App) GetHosts(connUUID string) (resp []amodel.Host) {
+	resp = []amodel.Host{}
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))

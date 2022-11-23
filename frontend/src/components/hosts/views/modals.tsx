@@ -2,12 +2,12 @@ import { Select, Modal, Spin, Card, Row, Col, Button, Input } from "antd";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AddHost, EditHost, OpenURL } from "../../../../wailsjs/go/backend/App";
-import { model, storage } from "../../../../wailsjs/go/models";
+import { amodel, storage } from "../../../../wailsjs/go/models";
 import { JsonForm } from "../../../common/json-schema-form";
 import { openNotificationWithIcon } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
 
-import Host = model.Host;
+import Host = amodel.Host;
 import Backup = storage.Backup;
 
 const { Option } = Select;

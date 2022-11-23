@@ -2,8 +2,7 @@ package assistcli
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/installer"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 )
@@ -16,58 +15,58 @@ type EdgeUploadResponse struct {
 }
 
 // UploadPlugin upload a plugin to the edge device
-func (inst *Client) UploadPlugin(hostIDName string, body *installer.Plugin) (*model.Message, error) {
+func (inst *Client) UploadPlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
 	url := fmt.Sprintf("/api/edge/plugins/upload")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.Message{}).
+		SetResult(&amodel.Message{}).
 		SetBody(body).
 		Post(url))
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*model.Message), nil
+	return resp.Result().(*amodel.Message), nil
 }
 
 // ListPlugins list all the plugin in the dir /flow-framework/data/plugins
-func (inst *Client) ListPlugins(hostIDName string) ([]installer.Plugin, error) {
+func (inst *Client) ListPlugins(hostIDName string) ([]amodel.Plugin, error) {
 	url := fmt.Sprintf("/api/edge/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&[]installer.Plugin{}).
+		SetResult(&[]amodel.Plugin{}).
 		Get(url))
 	if err != nil {
 		return nil, err
 	}
-	data := resp.Result().(*[]installer.Plugin)
+	data := resp.Result().(*[]amodel.Plugin)
 	return *data, nil
 }
 
-func (inst *Client) DeletePlugin(hostIDName string, body *appstore.Plugin) (*model.Message, error) {
+func (inst *Client) DeletePlugin(hostIDName string, body *appstore.Plugin) (*amodel.Message, error) {
 	url := fmt.Sprintf("/api/edge/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.Message{}).
+		SetResult(&amodel.Message{}).
 		SetBody(body).
 		Delete(url))
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*model.Message), nil
+	return resp.Result().(*amodel.Message), nil
 }
 
-func (inst *Client) DeleteAllPlugins(hostIDName string) (*model.Message, error) {
+func (inst *Client) DeleteAllPlugins(hostIDName string) (*amodel.Message, error) {
 	url := fmt.Sprintf("/api/edge/plugins/all")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.Message{}).
+		SetResult(&amodel.Message{}).
 		Delete(url))
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*model.Message), nil
+	return resp.Result().(*amodel.Message), nil
 }

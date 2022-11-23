@@ -7,7 +7,7 @@ import {
   GetNetworkSchema,
 } from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
-import { backend, model } from "../../../wailsjs/go/models";
+import { amodel, backend } from "../../../wailsjs/go/models";
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "network or connection uuid") as Error;
@@ -16,14 +16,14 @@ function hasUUID(uuid: string): Error {
 export class NetworksFactory {
   uuid!: string;
   connectionUUID!: string;
-  _this!: model.Network;
+  _this!: amodel.Network;
   private count!: number;
 
-  get this(): model.Network {
+  get this(): amodel.Network {
     return this._this;
   }
 
-  set this(value: model.Network) {
+  set this(value: amodel.Network) {
     this._this = value;
   }
 
@@ -32,11 +32,11 @@ export class NetworksFactory {
   }
 
   // get the first connection uuid
-  async GetFist(): Promise<model.Network> {
-    let one: model.Network = {} as model.Network;
+  async GetFist(): Promise<amodel.Network> {
+    let one: amodel.Network = {} as amodel.Network;
     await this.GetAll()
       .then((res) => {
-        one = res.at(0) as model.Network;
+        one = res.at(0) as amodel.Network;
         this._this = one;
       })
       .catch((err) => {
@@ -45,11 +45,11 @@ export class NetworksFactory {
     return one;
   }
 
-  async GetAll(): Promise<Array<model.Network>> {
-    let all: Array<model.Network> = {} as Array<model.Network>;
+  async GetAll(): Promise<Array<amodel.Network>> {
+    let all: Array<amodel.Network> = {} as Array<amodel.Network>;
     await GetHostNetworks(this.connectionUUID)
       .then((res) => {
-        all = res as Array<model.Network>;
+        all = res as Array<amodel.Network>;
       })
       .catch((err) => {
         return undefined;
@@ -57,12 +57,12 @@ export class NetworksFactory {
     return all;
   }
 
-  async GetOne(): Promise<model.Network> {
+  async GetOne(): Promise<amodel.Network> {
     hasUUID(this.uuid);
-    let one: model.Network = {} as model.Network;
+    let one: amodel.Network = {} as amodel.Network;
     await GetHostNetwork(this.connectionUUID, this.uuid)
       .then((res) => {
-        one = res as model.Network;
+        one = res as amodel.Network;
         this._this = one;
       })
       .catch((err) => {
@@ -71,12 +71,12 @@ export class NetworksFactory {
     return one;
   }
 
-  async Add(): Promise<model.Network> {
+  async Add(): Promise<amodel.Network> {
     hasUUID(this.connectionUUID);
-    let one: model.Network = {} as model.Network;
+    let one: amodel.Network = {} as amodel.Network;
     await AddHostNetwork(this.connectionUUID, this._this)
       .then((res) => {
-        one = res as model.Network;
+        one = res as amodel.Network;
         this._this = one;
       })
       .catch((err) => {
@@ -85,12 +85,12 @@ export class NetworksFactory {
     return one;
   }
 
-  async Update(): Promise<model.Network> {
+  async Update(): Promise<amodel.Network> {
     hasUUID(this.uuid);
-    let one: model.Network = {} as model.Network;
+    let one: amodel.Network = {} as amodel.Network;
     await EditHostNetwork(this.connectionUUID, this.uuid, this._this)
       .then((res) => {
-        one = res as model.Network;
+        one = res as amodel.Network;
         this._this = one;
       })
       .catch((err) => {

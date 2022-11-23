@@ -1,4 +1,4 @@
-import { model, store, } from "../../../wailsjs/go/models";
+import { amodel, store, } from "../../../wailsjs/go/models";
 import {
   EdgeInstallApp,
   GetRelease,
@@ -67,7 +67,7 @@ export class ReleasesFactory {
     appName: string,
     appVersion: string,
     releaseVersion: string
-  ): Promise<model.Message> {
+  ): Promise<amodel.Message> {
     return await EdgeInstallApp(
       connUUID,
       hostUUID,
@@ -81,7 +81,7 @@ export class ReleasesFactory {
     connUUID: string,
     hostUUID: string,
     appName: string
-  ): Promise<model.Message> {
+  ): Promise<amodel.Message> {
     return await EdgeUnInstallApp(connUUID, hostUUID, appName);
   }
 

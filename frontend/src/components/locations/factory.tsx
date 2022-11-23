@@ -8,7 +8,7 @@ import {
   UpdateLocation,
 } from "../../../wailsjs/go/backend/App";
 import { Helpers } from "../../helpers/checks";
-import { model, backend } from "../../../wailsjs/go/models";
+import { backend, amodel } from "../../../wailsjs/go/models";
 
 function hasUUID(uuid: string): Error {
   return Helpers.IsUndefined(uuid, "Location or connection uuid") as Error;
@@ -17,23 +17,23 @@ function hasUUID(uuid: string): Error {
 export class LocationFactory {
   uuid!: string;
   connectionUUID!: string;
-  private _this!: model.Location;
+  private _this!: amodel.Location;
   private count!: number;
-  private _all!: Array<model.Location>;
+  private _all!: Array<amodel.Location>;
 
-  get all(): Array<model.Location> {
+  get all(): Array<amodel.Location> {
     return this._all;
   }
 
-  set all(value: Array<model.Location>) {
+  set all(value: Array<amodel.Location>) {
     this._all = value;
   }
 
-  get this(): model.Location {
+  get this(): amodel.Location {
     return this._this;
   }
 
-  set this(value: model.Location) {
+  set this(value: amodel.Location) {
     this._this = value;
   }
 
@@ -66,11 +66,11 @@ export class LocationFactory {
   }
 
   // get the first connection uuid
-  async GetFist(): Promise<model.Location> {
-    let one: model.Location = {} as model.Location;
+  async GetFist(): Promise<amodel.Location> {
+    let one: amodel.Location = {} as amodel.Location;
     await this.GetAll()
       .then((res: any) => {
-        one = res.at(0) as model.Location;
+        one = res.at(0) as amodel.Location;
         this._this = one;
       })
       .catch((err) => {
@@ -79,11 +79,11 @@ export class LocationFactory {
     return one;
   }
 
-  async GetAll(): Promise<Array<model.Location>> {
-    let all: Array<model.Location> = {} as Array<model.Location>;
+  async GetAll(): Promise<Array<amodel.Location>> {
+    let all: Array<amodel.Location> = {} as Array<amodel.Location>;
     await GetLocations(this.connectionUUID)
       .then((res) => {
-        all = res as Array<model.Location>;
+        all = res as Array<amodel.Location>;
         this.all = all;
       })
       .catch((err) => {
@@ -92,12 +92,12 @@ export class LocationFactory {
     return all;
   }
 
-  async GetOne(): Promise<model.Location> {
+  async GetOne(): Promise<amodel.Location> {
     hasUUID(this.uuid);
-    let one: model.Location = {} as model.Location;
+    let one: amodel.Location = {} as amodel.Location;
     await GetLocation(this.connectionUUID, this.uuid)
       .then((res) => {
-        one = res as model.Location;
+        one = res as amodel.Location;
         this._this = one;
       })
       .catch((err) => {
@@ -106,12 +106,12 @@ export class LocationFactory {
     return one;
   }
 
-  async Add(): Promise<model.Location> {
+  async Add(): Promise<amodel.Location> {
     hasUUID(this.uuid);
-    let one: model.Location = {} as model.Location;
+    let one: amodel.Location = {} as amodel.Location;
     await AddLocation(this.connectionUUID, this._this)
       .then((res) => {
-        one = res as model.Location;
+        one = res as amodel.Location;
         this._this = one;
       })
       .catch((err) => {
@@ -120,12 +120,12 @@ export class LocationFactory {
     return one;
   }
 
-  async Update(): Promise<model.Location> {
+  async Update(): Promise<amodel.Location> {
     hasUUID(this.uuid);
-    let one: model.Location = {} as model.Location;
+    let one: amodel.Location = {} as amodel.Location;
     await UpdateLocation(this.connectionUUID, this.uuid, this._this)
       .then((res) => {
-        one = res as model.Location;
+        one = res as amodel.Location;
         this._this = one;
       })
       .catch((err) => {

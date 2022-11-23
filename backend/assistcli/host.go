@@ -3,45 +3,45 @@ package assistcli
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 )
 
-func (inst *Client) GetHosts() (data []model.Host, response *Response) {
+func (inst *Client) GetHosts() (data []amodel.Host, response *Response) {
 	path := fmt.Sprintf(Paths.Hosts.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
-		SetResult(&[]model.Host{}).
+		SetResult(&[]amodel.Host{}).
 		Get(path)
-	return *resp.Result().(*[]model.Host), response.buildResponse(resp, err)
+	return *resp.Result().(*[]amodel.Host), response.buildResponse(resp, err)
 }
 
-func (inst *Client) GetHost(uuid string) (data *model.Host, response *Response) {
+func (inst *Client) GetHost(uuid string) (data *amodel.Host, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Hosts.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
-		SetResult(&model.Host{}).
+		SetResult(&amodel.Host{}).
 		Get(path)
-	return resp.Result().(*model.Host), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Host), response.buildResponse(resp, err)
 }
 
-func (inst *Client) AddHost(body *model.Host) (data *model.Host, response *Response) {
+func (inst *Client) AddHost(body *amodel.Host) (data *amodel.Host, response *Response) {
 	path := fmt.Sprintf(Paths.Hosts.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.Host{}).
+		SetResult(&amodel.Host{}).
 		Post(path)
-	return resp.Result().(*model.Host), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Host), response.buildResponse(resp, err)
 }
 
-func (inst *Client) UpdateHost(uuid string, body *model.Host) (data *model.Host, response *Response) {
+func (inst *Client) UpdateHost(uuid string, body *amodel.Host) (data *amodel.Host, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Hosts.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.Host{}).
+		SetResult(&amodel.Host{}).
 		Patch(path)
-	return resp.Result().(*model.Host), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Host), response.buildResponse(resp, err)
 }
 
 func (inst *Client) DeleteHost(uuid string) (response *Response) {
@@ -52,12 +52,12 @@ func (inst *Client) DeleteHost(uuid string) (response *Response) {
 	return response.buildResponse(resp, err)
 }
 
-func (inst *Client) GetHostSchema() (data *model.HostSchema, response *Response) {
+func (inst *Client) GetHostSchema() (data *amodel.HostSchema, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Hosts.Path, "schema")
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		Get(path)
-	var result *model.HostSchema
+	var result *amodel.HostSchema
 	err = json.Unmarshal(resp.Body(), &result)
 	return result, response.buildResponse(resp, err)
 }

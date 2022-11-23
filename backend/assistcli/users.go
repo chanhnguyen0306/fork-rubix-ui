@@ -4,47 +4,47 @@ import (
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-auth-go/externaltoken"
 	"github.com/NubeIO/nubeio-rubix-lib-auth-go/user"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 )
 
-func (inst *Client) GetUsers() (data []model.User, response *Response) {
+func (inst *Client) GetUsers() (data []amodel.User, response *Response) {
 	path := fmt.Sprintf(Paths.Users.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
-		SetResult(&[]model.User{}).
+		SetResult(&[]amodel.User{}).
 		Get(path)
-	return *resp.Result().(*[]model.User), response.buildResponse(resp, err)
+	return *resp.Result().(*[]amodel.User), response.buildResponse(resp, err)
 }
 
-func (inst *Client) AddUser(body *model.User) (data *model.User, response *Response) {
+func (inst *Client) AddUser(body *amodel.User) (data *amodel.User, response *Response) {
 	path := fmt.Sprintf(Paths.Users.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.User{}).
+		SetResult(&amodel.User{}).
 		Post(path)
-	return resp.Result().(*model.User), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.User), response.buildResponse(resp, err)
 }
 
-func (inst *Client) UpdateUser(uuid string, body *model.User) (data *model.User, response *Response) {
+func (inst *Client) UpdateUser(uuid string, body *amodel.User) (data *amodel.User, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Users.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.User{}).
+		SetResult(&amodel.User{}).
 		Patch(path)
-	return resp.Result().(*model.User), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.User), response.buildResponse(resp, err)
 }
 
-func (inst *Client) DeleteUser(uuid string, body *model.User) (data *model.User, response *Response) {
+func (inst *Client) DeleteUser(uuid string, body *amodel.User) (data *amodel.User, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Users.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.User{}).
+		SetResult(&amodel.User{}).
 		Patch(path)
-	return resp.Result().(*model.User), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.User), response.buildResponse(resp, err)
 }
 
 type TokenCreate struct {

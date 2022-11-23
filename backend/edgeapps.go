@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-systemctl-go/systemd"
-	"github.com/NubeIO/rubix-assist/installer"
-	"github.com/NubeIO/rubix-assist/model"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/systemctl"
@@ -38,7 +37,7 @@ type AppsAvailableForInstall struct {
 }
 
 type EdgeDeviceInfo struct {
-	Product                 *model.Product            `json:"product,omitempty"`
+	Product                 *amodel.Product           `json:"product,omitempty"`
 	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
 	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
 }
@@ -46,7 +45,7 @@ type EdgeDeviceInfo struct {
 // EdgeInstallApp install an app
 // if app is FF then we need to upgrade all the plugins
 // if app has plugins to upload the plugins and restart FF
-func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *model.Message {
+func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *amodel.Message {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(err)
@@ -143,7 +142,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s is uploaded app to rubix-assist server", lastStep, appName))
 	}
 
-	appUpload := model.AppUpload{
+	appUpload := amodel.AppUpload{
 		Name:                            appName,
 		Version:                         appVersion,
 		Arch:                            arch,
@@ -162,7 +161,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		for _, app := range release.Apps {
 			if app.Name == appName {
 				for _, plg := range app.PluginDependency {
-					inst.EdgeUploadPlugin(assistClient, hostUUID, &installer.Plugin{
+					inst.EdgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
 						Name:                 plg,
 						Arch:                 arch,
 						Version:              releaseVersion,
@@ -198,17 +197,17 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 
 	if appHasPlugins {
 		flowFrameworkApp := namings.GetServiceNameFromAppName(constants.FlowFramework)
-		_, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkApp, model.Restart)
+		_, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkApp, amodel.Restart)
 		if err != nil {
 			inst.uiErrorMessage("failed to restart flow-framework")
 			return nil
 		}
 	}
-	return &model.Message{Message: "successfully installed"}
+	return &amodel.Message{Message: "successfully installed"}
 }
 
 // EdgeUnInstallApp uninstall an app
-func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *model.Message {
+func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *amodel.Message {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(err)
@@ -257,7 +256,7 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string
 }
 
 // edgeAppsInstalledVersions list the installed apps on the edge device and what is available for install
-func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *model.Product) (*EdgeDeviceInfo, error) {
+func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *amodel.Product) (*EdgeDeviceInfo, error) {
 	installedApps, err := inst.edgeInstalledApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
@@ -355,7 +354,7 @@ func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, 
 }
 
 // edgeListApps apps that are in the app dir
-func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]model.AppsStatus, error) {
+func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]amodel.AppsStatus, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
