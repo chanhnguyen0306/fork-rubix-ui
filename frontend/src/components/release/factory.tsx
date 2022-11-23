@@ -66,14 +66,12 @@ export class ReleasesFactory {
     hostUUID: string,
     appName: string,
     appVersion: string,
-    releaseVersion: string
   ): Promise<amodel.Message> {
     return await EdgeInstallApp(
       connUUID,
       hostUUID,
       appName,
       appVersion,
-      releaseVersion
     );
   }
 

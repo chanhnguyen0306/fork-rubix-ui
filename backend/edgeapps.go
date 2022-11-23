@@ -37,7 +37,6 @@ type AppsAvailableForInstall struct {
 }
 
 type EdgeDeviceInfo struct {
-	Product                 *amodel.Product           `json:"product,omitempty"`
 	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
 	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
 }
@@ -45,7 +44,7 @@ type EdgeDeviceInfo struct {
 // EdgeInstallApp install an app
 // if app is FF then we need to upgrade all the plugins
 // if app has plugins to upload the plugins and restart FF
-func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, releaseVersion string) *amodel.Message {
+func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) *amodel.Message {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(err)
@@ -53,22 +52,28 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 
 	var arch string
-	productInfo, err := assistClient.EdgeProductInfo(hostUUID)
+	var releaseVersion string
+	resp, err := assistClient.EdgeBiosArch(hostUUID)
 	if err != nil {
 		inst.uiErrorMessage(err)
+		inst.uiErrorMessage("turn on BIOS on your edge device")
 		return nil
 	}
-	arch = productInfo.Arch
+	arch = resp.Arch
 
-	log.Infof("start app install app: %s version: %s arch: %s", appName, appVersion, arch)
-	releaseVersion = productInfo.FlowVersion
-
+	log.Infof("start app app install: %s version: %s arch: %s", appName, appVersion, arch)
 	_, err = assistClient.EdgeWriteConfig(hostUUID, appName)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("write app config: %s", err.Error()))
 	}
 
-	if releaseVersion == "" {
+	appStatus, err := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
+	if err != nil {
+		log.Warning(err)
+	}
+	if appStatus != nil {
+		releaseVersion = appStatus.Version
+	} else {
 		release, err := inst.getLatestRelease()
 		if release == "" || err != nil {
 			inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version"))
@@ -121,18 +126,13 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 		}
 		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
 	}
-	product := productInfo.Product
-	log.Println("Install App > add check to make its correct arch and product")
-	if product == "" {
-		inst.uiErrorMessage("product can't be empty")
-		return nil
-	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with product type: %s & app_name: %s", lastStep, product, appName))
+	log.Println("app install > add check to make its correct arch and product")
+	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app_name %s & release_version %s", lastStep, appName, releaseVersion))
 
-	log.Println("Install App > upload app to assist and in check to see if app is already uploaded")
+	log.Println("app install > upload app to assist and in check to see if app is already uploaded")
 	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, selectedApp.DoNotValidateArch)
 	if err != nil {
-		log.Errorf("Install App > upload app to assist failed, app_name: %s, err: %s", appName, err.Error())
+		log.Errorf("app install > upload app to assist failed for app_name %s & err is: %s", appName, err.Error())
 		inst.uiErrorMessage(err.Error())
 		return nil
 	}
@@ -151,7 +151,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 	_, err = assistClient.EdgeAppUpload(hostUUID, &appUpload)
 	if err != nil {
-		log.Errorf("Install App > %s app upload to the edge got failed", appName)
+		log.Errorf("app install > %s app upload to the edge got failed", appName)
 		inst.uiErrorMessage(err.Error())
 		return nil
 	}
@@ -189,7 +189,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion, release
 	}
 	_, err = assistClient.EdgeAppInstall(hostUUID, &appInstall)
 	if err != nil {
-		log.Errorf("Install App > %s app install on the edge got failed", appName)
+		log.Errorf("app install > %s app install on the edge got failed", appName)
 		inst.uiErrorMessage(err.Error())
 		return nil
 	}
@@ -237,26 +237,10 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string
 	if err != nil {
 		return nil, err
 	}
-	product, err := assistClient.EdgeProductInfo(hostUUID)
+	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	if releaseVersion == "" {
-		releaseVersion = product.FlowVersion
-	}
-	installed, err := inst.edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion, product)
-	if err != nil {
-		return nil, err
-	}
-	return &EdgeDeviceInfo{
-		Product:                 product,
-		InstalledApps:           installed.InstalledApps,
-		AppsAvailableForInstall: installed.AppsAvailableForInstall,
-	}, nil
-}
-
-// edgeAppsInstalledVersions list the installed apps on the edge device and what is available for install
-func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion string, product *amodel.Product) (*EdgeDeviceInfo, error) {
 	installedApps, err := inst.edgeInstalledApps(connUUID, hostUUID)
 	if err != nil {
 		return nil, err
@@ -285,7 +269,7 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	var appAvailable AppsAvailableForInstall
 	for _, versionApp := range getVersion.Apps { // list all the that the edge device can install
 		for _, pro := range versionApp.Products {
-			if product.Product == pro {
+			if deviceInfo.DeviceType == pro {
 				appAvailable.AppName = versionApp.Name
 				appAvailable.LatestVersion = versionApp.Version
 				appsAvailable = append(appsAvailable, appAvailable)
@@ -323,7 +307,6 @@ func (inst *App) edgeAppsInstalledVersions(connUUID, hostUUID, releaseVersion st
 	}
 
 	return &EdgeDeviceInfo{
-		Product:                 nil,
 		InstalledApps:           appsList,
 		AppsAvailableForInstall: appsAvailable,
 	}, nil

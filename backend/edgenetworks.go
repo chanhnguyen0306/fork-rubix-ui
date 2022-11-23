@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-edge/service/system"
 	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-ui/backend/model"
 )
 
 func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
@@ -82,8 +83,8 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	if err != nil {
 		inst.uiErrorMessage(err)
 	}
-	pro, err := assistClient.EdgeProductInfo(hostUUID)
-	product := pro.Product
+	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
+	deviceType := deviceInfo.DeviceType
 	if rcNetworkBody != nil {
 		inst.uiErrorMessage(fmt.Sprintf("body can not be empty"))
 	}
@@ -97,11 +98,11 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
 	// eth1IpSettings := rcNetworkBody.Eth1IpSettings
 
-	if product == constants.RubixCompute || product == constants.RubixCompute5 {
+	if deviceType == model.RubixCompute.String() || deviceType == model.RubixCompute5.String() {
 
 	}
 
-	if product == constants.RubixComputeIO {
+	if deviceType == model.RubixComputeIO.String() {
 
 	}
 }
@@ -196,8 +197,7 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		ConnUUID: connUUID,
 	})
 
-	info, err := client.EdgeProductInfo(hostUUID)
-	fmt.Println(info)
+	deviceInfo, err := client.EdgeDeviceInfo(hostUUID)
 	if err != nil {
 		return false, err
 	}
@@ -208,7 +208,7 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		return false, err
 	}
 
-	product := info.Product
+	deviceType := deviceInfo.DeviceType
 
 	eth0Body := networking.NetworkInterfaces{}
 	eth1Body := networking.NetworkInterfaces{}
@@ -221,13 +221,13 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		}
 	}
 	m := &RcNetwork{}
-	if product == constants.RubixCompute || product == constants.RubixCompute5 {
+	if deviceType == model.RubixCompute.String() || deviceType == model.RubixCompute5.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		m.Eth1 = inst.setEth1(connUUID, hostUUID, eth1Body)
 		schema.Set(m)
 		return m, nil
 	}
-	if product == constants.RubixComputeIO {
+	if deviceType == model.RubixComputeIO.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		schema.Set(m)
 		return m, nil

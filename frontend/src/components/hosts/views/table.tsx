@@ -158,7 +158,6 @@ const ConfirmActionMenu = (props: any) => {
 
 const AppInstallInfo = (props: any) => {
   let timeout;
-  const [product, updateProduct] = useState({});
   const [isLoading, updateIsLoading] = useState(false);
   const [isActionLoading, updateActionLoading] = useState({} as any);
   const [isUpdating, updateIsUpdating] = useState(false);
@@ -191,7 +190,6 @@ const AppInstallInfo = (props: any) => {
         payload.hostUUID,
         payload.appName,
         payload.appVersion,
-        payload.appVersion
       )
       .catch((err) => ({ payload, hasError: true, err: err }));
   };
@@ -204,9 +202,6 @@ const AppInstallInfo = (props: any) => {
       .then((appInfo: any) => {
         if (!appInfo) {
           return updateAppInfoMsg("Apps are not downloaded yet.");
-        }
-        if (appInfo.product) {
-          updateProduct(appInfo.product);
         }
         if (appInfo.installed_apps) {
           updateInstalledApps(appInfo.installed_apps);

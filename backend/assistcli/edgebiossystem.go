@@ -20,15 +20,15 @@ func (inst *Client) EdgeBiosPing(hostIDName string) (*amodel.Message, error) {
 	return resp.Result().(*amodel.Message), nil
 }
 
-func (inst *Client) EdgeBiosDeviceType(hostIDName string) (*model.DeviceType, error) {
-	url := fmt.Sprintf("/proxy/eb/api/system/device-type")
+func (inst *Client) EdgeBiosArch(hostIDName string) (*model.Arch, error) {
+	url := fmt.Sprintf("/proxy/eb/api/system/arch")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.DeviceType{}).
+		SetResult(&model.Arch{}).
 		Get(url))
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*model.DeviceType), nil
+	return resp.Result().(*model.Arch), nil
 }

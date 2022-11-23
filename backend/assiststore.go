@@ -33,7 +33,7 @@ func (inst *App) assistAddUploadApp(assistClient *assistcli.Client, appName, ver
 	if err != nil {
 		return nil, false, errors.New(fmt.Sprintf("error open file: %s err: %s", fileAndPath, err.Error()))
 	}
-	uploadApp, err := assistClient.UploadAddOnAppStore(appName, version, arch, fileName, reader)
+	uploadApp, err := assistClient.UploadAppOnAppStore(appName, version, arch, fileName, reader)
 	if err != nil {
 		return nil, false, err
 	}
