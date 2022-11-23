@@ -100,7 +100,7 @@ export const FlowPoints = () => {
   useEffect(() => {
     fetch();
     flowDeviceFactory.GetOne(false).then((flowDevice) => {
-      addPrefix(flowDevice.name);
+      if (flowDevice) addPrefix(flowDevice.name);
     });
   }, []);
 
