@@ -200,7 +200,7 @@ const Flow = (props: any) => {
         (node) => node.id === lastConnectStart.nodeId
       );
       if (originNode === undefined) return;
-      
+
       const newEdge = calculateNewEdge(
         originNode,
         nodeType,
@@ -459,9 +459,9 @@ const Flow = (props: any) => {
     edges.forEach((item) => (item.selected = false));
 
     /*
-    * Generate new id of edges copied
-    * Add new id source and target of edges copied
-    */
+     * Generate new id of edges copied
+     * Add new id source and target of edges copied
+     */
     const newFlow = handleCopyNodesAndEdges(_copied);
 
     newFlow.nodes = await handleNodesEmptySettings(
@@ -533,12 +533,42 @@ const Flow = (props: any) => {
     setEdges(newEdges);
   };
 
+  const handleInputEmpty = (
+    flowNodes: any,
+    nodes: NodeInterface[],
+    nodesSpec: NodeSpecJSON[]
+  ) => {
+    try {
+      const newNodes: NodeInterface[] = nodes.map((node) => {
+        const flowNode = flowNodes.find((item: any) => item.id === node.id);
+        if (flowNode && !flowNode.inputs && node.data) {
+          const nodeSpec = nodesSpec.find((spec) => spec.type === node.type);
+          let inputs: any = {};
+          nodeSpec?.inputs?.forEach((item) => {
+            inputs = { ...inputs, [item.name]: null };
+          });
+          return { ...node, data: inputs };
+        }
+        return node;
+      });
+      return newNodes;
+    } catch (error) {
+      return nodes;
+    }
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
       .GetFlow(connUUID, hostUUID, isRemote)
       .then(async (res) => {
-        const [_nodes, _edges] = behaveToFlow(res);
+        let [_nodes, _edges] = behaveToFlow(res);
+        _nodes = handleInputEmpty(
+          res.nodes || [],
+          _nodes,
+          nodesSpec as NodeSpecJSON[]
+        );
+
         const newNodes = await handleNodesEmptySettings(
           connUUID,
           hostUUID,

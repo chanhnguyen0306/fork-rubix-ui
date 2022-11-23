@@ -39,7 +39,7 @@ const getValueOptions = (value: number) => {
   }
 };
 
-const getNumberOptions = (value: boolean) => {
+const getNumberOptions = (value: boolean | null) => {
   switch (value) {
     case true:
       return 0;
@@ -109,9 +109,7 @@ export const InputSocket = ({
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
     const input = dataInput.find((item: { pin: string }) => item.pin === name);
-    if (!input && dataOutput && dataOutput.length > 0) {
-      return dataOutput[0].value;
-    }
+    if (connected && dataOutput && dataOutput.length > 0) return dataOutput[0].value;
 
     if (!input) return valueType === "boolean" ? 1 : "";
 
@@ -128,7 +126,9 @@ export const InputSocket = ({
 
   const findBooleanValueInput = () => {
     let value: any = "";
-    if (dataInput && dataInput.length > 0) {
+    if (connected && dataOutput && dataOutput.length > 0) {
+      value = dataOutput[0].value
+    } else if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
       );
