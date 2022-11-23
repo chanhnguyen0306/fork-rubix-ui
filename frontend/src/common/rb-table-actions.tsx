@@ -16,7 +16,7 @@ const btn: React.CSSProperties = {
 };
 
 export const RbAddButton = (props: any) => {
-  const { handleClick, disabled, label } = props;
+  const { handleClick, disabled, text } = props;
   return (
     <Button
       className="rb-btn nube-green white--text"
@@ -25,13 +25,13 @@ export const RbAddButton = (props: any) => {
       icon={<PlusOutlined />}
       style={btn}
     >
-      {label ? label : "Create"}
+      {text ?? "Create"}
     </Button>
   );
 };
 
 export const RbRefreshButton = (props: any) => {
-  const { refreshList, disabled, style = {} } = props;
+  const { refreshList, disabled, style = {}, text } = props;
   return (
     <Button
       className="rb-btn nube-primary white--text"
@@ -40,13 +40,13 @@ export const RbRefreshButton = (props: any) => {
       icon={<ReloadOutlined />}
       style={{ ...btn, ...style }}
     >
-      Refresh
+      {text ?? "Refresh"}
     </Button>
   );
 };
 
 export const RbDeleteButton = (props: any) => {
-  const { bulkDelete, disabled } = props;
+  const { bulkDelete, disabled, text } = props;
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
       <Button
@@ -55,14 +55,14 @@ export const RbDeleteButton = (props: any) => {
         icon={<DeleteOutlined />}
         style={btn}
       >
-        Delete
+        {text ?? "Delete"}
       </Button>
     </Popconfirm>
   );
 };
 
 export const RbImportButton = (props: any) => {
-  const { showModal, disabled } = props;
+  const { showModal, disabled, text } = props;
   return (
     <Button
       className="rb-btn nube-primary white--text"
@@ -71,13 +71,13 @@ export const RbImportButton = (props: any) => {
       icon={<ImportOutlined />}
       style={btn}
     >
-      Import
+      {text ?? "Import"}
     </Button>
   );
 };
 
 export const RbExportButton = (props: any) => {
-  const { handleExport, disabled } = props;
+  const { handleExport, disabled, text } = props;
   return (
     <Button
       className="rb-btn export-color white--text"
@@ -86,13 +86,13 @@ export const RbExportButton = (props: any) => {
       icon={<ExportOutlined />}
       style={btn}
     >
-      Export
+      {text ?? "Export"}
     </Button>
   );
 };
 
 export const RbDownloadButton = (props: any) => {
-  const { handleClick, disabled } = props;
+  const { handleClick, disabled, text } = props;
   return (
     <Button
       className="rb-btn download-color white--text"
@@ -101,13 +101,13 @@ export const RbDownloadButton = (props: any) => {
       icon={<DownloadOutlined />}
       style={btn}
     >
-      Download
+      {text ?? "Download"}
     </Button>
   );
 };
 
 export const RbRestartButton = (props: any) => {
-  const { handleClick, disabled, loading } = props;
+  const { handleClick, disabled, loading, text } = props;
   return (
     <Button
       className="rb-btn restart-color white--text"
@@ -117,7 +117,7 @@ export const RbRestartButton = (props: any) => {
       icon={<PlayCircleOutlined />}
       style={btn}
     >
-      Restart
+      {text ?? "Restart"}
     </Button>
   );
 };

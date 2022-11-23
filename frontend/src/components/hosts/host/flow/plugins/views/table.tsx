@@ -118,6 +118,7 @@ export const FlowPluginsTable = (props: any) => {
       const jsonSchema = {
         properties: res,
       };
+
       setNetworkSchema(jsonSchema);
       setIsLoadingForm(false);
     }

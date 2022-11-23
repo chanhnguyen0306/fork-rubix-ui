@@ -6,7 +6,6 @@ import { FlowFrameworkNetworkCloneFactory } from "../factory";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
 import {
-  RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
