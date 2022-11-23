@@ -35,3 +35,13 @@ func TestApp_storeGetPlugin(t *testing.T) {
 	fmt.Println(11111, f.Name())
 	fmt.Println(err)
 }
+
+func TestApp_StoreListPlugins(t *testing.T) {
+	app := MockNewApp()
+	f, err := app.StoreListPluginsArm()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	pprint.PrintJOSN(f)
+}
