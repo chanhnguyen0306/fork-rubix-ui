@@ -12,7 +12,7 @@ export const WritePointValueModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as any);
 
-  let factory = new FlowPointFactory();
+  const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
