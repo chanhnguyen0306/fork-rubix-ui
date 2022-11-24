@@ -1,4 +1,5 @@
-import { Space, Spin, Tag, Tooltip } from "antd";
+import { Menu, MenuProps } from "antd";
+import { Dropdown, Space, Spin, Tag, Tooltip } from "antd";
 import { FormOutlined, EditOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -43,7 +44,6 @@ export const FlowPointsTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isCreateBulkModalVisible, setIsCreateBulkModalVisible] =
@@ -285,9 +285,8 @@ export const FlowPointsTable = (props: any) => {
       <RbAddButton handleClick={showCreateModal} />
       <RbAddButton handleClick={showCreateBulkModal} text="Create bulk" />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <ImportDropdownButton refreshList={refreshList} />
       <RbExportButton handleExport={handleExport} />
-
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -330,15 +329,27 @@ export const FlowPointsTable = (props: any) => {
         onClose={() => setIsExportModalVisible(false)}
         selectedItems={selectedUUIDs}
       />
-      <ImportModal
-        isModalVisible={isImportModalVisible}
-        onClose={() => setIsImportModalVisible(false)}
-        refreshList={refreshList}
-      />
       <WritePointValueModal
         isModalVisible={isWritePointModalVisible}
         onCloseModal={() => setIsWritePointModalVisible(false)}
         point={currentItem}
+        refreshList={refreshList}
+      />
+    </>
+  );
+};
+
+const ImportDropdownButton = (props: any) => {
+  const { refreshList } = props;
+  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+
+  return (
+    <>
+      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+
+      <ImportModal
+        isModalVisible={isImportModalVisible}
+        onClose={() => setIsImportModalVisible(false)}
         refreshList={refreshList}
       />
     </>
