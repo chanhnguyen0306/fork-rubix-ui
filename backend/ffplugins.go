@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/amodel"
 )
 
 type PluginName struct {
@@ -134,11 +134,11 @@ func (inst *App) EnablePluginBulk(connUUID, hostUUID string, pluginUUID []Plugin
 	return "ok"
 }
 
-func (inst *App) InstallPlugin(connUUID, hostUUID string, plugin *appstore.Plugin) interface{} {
+func (inst *App) InstallPlugin(connUUID, hostUUID string, plugin *amodel.Plugin) interface{} {
 	return nil
 
 }
 
-func (inst *App) UnInstallPlugin(connUUID, hostUUID string, plugin *appstore.Plugin) interface{} {
+func (inst *App) UnInstallPlugin(connUUID, hostUUID string, plugin *amodel.Plugin) interface{} {
 	return nil
 }

@@ -3,7 +3,6 @@ package assistcli
 import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
-	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 )
 
@@ -44,7 +43,7 @@ func (inst *Client) ListPlugins(hostIDName string) ([]amodel.Plugin, error) {
 	return *data, nil
 }
 
-func (inst *Client) DeletePlugin(hostIDName string, body *appstore.Plugin) (*amodel.Message, error) {
+func (inst *Client) DeletePlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
 	url := fmt.Sprintf("/api/edge/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
