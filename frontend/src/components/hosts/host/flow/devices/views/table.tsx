@@ -154,7 +154,7 @@ export const FlowDeviceTable = (props: any) => {
             b[key] = b[key] ?? "";
             return a[key].localeCompare(a[key]);
           } else {
-            a[key] - b[key];
+            return a[key] - b[key];
           }
         },
       };
