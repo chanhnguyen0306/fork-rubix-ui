@@ -108,10 +108,17 @@ export const InputSocket = ({
     if (!connected) return `${valueCurrent}`;
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
-    const input = dataInput.find((item: { pin: string }) => item.pin === name);
-    if (connected && dataOutput && dataOutput.length > 0)
-      return dataOutput[0].value;
+    if (connected && dataOutput && dataOutput.length > 0) {
+      let valueOutput = dataOutput[0].value;
+      if (dataOutput[0].dataType === "boolean" && valueOutput !== null) {
+        valueOutput = getNumberOptions(valueOutput);
+      } else if (dataOutput[0].dataType === "string" && valueOutput === null) {
+        valueOutput = "";
+      }
+      return valueOutput !== undefined ? `${valueOutput}` : "";
+    }
 
+    const input = dataInput.find((item: { pin: string }) => item.pin === name);
     if (!input) return valueType === "boolean" ? 1 : "";
 
     if (valueType === "boolean") {

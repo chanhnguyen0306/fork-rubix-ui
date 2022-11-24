@@ -43,7 +43,7 @@ export const OutputSocket = ({
         );
         if (valueType === "number" && out) {
           if (out.value === null) out.value = "null";
-          return out.value || "0";
+          return out.value !== undefined ? `${out.value}` : "";
         }
         return out.value;
       }
