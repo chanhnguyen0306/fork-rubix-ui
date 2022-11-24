@@ -60,7 +60,7 @@ export const OutputSocket = ({
       case null:
         return "null";
       default:
-        return "";
+        return "false";
     }
   };
 

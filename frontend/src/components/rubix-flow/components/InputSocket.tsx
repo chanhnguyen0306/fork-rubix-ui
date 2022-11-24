@@ -29,9 +29,9 @@ export const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
 const getValueOptions = (value: number) => {
   switch (value) {
     case 0:
-      return true;
-    case 1:
       return false;
+    case 1:
+      return true;
     case 2:
       return null;
     default:
@@ -41,14 +41,14 @@ const getValueOptions = (value: number) => {
 
 const getNumberOptions = (value: boolean | null) => {
   switch (value) {
-    case true:
-      return 0;
     case false:
+      return 0;
+    case true:
       return 1;
     case null:
       return 2;
     default:
-      return 1;
+      return 0;
   }
 };
 
@@ -109,7 +109,8 @@ export const InputSocket = ({
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
     const input = dataInput.find((item: { pin: string }) => item.pin === name);
-    if (connected && dataOutput && dataOutput.length > 0) return dataOutput[0].value;
+    if (connected && dataOutput && dataOutput.length > 0)
+      return dataOutput[0].value;
 
     if (!input) return valueType === "boolean" ? 1 : "";
 
@@ -127,7 +128,10 @@ export const InputSocket = ({
   const findBooleanValueInput = () => {
     let value: any = "";
     if (connected && dataOutput && dataOutput.length > 0) {
-      value = dataOutput[0].value
+      value =
+        typeof dataOutput[0].value === "number"
+          ? getValueOptions(dataOutput[0].value)
+          : getValueOptions(getNumberOptions(dataOutput[0].value));
     } else if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
@@ -210,8 +214,8 @@ export const InputSocket = ({
                   onChange={onChangeInputBoolean}
                   style={{ paddingRight: 18 }}
                 >
-                  <option value="0">true</option>
-                  <option value="1">false</option>
+                  <option value="1">true</option>
+                  <option value="0">false</option>
                   <option value="2">null</option>
                 </select>
               ))}
