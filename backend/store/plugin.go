@@ -1,19 +1,19 @@
 package store
 
 import (
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"io/ioutil"
 )
 
 // StoreListPlugins get all plugins for a version => ~/rubix/store/plugins
-func (inst *AppStore) StoreListPlugins() ([]installer.BuildDetails, string, error) {
+func (inst *AppStore) StoreListPlugins() ([]builds.BuildDetails, string, error) {
 	files, err := ioutil.ReadDir(inst.Store.UserPluginPath)
 	if err != nil {
 		return nil, "", err
 	}
-	var plugins []installer.BuildDetails
+	var plugins []builds.BuildDetails
 	for _, file := range files {
-		plugins = append(plugins, *inst.App.GetZipBuildDetails(file.Name()))
+		plugins = append(plugins, *builds.GetZipBuildDetails(file.Name()))
 	}
 	return plugins, inst.Store.UserPluginPath, err
 }

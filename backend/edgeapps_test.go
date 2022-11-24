@@ -14,19 +14,19 @@ func TestApp_EdgeDeviceInfoAndApps(t *testing.T) {
 
 func TestApp_EdgeInstallAppFlow(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeInstallApp(connection, "rc", constants.FlowFramework, releaseVersion, releaseVersion)
+	resp := app.EdgeInstallApp(connection, "rc", constants.FlowFramework, releaseVersion)
 	pprint.PrintJOSN(resp)
 }
 
 func TestApp_EdgeInstallApp(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion, releaseVersion)
+	resp := app.EdgeInstallApp(connection, "rc", appName, appVersion)
 	pprint.PrintJOSN(resp)
 }
 
 func TestApp_EdgeInstallAppBacnet(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeInstallApp(connection, "rc", constants.BacnetServerDriver, "v0.0.16", releaseVersion)
+	resp := app.EdgeInstallApp(connection, "rc", constants.BacnetServerDriver, "v0.0.16")
 	pprint.PrintJOSN(resp)
 }
 

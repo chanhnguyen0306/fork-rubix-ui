@@ -2,7 +2,7 @@ import { Card, Space, Tooltip, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GetConnection, GetLocations } from "../../../wailsjs/go/backend/App";
-import { assistmodel, storage } from "../../../wailsjs/go/models";
+import { amodel, storage } from "../../../wailsjs/go/models";
 import { RbAddButton, RbRefreshButton } from "../../common/rb-table-actions";
 import { ROUTES } from "../../constants/routes";
 import { isObjectEmpty } from "../../utils/utils";
@@ -12,7 +12,7 @@ import { CreateEditModal } from "./views/create";
 import { LocationsTable } from "./views/table";
 import useTitlePrefix from "../../hooks/usePrefixedTitle";
 import { ArrowRightOutlined, FormOutlined, } from "@ant-design/icons";
-import Location = assistmodel.Location;
+import Location = amodel.Location;
 import RubixConnection = storage.RubixConnection;
 
 const { Title } = Typography;

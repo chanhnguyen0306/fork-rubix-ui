@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-files/fileutils"
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/helpers"
 	"io/ioutil"
 	"path"
 )
@@ -35,17 +35,17 @@ func (inst *AppStore) StoreCheckAppAndVersionExists(appName, arch, version strin
 	if appName == "" {
 		return errors.New("app_name can not be empty")
 	}
-	if err := installer.CheckVersion(version); err != nil {
+	if err := helpers.CheckVersion(version); err != nil {
 		return err
 	}
 	p := inst.GetAppStoreAppPath(appName, arch, version)
 	found := fileutils.DirExists(p)
 	if !found {
-		return errors.New(fmt.Sprintf("failed to find app: %s version: %s in app-store", appName, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
 	}
 	files, _ := ioutil.ReadDir(p)
 	if len(files) == 0 {
-		return errors.New(fmt.Sprintf("failed to find app: %s version: %s in app-store", appName, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
 	}
 	return nil
 }

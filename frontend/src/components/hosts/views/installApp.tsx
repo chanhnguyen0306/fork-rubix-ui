@@ -1,9 +1,9 @@
-import { Modal, Spin, Card } from "antd";
+import { Spin } from "antd";
 import RbModal from "../../../common/rb-modal";
 import { useParams } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { Form, Select, Radio, Checkbox } from "formik-antd";
+import { Checkbox, Form, Radio, Select } from "formik-antd";
 import { ReleasesFactory } from "../../release/factory";
 import { Formik } from "formik";
 
@@ -61,8 +61,7 @@ const InstallApp = (props: any) => {
             payload.connUUID,
             payload.hostUUID,
             payload.appName,
-            payload.appVersion, // https://github.com/NubeIO/rubix-ui/blob/a98b70c67ff11d67d73820f7cf596d9c55cec2f4/rubix-ui/frontend/src/components/hosts/views/installApp.tsx#L64
-            payload.appVersion
+            payload.appVersion // https://github.com/NubeIO/rubix-ui/blob/a98b70c67ff11d67d73820f7cf596d9c55cec2f4/rubix-ui/frontend/src/components/hosts/views/installApp.tsx#L64
           )
           .catch((err) => ({ payload, hasError: true, err: err }))
       )
