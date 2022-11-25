@@ -1,4 +1,4 @@
-import { store, systemd } from "../../../wailsjs/go/models";
+import { amodel, store, } from "../../../wailsjs/go/models";
 import {
   EdgeInstallApp,
   GetRelease,
@@ -66,14 +66,12 @@ export class ReleasesFactory {
     hostUUID: string,
     appName: string,
     appVersion: string,
-    releaseVersion: string
-  ): Promise<systemd.InstallResponse> {
+  ): Promise<amodel.Message> {
     return await EdgeInstallApp(
       connUUID,
       hostUUID,
       appName,
       appVersion,
-      releaseVersion
     );
   }
 
@@ -81,7 +79,7 @@ export class ReleasesFactory {
     connUUID: string,
     hostUUID: string,
     appName: string
-  ): Promise<systemd.UninstallResponse> {
+  ): Promise<amodel.Message> {
     return await EdgeUnInstallApp(connUUID, hostUUID, appName);
   }
 

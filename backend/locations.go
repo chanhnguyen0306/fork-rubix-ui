@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/helpers/humanize"
 )
@@ -38,7 +38,7 @@ func (inst *App) GetLocationTableSchema(connUUID string) interface{} {
 	return humanize.BuildTableSchema(data)
 }
 
-func (inst *App) AddLocation(connUUID string, body *assistmodel.Location) *assistmodel.Location {
+func (inst *App) AddLocation(connUUID string, body *amodel.Location) *amodel.Location {
 	if body.Name == "" {
 		body.Name = fmt.Sprintf("loc-%s", uuid.ShortUUID("")[5:10])
 	}
@@ -56,8 +56,8 @@ func (inst *App) AddLocation(connUUID string, body *assistmodel.Location) *assis
 	return data
 }
 
-func (inst *App) GetLocations(connUUID string) (resp []assistmodel.Location) {
-	resp = []assistmodel.Location{}
+func (inst *App) GetLocations(connUUID string) (resp []amodel.Location) {
+	resp = []amodel.Location{}
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -110,7 +110,7 @@ func (inst *App) DeleteLocation(connUUID string, uuid string) *assistcli.Respons
 	return res
 }
 
-func (inst *App) GetLocation(connUUID string, uuid string) *assistmodel.Location {
+func (inst *App) GetLocation(connUUID string, uuid string) *amodel.Location {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -124,7 +124,7 @@ func (inst *App) GetLocation(connUUID string, uuid string) *assistmodel.Location
 	return data
 }
 
-func (inst *App) UpdateLocation(connUUID string, uuid string, host *assistmodel.Location) *assistmodel.Location {
+func (inst *App) UpdateLocation(connUUID string, uuid string, host *amodel.Location) *amodel.Location {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))

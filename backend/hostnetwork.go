@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/lib-uuid/uuid"
-
-	"github.com/NubeIO/rubix-assist/pkg/assistmodel"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 )
 
@@ -26,7 +25,7 @@ func (inst *App) GetNetworkSchema(connUUID string) interface{} {
 	return out
 }
 
-func (inst *App) AddHostNetwork(connUUID string, host *assistmodel.Network) *assistmodel.Network {
+func (inst *App) AddHostNetwork(connUUID string, host *amodel.Network) *amodel.Network {
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("net-%s", uuid.ShortUUID("")[5:10])
 	}
@@ -44,8 +43,8 @@ func (inst *App) AddHostNetwork(connUUID string, host *assistmodel.Network) *ass
 	return data
 }
 
-func (inst *App) GetHostNetworks(connUUID string) (resp []assistmodel.Network) {
-	resp = []assistmodel.Network{}
+func (inst *App) GetHostNetworks(connUUID string) (resp []amodel.Network) {
+	resp = []amodel.Network{}
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -97,7 +96,7 @@ func (inst *App) DeleteHostNetwork(connUUID string, uuid string) *assistcli.Resp
 	return res
 }
 
-func (inst *App) GetHostNetwork(connUUID string, uuid string) *assistmodel.Network {
+func (inst *App) GetHostNetwork(connUUID string, uuid string) *amodel.Network {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
@@ -111,7 +110,7 @@ func (inst *App) GetHostNetwork(connUUID string, uuid string) *assistmodel.Netwo
 	return data
 }
 
-func (inst *App) EditHostNetwork(connUUID string, hostUUID string, host *assistmodel.Network) *assistmodel.Network {
+func (inst *App) EditHostNetwork(connUUID string, hostUUID string, host *amodel.Network) *amodel.Network {
 	if host.Name == "" {
 		host.Name = fmt.Sprintf("net-%s", uuid.ShortUUID("")[5:10])
 	}

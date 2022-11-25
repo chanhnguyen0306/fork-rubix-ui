@@ -22,7 +22,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { assistmodel, backend, storage } from "../../../../wailsjs/go/models";
+import { amodel, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import RbTag from "../../../common/rb-tag";
 import {
@@ -50,8 +50,8 @@ import {
   InstallRubixEdgeModal
 } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
-import Host = assistmodel.Host;
-import Location = assistmodel.Location;
+import Host = amodel.Host;
+import Location = amodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
 
@@ -158,7 +158,6 @@ const ConfirmActionMenu = (props: any) => {
 
 const AppInstallInfo = (props: any) => {
   let timeout;
-  const [product, updateProduct] = useState({});
   const [isLoading, updateIsLoading] = useState(false);
   const [isActionLoading, updateActionLoading] = useState({} as any);
   const [isUpdating, updateIsUpdating] = useState(false);
@@ -191,7 +190,6 @@ const AppInstallInfo = (props: any) => {
         payload.hostUUID,
         payload.appName,
         payload.appVersion,
-        payload.appVersion
       )
       .catch((err) => ({ payload, hasError: true, err: err }));
   };
@@ -204,9 +202,6 @@ const AppInstallInfo = (props: any) => {
       .then((appInfo: any) => {
         if (!appInfo) {
           return updateAppInfoMsg("Apps are not downloaded yet.");
-        }
-        if (appInfo.product) {
-          updateProduct(appInfo.product);
         }
         if (appInfo.installed_apps) {
           updateInstalledApps(appInfo.installed_apps);

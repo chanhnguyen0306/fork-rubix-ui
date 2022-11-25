@@ -3,7 +3,6 @@ package store
 import (
 	"fmt"
 	"github.com/NubeIO/git/pkg/git"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
@@ -11,7 +10,7 @@ import (
 const token = "Z2hwX3pIdklCZFZPWmd5N1M2YXFtcHBWMHRkcndIbUk5eTNEMnlQMg=="
 
 func TestApp_ListReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
-	appStore, err := New(&Store{}, installer.New(&installer.App{}))
+	appStore, err := New(&Store{})
 	token := git.DecodeToken(token)
 	fmt.Printf("token: %s\n", token)
 	release, err := appStore.GitListReleases(token)

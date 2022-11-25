@@ -5,7 +5,6 @@ go 1.18
 //replace github.com/NubeIO/git => /Users/raibnod/Enviro/git
 //replace github.com/NubeIO/rubix-assist => /Users/raibnod/Enviro/rubix-assist
 //replace github.com/NubeIO/lib-schema => /home/aidan/code/go/nube/lib/lib-schema
-//replace github.com/NubeIO/lib-rubix-installer => /Users/raibnod/Enviro/lib-rubix-installer
 //replace github.com/NubeIO/lib-systemctl-go => /Users/raibnod/Enviro/lib-systemctl-go
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
@@ -15,18 +14,18 @@ require (
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
 	github.com/NubeIO/lib-dirs v0.0.8
-	github.com/NubeIO/lib-files v0.1.1
+	github.com/NubeIO/lib-files v1.0.0
 	github.com/NubeIO/lib-networking v0.0.7
-	github.com/NubeIO/lib-rubix-installer v0.3.0
 	github.com/NubeIO/lib-schema v0.1.6
 	github.com/NubeIO/lib-systemctl-go v0.2.0
 	github.com/NubeIO/lib-uuid v0.0.3
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.1.0
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
-	github.com/NubeIO/rubix-assist v0.6.2
+	github.com/NubeIO/rubix-assist v0.7.0
 	github.com/NubeIO/rubix-edge v0.3.0
 	github.com/NubeIO/rubix-edge-wires v0.1.4
+	github.com/NubeIO/rubix-registry-go v1.0.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v32 v32.1.0
 	github.com/hashicorp/go-version v1.6.0
@@ -39,7 +38,7 @@ require (
 	github.com/stretchr/objx v0.4.0
 	github.com/tidwall/buntdb v1.2.9
 	github.com/tidwall/gjson v1.14.3
-	github.com/wailsapp/wails/v2 v2.2.0
+	github.com/wailsapp/wails/v2 v2.0.0-beta.43
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
@@ -51,7 +50,6 @@ require (
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.4 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 // indirect
-	github.com/NubeIO/rubix-registry-go v0.0.1 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -96,7 +94,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/rvflash/elapsed v0.3.0 // indirect
-	github.com/samber/lo v1.27.1 // indirect
 	github.com/sergeymakinen/go-systemdconf/v2 v2.0.2 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -115,7 +112,6 @@ require (
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
