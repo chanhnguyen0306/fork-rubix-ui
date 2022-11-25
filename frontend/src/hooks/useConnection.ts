@@ -47,6 +47,7 @@ export const useConnections = () => {
       setConnections(connections);
       updateRouteData(getTreeDataIterative(connections));
     } catch (error) {
+      setConnections([]);
     } finally {
       setIsFetching(false);
     }
