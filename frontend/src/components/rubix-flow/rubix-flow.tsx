@@ -57,7 +57,7 @@ import { categoryColorMap } from "./util/colors";
 import { NodeCategory } from "./lib/Nodes/NodeCategory";
 import { useOnPressKey } from "./hooks/useOnPressKey";
 import { handleCopyNodesAndEdges } from "./util/handleNodesAndEdges";
-import { isValidConnection } from "./util/isCanConnection";
+import { isValidConnection, isInputExistConnection } from "./util/isCanConnection";
 
 const edgeTypes = {
   default: CustomEdge,
@@ -137,6 +137,10 @@ const Flow = (props: any) => {
     (connection: Connection) => {
       if (connection.source === null) return;
       if (connection.target === null) return;
+      if (
+        connection.targetHandle &&
+        isInputExistConnection(edges, connection.target, connection.targetHandle)
+      ) return;
 
       const newEdge = {
         id: generateUuid(),
@@ -152,7 +156,7 @@ const Flow = (props: any) => {
         },
       ]);
     },
-    [onEdgesChange]
+    [onEdgesChange, edges]
   );
 
   const handleAddNode = useCallback(
@@ -196,15 +200,23 @@ const Flow = (props: any) => {
         (node) => node.id === lastConnectStart.nodeId
       );
       if (originNode === undefined) return;
+
+      const newEdge = calculateNewEdge(
+        originNode,
+        nodeType,
+        newNode.id,
+        lastConnectStart
+      )
+
+      if (
+        newEdge.targetHandle &&
+        isInputExistConnection(edges, newEdge.target, newEdge.targetHandle)
+      ) return;
+
       onEdgesChange([
         {
           type: "add",
-          item: calculateNewEdge(
-            originNode,
-            nodeType,
-            newNode.id,
-            lastConnectStart
-          ),
+          item: newEdge,
         },
       ]);
     },
@@ -301,12 +313,17 @@ const Flow = (props: any) => {
           const isSource = lastConnectStart.handleType === "source" || false;
           const conNodeId = lastConnectStart.nodeId || "";
           const conHandleId = lastConnectStart.handleId || "";
+          const target = !isSource ? conNodeId : nodeId;
+          const targetHandle = !isSource ? conHandleId : handleId;
+
+          if (isInputExistConnection(edges, target, targetHandle)) return;
+
           const newEdge = {
             id: generateUuid(),
             source: isSource ? conNodeId : nodeId,
             sourceHandle: isSource ? conHandleId : handleId,
-            target: !isSource ? conNodeId : nodeId,
-            targetHandle: !isSource ? conHandleId : handleId,
+            target: target,
+            targetHandle: targetHandle,
           };
 
           onEdgesChange([
@@ -442,9 +459,9 @@ const Flow = (props: any) => {
     edges.forEach((item) => (item.selected = false));
 
     /*
-    * Generate new id of edges copied
-    * Add new id source and target of edges copied
-    */
+     * Generate new id of edges copied
+     * Add new id source and target of edges copied
+     */
     const newFlow = handleCopyNodesAndEdges(_copied);
 
     newFlow.nodes = await handleNodesEmptySettings(
@@ -516,12 +533,42 @@ const Flow = (props: any) => {
     setEdges(newEdges);
   };
 
+  const handleInputEmpty = (
+    flowNodes: any,
+    nodes: NodeInterface[],
+    nodesSpec: NodeSpecJSON[]
+  ) => {
+    try {
+      const newNodes: NodeInterface[] = nodes.map((node) => {
+        const flowNode = flowNodes.find((item: any) => item.id === node.id);
+        if (flowNode && !flowNode.inputs && node.data) {
+          const nodeSpec = nodesSpec.find((spec) => spec.type === node.type);
+          let inputs: any = {};
+          nodeSpec?.inputs?.forEach((item) => {
+            inputs = { ...inputs, [item.name]: null };
+          });
+          return { ...node, data: inputs };
+        }
+        return node;
+      });
+      return newNodes;
+    } catch (error) {
+      return nodes;
+    }
+  };
+
   useEffect(() => {
     closeNodePicker();
     factory
       .GetFlow(connUUID, hostUUID, isRemote)
       .then(async (res) => {
-        const [_nodes, _edges] = behaveToFlow(res);
+        let [_nodes, _edges] = behaveToFlow(res);
+        _nodes = handleInputEmpty(
+          res.nodes || [],
+          _nodes,
+          nodesSpec as NodeSpecJSON[]
+        );
+
         const newNodes = await handleNodesEmptySettings(
           connUUID,
           hostUUID,
