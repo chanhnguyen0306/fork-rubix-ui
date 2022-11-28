@@ -266,10 +266,6 @@ export function EdgeBiosTokens(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeBiosTokens'](arg1, arg2, arg3);
 }
 
-export function EdgeCtlStatus(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeCtlStatus'](arg1, arg2, arg3);
-}
-
 export function EdgeDHCPPortExists(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeDHCPPortExists'](arg1, arg2, arg3);
 }
@@ -282,14 +278,6 @@ export function EdgeDHCPSetStaticIP(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeDHCPSetStaticIP'](arg1, arg2, arg3);
 }
 
-export function EdgeDeleteAllPlugins(arg1, arg2) {
-  return window['go']['backend']['App']['EdgeDeleteAllPlugins'](arg1, arg2);
-}
-
-export function EdgeDeletePlugin(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeDeletePlugin'](arg1, arg2, arg3);
-}
-
 export function EdgeDeviceInfoAndApps(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeDeviceInfoAndApps'](arg1, arg2, arg3);
 }
@@ -298,32 +286,12 @@ export function EdgeGetNetworks(arg1, arg2) {
   return window['go']['backend']['App']['EdgeGetNetworks'](arg1, arg2);
 }
 
-export function EdgeInstallApp(arg1, arg2, arg3, arg4, arg5) {
-  return window['go']['backend']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4, arg5);
-}
-
-export function EdgeInstallAppsBulk(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeInstallAppsBulk'](arg1, arg2, arg3);
-}
-
-export function EdgeListPlugins(arg1, arg2) {
-  return window['go']['backend']['App']['EdgeListPlugins'](arg1, arg2);
-}
-
-export function EdgeProductInfo(arg1, arg2) {
-  return window['go']['backend']['App']['EdgeProductInfo'](arg1, arg2);
+export function EdgeInstallApp(arg1, arg2, arg3, arg4) {
+  return window['go']['backend']['App']['EdgeInstallApp'](arg1, arg2, arg3, arg4);
 }
 
 export function EdgeRubixScan(arg1, arg2) {
   return window['go']['backend']['App']['EdgeRubixScan'](arg1, arg2);
-}
-
-export function EdgeServiceMassAction(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeServiceMassAction'](arg1, arg2, arg3);
-}
-
-export function EdgeServiceMassStatus(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeServiceMassStatus'](arg1, arg2, arg3);
 }
 
 export function EdgeServiceRestart(arg1, arg2, arg3) {
@@ -338,16 +306,16 @@ export function EdgeServiceStop(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeServiceStop'](arg1, arg2, arg3);
 }
 
+export function EdgeSystemCtlState(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['EdgeSystemCtlState'](arg1, arg2, arg3);
+}
+
 export function EdgeUnInstallApp(arg1, arg2, arg3) {
   return window['go']['backend']['App']['EdgeUnInstallApp'](arg1, arg2, arg3);
 }
 
-export function EdgeUpgradePlugins(arg1, arg2, arg3) {
-  return window['go']['backend']['App']['EdgeUpgradePlugins'](arg1, arg2, arg3);
-}
-
-export function EdgeUploadPlugin(arg1, arg2, arg3, arg4) {
-  return window['go']['backend']['App']['EdgeUploadPlugin'](arg1, arg2, arg3, arg4);
+export function EdgeUploadPlugin(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['EdgeUploadPlugin'](arg1, arg2, arg3);
 }
 
 export function EditConsumer(arg1, arg2, arg3, arg4) {
@@ -742,6 +710,10 @@ export function ImportPointBulk(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['ImportPointBulk'](arg1, arg2, arg3, arg4);
 }
 
+export function InstallPlugin(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['InstallPlugin'](arg1, arg2, arg3);
+}
+
 export function NodeHelp(arg1, arg2, arg3) {
   return window['go']['backend']['App']['NodeHelp'](arg1, arg2, arg3);
 }
@@ -836,6 +808,10 @@ export function Scanner(arg1, arg2, arg3, arg4) {
 
 export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['backend']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5);
+}
+
+export function UnInstallPlugin(arg1, arg2, arg3) {
+  return window['go']['backend']['App']['UnInstallPlugin'](arg1, arg2, arg3);
 }
 
 export function UpdateConnection(arg1, arg2) {

@@ -2,45 +2,45 @@ package assistcli
 
 import (
 	"fmt"
-	model "github.com/NubeIO/rubix-assist/pkg/assistmodel"
+	"github.com/NubeIO/rubix-assist/amodel"
 )
 
-func (inst *Client) GetTransactions() (data []model.Transaction, response *Response) {
+func (inst *Client) GetTransactions() (data []amodel.Transaction, response *Response) {
 	path := fmt.Sprintf(Paths.Transactions.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
-		SetResult(&[]model.Transaction{}).
+		SetResult(&[]amodel.Transaction{}).
 		Get(path)
-	return *resp.Result().(*[]model.Transaction), response.buildResponse(resp, err)
+	return *resp.Result().(*[]amodel.Transaction), response.buildResponse(resp, err)
 }
 
-func (inst *Client) GetTransaction(uuid string) (data *model.Transaction, response *Response) {
+func (inst *Client) GetTransaction(uuid string) (data *amodel.Transaction, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Transactions.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
-		SetResult(&model.Transaction{}).
+		SetResult(&amodel.Transaction{}).
 		Get(path)
-	return resp.Result().(*model.Transaction), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Transaction), response.buildResponse(resp, err)
 }
 
-func (inst *Client) AddTransaction(body *model.Transaction) (data *model.Transaction, response *Response) {
+func (inst *Client) AddTransaction(body *amodel.Transaction) (data *amodel.Transaction, response *Response) {
 	path := fmt.Sprintf(Paths.Transactions.Path)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.Transaction{}).
+		SetResult(&amodel.Transaction{}).
 		Post(path)
-	return resp.Result().(*model.Transaction), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Transaction), response.buildResponse(resp, err)
 }
 
-func (inst *Client) UpdateTransaction(uuid string, body *model.Transaction) (data *model.Transaction, response *Response) {
+func (inst *Client) UpdateTransaction(uuid string, body *amodel.Transaction) (data *amodel.Transaction, response *Response) {
 	path := fmt.Sprintf("%s/%s", Paths.Transactions.Path, uuid)
 	response = &Response{}
 	resp, err := inst.Rest.R().
 		SetBody(body).
-		SetResult(&model.Transaction{}).
+		SetResult(&amodel.Transaction{}).
 		Patch(path)
-	return resp.Result().(*model.Transaction), response.buildResponse(resp, err)
+	return resp.Result().(*amodel.Transaction), response.buildResponse(resp, err)
 }
 
 func (inst *Client) DeleteTransaction(uuid string) (response *Response) {

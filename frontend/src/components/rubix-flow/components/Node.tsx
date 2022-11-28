@@ -149,6 +149,15 @@ export const Node = (props: NodeProps) => {
     setIsSettingModal(false);
   };
 
+  const getConnectionOutput = (targetHandle: string) => {
+    const edge = edges.find(
+      (item) => item.target === id && item.targetHandle === targetHandle
+    );
+    if (!edge) return null;
+    const node: any = nodes.find((item) => item.id === edge.source);
+    return node?.data?.out || null;
+  };
+
   return (
     <NodeContainer
       title={getTitle(spec.type)}
@@ -191,6 +200,7 @@ export const Node = (props: NodeProps) => {
                 minWidth={widthInput}
                 onSetWidthInput={handleSetWidthInput}
                 dataInput={data.inputs}
+                dataOutput={getConnectionOutput(input.name)}
               />
             )}
             {output && (

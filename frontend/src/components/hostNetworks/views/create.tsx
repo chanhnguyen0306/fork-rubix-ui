@@ -1,11 +1,11 @@
 import { Modal, Spin } from "antd";
-import { assistmodel } from "../../../../wailsjs/go/models";
+import { amodel } from "../../../../wailsjs/go/models";
 import { useEffect, useState } from "react";
 import { JsonForm } from "../../../common/json-schema-form";
 import { useParams } from "react-router-dom";
 import { NetworksFactory } from "../factory";
 
-import Network = assistmodel.Network;
+import Network = amodel.Network;
 
 export const CreateEditModal = (props: any) => {
   const { connUUID = "" } = useParams();

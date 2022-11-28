@@ -6,20 +6,16 @@ import (
 	"testing"
 )
 
-func TestApp_assistListStore(t *testing.T) { // list all apps on assist
-	app := MockNewApp()
-	store, err := app.assistListStore(connection)
-	fmt.Println(err)
-	if err != nil {
-		return
-	}
-	pprint.PrintJOSN(store)
-}
-
 func TestApp_assistAddUpload(t *testing.T) { // upload an app to assist
 	app := MockNewApp()
-	store, err := app.assistAddUploadApp(connection, appName, appVersion, arch, false)
+	assistClient, err := app.getAssistClient(&AssistClient{ConnUUID: connection})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	store, skip, err := app.assistAddUploadApp(assistClient, appName, appVersion, arch, false)
 	fmt.Println(err)
+	fmt.Println(skip)
 	if err != nil {
 		return
 	}

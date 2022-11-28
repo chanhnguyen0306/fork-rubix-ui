@@ -2,29 +2,7 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
 )
-
-func (inst *App) EdgeProductInfo(connUUID, hostUUID string) *installer.Product {
-	resp, err := inst.edgeProductInfo(connUUID, hostUUID)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
-	}
-	return resp
-}
-
-func (inst *App) edgeProductInfo(connUUID, hostUUID string) (*installer.Product, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.EdgeProductInfo(hostUUID)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
-}
 
 func (inst *App) PingHost(connUUID, hostUUID string) bool {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})

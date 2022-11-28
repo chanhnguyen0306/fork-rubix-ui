@@ -2,14 +2,13 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/rubix-assist/service/appstore"
-	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"testing"
 )
 
 func TestApp_storeGetPluginPath(t *testing.T) {
 	app := MockNewApp()
-	body := &appstore.Plugin{
+	body := &amodel.Plugin{
 		Name:    "bacnetserver",
 		Arch:    "amd64",
 		Version: "v0.6.6",
@@ -17,31 +16,4 @@ func TestApp_storeGetPluginPath(t *testing.T) {
 	path, _, err := app.storeGetPluginPath(body)
 	fmt.Println(path)
 	fmt.Println(err)
-}
-
-func TestApp_storeGetPlugin(t *testing.T) {
-	app := MockNewApp()
-	body := &appstore.Plugin{
-		Name:    "bacnetserver",
-		Arch:    "amd64",
-		Version: "v0.6.6",
-	}
-	f, flowPlugin, err := app.storeGetPlugin(body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	pprint.PrintJOSN(flowPlugin)
-	fmt.Println(11111, f.Name())
-	fmt.Println(err)
-}
-
-func TestApp_StoreListPlugins(t *testing.T) {
-	app := MockNewApp()
-	f, err := app.StoreListPluginsArm()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	pprint.PrintJOSN(f)
 }
