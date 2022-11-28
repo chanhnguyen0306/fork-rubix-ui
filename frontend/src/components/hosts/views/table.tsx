@@ -194,11 +194,11 @@ const AppInstallInfo = (props: any) => {
       .catch((err) => ({ payload, hasError: true, err: err }));
   };
 
-  const fetchAppInfo = (releaseVersion: string = "") => {
+  const fetchAppInfo = () => {
     updateAppInfoMsg("");
     updateIsLoading(true);
     return releaseFactory
-      .EdgeDeviceInfoAndApps(connUUID, host.uuid, releaseVersion)
+      .EdgeDeviceInfoAndApps(connUUID, host.uuid)
       .then((appInfo: any) => {
         if (!appInfo) {
           return updateAppInfoMsg("Apps are not downloaded yet.");
@@ -208,9 +208,6 @@ const AppInstallInfo = (props: any) => {
         }
         if (appInfo.apps_available_for_install) {
           updateAvailableApps(appInfo.apps_available_for_install);
-        }
-        if (releaseVersion) {
-          closeDialog(UPDATE_DIALOG);
         }
       })
       .catch(() => {
@@ -268,7 +265,7 @@ const AppInstallInfo = (props: any) => {
         isLoading={isLoading}
         dialogData={dialogData[UPDATE_DIALOG]}
         closeDialog={() => closeDialog(UPDATE_DIALOG)}
-        handleUpdate={(releaseVersion: string) => fetchAppInfo(releaseVersion)}
+        handleUpdate={() => fetchAppInfo()}
       />
       <div
         style={{

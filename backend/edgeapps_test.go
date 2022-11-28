@@ -8,7 +8,7 @@ import (
 
 func TestApp_EdgeDeviceInfoAndApps(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeDeviceInfoAndApps(connection, "rc", releaseVersion)
+	resp := app.EdgeDeviceInfoAndApps(connection, "rc")
 	pprint.PrintJOSN(resp)
 }
 

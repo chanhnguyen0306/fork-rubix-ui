@@ -24,11 +24,7 @@ const UpdateApp = (props: any) => {
   };
 
   const handleOk = () => {
-    if (!release) {
-      return;
-    }
-
-    return handleUpdate(release);
+    return handleUpdate();
   };
 
   return (

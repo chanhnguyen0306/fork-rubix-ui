@@ -48,3 +48,30 @@ func (inst *Client) EdgeAppUninstall(hostIDName string, appName string) (*amodel
 	}
 	return resp.Result().(*amodel.Message), nil
 }
+
+func (inst *Client) EdgeListAppsStatus(hostIDName string) ([]amodel.AppsStatus, error) {
+	url := fmt.Sprintf("/api/edge/apps/status")
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetResult(&[]amodel.AppsStatus{}).
+		Get(url))
+	if err != nil {
+		return nil, err
+	}
+	data := resp.Result().(*[]amodel.AppsStatus)
+	return *data, nil
+}
+
+func (inst *Client) EdgeAppStatus(hostIDName, appName string) (*amodel.AppsStatus, error) {
+	url := fmt.Sprintf("/api/edge/apps/status/%s", appName)
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetResult(&amodel.AppsStatus{}).
+		Get(url))
+	if err != nil {
+		return nil, err
+	}
+	return resp.Result().(*amodel.AppsStatus), nil
+}
