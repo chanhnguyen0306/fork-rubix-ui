@@ -2,10 +2,9 @@ package backend
 
 import (
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
-func (inst *App) GetSchedules(connUUID, hostUUID string) []model.Schedules {
+func (inst *App) GetSchedules(connUUID, hostUUID string) interface{} {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	err = inst.errMsg(err)
 	if err != nil {
