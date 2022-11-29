@@ -63,15 +63,15 @@ func (inst *Client) EdgeListAppsStatus(hostIDName string) ([]amodel.AppsStatus, 
 	return *data, nil
 }
 
-func (inst *Client) EdgeAppStatus(hostIDName, appName string) (*amodel.AppsStatus, error) {
+func (inst *Client) EdgeAppStatus(hostIDName, appName string) (*amodel.AppsStatus, error, error) {
 	url := fmt.Sprintf("/api/edge/apps/status/%s", appName)
-	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+	resp, connectionError, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
 		SetResult(&amodel.AppsStatus{}).
 		Get(url))
-	if err != nil {
-		return nil, err
+	if connectionError != nil || requestErr != nil {
+		return nil, connectionError, requestErr
 	}
-	return resp.Result().(*amodel.AppsStatus), nil
+	return resp.Result().(*amodel.AppsStatus), nil, nil
 }

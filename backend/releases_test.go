@@ -15,19 +15,7 @@ var appName = constants.RubixWires
 var appVersion = "v2.7.4"
 var arch = "amd64"
 
-func TestApp_ListReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
-	token := git.DecodeToken(token)
-	fmt.Printf("token: %s\n", token)
-	app := MockNewApp()
-	release, err := app.appStore.GitListReleases(token)
-	if err != nil {
-		fmt.Printf("error: %s\n", err)
-		return
-	}
-	pprint.PrintJOSN(release)
-}
-
-func TestApp_AddRelease(t *testing.T) { // downloads from GitHub and stores in local json DB
+func TestApp_addRelease(t *testing.T) { // downloads from GitHub and stores in local json DB
 	token := git.DecodeToken(token)
 	fmt.Printf("token: %s\n", token)
 	path := "flow/v0.6.8.json"
@@ -40,7 +28,7 @@ func TestApp_AddRelease(t *testing.T) { // downloads from GitHub and stores in l
 	pprint.PrintJOSN(release)
 }
 
-func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the version
+func TestApp_StoreDownloadApp(t *testing.T) { // will save all apps from the version
 	token := git.DecodeToken(token)
 	fmt.Printf("token: %s\n", token)
 	app := MockNewApp()
@@ -48,8 +36,8 @@ func TestApp_downloadAppAndPlugin(t *testing.T) { // will save all apps from the
 	pprint.PrintJOSN(downloaded)
 }
 
-func TestApp_getLatestRelease(t *testing.T) {
-	release, err := MockNewApp().getLatestRelease()
+func TestApp_getLatestReleaseVersion(t *testing.T) {
+	release, err := MockNewApp().getLatestReleaseVersion()
 	fmt.Println(release)
 	fmt.Println(err)
 	if err != nil {
@@ -57,28 +45,20 @@ func TestApp_getLatestRelease(t *testing.T) {
 	}
 }
 
-func TestApp_gitDownloadAllRelease(t *testing.T) { // downloads from GitHub and stores in local json DB
+func TestApp_GitDownloadAllReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
 	app := MockNewApp()
-	err := app.GitDownloadAllRelease(true)
+	err := app.GitDownloadAllReleases()
 	if err != nil {
 		fmt.Printf("error: %s\n", err)
 	}
 }
 
-func TestApp_getReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
+func TestApp_GetReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
 	app := MockNewApp()
 	resp, err := app.DB.GetReleases()
 	for _, release := range resp {
 		pprint.Print(release)
 	}
-	if err != nil {
-		fmt.Printf("error: %s\n", err)
-	}
-}
-
-func TestApp_dropReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
-	app := MockNewApp()
-	err := app.dropReleases()
 	if err != nil {
 		fmt.Printf("error: %s\n", err)
 	}

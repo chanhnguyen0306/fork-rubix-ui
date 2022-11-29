@@ -59,9 +59,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 
 	var lastStep = "4"
-	release, err := inst.getReleaseByVersion(*releaseVersion)
+	release, err := inst.DB.GetReleaseByVersion(releaseVersion)
 	if release == nil {
-		inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version: %s", *releaseVersion))
+		inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version: %s", releaseVersion))
 		return nil
 	}
 	var appHasPlugins bool
@@ -83,10 +83,10 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
 			return nil
 		}
-		inst.StoreDownloadApp(token, appName, *releaseVersion, arch, true)
+		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
 	}
 	log.Println("app install > add check to make its correct arch and product")
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app_name %s & release_version %s", lastStep, appName, *releaseVersion))
+	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app_name %s & release_version %s", lastStep, appName, releaseVersion))
 
 	log.Println("app install > upload app to assist and in check to see if app is already uploaded")
 	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, selectedApp.DoNotValidateArch)
@@ -123,7 +123,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 					inst.EdgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
 						Name:                 plg,
 						Arch:                 arch,
-						Version:              *releaseVersion,
+						Version:              releaseVersion,
 						ClearBeforeUploading: false,
 					})
 				}
@@ -132,7 +132,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
 		inst.uiSuccessMessage(fmt.Sprintf("need to update all plugins for flow-framework"))
-		err := inst.edgeUploadPlugins(assistClient, hostUUID, *releaseVersion)
+		err := inst.edgeUploadPlugins(assistClient, hostUUID, releaseVersion)
 		if err != nil {
 			inst.uiErrorMessage(err.Error())
 			return nil
@@ -207,29 +207,26 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 	if err != nil {
 		return nil, err
 	}
-	getVersion, err := inst.getReleaseByVersion(*releaseVersion)
-	if getVersion == nil {
-		versionNumber, _ := inst.getLatestRelease()
-		getVersion, err = inst.getReleaseByVersion(versionNumber)
-	}
-	if getVersion == nil {
-		token, err := inst.GetGitToken(constants.SettingUUID, false) // if not exist then try and download the version
+	release, err := inst.DB.GetRelease(releaseVersion)
+	if release == nil {
+		// if not exist then try and download the version
+		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			return nil, err
 		}
-		getVersion, err = inst.gitDownloadRelease(token, *releaseVersion)
+		release, err = inst.gitDownloadRelease(token, releaseVersion)
 		if err != nil {
 			return nil, err
 		}
 	}
-	if getVersion == nil {
+	if release == nil {
 		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", releaseVersion))
 	}
 	err = nil
 	var appsList []rumodel.InstalledApps
 	var appsAvailable []rumodel.AppsAvailableForInstall
 	var appAvailable rumodel.AppsAvailableForInstall
-	for _, versionApp := range getVersion.Apps { // list all the that the edge device can install
+	for _, versionApp := range release.Apps { // list all the that the edge device can install
 		for _, pro := range versionApp.Products {
 			if deviceInfo.DeviceType == pro {
 				appAvailable.AppName = versionApp.Name
@@ -239,7 +236,7 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 		}
 	}
 	for _, installedApp := range installedApps {
-		for _, versionApp := range getVersion.Apps {
+		for _, versionApp := range release.Apps {
 			if installedApp.AppName == versionApp.Name {
 				installedAppVersion, err := version.NewVersion(installedApp.Version)
 				if err != nil {
@@ -297,20 +294,24 @@ func (inst *App) edgeInstalledApps(assistClient *assistcli.Client, hostUUID stri
 	return filteredApps, nil
 }
 
-func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID string) (*string, error) {
+func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID string) (string, error) {
 	var releaseVersion string
-	appStatus, err := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
-	if err != nil {
-		log.Warning(err)
+	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
+	if connectionErr != nil {
+		log.Warning(connectionErr)
+		return "", connectionErr
+	}
+	if requestErr != nil {
+		log.Warning(requestErr)
 	}
 	if appStatus != nil {
 		releaseVersion = appStatus.Version
 	} else {
-		release, err := inst.getLatestRelease()
-		if release == "" || err != nil {
-			return nil, errors.New("failed to find a vaild release version")
+		release, err := inst.getLatestReleaseVersion()
+		if err != nil {
+			return "", err
 		}
 		releaseVersion = release
 	}
-	return &releaseVersion, nil
+	return releaseVersion, nil
 }

@@ -2,7 +2,6 @@ package store
 
 import (
 	"errors"
-	"github.com/NubeIO/git/pkg/git"
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
 	"os"
 	"path"
@@ -11,7 +10,6 @@ import (
 const root = 0755
 
 var FilePerm = root
-var gitClient *git.Client
 
 type InstallResponse struct {
 	AppName    string
