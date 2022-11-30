@@ -17,7 +17,6 @@ import { Hosts } from "./components/hosts/hosts";
 import { Locations } from "./components/locations/locations";
 import { Logs } from "./components/logs/logs";
 import { PcNetworking } from "./components/pc/networking/networking";
-import AppStore from "./components/release/appStore";
 import RubixFlow from "./components/rubix-flow/rubix-flow";
 import WiresConnections from "./components/wires-connections/wires-connections";
 import UserGuide from "./components/user-guide/user-guide";
@@ -29,7 +28,6 @@ function AppRoutes() {
         path={routes.ROOT}
         element={<Navigate replace to={routes.CONNECTIONS} />}
       />
-      <Route path={routes.APP_STORE} element={<AppStore />} />
       <Route path={routes.FLOW_DEVICES} element={<FlowDevices />} />
       <Route path={routes.FLOW_POINTS} element={<FlowPoints />} />
       <Route path={routes.LOGS} element={<Logs />} />

@@ -26,23 +26,6 @@ export class ReleasesFactory {
     return await GitDownloadRelease(token, version);
   }
 
-  // token, appName, releaseVersion, arch string, cleanDownload bool
-  async StoreDownload(
-    token: string,
-    appName: string,
-    releaseVersion: string,
-    arch: string,
-    cleanDownload: boolean
-  ): Promise<any> {
-    return await StoreDownloadApp(
-      token,
-      appName,
-      releaseVersion,
-      arch,
-      cleanDownload
-    );
-  }
-
   /*
   INSTALL A APP ON THE HOST (via rubix-assist via rubix-edge)
   */

@@ -10,9 +10,9 @@ import { tagMessageStateResolver } from "./utils";
 import {
   InstallRubixAppModal
 } from "./install-rubix-app/install-rubix-app-modal";
-import { ReleasesFactory } from "../../release/factory";
 import { InstallAppFactory } from "./install-rubix-app/factory";
 import { rumodel } from "../../../../wailsjs/go/models";
+import { ReleasesFactory } from "../../release/factory";
 import InstalledApps = rumodel.InstalledApps;
 import AppsAvailableForInstall = rumodel.AppsAvailableForInstall;
 

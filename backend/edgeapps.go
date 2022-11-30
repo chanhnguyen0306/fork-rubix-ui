@@ -83,7 +83,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
 			return nil
 		}
-		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
+		inst.StoreDownloadApp(token, releaseVersion, appName, appVersion, arch, true)
 	}
 	log.Println("app install > add check to make its correct arch and product")
 	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app_name %s & release_version %s", lastStep, appName, releaseVersion))
