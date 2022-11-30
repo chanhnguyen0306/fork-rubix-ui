@@ -20,7 +20,7 @@ import {
   MenuFoldOutlined,
   ScanOutlined
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { amodel, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
@@ -50,6 +50,7 @@ import {
   InstallRubixEdgeModal
 } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
+import RbVersion, { VERSION_STATES } from "../../../common/rb-version";
 import Host = amodel.Host;
 import Location = amodel.Location;
 import Backup = storage.Backup;
@@ -68,6 +69,8 @@ interface InstalledAppI {
   is_installed: boolean;
   latest_version: string;
   match: boolean;
+  downgrade_required: boolean;
+  upgrade_required: boolean;
   message: string;
   service_name: string;
   state: string;
@@ -77,7 +80,8 @@ interface InstalledAppI {
 
 interface AvailableAppI {
   app_name: string;
-  latest_version: string;
+  min_version: string;
+  max_version: string;
 }
 
 const ExpandedRow = (props: any) => {
@@ -301,7 +305,7 @@ const AppInstallInfo = (props: any) => {
           <List.Item style={{ padding: "0 16px" }}>
             <List.Item.Meta
               title={<span>{item.app_name}</span>}
-              description={item.latest_version}
+              description={`(${item.min_version} - ${item.max_version || "Infinite"})`}
             />
             <RbConfirmPopover
               title="Install App"
@@ -319,10 +323,19 @@ const AppInstallInfo = (props: any) => {
         header={<strong>Installed Apps</strong>}
         renderItem={(item) => (
           <List.Item style={{ padding: "8px 16px" }}>
-            <List.Item.Meta
-              title={<span>{item.app_name}</span>}
-              description={item.message}
-            />
+            <span style={{ width: "250px" }}>
+              <span>
+                {item.app_name}
+              </span>
+            </span>
+            <span style={{ width: 100, float: "right" }}>
+              <RbVersion state={
+                item.downgrade_required ?
+                  VERSION_STATES.DOWNGRADE : item.upgrade_required ?
+                    VERSION_STATES.UPGRADE : VERSION_STATES.NONE
+              } version={item.version}>
+              </RbVersion>
+            </span>
             <span
               className="flex-1"
               style={{

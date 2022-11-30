@@ -195,14 +195,6 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 	if err != nil {
 		return nil, err
 	}
-	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
-	if err != nil {
-		return nil, err
-	}
-	installedApps, err := inst.edgeInstalledApps(assistClient, hostUUID)
-	if err != nil {
-		return nil, err
-	}
 	releaseVersion, err := inst.getReleaseVersion(assistClient, hostUUID)
 	if err != nil {
 		return nil, err
@@ -222,41 +214,56 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 	if release == nil {
 		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", releaseVersion))
 	}
-	err = nil
+
+	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	installedApps, err := inst.edgeInstalledApps(assistClient, hostUUID)
+	if err != nil {
+		return nil, err
+	}
 	var appsList []rumodel.InstalledApps
 	var appsAvailable []rumodel.AppsAvailableForInstall
-	var appAvailable rumodel.AppsAvailableForInstall
 	for _, versionApp := range release.Apps { // list all the that the edge device can install
 		for _, pro := range versionApp.Products {
 			if deviceInfo.DeviceType == pro {
+				var appAvailable rumodel.AppsAvailableForInstall
 				appAvailable.AppName = versionApp.Name
-				appAvailable.LatestVersion = versionApp.Version
+				appAvailable.MinVersion = versionApp.MinVersion
+				appAvailable.MaxVersion = versionApp.MaxVersion
 				appsAvailable = append(appsAvailable, appAvailable)
 			}
 		}
 	}
 	for _, installedApp := range installedApps {
-		for _, versionApp := range release.Apps {
-			if installedApp.AppName == versionApp.Name {
+		for _, app := range release.Apps {
+			if installedApp.AppName == app.Name {
 				installedAppVersion, err := version.NewVersion(installedApp.Version)
 				if err != nil {
 					return nil, err
 				}
-				storeAppVersion, err := version.NewVersion(versionApp.Version)
+				minAppVersion, err := version.NewVersion(app.MinVersion)
+				if err != nil {
+					return nil, err
+				}
+				maxVersion := "v1000.0.0"
+				if app.MaxVersion != "" {
+					maxVersion = app.MaxVersion
+				}
+				maxAppVersion, err := version.NewVersion(maxVersion)
 				if err != nil {
 					return nil, err
 				}
 				installedApp.IsInstalled = true
-				installedApp.LatestVersion = versionApp.Version
-				if installedAppVersion.String() == storeAppVersion.String() {
-					installedApp.Message = fmt.Sprintf("installed version and app store version match version: %s", installedAppVersion)
+				installedApp.MinVersion = app.MinVersion
+				installedApp.MaxVersion = app.MaxVersion
+				if installedAppVersion.GreaterThanOrEqual(minAppVersion) && installedAppVersion.LessThanOrEqual(maxAppVersion) {
 					installedApp.Match = true
 				} else {
-					if installedAppVersion.LessThan(storeAppVersion) {
-						installedApp.Message = fmt.Sprintf("an upgrade is required to match (installed: %s | app store: %s)", installedAppVersion, storeAppVersion)
+					if installedAppVersion.LessThan(minAppVersion) {
 						installedApp.UpgradeRequired = true
 					} else {
-						installedApp.Message = fmt.Sprintf("an downgrade is required to match (installed: %s | app store: %s)", installedAppVersion, storeAppVersion)
 						installedApp.DowngradeRequired = true
 					}
 				}

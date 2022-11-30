@@ -11,7 +11,6 @@ type Apps struct {
 	EnvironmentVars                 []string `json:"environment_vars"`
 	Products                        []string `json:"products"`
 	Arch                            []string `json:"arch"`
-	Version                         string   `json:"version"`
 	MinVersion                      string   `json:"min_version,omitempty"`
 	MaxVersion                      string   `json:"max_version"`
 	FlowDependency                  bool     `json:"flow_dependency"`

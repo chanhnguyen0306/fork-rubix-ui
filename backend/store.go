@@ -18,7 +18,7 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 	}
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
-			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload)
+			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.MaxVersion, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload) // todo RaiBnod
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("%s app download on local store got error: %s", appName, err.Error()))
 				return nil
