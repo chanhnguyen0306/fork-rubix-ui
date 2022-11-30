@@ -12,7 +12,6 @@ import {
 import {
   ArrowRightOutlined,
   CloudDownloadOutlined,
-  DownCircleOutlined,
   DownloadOutlined,
   FormOutlined,
   LeftOutlined,
@@ -43,7 +42,6 @@ import RbConfirmPopover from "../../../common/rb-confirm-popover";
 import { tagMessageStateResolver } from "./utils";
 import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
-import UpdateApp from "./updateApp";
 import { TokenModal } from "../../../common/token/token-modal";
 import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
 import {
@@ -60,8 +58,6 @@ const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
 
 const INSTALL_DIALOG = "INSTALL_DIALOG";
-const UPDATE_DIALOG = "UPDATE_DIALOG";
-
 
 interface InstalledAppI {
   active_state: string;
@@ -164,15 +160,11 @@ const AppInstallInfo = (props: any) => {
   let timeout;
   const [isLoading, updateIsLoading] = useState(false);
   const [isActionLoading, updateActionLoading] = useState({} as any);
-  const [isUpdating, updateIsUpdating] = useState(false);
   const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
   const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
   const [appInfoMsg, updateAppInfoMsg] = useState("");
   const { host } = props;
   const { connUUID = "" } = useParams();
-  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
-    UPDATE_DIALOG,
-  ]);
 
   useEffect(() => {
     fetchAppInfo().catch(console.error);
@@ -258,19 +250,8 @@ const AppInstallInfo = (props: any) => {
       });
   };
 
-  const openUpdateApp = () => {
-    openDialog(UPDATE_DIALOG, { host: host, connUUID });
-  };
-
   return (
     <div>
-      <UpdateApp
-        isOpen={isOpen(UPDATE_DIALOG)}
-        isLoading={isLoading}
-        dialogData={dialogData[UPDATE_DIALOG]}
-        closeDialog={() => closeDialog(UPDATE_DIALOG)}
-        handleUpdate={() => fetchAppInfo()}
-      />
       <div
         style={{
           display: "flex",
@@ -280,16 +261,6 @@ const AppInstallInfo = (props: any) => {
         }}
       >
         <Title level={5}>App details</Title>
-
-        <Button
-          className="restart-color white--text"
-          onClick={openUpdateApp}
-          loading={isUpdating}
-          style={{ margin: "0 6px 10px 0", float: "left", marginLeft: 10 }}
-        >
-          <DownCircleOutlined /> Update
-        </Button>
-
         <RbRefreshButton
           style={{ marginLeft: 10 }}
           refreshList={() => fetchAppInfo()}
