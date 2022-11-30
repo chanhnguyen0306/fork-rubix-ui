@@ -1,9 +1,9 @@
 import { APPLICATION_STATES } from "../../../common/rb-tag";
 
 export const tagMessageStateResolver = (
-  state: string,
-  subState: string,
-  activeState: string
+  state: string|undefined,
+  subState: string|undefined,
+  activeState: string|undefined
 ) => {
   if (
     state === APPLICATION_STATES.ENABLED &&

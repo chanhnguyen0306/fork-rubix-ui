@@ -1,7 +1,6 @@
 import { amodel, store, } from "../../../wailsjs/go/models";
 import {
   EdgeDeviceInfoAndApps,
-  EdgeInstallApp,
   EdgeServiceRestart,
   EdgeServiceStart,
   EdgeServiceStop,
@@ -55,24 +54,6 @@ export class ReleasesFactory {
 
   async GetRelease(uuid: string): Promise<store.Release> {
     return await GetRelease(uuid);
-  }
-
-  // install an app on the edge-device (the host)
-  // example if installing flow-framework the user needs to already have this downloaded on the PC via the app-store
-  // appName = flow-framework,  appVersion = v0.6.0, arch = amd64, releaseVersion = v0.6.0
-  // to get the releaseVersion use either GetRelease() or GetReleases()
-  async EdgeInstallApp(
-    connUUID: string,
-    hostUUID: string,
-    appName: string,
-    appVersion: string,
-  ): Promise<amodel.Message> {
-    return await EdgeInstallApp(
-      connUUID,
-      hostUUID,
-      appName,
-      appVersion,
-    );
   }
 
   async EdgeUnInstallApp(

@@ -1,19 +1,8 @@
-import {
-  Button,
-  Card,
-  Dropdown,
-  List,
-  Menu,
-  Space,
-  Spin,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Space, Spin, Tooltip, Typography, } from "antd";
 import {
   ArrowRightOutlined,
   DownloadOutlined,
   FormOutlined,
-  LeftOutlined,
   LinkOutlined,
   MenuFoldOutlined,
   ScanOutlined
@@ -22,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { amodel, backend, storage } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
-import RbTag from "../../../common/rb-tag";
 import {
   RbAddButton,
   RbDeleteButton,
@@ -32,12 +20,8 @@ import { HOST_HEADERS } from "../../../constants/headers";
 import { ROUTES } from "../../../constants/routes";
 import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
-import { ReleasesFactory } from "../../release/factory";
 import { HostsFactory } from "../factory";
 import { BackupModal, CreateEditModal } from "./modals";
-import RbConfirmPopover from "../../../common/rb-confirm-popover";
-import { tagMessageStateResolver } from "./utils";
-import { REFRESH_TIMEOUT } from "./constants";
 import "./style.css";
 import { TokenModal } from "../../../common/token/token-modal";
 import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
@@ -45,35 +29,12 @@ import {
   InstallRubixEdgeModal
 } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
-import RbVersion, { VERSION_STATES } from "../../../common/rb-version";
+import { AppInstallInfo } from "./install-app-info";
+
 import Host = amodel.Host;
 import Location = amodel.Location;
 import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
-
-const { Text, Title } = Typography;
-const releaseFactory = new ReleasesFactory();
-
-interface InstalledAppI {
-  active_state: string;
-  app_name: string;
-  is_installed: boolean;
-  latest_version: string;
-  match: boolean;
-  downgrade_required: boolean;
-  upgrade_required: boolean;
-  message: string;
-  service_name: string;
-  state: string;
-  sub_state: string;
-  version: string;
-}
-
-interface AvailableAppI {
-  app_name: string;
-  min_version: string;
-  max_version: string;
-}
 
 const ExpandedRow = (props: any) => {
   return (
@@ -83,263 +44,6 @@ const ExpandedRow = (props: any) => {
   );
 };
 
-const ConfirmActionMenu = (props: any) => {
-  const { item, onMenuClick } = props;
-  const [selectedAction, updateSelectedAction] = useState("" as string);
-  const [isOpenConfirm, updateIsOpenConfirm] = useState(false);
-
-  const handleOnMenuClick = (v: any) => {
-    updateSelectedAction(v);
-    updateIsOpenConfirm(true);
-  };
-
-  return (
-    <div>
-      {!isOpenConfirm ? (
-        <Menu
-          key={1}
-          onClick={(v) => handleOnMenuClick(v)}
-          items={[
-            {
-              key: "start",
-              label: "Start",
-            },
-            {
-              key: "restart",
-              label: "Restart",
-            },
-            {
-              key: "stop",
-              label: "Stop",
-            },
-            {
-              key: "uninstall",
-              label: "Uninstall",
-            },
-          ]}
-        />
-      ) : (
-        <Card>
-          <div style={{ paddingBottom: 16 }}>
-            <Button
-              style={{ marginRight: "8px" }}
-              shape="circle"
-              icon={<LeftOutlined />}
-              size="small"
-              onClick={() => updateIsOpenConfirm(false)}
-            />
-            <strong>Are you sure?</strong>
-          </div>
-          <div>
-            <Button
-              onClick={() => {
-                updateIsOpenConfirm(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="nube-primary white--text"
-              onClick={() => onMenuClick(selectedAction, item)}
-            >
-              OK
-            </Button>
-          </div>
-        </Card>
-      )}
-    </div>
-  );
-};
-
-const AppInstallInfo = (props: any) => {
-  let timeout;
-  const [isLoading, updateIsLoading] = useState(false);
-  const [isActionLoading, updateActionLoading] = useState({} as any);
-  const [installedApps, updateInstalledApps] = useState([] as InstalledAppI[]);
-  const [availableApps, updateAvailableApps] = useState([] as AvailableAppI[]);
-  const [appInfoMsg, updateAppInfoMsg] = useState("");
-  const { host } = props;
-  const { connUUID = "" } = useParams();
-
-  useEffect(() => {
-    fetchAppInfo().catch(console.error);
-    return () => {
-      timeout = null;
-    };
-  }, []);
-
-  const installApp = (item: any) => {
-    const payload = {
-      connUUID: connUUID,
-      hostUUID: host.uuid,
-      appName: item.app_name,
-      appVersion: item.latest_version,
-    };
-    releaseFactory
-      .EdgeInstallApp(
-        payload.connUUID,
-        payload.hostUUID,
-        payload.appName,
-        payload.appVersion,
-      )
-      .catch((err) => ({ payload, hasError: true, err: err }));
-  };
-
-  const fetchAppInfo = () => {
-    updateAppInfoMsg("");
-    updateIsLoading(true);
-    return releaseFactory
-      .EdgeDeviceInfoAndApps(connUUID, host.uuid)
-      .then((appInfo: any) => {
-        if (!appInfo) {
-          return updateAppInfoMsg("Apps are not downloaded yet.");
-        }
-        if (appInfo.installed_apps) {
-          updateInstalledApps(appInfo.installed_apps);
-        }
-        if (appInfo.apps_available_for_install) {
-          updateAvailableApps(appInfo.apps_available_for_install);
-        }
-      })
-      .catch(() => {
-        return updateAppInfoMsg("Error to fetch edge device info and apps");
-      })
-      .finally(() => {
-        updateIsLoading(false);
-      });
-  };
-
-  if (appInfoMsg) {
-    return (
-      <span>
-        {appInfoMsg}
-        <span>
-          {" "}
-          <a onClick={() => fetchAppInfo()}>Click here to refresh</a>
-        </span>
-      </span>
-    );
-  }
-
-  const onMenuClick = (value: any, item: any) => {
-    updateActionLoading((prevState: any) => ({
-      ...prevState,
-      [item.app_name]: true,
-    }));
-    return releaseFactory
-      .EdgeServiceAction(value.key, {
-        connUUID: connUUID,
-        hostUUID: host.uuid,
-        appName: item.app_name,
-      })
-      .then(() => {
-        timeout = setTimeout(() => {
-          fetchAppInfo().catch(console.log);
-        }, REFRESH_TIMEOUT);
-      })
-      .finally(() => {
-        updateActionLoading((prevState: any) => ({
-          ...prevState,
-          [item.app_name]: false,
-        }));
-      });
-  };
-
-  return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "10px 0",
-          borderBottom: "1px solid #dfdfdf",
-        }}
-      >
-        <Title level={5}>App details</Title>
-        <RbRefreshButton
-          style={{ marginLeft: 10 }}
-          refreshList={() => fetchAppInfo()}
-        />
-      </div>
-
-      <List
-        itemLayout="horizontal"
-        loading={isLoading}
-        dataSource={availableApps}
-        header={<strong>Available Apps</strong>}
-        renderItem={(item) => (
-          <List.Item style={{ padding: "0 16px" }}>
-            <List.Item.Meta
-              title={<span>{item.app_name}</span>}
-              description={`(${item.min_version} - ${item.max_version || "Infinite"})`}
-            />
-            <RbConfirmPopover
-              title="Install App"
-              buttonTitle="Install"
-              handleOk={() => installApp(item)}
-            />
-          </List.Item>
-        )}
-      />
-
-      <List
-        itemLayout="horizontal"
-        loading={isLoading}
-        dataSource={installedApps}
-        header={<strong>Installed Apps</strong>}
-        renderItem={(item) => (
-          <List.Item style={{ padding: "8px 16px" }}>
-            <span style={{ width: "250px" }}>
-              <span>
-                {item.app_name}
-              </span>
-            </span>
-            <span style={{ width: 100, float: "right" }}>
-              <RbVersion state={
-                item.downgrade_required ?
-                  VERSION_STATES.DOWNGRADE : item.upgrade_required ?
-                    VERSION_STATES.UPGRADE : VERSION_STATES.NONE
-              } version={item.version}>
-              </RbVersion>
-            </span>
-            <span
-              className="flex-1"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                borderLeft: "1px solid #dfdfdf",
-                padding: "0 2rem",
-              }}
-            >
-              <span>
-                <RbTag state={item.state} />
-                <RbTag state={item.sub_state} />
-                <RbTag state={item.active_state} />
-              </span>
-
-              <Text style={{ paddingTop: 5 }} type="secondary" italic>
-                {tagMessageStateResolver(
-                  item.state,
-                  item.sub_state,
-                  item.active_state
-                )}
-              </Text>
-            </span>
-            <span className="flex-1" style={{ textAlign: "right" }}>
-              <Dropdown.Button
-                loading={isActionLoading[item.app_name] || false}
-                overlay={() => (
-                  <ConfirmActionMenu item={item} onMenuClick={onMenuClick} />
-                )}
-              />
-            </span>
-          </List.Item>
-        )}
-      />
-    </div>
-  );
-};
 
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
