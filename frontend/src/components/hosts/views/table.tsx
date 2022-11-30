@@ -11,7 +11,6 @@ import {
 } from "antd";
 import {
   ArrowRightOutlined,
-  CloudDownloadOutlined,
   DownloadOutlined,
   FormOutlined,
   LeftOutlined,
@@ -31,12 +30,10 @@ import {
 } from "../../../common/rb-table-actions";
 import { HOST_HEADERS } from "../../../constants/headers";
 import { ROUTES } from "../../../constants/routes";
-import { useDialogs } from "../../../hooks/useDialogs";
 import { isObjectEmpty } from "../../../utils/utils";
 import { BackupFactory } from "../../backups/factory";
 import { ReleasesFactory } from "../../release/factory";
 import { HostsFactory } from "../factory";
-import InstallApp from "./installApp";
 import { BackupModal, CreateEditModal } from "./modals";
 import RbConfirmPopover from "../../../common/rb-confirm-popover";
 import { tagMessageStateResolver } from "./utils";
@@ -56,8 +53,6 @@ import UUIDs = backend.UUIDs;
 
 const { Text, Title } = Typography;
 const releaseFactory = new ReleasesFactory();
-
-const INSTALL_DIALOG = "INSTALL_DIALOG";
 
 interface InstalledAppI {
   active_state: string;
@@ -349,9 +344,6 @@ const AppInstallInfo = (props: any) => {
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-  const { closeDialog, isOpen, openDialog, dialogData } = useDialogs([
-    INSTALL_DIALOG,
-  ]);
   const [backups, setBackups] = useState([] as Array<Backup>);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [currentHost, setCurrentHost] = useState({} as Host);
@@ -399,13 +391,6 @@ export const HostsTable = (props: any) => {
               <FormOutlined />
             </a>
           </Tooltip>
-          <Tooltip title="Install">
-            <a onClick={() => {
-              openDialog(INSTALL_DIALOG, { state: host });
-            }}>
-              <DownloadOutlined />
-            </a>
-          </Tooltip>
           <Tooltip title="Rubix-Wires and Backup">
             <a onClick={(e) => {
               showBackupModal(host, e);
@@ -417,7 +402,7 @@ export const HostsTable = (props: any) => {
             <a onClick={(e) => {
               showRubixEdgeInstallModal(host, e);
             }}>
-              <CloudDownloadOutlined />
+              <DownloadOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Tokens">
@@ -571,11 +556,6 @@ export const HostsTable = (props: any) => {
         backups={backups}
         fetchBackups={fetchBackups}
         onCloseModal={onCloseBackupModal}
-      />
-      <InstallApp
-        isOpen={isOpen(INSTALL_DIALOG)}
-        closeDialog={() => closeDialog(INSTALL_DIALOG)}
-        dialogData={dialogData[INSTALL_DIALOG]}
       />
       <InstallRubixEdgeModal
         isModalVisible={isInstallRubixEdgeModalVisible}
