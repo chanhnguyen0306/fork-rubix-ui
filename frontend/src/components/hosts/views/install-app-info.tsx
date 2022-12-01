@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { REFRESH_TIMEOUT } from "./constants";
 import { RbRefreshButton } from "../../../common/rb-table-actions";
 import { Button, Card, Dropdown, List, Menu, Typography } from "antd";
 import { DownloadOutlined, LeftOutlined } from "@ant-design/icons";
@@ -91,9 +90,7 @@ export const AppInstallInfo = (props: any) => {
         appName: item.app_name,
       })
       .then(() => {
-        timeout = setTimeout(() => {
-          fetchAppInfo().catch(console.log);
-        }, REFRESH_TIMEOUT);
+        fetchAppInfo().catch(console.log);
       })
       .finally(() => {
         updateActionLoading((prevState: any) => ({
@@ -211,6 +208,7 @@ export const AppInstallInfo = (props: any) => {
         host={host}
         app={selectedApp}
         installedVersion={installedVersion}
+        fetchAppInfo={fetchAppInfo}
       />
     </div>
   );

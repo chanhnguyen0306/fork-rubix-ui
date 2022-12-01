@@ -14,9 +14,11 @@ export const InstallRubixAppModal = (props: IInstallRubixAppModal) => {
     host,
     app,
     installedVersion,
-    installFactory
+    installFactory,
+    fetchAppInfo
   } = props;
 
+  const [isInstalled, setIsInstalled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [selectedVersion, setSelectedVersion] = useState("");
@@ -29,11 +31,16 @@ export const InstallRubixAppModal = (props: IInstallRubixAppModal) => {
       app.app_name || "",
       selectedVersion);
     setLoading(false);
+    setIsInstalled(true);
   };
 
   const complete = async () => {
     setCurrent(0);
     onCloseModal();
+    if (isInstalled) {
+      fetchAppInfo().catch(console.log);
+      setIsInstalled(false);
+    }
     await message.success("Processing complete!");
   };
 
@@ -100,4 +107,5 @@ interface IInstallRubixAppModal {
   app: InstalledApps;
   installedVersion: string;
   installFactory: InstallAppFactory;
+  fetchAppInfo: any;
 }
