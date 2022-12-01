@@ -39,7 +39,9 @@ func (inst *App) storeGetPluginPath(body *amodel.Plugin) (absPath string, flowPl
 	for _, plg := range plugins {
 		if plg.Name == body.Name {
 			if plg.Arch == body.Arch {
-				return path.Join(pluginPath, plg.ZipName), &plg, nil
+				if plg.Version == body.Version {
+					return path.Join(pluginPath, plg.ZipName), &plg, nil
+				}
 			}
 		}
 	}
