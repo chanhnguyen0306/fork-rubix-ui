@@ -14,9 +14,10 @@ export class InstallAppFactory {
   }
 
   public GetRubixAppVersions(
+    hostUUID: string,
     appName: string,
     minVersion: string,
     maxVersion: string): Promise<any> {
-    return EdgeRubixAppVersions(appName, minVersion, maxVersion);
+    return EdgeRubixAppVersions(this.connectionUUID, hostUUID, appName, minVersion, maxVersion);
   }
 }

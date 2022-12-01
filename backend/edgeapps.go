@@ -309,11 +309,11 @@ func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID stri
 	var releaseVersion string
 	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
 	if connectionErr != nil {
-		log.Warning(connectionErr)
+		inst.uiErrorMessage(connectionErr)
 		return "", connectionErr
 	}
 	if requestErr != nil {
-		log.Warning(requestErr)
+		inst.uiWarningMessage(requestErr)
 	}
 	if appStatus != nil {
 		releaseVersion = appStatus.Version

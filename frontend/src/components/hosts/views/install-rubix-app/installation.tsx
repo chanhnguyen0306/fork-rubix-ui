@@ -22,6 +22,7 @@ export const Installation = (props: IInstallation) => {
     try {
       const versions = await installFactory
         .GetRubixAppVersions(
+          host.uuid,
           app.app_name || "",
           app.min_version || "",
           app.max_version || "");
