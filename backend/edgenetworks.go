@@ -7,7 +7,7 @@ import (
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-edge/service/system"
 	"github.com/NubeIO/rubix-ui/backend/constants"
-	"github.com/NubeIO/rubix-ui/backend/model"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 )
 
 func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
@@ -98,11 +98,11 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
 	// eth1IpSettings := rcNetworkBody.Eth1IpSettings
 
-	if deviceType == model.RubixCompute.String() || deviceType == model.RubixCompute5.String() {
+	if deviceType == rumodel.RubixCompute.String() || deviceType == rumodel.RubixCompute5.String() {
 
 	}
 
-	if deviceType == model.RubixComputeIO.String() {
+	if deviceType == rumodel.RubixComputeIO.String() {
 
 	}
 }
@@ -221,13 +221,13 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		}
 	}
 	m := &RcNetwork{}
-	if deviceType == model.RubixCompute.String() || deviceType == model.RubixCompute5.String() {
+	if deviceType == rumodel.RubixCompute.String() || deviceType == rumodel.RubixCompute5.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		m.Eth1 = inst.setEth1(connUUID, hostUUID, eth1Body)
 		schema.Set(m)
 		return m, nil
 	}
-	if deviceType == model.RubixComputeIO.String() {
+	if deviceType == rumodel.RubixComputeIO.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		schema.Set(m)
 		return m, nil

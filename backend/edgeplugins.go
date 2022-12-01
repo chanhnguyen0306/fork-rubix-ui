@@ -9,13 +9,17 @@ import (
 )
 
 func (inst *App) edgeUploadPlugins(assistCli *assistcli.Client, hostUUID, releaseVersion string) error {
-	plugins, err := assistCli.ListPlugins(hostUUID)
-	if err != nil {
-		return err
+	plugins, connectionErr, requestErr := assistCli.ListPlugins(hostUUID)
+	if connectionErr != nil {
+		return connectionErr
+	}
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
+		return nil
 	}
 	if len(plugins) == 0 {
 		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be uploaded"))
-		return err
+		return nil
 	}
 
 	for _, plugin := range plugins {

@@ -1,12 +1,5 @@
 package store
 
-import (
-	"context"
-	"encoding/json"
-	"github.com/NubeIO/git/pkg/git"
-	"github.com/google/go-github/v32/github"
-)
-
 type Apps struct {
 	Name                            string   `json:"name"`
 	Repo                            string   `json:"repo"`
@@ -18,7 +11,6 @@ type Apps struct {
 	EnvironmentVars                 []string `json:"environment_vars"`
 	Products                        []string `json:"products"`
 	Arch                            []string `json:"arch"`
-	Version                         string   `json:"version"`
 	MinVersion                      string   `json:"min_version,omitempty"`
 	MaxVersion                      string   `json:"max_version"`
 	FlowDependency                  bool     `json:"flow_dependency"`
@@ -61,36 +53,8 @@ type Release struct {
 	Services []Services `json:"services"`
 }
 
-type Releases struct {
-	Releases []Release `json:"releases"`
-}
-
 type ReleaseList struct {
 	Name string `json:"name"`
 	Path string `json:"path"`
 	URL  string `json:"url"`
-}
-
-// DownloadReleases pass in the path: "flow/v0.6.1.json"
-func (inst *AppStore) DownloadReleases(token, path string) (*Release, error) {
-	opts := &git.AssetOptions{
-		Owner: "NubeIO",
-		Repo:  "releases",
-		Tag:   "latest",
-	}
-	ctx := context.Background()
-	gitClient = git.NewClient(token, opts, ctx)
-
-	contents, _, _, err := gitClient.GetContents("NubeIO", "releases", path, &github.RepositoryContentGetOptions{})
-	if err != nil {
-		return nil, err
-	}
-
-	content, err := contents.GetContent()
-	if err != nil {
-		return nil, err
-	}
-	var r *Release
-	err = json.Unmarshal([]byte(content), &r)
-	return r, err
 }
