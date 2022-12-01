@@ -39,10 +39,15 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		inst.uiErrorMessage(fmt.Sprintf("write app config: %s", err.Error()))
 	}
 
-	releaseVersion, err := inst.getReleaseVersion(assistClient, hostUUID)
-	if err != nil {
-		inst.uiErrorMessage(err)
-		return nil
+	var releaseVersion string
+	if appName == constants.FlowFramework {
+		releaseVersion = appVersion // FlowNetwork installation should select same release version
+	} else {
+		releaseVersion, err = inst.getReleaseVersion(assistClient, hostUUID)
+		if err != nil {
+			inst.uiErrorMessage(err)
+			return nil
+		}
 	}
 
 	if appName == "" {
