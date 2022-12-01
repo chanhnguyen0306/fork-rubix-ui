@@ -141,7 +141,7 @@ export const AppInstallInfo = (props: any) => {
           <List.Item style={{ padding: "0 16px" }}>
             <List.Item.Meta
               title={<span>{item.app_name}</span>}
-              description={`(${item.min_version} - ${item.max_version || "Infinite"})`}
+              description={`(${item.min_version || "Infinite"} - ${item.max_version || "Infinite"})`}
             />
             <DownloadOutlined
               onClick={() => setIsInstallRubixAppModalVisible(item)} />

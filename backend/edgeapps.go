@@ -243,13 +243,17 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 				if err != nil {
 					return nil, err
 				}
-				minAppVersion, err := version.NewVersion(app.MinVersion)
+				minVersion := app.MinVersion
+				maxVersion := app.MaxVersion
+				if app.MinVersion == "" {
+					minVersion = "v0.0.0"
+				}
+				if app.MaxVersion == "" {
+					maxVersion = "v1000.0.0"
+				}
+				minAppVersion, err := version.NewVersion(minVersion)
 				if err != nil {
 					return nil, err
-				}
-				maxVersion := "v1000.0.0"
-				if app.MaxVersion != "" {
-					maxVersion = app.MaxVersion
 				}
 				maxAppVersion, err := version.NewVersion(maxVersion)
 				if err != nil {

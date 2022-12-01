@@ -10,12 +10,15 @@ func (inst *App) EdgeRubixAppVersions(appName, minVersion, maxVersion string) []
 	repo := namings.GetRepoNameFromAppName(appName)
 	versions := inst.getRepoVersions(owner, repo)
 	validVersions := make([]string, 0)
-	_minVersion, err := version.NewVersion(minVersion)
-	if err != nil {
-		return validVersions
+	if minVersion == "" {
+		minVersion = "v0.0.0"
 	}
 	if maxVersion == "" {
 		maxVersion = "v1000.0.0"
+	}
+	_minVersion, err := version.NewVersion(minVersion)
+	if err != nil {
+		return validVersions
 	}
 	_maxVersion, err := version.NewVersion(maxVersion)
 	if err != nil {

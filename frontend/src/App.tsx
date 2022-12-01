@@ -13,6 +13,7 @@ import "./App.css";
 const { Content } = Layout;
 
 const OK_EVENT = "ok";
+const WARN_EVENT = "warn";
 const ERR_EVENT = "err";
 
 const getParentKey = (key: React.Key, tree: any): React.Key => {
@@ -74,6 +75,10 @@ const App: React.FC = () => {
     updateIsRegistered(true);
     EventsOn(OK_EVENT, (val) => {
       openNotificationWithIcon("success", val);
+    });
+
+    EventsOn(WARN_EVENT, (val) => {
+      openNotificationWithIcon("warning", val);
     });
 
     EventsOn(ERR_EVENT, (val) => {
