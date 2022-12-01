@@ -1,9 +1,9 @@
 import React from "react";
 import { Tag, Tooltip } from "antd";
 import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  VerticalAlignMiddleOutlined,
+  CheckCircleFilled,
+  DownCircleFilled,
+  UpCircleFilled,
 } from "@ant-design/icons";
 
 interface BadgeDetailI {
@@ -49,8 +49,8 @@ const RbVersion = (props: any) => {
     <Tag
       icon={
         state == VERSION_STATES.UPGRADE ?
-          <ArrowUpOutlined /> : state == VERSION_STATES.DOWNGRADE ?
-            <ArrowDownOutlined /> : <VerticalAlignMiddleOutlined />
+          <UpCircleFilled /> : state == VERSION_STATES.DOWNGRADE ?
+            <DownCircleFilled /> : <CheckCircleFilled />
       }
       color={badgeDetail.color}>{version}
     </Tag>
