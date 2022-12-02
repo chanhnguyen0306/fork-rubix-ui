@@ -6,12 +6,14 @@ import RbTable from "../../../common/rb-table";
 import { RbDeleteButton } from "../../../common/rb-table-actions";
 
 export const LocationsTable = (props: any) => {
-  let { locations, isFetching, tableSchema, connUUID, refreshList } = props;
+  const { locations, isFetching, tableSchema, connUUID, refreshList } = props;
   if (!locations) return <></>;
 
-  const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<backend.UUIDs>);
+  const [selectedUUIDs, setSelectedUUIDs] = useState(
+    [] as Array<backend.UUIDs>
+  );
 
-  let factory = new LocationFactory();
+  const factory = new LocationFactory();
   factory.connectionUUID = connUUID as string;
 
   const bulkDelete = async () => {

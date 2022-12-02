@@ -16,8 +16,8 @@ export const CreateEditModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowConsumerFactory();
-  let producerFactory = new FlowProducerFactory();
+  const factory = new FlowConsumerFactory();
+  const producerFactory = new FlowProducerFactory();
   factory.connectionUUID = producerFactory.connectionUUID = connUUID;
   factory.hostUUID = producerFactory.hostUUID = hostUUID;
 

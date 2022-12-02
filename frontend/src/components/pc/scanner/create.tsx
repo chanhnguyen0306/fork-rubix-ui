@@ -16,7 +16,7 @@ export const CreateModal = (props: any) => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [connections, setConnections] = useState([] as RubixConnection[]);
 
-  let factory = new ConnectionFactory();
+  const factory = new ConnectionFactory();
 
   useEffect(() => {
     getSchema();

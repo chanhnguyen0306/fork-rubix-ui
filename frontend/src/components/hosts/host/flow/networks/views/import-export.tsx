@@ -17,7 +17,7 @@ export const ExportModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [comment, setComment] = useState<any>();
 
-  let factory = new FlowNetworkFactory();
+  const factory = new FlowNetworkFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
@@ -73,10 +73,10 @@ export const ImportModal = (props: any) => {
   const [backupUUID, setBackupUUID] = useState<any>();
   const [backups, setBackups] = useState([] as Backup[]);
 
-  let backupFactory = new BackupFactory();
+  const backupFactory = new BackupFactory();
   const application = backupFactory.AppFlowFramework;
   const subApplication = backupFactory.SubFlowFrameworkNetwork;
-  let factory = new FlowNetworkFactory();
+  const factory = new FlowNetworkFactory();
   factory.connectionUUID = backupFactory.connectionUUID = connUUID;
   factory.hostUUID = backupFactory.hostUUID = hostUUID;
 

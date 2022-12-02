@@ -22,7 +22,7 @@ import FlowNetwork = model.FlowNetwork;
 
 export const FlowNetworksTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
-  let {
+  const {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
@@ -34,7 +34,7 @@ export const FlowNetworksTable = (props: any) => {
   const [currentNetwork, setCurrentNetwork] = useState({} as FlowNetwork);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  let factory = new FlowFrameworkNetworkFactory();
+  const factory = new FlowFrameworkNetworkFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
