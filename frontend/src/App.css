@@ -143,6 +143,12 @@ aside .active {
     padding: 0;
 }
 
+.rb-btn {
+    margin: 0 6px 10px 0;
+    float: left;
+    display: inline-flex !important;
+}
+
 .rb-btn>.anticon {
     margin: auto;
 }

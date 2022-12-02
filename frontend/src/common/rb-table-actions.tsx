@@ -9,12 +9,6 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 
-const btn: React.CSSProperties = {
-  margin: "0 6px 10px 0",
-  float: "left",
-  display: "inline-flex",
-};
-
 export const RbAddButton = (props: any) => {
   const { handleClick, disabled, text } = props;
   return (
@@ -23,7 +17,6 @@ export const RbAddButton = (props: any) => {
       onClick={handleClick}
       disabled={disabled}
       icon={<PlusOutlined />}
-      style={btn}
     >
       {text ?? "Create"}
     </Button>
@@ -38,7 +31,7 @@ export const RbRefreshButton = (props: any) => {
       onClick={refreshList}
       disabled={disabled}
       icon={<ReloadOutlined />}
-      style={{ ...btn, ...style }}
+      style={{ ...style }}
     >
       {text ?? "Refresh"}
     </Button>
@@ -50,10 +43,9 @@ export const RbDeleteButton = (props: any) => {
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
       <Button
-        className="danger white--text"
+        className="rb-btn danger white--text"
         disabled={disabled}
         icon={<DeleteOutlined />}
-        style={btn}
       >
         {text ?? "Delete"}
       </Button>
@@ -69,7 +61,6 @@ export const RbImportButton = (props: any) => {
       onClick={showModal}
       disabled={disabled}
       icon={<ImportOutlined />}
-      style={btn}
     >
       {text ?? "Import"}
     </Button>
@@ -84,7 +75,6 @@ export const RbExportButton = (props: any) => {
       onClick={handleExport}
       disabled={disabled}
       icon={<ExportOutlined />}
-      style={btn}
     >
       {text ?? "Export"}
     </Button>
@@ -99,7 +89,6 @@ export const RbDownloadButton = (props: any) => {
       onClick={handleClick}
       disabled={disabled}
       icon={<DownloadOutlined />}
-      style={btn}
     >
       {text ?? "Download"}
     </Button>
@@ -115,7 +104,6 @@ export const RbRestartButton = (props: any) => {
       disabled={disabled}
       loading={loading}
       icon={<PlayCircleOutlined />}
-      style={btn}
     >
       {text ?? "Restart"}
     </Button>
@@ -132,7 +120,6 @@ export const RbButton = (props: any) => {
     loading = false,
     style = {},
   } = props;
-  console.log(style);
 
   return (
     <Button
@@ -143,7 +130,7 @@ export const RbButton = (props: any) => {
       disabled={disabled}
       loading={loading}
       className="rb-btn"
-      style={{ ...btn, ...style }}
+      style={{ ...style }}
     >
       {text}
     </Button>
