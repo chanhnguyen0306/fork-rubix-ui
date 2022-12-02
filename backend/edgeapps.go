@@ -18,6 +18,15 @@ import (
 // if app is FF then we need to upgrade all the plugins
 // if app has plugins to upload the plugins and restart FF
 func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) *amodel.Message {
+	if appName == "" {
+		inst.uiErrorMessage("app_name can't be empty")
+		return nil
+	}
+	if appVersion == "" {
+		inst.uiErrorMessage("app_version can't be empty")
+		return nil
+	}
+
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(err)
@@ -48,19 +57,6 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			inst.uiErrorMessage(err)
 			return nil
 		}
-	}
-
-	if appName == "" {
-		inst.uiErrorMessage("app_name can't be empty")
-		return nil
-	}
-	if appVersion == "" {
-		inst.uiErrorMessage("app_version can't be empty")
-		return nil
-	}
-	if arch == "" {
-		inst.uiErrorMessage("arch can't be empty")
-		return nil
 	}
 
 	var lastStep = "4"
@@ -122,24 +118,29 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) %s app is uploaded to edge", lastStep, appName))
 
 	if appHasPlugins {
+		_, connectionErr, _ := assistClient.EdgeDeleteDownloadPlugins(hostUUID)
+		if connectionErr != nil {
+			inst.uiErrorMessage(connectionErr.Error())
+			return nil
+		}
 		for _, app := range release.Apps {
 			if app.Name == appName {
 				for _, plg := range app.PluginDependency {
-					inst.EdgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
-						Name:                 plg,
-						Arch:                 arch,
-						Version:              releaseVersion,
-						ClearBeforeUploading: false,
-					})
+					if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
+						Name:    plg,
+						Arch:    arch,
+						Version: appVersion,
+					}); err != nil {
+						return nil
+					}
 				}
 			}
 		}
 	}
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
-		inst.uiSuccessMessage(fmt.Sprintf("need to update all plugins for flow-framework"))
-		err := inst.edgeUploadPlugins(assistClient, hostUUID, releaseVersion)
+		inst.uiSuccessMessage("need to update all plugins for flow-framework")
+		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, releaseVersion)
 		if err != nil {
-			inst.uiErrorMessage(err.Error())
 			return nil
 		}
 	}

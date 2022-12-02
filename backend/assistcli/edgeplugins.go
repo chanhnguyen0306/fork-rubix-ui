@@ -13,8 +13,7 @@ type EdgeUploadResponse struct {
 	UploadTime  string `json:"upload_time"`
 }
 
-// UploadPlugin upload a plugin to the edge device
-func (inst *Client) UploadPlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
+func (inst *Client) EdgeUploadPlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
 	url := fmt.Sprintf("/api/edge/plugins/upload")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
@@ -28,8 +27,7 @@ func (inst *Client) UploadPlugin(hostIDName string, body *amodel.Plugin) (*amode
 	return resp.Result().(*amodel.Message), nil
 }
 
-// ListPlugins list all the plugin in the dir /flow-framework/data/plugins
-func (inst *Client) ListPlugins(hostIDName string) ([]amodel.Plugin, error, error) {
+func (inst *Client) EdgeListPlugins(hostIDName string) ([]amodel.Plugin, error, error) {
 	url := fmt.Sprintf("/api/edge/plugins")
 	resp, connectionErr, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
@@ -43,29 +41,15 @@ func (inst *Client) ListPlugins(hostIDName string) ([]amodel.Plugin, error, erro
 	return *data, nil, nil
 }
 
-func (inst *Client) DeletePlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
-	url := fmt.Sprintf("/api/edge/plugins")
-	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
-		SetHeader("host_uuid", hostIDName).
-		SetHeader("host_name", hostIDName).
-		SetResult(&amodel.Message{}).
-		SetBody(body).
-		Delete(url))
-	if err != nil {
-		return nil, err
-	}
-	return resp.Result().(*amodel.Message), nil
-}
-
-func (inst *Client) DeleteAllPlugins(hostIDName string) (*amodel.Message, error) {
-	url := fmt.Sprintf("/api/edge/plugins/all")
-	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+func (inst *Client) EdgeDeleteDownloadPlugins(hostIDName string) (*amodel.Message, error, error) {
+	url := fmt.Sprintf("/api/edge/plugins/download-plugins")
+	resp, connectionErr, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
 		SetResult(&amodel.Message{}).
 		Delete(url))
-	if err != nil {
-		return nil, err
+	if connectionErr != nil || requestErr != nil {
+		return nil, connectionErr, requestErr
 	}
-	return resp.Result().(*amodel.Message), nil
+	return resp.Result().(*amodel.Message), nil, nil
 }
