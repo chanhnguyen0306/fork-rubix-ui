@@ -1,13 +1,5 @@
-import {
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Popconfirm,
-  Spin,
-  Table,
-  Typography,
-} from "antd";
+import { Form, Input, InputNumber, Modal, Spin, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { FlowPointFactory } from "../factory";
 import { JsonForm } from "../../../../../../common/json-schema-form";
@@ -15,24 +7,18 @@ import { model } from "../../../../../../../wailsjs/go/models";
 
 import Point = model.Point;
 import React from "react";
-interface Item {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
   inputType: "number" | "text";
-  record: Item;
+  record: any;
   index: number;
   children: React.ReactNode;
 }
 
-const originData: Item[] = [];
+const originData: any[] = [];
 for (let i = 0; i < 100; i++) {
   originData.push({
     key: i.toString(),
@@ -52,12 +38,20 @@ const EditableCell: React.FC<EditableCellProps> = ({
   children,
   ...restProps
 }) => {
-  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-  console.log(dataIndex);
+  let inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+  if (record) {
+    const defaultValue = record[dataIndex];
+    inputNode =
+      inputType === "number" ? (
+        <InputNumber defaultValue={defaultValue} />
+      ) : (
+        <Input defaultValue={defaultValue} />
+      );
+  }
 
   return (
     <td {...restProps}>
-      {editing ? (
+      {title ? (
         <Form.Item
           name={dataIndex}
           style={{ margin: 0 }}
@@ -95,7 +89,7 @@ export const CreateBulkModal = (props: any) => {
   const [data, setData] = useState(originData);
   const [editingKey, setEditingKey] = useState("");
 
-  const isEditing = (record: Item) => record.key === editingKey;
+  const isEditing = (record: any) => record.key === editingKey;
 
   const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
@@ -133,77 +127,40 @@ export const CreateBulkModal = (props: any) => {
   const onCountChange = (value: number) => {
     console.log("changed", value);
   };
-  const edit = (record: Partial<Item> & { key: React.Key }) => {
-    form.setFieldsValue({ name: "", age: "", address: "", ...record });
-    setEditingKey(record.key);
-  };
 
   const cancel = () => {
     setEditingKey("");
-  };
-
-  const save = async (key: React.Key) => {
-    try {
-      const row = (await form.validateFields()) as Item;
-
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
   };
 
   const columns = [
     {
       title: "actions",
       dataIndex: "actions",
-      render: (_: any, record: Item) => {
+      render: (_: any, record: any) => {
         return (
-          <>
-            <span>
-              <Typography.Link
-                onClick={() => save(record.key)}
-                style={{ marginRight: 8 }}
-              >
-                Save
-              </Typography.Link>
-              <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                <a>Cancel</a>
-              </Popconfirm>
-            </span>
-          </>
+          <div style={{ textAlign: "center" }}>
+            <DeleteOutlined
+              style={{ color: "red" }}
+              onClick={() => console.log(record)}
+            />
+          </div>
         );
       },
+      class: "aaaa",
     },
     {
       title: "name",
       dataIndex: "name",
-      width: "25%",
       editable: true,
     },
     {
       title: "age",
       dataIndex: "age",
-      width: "15%",
       editable: true,
     },
     {
       title: "address",
       dataIndex: "address",
-      width: "40%",
       editable: true,
     },
   ];
@@ -214,7 +171,7 @@ export const CreateBulkModal = (props: any) => {
     }
     return {
       ...col,
-      onCell: (record: Item) => ({
+      onCell: (record: any) => ({
         record,
         inputType: col.dataIndex === "age" ? "number" : "text",
         dataIndex: col.dataIndex,
@@ -253,20 +210,15 @@ export const CreateBulkModal = (props: any) => {
       okText="Save"
       maskClosable={false}
       style={{ textAlign: "start" }}
+      width={800}
     >
       <InputNumber
         min={1}
         onChange={onCountChange}
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginBottom: "1.5rem" }}
         placeholder="please enter count"
       />
       <Spin spinning={isLoadingForm}>
-        {/* <JsonForm
-          formData={formData}
-          jsonSchema={bulkSchema}
-          setFormData={setFormData}
-          handleSubmit={handleSubmit}
-        /> */}
         <Form form={form} component={false}>
           <Table
             components={{
