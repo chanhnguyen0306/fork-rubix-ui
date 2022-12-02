@@ -1,13 +1,12 @@
-import { Menu, MenuProps } from "antd";
+import { Button, Menu } from "antd";
 import { Dropdown, Space, Spin, Tag, Tooltip } from "antd";
-import { FormOutlined, EditOutlined } from "@ant-design/icons";
+import { FormOutlined, EditOutlined, ImportOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model, backend } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbExportButton,
-  RbImportButton,
   RbDeleteButton,
   RbAddButton,
   RbRestartButton,
@@ -343,9 +342,20 @@ const ImportDropdownButton = (props: any) => {
   const { refreshList } = props;
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={() => setIsImportModalVisible(true)}>Json</Menu.Item>
+      <Menu.Item>Excel</Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <Dropdown overlay={menu} trigger={["click"]} className="rb-btn">
+        <Button className="nube-primary white--text" icon={<ImportOutlined />}>
+          Import
+        </Button>
+      </Dropdown>
 
       <ImportModal
         isModalVisible={isImportModalVisible}
