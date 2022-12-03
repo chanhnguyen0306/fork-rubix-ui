@@ -1,5 +1,6 @@
-import { Form, Input, InputNumber, Modal, Spin, Table } from "antd";
+import { Checkbox, Form, Input, InputNumber, Modal, Spin, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useEffect, useState } from "react";
 import { FlowPointFactory } from "../factory";
 import { JsonForm } from "../../../../../../common/json-schema-form";
@@ -12,54 +13,11 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: "number" | "text";
+  inputType: "number" | "string" | "boolean";
   record: any;
   index: number;
   children: React.ReactNode;
 }
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  let inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-  if (record) {
-    const defaultValue = record[dataIndex];
-    inputNode =
-      inputType === "number" ? (
-        <InputNumber defaultValue={defaultValue} />
-      ) : (
-        <Input defaultValue={defaultValue} />
-      );
-  }
-
-  return (
-    <td {...restProps}>
-      {title ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
-};
 
 export const CreateBulkModal = (props: any) => {
   const {
@@ -73,64 +31,61 @@ export const CreateBulkModal = (props: any) => {
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [formData, setFormData] = useState({} as Point);
   const [bulkSchema, setbulkSchema] = useState({} as any);
+  const [count, setCount] = useState<any>(undefined);
+  const [items, setItems] = useState<any[]>([]);
   const [form] = Form.useForm();
-  const [data, setData] = useState<any[]>([]);
-  const [editingKey, setEditingKey] = useState("");
-
-  const isEditing = (record: any) => record.key === editingKey;
 
   const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
-  const add = async (points: Point[]) => {
-    await factory.AddBulk(points);
-  };
-
   const handleClose = () => {
-    setFormData({} as Point);
+    setItems([]);
+    setCount(undefined);
     onCloseModal();
   };
 
-  const handleSubmit = async (formData: any) => {
-    try {
-      setConfirmLoading(true);
-      const { count } = formData;
-      if (count && count > 0) {
-        const points = [] as Point[];
-        for (let i = 0; i < count; i++) {
-          const point = { ...formData, device_uuid: deviceUUID };
-          delete point.count;
-          points.push(point);
-        }
-        await add(points);
-        refreshList();
-        handleClose();
-      }
-    } finally {
-      setConfirmLoading(false);
-    }
+  const onChange = (
+    value: number | string | boolean,
+    dataIndex: string,
+    key: number
+  ) => {
+    items[key][dataIndex] = value;
+    setItems(items);
   };
 
   const onCountChange = (count: number) => {
+    setCount(count);
     const data = [];
     for (let i = 0; i < count; i++) {
       data.push({
-        key: i.toString(),
+        key: i,
         name: `Edrward ${i}`,
         age: 32,
         address: `London Park no. ${i}`,
       });
     }
-    setData(data);
+    setItems(data);
+    form.setFieldsValue({ items: data });
   };
 
-  const cancel = () => {
-    setEditingKey("");
+  const handleSubmit = async () => {
+    console.log(items);
   };
 
+  const deleteItem = (key: number) => {
+    const newItems = items.filter((i) => i.key !== key);
+    const newCount = count - 1;
+    setItems(newItems);
+    !newCount ? setCount(undefined) : setCount(newCount);
+  };
+
+  const add = async (points: Point[]) => {
+    await factory.AddBulk(points);
+  };
+
+  //will using schema to make columns
   const columns = [
     {
       title: "actions",
@@ -140,45 +95,93 @@ export const CreateBulkModal = (props: any) => {
           <div style={{ textAlign: "center" }}>
             <DeleteOutlined
               style={{ color: "red" }}
-              onClick={() => console.log(record)}
+              onClick={() => deleteItem(record.key)}
             />
           </div>
         );
       },
-      class: "aaaa",
     },
     {
       title: "name",
       dataIndex: "name",
       editable: true,
+      type: "string",
     },
     {
       title: "age",
       dataIndex: "age",
       editable: true,
+      type: "number",
     },
     {
       title: "address",
       dataIndex: "address",
       editable: true,
+      type: "string",
     },
   ];
 
-  const mergedColumns = columns.map((col) => {
+  const mergedColumns = columns.map((col, index) => {
     if (!col.editable) {
       return col;
     }
+
     return {
       ...col,
       onCell: (record: any) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
+        inputType: col.type,
         dataIndex: col.dataIndex,
         title: col.title,
-        editing: isEditing(record),
+        editing: true,
+        index: index,
       }),
     };
   });
+
+  const EditableCell: React.FC<EditableCellProps> = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const defaultValue = record ? record[dataIndex] : null;
+    let inputNode = null;
+    switch (inputType) {
+      case "number":
+        inputNode = (
+          <InputNumber
+            defaultValue={defaultValue}
+            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+          />
+        );
+        break;
+      case "string":
+        inputNode = (
+          <Input
+            defaultValue={defaultValue}
+            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+          />
+        );
+        break;
+      case "boolean":
+        inputNode = (
+          <Checkbox
+            defaultChecked={defaultValue ?? false}
+            onChange={(e: CheckboxChangeEvent) =>
+              onChange(e.target.checked, dataIndex, record.key)
+            }
+          />
+        );
+        break;
+    }
+
+    return <td {...restProps}>{editing ? <>{inputNode}</> : children}</td>;
+  };
 
   useEffect(() => {
     //add count input
@@ -203,7 +206,7 @@ export const CreateBulkModal = (props: any) => {
     <Modal
       title="Add New Bulk"
       visible={isModalVisible}
-      onOk={() => handleSubmit(formData)}
+      onOk={handleSubmit}
       onCancel={handleClose}
       confirmLoading={confirmLoading}
       okText="Save"
@@ -216,23 +219,23 @@ export const CreateBulkModal = (props: any) => {
         onChange={onCountChange}
         style={{ width: "100%", marginBottom: "1.5rem" }}
         placeholder="please enter count"
+        value={count}
       />
       <Spin spinning={isLoadingForm}>
         <Form form={form} component={false}>
-          <Table
-            components={{
-              body: {
-                cell: EditableCell,
-              },
-            }}
-            bordered
-            dataSource={data}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            pagination={{
-              onChange: cancel,
-            }}
-          />
+          <Form.Item name="items">
+            <Table
+              components={{
+                body: {
+                  cell: EditableCell,
+                },
+              }}
+              bordered
+              dataSource={items}
+              columns={mergedColumns}
+              rowClassName="editable-row"
+            />
+          </Form.Item>
         </Form>
       </Spin>
     </Modal>
