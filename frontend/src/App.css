@@ -152,3 +152,7 @@ aside .active {
 .rb-btn>.anticon {
     margin: auto;
 }
+
+svg {
+    vertical-align: baseline;
+}

@@ -13,6 +13,10 @@ import (
 func (inst *App) EdgeBiosRubixEdgeVersions() []string {
 	const owner = "NubeIO"
 	const repo = "rubix-edge"
+	return inst.getRepoVersions(owner, repo)
+}
+
+func (inst *App) getRepoVersions(owner string, repo string) []string {
 	token, err := inst.GetGitToken(constants.SettingUUID, false)
 	if err != nil {
 		inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
@@ -24,7 +28,7 @@ func (inst *App) EdgeBiosRubixEdgeVersions() []string {
 	)
 	githubClient := github.NewClient(oauth2.NewClient(c, tokenSource))
 
-	releases, _, err := githubClient.Repositories.ListReleases(c, owner, repo, &git.ListOptions{Page: 1, PerPage: 10})
+	releases, _, err := githubClient.Repositories.ListReleases(c, owner, repo, &git.ListOptions{Page: 1, PerPage: 100})
 	if err != nil {
 		inst.uiErrorMessage(err)
 		return make([]string, 0)
