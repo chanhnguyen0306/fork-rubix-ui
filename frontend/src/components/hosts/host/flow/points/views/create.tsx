@@ -18,16 +18,6 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-const originData: any[] = [];
-for (let i = 0; i < 100; i++) {
-  originData.push({
-    key: i.toString(),
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
-
 const EditableCell: React.FC<EditableCellProps> = ({
   editing,
   dataIndex,
@@ -86,7 +76,7 @@ export const CreateBulkModal = (props: any) => {
   const [formData, setFormData] = useState({} as Point);
   const [bulkSchema, setbulkSchema] = useState({} as any);
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
+  const [data, setData] = useState<any[]>([]);
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record: any) => record.key === editingKey;
@@ -124,8 +114,17 @@ export const CreateBulkModal = (props: any) => {
     }
   };
 
-  const onCountChange = (value: number) => {
-    console.log("changed", value);
+  const onCountChange = (count: number) => {
+    const data = [];
+    for (let i = 0; i < count; i++) {
+      data.push({
+        key: i.toString(),
+        name: `Edrward ${i}`,
+        age: 32,
+        address: `London Park no. ${i}`,
+      });
+    }
+    setData(data);
   };
 
   const cancel = () => {
