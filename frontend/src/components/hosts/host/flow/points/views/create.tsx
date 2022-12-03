@@ -34,7 +34,6 @@ export const CreateBulkModal = (props: any) => {
   const [bulkSchema, setbulkSchema] = useState({} as any);
   const [count, setCount] = useState<any>(undefined);
   const [items, setItems] = useState<any[]>([]);
-  const [form] = Form.useForm();
 
   const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
@@ -51,7 +50,8 @@ export const CreateBulkModal = (props: any) => {
     dataIndex: string,
     key: number
   ) => {
-    items[key][dataIndex] = value;
+    const index = items.findIndex((i) => i.key === key);
+    items[index][dataIndex] = value;
     setItems(items);
   };
 
@@ -67,7 +67,6 @@ export const CreateBulkModal = (props: any) => {
       });
     }
     setItems(data);
-    form.setFieldsValue({ items: data });
   };
 
   const handleSubmit = async () => {
@@ -222,20 +221,18 @@ export const CreateBulkModal = (props: any) => {
         value={count}
       />
       <Spin spinning={isLoadingForm}>
-        <Form form={form} component={false}>
-          <Form.Item name="items">
-            <Table
-              components={{
-                body: {
-                  cell: EditableCell,
-                },
-              }}
-              bordered
-              dataSource={items}
-              columns={mergedColumns}
-              rowClassName="editable-row"
-            />
-          </Form.Item>
+        <Form component={false}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            bordered
+            dataSource={items}
+            columns={mergedColumns}
+            rowClassName="editable-row"
+          />
         </Form>
       </Spin>
     </Modal>
