@@ -12,19 +12,16 @@ import (
 func (inst *App) EdgeListPlugins(connUUID, hostUUID string) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.uiErrorMessage(err)
-		return rumodel.Fail(err.Error())
+		return inst.fail(err)
 	}
 	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
 	if connectionErr != nil {
-		inst.uiErrorMessage(fmt.Sprintf("connection error: %s", connectionErr))
-		return rumodel.Fail(connectionErr.Error())
+		return inst.fail(fmt.Sprintf("connection error: %s", connectionErr))
 	}
 	if requestErr != nil {
-		inst.uiErrorMessage(requestErr)
-		return rumodel.Fail(requestErr.Error())
+		return inst.fail(requestErr)
 	}
-	return rumodel.Success(plugins)
+	return inst.successResponse(plugins)
 }
 
 func (inst *App) EdgeUploadPlugins(connUUID, hostUUID string, plugins []string) []amodel.Message {
