@@ -1,14 +1,37 @@
 package backend
 
 import (
-	"errors"
 	"fmt"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
+	log "github.com/sirupsen/logrus"
 	"sort"
 )
 
-func (inst *App) getLatestRelease() (string, error) {
+func (inst *App) GetReleases() []store.Release {
+	out, err := inst.DB.GetReleases()
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error get releases: %s", err.Error()))
+		return nil
+	}
+	return out
+}
+
+func (inst *App) GetRelease(uuid string) *store.Release {
+	out, err := inst.DB.GetRelease(uuid)
+	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error get release: %s", err.Error()))
+		return nil
+	}
+	return out
+}
+
+func (inst *App) getLatestReleaseVersion() (string, error) {
+	err := inst.GitDownloadAllReleases()
+	if err != nil {
+		log.Warning(err)
+	}
 	releases, err := inst.DB.GetReleases()
 	if err != nil {
 		return "", err
@@ -31,72 +54,6 @@ func (inst *App) getLatestRelease() (string, error) {
 	}
 }
 
-func (inst *App) GetReleases() []store.Release {
-	out, err := inst.DB.GetReleases()
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error get releases: %s", err.Error()))
-		return nil
-	}
-	return out
-}
-
-func (inst *App) GetRelease(uuid string) *store.Release {
-	out, err := inst.DB.GetRelease(uuid)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error get release: %s", err.Error()))
-		return nil
-	}
-	return out
-}
-
-func (inst *App) GetReleaseByVersion(version string) *store.Release {
-	out, err := inst.getReleaseByVersion(version)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error get release by version: %s", err.Error()))
-		return nil
-	}
-	return out
-}
-
-func (inst *App) getReleaseByVersion(version string) (*store.Release, error) {
-	if len(version) > 0 {
-		if version[0:1] != "v" {
-			version = fmt.Sprintf("v%s", version)
-		}
-	}
-	v, err := inst.DB.GetReleaseByVersion(version)
-	if err != nil {
-		return nil, err
-	}
-	if v == nil {
-		return nil, errors.New(fmt.Sprintf("filed to find release by version: %s", version))
-	}
-	return v, nil
-
-}
-
-func (inst *App) getAppFromReleases(version, appName string) (*store.Apps, error) {
-	release, err := inst.getReleaseByVersion(version)
-	if err != nil {
-		return nil, err
-	}
-	for _, apps := range release.Apps {
-		if apps.Name == appName {
-			return &apps, err
-		}
-	}
-	return nil, errors.New(fmt.Sprintf("failed to find app by name: %s", appName))
-}
-
-func (inst *App) AddRelease(token, version string) *store.Release {
-	out, err := inst.addRelease(token, version)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error add release: %s", err.Error()))
-		return nil
-	}
-	return out
-}
-
 func (inst *App) addRelease(token, version string) (*store.Release, error) {
 	release, err := inst.gitDownloadRelease(token, version)
 	if err != nil {
@@ -105,24 +62,22 @@ func (inst *App) addRelease(token, version string) (*store.Release, error) {
 	return inst.DB.AddRelease(release)
 }
 
-func (inst *App) dropReleases() error {
-	releases, err := inst.DB.GetReleases()
+func (inst *App) GitDownloadAllReleases() error { // This doesn't need to be public for wires-ui frontend
+	gitToken, err := inst.GetGitToken(constants.SettingUUID, false)
+	if err != nil {
+		return err
+	}
+	releases, err := inst.appStore.GitListReleases(gitToken)
 	if err != nil {
 		return err
 	}
 	for _, release := range releases {
-		err := inst.DB.DeleteRelease(release.Uuid)
+		downloadRelease, err := inst.addRelease(gitToken, release.Path)
 		if err != nil {
+			log.Infof("Git downloaded error: %s", err.Error())
 			return err
 		}
-	}
-	return nil
-}
-
-func (inst *App) deleteRelease(version string) error {
-	err := inst.DB.DeleteRelease(version)
-	if err != nil {
-		return err
+		log.Infof("Git downloaded release: %s path: %s name: %s", downloadRelease.Release, release.Path, release.Name)
 	}
 	return nil
 }

@@ -10,20 +10,29 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type busTopic string
+type BusTopic string
 
 const (
-	okMsg  busTopic = "ok"
-	errMsg busTopic = "err"
+	okMsg   BusTopic = "ok"
+	warnMsg BusTopic = "warn"
+	errMsg  BusTopic = "err"
 )
 
 func (inst *App) uiSuccessMessage(data interface{}) {
-	log.Infof("%s", data)
+	message := fmt.Sprintf("%s", data)
+	log.Infof(message)
 	inst.msgToUI(inst.ctx, string(okMsg), data)
 }
 
+func (inst *App) uiWarningMessage(data interface{}) {
+	message := fmt.Sprintf("%s", data)
+	log.Warnf(message)
+	inst.msgToUI(inst.ctx, string(warnMsg), message)
+}
+
 func (inst *App) uiErrorMessage(data interface{}) {
-	log.Errorf("%s", data)
+	message := fmt.Sprintf("%s", data)
+	log.Errorf(message)
 	inst.msgToUI(inst.ctx, string(errMsg), data)
 }
 

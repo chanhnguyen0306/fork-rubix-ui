@@ -9,7 +9,7 @@ import (
 	"path"
 )
 
-func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *store.InstallResponse {
+func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, arch string, cleanDownload bool) *store.InstallResponse {
 	out := &store.InstallResponse{}
 	getRelease, err := inst.addRelease(token, releaseVersion)
 	if err != nil {
@@ -18,7 +18,7 @@ func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, c
 	}
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
-			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload)
+			asset, err := inst.appStore.GitDownloadZip(token, appName, appVersion, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload)
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("%s app download on local store got error: %s", appName, err.Error()))
 				return nil
@@ -39,7 +39,9 @@ func (inst *App) storeGetPluginPath(body *amodel.Plugin) (absPath string, flowPl
 	for _, plg := range plugins {
 		if plg.Name == body.Name {
 			if plg.Arch == body.Arch {
-				return path.Join(pluginPath, plg.ZipName), &plg, nil
+				if plg.Version == body.Version {
+					return path.Join(pluginPath, plg.ZipName), &plg, nil
+				}
 			}
 		}
 	}
