@@ -14,7 +14,7 @@ type EdgeUploadResponse struct {
 	UploadTime  string `json:"upload_time"`
 }
 
-func (inst *Client) EdgeListPlugins(hostIDName string) ([]rumodel.Plugin, error) {
+func (inst *Client) EdgeGetPlugins(hostIDName string) ([]rumodel.Plugin, error) {
 	url := fmt.Sprintf("/proxy/edge/ff/api/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
@@ -26,6 +26,19 @@ func (inst *Client) EdgeListPlugins(hostIDName string) ([]rumodel.Plugin, error)
 	}
 	data := resp.Result().(*[]rumodel.Plugin)
 	return *data, nil
+}
+
+func (inst *Client) EdgeGetPlugin(hostIDName, pluginName string) (*rumodel.Plugin, error) {
+	url := fmt.Sprintf("/proxy/edge/ff/api/plugins/path/%s", pluginName)
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetResult(&rumodel.Plugin{}).
+		Get(url))
+	if err != nil {
+		return nil, err
+	}
+	return resp.Result().(*rumodel.Plugin), nil
 }
 
 func (inst *Client) EdgeUploadPlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
@@ -125,6 +138,19 @@ func (inst *Client) EdgeEnablePlugin(hostIDName, pluginName string, enable bool)
 	if enable == false {
 		state = "disabled"
 	}
-	output := fmt.Sprintf("%s plugin %s successfully", state, pluginName)
+	output := fmt.Sprintf("%s plugin %s successfully", pluginName, state)
+	return &output, nil
+}
+
+func (inst *Client) EdgeRestartPlugin(hostIDName, pluginName string) (*string, error) {
+	url := fmt.Sprintf("proxy/ff/api/plugins/restart/%s?by_plugin_name=true", pluginName)
+	_, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		Post(url))
+	if err != nil {
+		return nil, err
+	}
+	output := fmt.Sprintf("%s plugin restarted successfully", pluginName)
 	return &output, nil
 }

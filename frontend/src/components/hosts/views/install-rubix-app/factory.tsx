@@ -1,5 +1,5 @@
 import {
-  EdgeInstallApp, EdgeListPlugins,
+  EdgeInstallApp,
   EdgeRubixAppVersions
 } from "../../../../../wailsjs/go/backend/App";
 
@@ -18,11 +18,6 @@ export class InstallAppFactory {
     appName: string,
     minVersion: string,
     maxVersion: string): Promise<any> {
-    let res = EdgeListPlugins(this.connectionUUID, hostUUID).then(res=> {
-      console.log("res", res.data)
-      console.log("res", res.msg)
-    })
-
     return EdgeRubixAppVersions(this.connectionUUID, hostUUID, appName, minVersion, maxVersion);
   }
 }

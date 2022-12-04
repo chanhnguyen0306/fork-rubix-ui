@@ -7,20 +7,16 @@ import {
 } from "@ant-design/icons";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { backend, model } from "../../../../../../../wailsjs/go/models";
 import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import { CreateModal } from "./create";
 import { useParams } from "react-router-dom";
 
-import PluginConf = model.PluginConf;
-import PluginUUIDs = backend.PluginUUIDs;
-
 export const FlowPluginsTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
-  const [plugins, setPlugins] = useState([] as Array<PluginConf>);
+  const [plugins, setPlugins] = useState([] as any);
   const [pluginName, setPluginName] = useState<string>();
-  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<PluginUUIDs>);
+  const [pluginsNames, setPluginsNames] = useState([] as Array<string>);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -34,8 +30,8 @@ export const FlowPluginsTable = (props: any) => {
   const columns = PLUGIN_HEADERS;
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: Array<model.PluginConf>) => {
-      setPluginsUUIDs(selectedRows);
+    onChange: (selectedRowKeys: any, selectedRows: Array<any>) => {
+      setPluginsNames(selectedRows.map(x => x.name));
     },
   };
 
@@ -47,28 +43,28 @@ export const FlowPluginsTable = (props: any) => {
     if (isModalVisible) {
       getSchema();
     }
-  }, [pluginsUUIDs, isModalVisible]);
+  }, [pluginsNames, isModalVisible]);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
   const enable = async () => {
-    await factory.BulkEnable(pluginsUUIDs);
-    fetchPlugins();
+    await factory.BulkEnable(pluginsNames);
+    await fetchPlugins();
   };
 
   const disable = async () => {
-    await factory.BulkDisable(pluginsUUIDs);
-    fetchPlugins();
+    await factory.BulkDisable(pluginsNames);
+    await fetchPlugins();
   };
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    if (pluginsUUIDs.length > 0) {
-      const plg = pluginsUUIDs.at(0) as unknown as PluginConf;
-      setPluginName(plg.name);
-      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
+    if (pluginsNames.length > 0) {
+      const pluginName = pluginsNames.at(0) || "";
+      setPluginName(pluginName);
+      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, pluginName);
       const jsonSchema = {
         properties: res,
       };

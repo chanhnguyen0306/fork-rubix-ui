@@ -1,11 +1,6 @@
-import { amodel, backend, model } from "../../../../../../wailsjs/go/models";
+import { backend } from "../../../../../../wailsjs/go/models";
 import {
-  DisablePluginBulk,
-  EnablePluginBulk,
-  GetPlugins,
-  InstallPlugin,
-  RestartPluginBulk,
-  UnInstallPlugin,
+  EdgeEnablePlugins, EdgeGetPlugins, EdgeRestartPlugins,
 } from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -19,60 +14,37 @@ export class FlowPluginFactory {
   connectionUUID!: string;
   uuid!: string;
 
-  async GetAll(): Promise<Array<model.PluginConf>> {
-    let resp: Promise<Array<model.PluginConf>> = {} as Promise<Array<model.PluginConf>>;
+  async GetAll(): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await GetPlugins(this.connectionUUID, this.hostUUID).then(res => {
-      resp = res as unknown as Promise<Array<model.PluginConf>>;
-    }).catch(err => {
-      return resp;
-    });
-    return resp;
+    const plugins = await EdgeGetPlugins(this.connectionUUID, this.hostUUID)
+    return plugins.data
   }
 
-  async BulkEnable(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
-    let resp: Promise<any> = {} as Promise<any>;
+  async BulkEnable(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await EnablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
-      resp = res as Promise<any>;
-    }).catch(err => {
-      return resp;
-    });
-    return resp;
+    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, true)
   }
 
-  async BulkDisable(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
-    let resp: Promise<any> = {} as Promise<any>;
+  async BulkDisable(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await DisablePluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
-      resp = res as Promise<any>;
-    }).catch(err => {
-      return resp;
-    });
-    return resp;
+    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, false)
   }
 
-  async RestartBulk(pluginUUIDs: Array<backend.PluginUUIDs>): Promise<any> {
-    let resp: Promise<any> = {} as Promise<any>;
+  async RestartBulk(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    await RestartPluginBulk(this.connectionUUID, this.hostUUID, pluginUUIDs).then(res => {
-      resp = res as Promise<any>;
-    }).catch(err => {
-      return resp;
-    });
-    return resp;
+    return await EdgeRestartPlugins(this.connectionUUID, this.hostUUID, pluginNames)
   }
 
-  async InstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
-    return await InstallPlugin(connUUID, hostUUID, plugin);
-  }
-
-  async UnInstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
-    return await UnInstallPlugin(connUUID, hostUUID, plugin);
-  }
+  // async InstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
+  //   return await InstallPlugin(connUUID, hostUUID, plugin);
+  // }
+  //
+  // async UnInstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
+  //   return await UnInstallPlugin(connUUID, hostUUID, plugin);
+  // }
 
 }

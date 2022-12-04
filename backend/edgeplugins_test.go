@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func Test_EdgeListPlugins(t *testing.T) {
+func Test_EdgeGetPlugins(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeListPlugins("cloud", "rc")
+	resp := app.EdgeGetPlugins("cloud", "rc")
 	pprint.PrintJOSN(resp)
 }
 
@@ -35,8 +35,8 @@ func Test_EdgeUpdateConfigPlugin(t *testing.T) {
 	pprint.PrintJOSN(resp)
 }
 
-func Test_EdgeEnablePlugin(t *testing.T) {
+func Test_EdgeEnablePlugins(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeEnablePlugin("cloud", "rc", "system", true)
+	resp := app.EdgeEnablePlugins("cloud", "rc", []string{"system", "bacnetserver"}, true)
 	pprint.PrintJOSN(resp)
 }

@@ -9,12 +9,12 @@ import (
 	"os"
 )
 
-func (inst *App) EdgeListPlugins(connUUID, hostUUID string) *rumodel.Response {
+func (inst *App) EdgeGetPlugins(connUUID, hostUUID string) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return inst.fail(err)
 	}
-	plugins, err := assistClient.EdgeListPlugins(hostUUID)
+	plugins, err := assistClient.EdgeGetPlugins(hostUUID)
 	if err != nil {
 		return inst.fail(err)
 	}
@@ -116,19 +116,47 @@ func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config s
 	return inst.successResponse("updated config successfully")
 }
 
-func (inst *App) EdgeEnablePlugin(connUUID, hostUUID, pluginName string, enable bool) *rumodel.Response {
+// func (inst *App) EdgeEnablePlugin(connUUID, hostUUID, pluginName string, enable bool) *rumodel.Response {
+// 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+// 	if err != nil {
+// 		return inst.fail(err)
+// 	}
+// 	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+// 	if err != nil {
+// 		return inst.fail(err)
+// 	}
+// 	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+// 		inst.fail(err)
+// 	}
+// 	return inst.successResponse(resp)
+// }
+
+func (inst *App) EdgeEnablePlugins(connUUID, hostUUID string, pluginNames []string, enable bool) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return inst.fail(err)
 	}
-	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+	for _, pluginName := range pluginNames {
+		_, _ = assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+	}
+	state := "enabled"
+	if enable == false {
+		state = "disabled"
+	}
+	output := fmt.Sprintf("selected plugins are %s successfully", state)
+	return inst.successResponse(output)
+}
+
+func (inst *App) EdgeRestartPlugins(connUUID, hostUUID string, pluginNames []string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return inst.fail(err)
 	}
-	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
-		inst.fail(err)
+	for _, pluginName := range pluginNames {
+		_, _ = assistClient.EdgeRestartPlugin(hostUUID, pluginName)
 	}
-	return inst.successResponse(resp)
+	output := fmt.Sprintf("selected plugins are restarted successfully")
+	return inst.successResponse(output)
 }
 
 func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) error {
@@ -191,7 +219,7 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 }
 
 func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID, releaseVersion, arch string) error {
-	plugins, err := assistClient.EdgeListPlugins(hostUUID)
+	plugins, err := assistClient.EdgeGetPlugins(hostUUID)
 	if err != nil {
 		return err
 	}
@@ -214,4 +242,15 @@ func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID
 		}
 	}
 	return nil
+}
+
+func (inst *App) edgeEnablePlugin(assistClient *assistcli.Client, hostUUID string, pluginName string, enable bool) (*string, error) {
+	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+	if err != nil {
+		return nil, err
+	}
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
