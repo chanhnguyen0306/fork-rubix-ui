@@ -116,6 +116,21 @@ func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config s
 	return inst.successResponse("updated config successfully")
 }
 
+func (inst *App) EdgeEnablePlugin(connUUID, hostUUID, pluginName string, enable bool) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+	if err != nil {
+		return inst.fail(err)
+	}
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
+	return inst.successResponse(resp)
+}
+
 func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) error {
 	var lastStep = "3"
 	var hasPluginOnRubixAssist bool

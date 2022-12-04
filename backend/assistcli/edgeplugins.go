@@ -109,3 +109,22 @@ func (inst *Client) EdgeUpdateConfigPlugin(hostIDName, pluginName, config string
 	response := resp.String()
 	return &response, nil
 }
+
+func (inst *Client) EdgeEnablePlugin(hostIDName, pluginName string, enable bool) (*string, error) {
+	url := fmt.Sprintf("/proxy/edge/ff/api/plugins/enable/%s?by_plugin_name=true", pluginName)
+	body := map[string]bool{"enabled": enable}
+	_, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetBody(body).
+		Post(url))
+	if err != nil {
+		return nil, err
+	}
+	state := "enabled"
+	if enable == false {
+		state = "disabled"
+	}
+	output := fmt.Sprintf("%s plugin %s successfully", state, pluginName)
+	return &output, nil
+}

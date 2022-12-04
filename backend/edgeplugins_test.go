@@ -34,3 +34,9 @@ func Test_EdgeUpdateConfigPlugin(t *testing.T) {
 	resp := app.EdgeUpdateConfigPlugin("cloud", "rc", "system", "magic_string: test")
 	pprint.PrintJOSN(resp)
 }
+
+func Test_EdgeEnablePlugin(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeEnablePlugin("cloud", "rc", "system", true)
+	pprint.PrintJOSN(resp)
+}
