@@ -25,7 +25,6 @@ import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 
 import Device = model.Device;
 import UUIDs = backend.UUIDs;
-import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowDeviceTable = (props: any) => {
   const {
@@ -40,7 +39,6 @@ export const FlowDeviceTable = (props: any) => {
     data,
     isFetching,
     refreshList,
-    pluginUUID,
     dataSource,
     setDataSource,
   } = props;
@@ -78,10 +76,7 @@ export const FlowDeviceTable = (props: any) => {
 
   const handleRestart = async () => {
     setIsRestarting(true);
-    const pluginUUIDs = [
-      { name: pluginName, uuid: pluginUUID },
-    ] as PluginUUIDs[];
-    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    await flowPluginFactory.RestartBulk([pluginName]);
     setIsRestarting(false);
   };
 
