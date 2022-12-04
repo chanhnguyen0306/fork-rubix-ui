@@ -59,7 +59,9 @@ func (inst *App) EdgeInstallPlugin(connUUID, hostUUID string, pluginName string)
 		return inst.fail(err)
 	}
 
-	inst.restartFlowFramework(assistClient, hostUUID)
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
 	return inst.success(fmt.Sprintf("successfully installed plugin %s", pluginName))
 }
 
@@ -81,7 +83,9 @@ func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, pluginName string) 
 		return inst.fail(err)
 	}
 
-	inst.restartFlowFramework(assistClient, hostUUID)
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
 	return inst.successResponse(msg.Message)
 }
 
@@ -105,6 +109,9 @@ func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config s
 	_, err = assistClient.EdgeUpdateConfigPlugin(hostUUID, pluginName, config)
 	if err != nil {
 		return inst.fail(err)
+	}
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
 	}
 	return inst.successResponse("updated config successfully")
 }

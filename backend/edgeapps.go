@@ -143,7 +143,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app installed on the edge", lastStep, appName))
 
 	if appHasPlugins {
-		return inst.restartFlowFramework(assistClient, hostUUID)
+		if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+			inst.fail(err)
+		}
 	}
 	return inst.success(fmt.Sprintf("%s is successfully installed", appName))
 }
