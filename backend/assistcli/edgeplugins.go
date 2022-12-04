@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 )
 
 type EdgeUploadResponse struct {
@@ -13,18 +14,18 @@ type EdgeUploadResponse struct {
 	UploadTime  string `json:"upload_time"`
 }
 
-func (inst *Client) EdgeListPlugins(hostIDName string) ([]amodel.Plugin, error, error) {
-	url := fmt.Sprintf("/api/edge/plugins")
-	resp, connectionErr, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
+func (inst *Client) EdgeListPlugins(hostIDName string) ([]rumodel.Plugin, error) {
+	url := fmt.Sprintf("/proxy/edge/ff/api/plugins")
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&[]amodel.Plugin{}).
+		SetResult(&[]rumodel.Plugin{}).
 		Get(url))
-	if connectionErr != nil || requestErr != nil {
-		return nil, connectionErr, requestErr
+	if err != nil {
+		return nil, err
 	}
-	data := resp.Result().(*[]amodel.Plugin)
-	return *data, nil, nil
+	data := resp.Result().(*[]rumodel.Plugin)
+	return *data, nil
 }
 
 func (inst *Client) EdgeUploadPlugin(hostIDName string, body *amodel.Plugin) (*amodel.Message, error) {
@@ -79,4 +80,32 @@ func (inst *Client) EdgeDeleteDownloadPlugins(hostIDName string) (*amodel.Messag
 		return nil, connectionErr, requestErr
 	}
 	return resp.Result().(*amodel.Message), nil, nil
+}
+
+func (inst *Client) EdgeGetConfigPlugin(hostIDName, pluginName string) (*string, error) {
+	url := fmt.Sprintf("/proxy/edge/ff/api/plugins/config/%s?by_plugin_name=true", pluginName)
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		Get(url))
+	if err != nil {
+		return nil, err
+	}
+	response := resp.String()
+	return &response, nil
+}
+
+func (inst *Client) EdgeUpdateConfigPlugin(hostIDName, pluginName, config string) (*string, error) {
+	url := fmt.Sprintf("/proxy/edge/ff/api/plugins/config/%s?by_plugin_name=true", pluginName)
+	body := map[string]string{"data": config}
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetBody(body).
+		Post(url))
+	if err != nil {
+		return nil, err
+	}
+	response := resp.String()
+	return &response, nil
 }

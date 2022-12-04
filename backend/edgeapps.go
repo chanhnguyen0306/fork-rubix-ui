@@ -123,7 +123,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
 		inst.uiSuccessMessage("need to update all plugins for flow-framework")
-		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, releaseVersion)
+		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, releaseVersion, arch)
 		if err != nil {
 			return inst.fail(err)
 		}

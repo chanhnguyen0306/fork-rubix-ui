@@ -14,12 +14,9 @@ func (inst *App) EdgeListPlugins(connUUID, hostUUID string) *rumodel.Response {
 	if err != nil {
 		return inst.fail(err)
 	}
-	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
-	if connectionErr != nil {
-		return inst.fail(fmt.Sprintf("connection error: %s", connectionErr))
-	}
-	if requestErr != nil {
-		return inst.fail(requestErr)
+	plugins, err := assistClient.EdgeListPlugins(hostUUID)
+	if err != nil {
+		return inst.fail(err)
 	}
 	return inst.successResponse(plugins)
 }
@@ -88,6 +85,30 @@ func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, pluginName string) 
 	return inst.successResponse(msg.Message)
 }
 
+func (inst *App) EdgeGetConfigPlugin(connUUID, hostUUID, pluginName string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	conf, err := assistClient.EdgeGetConfigPlugin(hostUUID, pluginName)
+	if err != nil {
+		return inst.fail(err)
+	}
+	return inst.successResponse(conf)
+}
+
+func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	_, err = assistClient.EdgeUpdateConfigPlugin(hostUUID, pluginName, config)
+	if err != nil {
+		return inst.fail(err)
+	}
+	return inst.successResponse("updated config successfully")
+}
+
 func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) error {
 	var lastStep = "3"
 	var hasPluginOnRubixAssist bool
@@ -147,27 +168,26 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 	return nil
 }
 
-func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID, releaseVersion string) error {
-	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
-	if connectionErr != nil {
-		return connectionErr
-	}
-	if requestErr != nil {
-		inst.uiWarningMessage(requestErr)
-		return nil
+func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID, releaseVersion, arch string) error {
+	plugins, err := assistClient.EdgeListPlugins(hostUUID)
+	if err != nil {
+		return err
 	}
 	if len(plugins) == 0 {
 		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be uploaded"))
 		return nil
 	}
-	_, connectionErr, _ = assistClient.EdgeDeleteDownloadPlugins(hostUUID)
+	_, connectionErr, _ := assistClient.EdgeDeleteDownloadPlugins(hostUUID)
 	if connectionErr != nil {
 		return connectionErr
 	}
 	for _, plugin := range plugins {
 		inst.uiSuccessMessage(fmt.Sprintf("start uploading of plugin: %s", plugin.Name))
-		plugin.Version = releaseVersion
-		if err := inst.edgeUploadPlugin(assistClient, hostUUID, &plugin); err != nil {
+		if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
+			Name:    plugin.Name,
+			Arch:    arch,
+			Version: releaseVersion,
+		}); err != nil {
 			return err
 		}
 	}

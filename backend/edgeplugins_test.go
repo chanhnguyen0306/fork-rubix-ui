@@ -22,3 +22,15 @@ func Test_EdgeDeletePlugin(t *testing.T) {
 	resp := app.EdgeDeletePlugin("cloud", "rc", "system")
 	pprint.PrintJOSN(resp)
 }
+
+func Test_EdgeGetConfigPlugin(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeGetConfigPlugin("cloud", "rc", "system")
+	pprint.PrintJOSN(resp)
+}
+
+func Test_EdgeUpdateConfigPlugin(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeUpdateConfigPlugin("cloud", "rc", "system", "magic_string: test")
+	pprint.PrintJOSN(resp)
+}
