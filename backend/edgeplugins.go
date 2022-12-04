@@ -1,13 +1,75 @@
 package backend
 
 import (
+	"context"
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/rumodel"
+	"github.com/google/go-github/v32/github"
+	"golang.org/x/oauth2"
 	"os"
+	"strings"
 )
+
+func (inst *App) EdgeGetPluginsDistribution(connUUID, hostUUID string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+
+	var arch string
+	resp, err := assistClient.EdgeBiosArch(hostUUID)
+	if err != nil {
+		return inst.fail(fmt.Sprintf("%s, turn on BIOS on your edge device", err))
+	}
+	arch = resp.Arch
+
+	version, err := inst.getFlowFrameworkVersion(assistClient, hostUUID)
+	if err != nil {
+		return inst.fail(err)
+	}
+
+	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
+	if connectionErr != nil {
+		return inst.fail(err)
+	}
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
+	}
+
+	token, err := inst.GetGitToken(constants.SettingUUID, false)
+	if err != nil {
+		return inst.fail(fmt.Sprintf("failed to get git token %s", err))
+	}
+	c := context.Background()
+	tokenSource := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	githubClient := github.NewClient(oauth2.NewClient(c, tokenSource))
+
+	availablePlugins := make([]rumodel.AvailablePlugin, 0)
+	releases, _, err := githubClient.Repositories.GetReleaseByTag(c, constants.GitHubOwner, constants.FlowFramework, *version)
+	for _, asset := range releases.Assets {
+		if asset.Name != nil && strings.Contains(*asset.Name, arch) && !strings.Contains(*asset.Name, constants.FlowFramework) {
+			pluginName := strings.Split(*asset.Name, "-")[0]
+			isInstalled := false
+			if plugins != nil {
+				for _, plugin := range plugins {
+					if plugin.Name == pluginName {
+						isInstalled = true
+					}
+				}
+			}
+			availablePlugins = append(availablePlugins, rumodel.AvailablePlugin{
+				Name:        pluginName,
+				IsInstalled: isInstalled,
+			})
+		}
+	}
+	return inst.successResponse(availablePlugins)
+}
 
 func (inst *App) EdgeGetPlugins(connUUID, hostUUID string) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
@@ -65,7 +127,7 @@ func (inst *App) EdgeInstallPlugin(connUUID, hostUUID string, pluginName string)
 	return inst.success(fmt.Sprintf("successfully installed plugin %s", pluginName))
 }
 
-func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, pluginName string) *rumodel.Response {
+func (inst *App) EdgeUninstallPlugin(connUUID, hostUUID string, pluginName string) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return inst.fail(err)
@@ -86,7 +148,7 @@ func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, pluginName string) 
 	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
 		inst.fail(err)
 	}
-	return inst.successResponse(msg.Message)
+	return inst.success(msg.Message)
 }
 
 func (inst *App) EdgeGetConfigPlugin(connUUID, hostUUID, pluginName string) *rumodel.Response {
@@ -113,23 +175,8 @@ func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config s
 	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
 		inst.fail(err)
 	}
-	return inst.successResponse("updated config successfully")
+	return inst.success("updated config successfully")
 }
-
-// func (inst *App) EdgeEnablePlugin(connUUID, hostUUID, pluginName string, enable bool) *rumodel.Response {
-// 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-// 	if err != nil {
-// 		return inst.fail(err)
-// 	}
-// 	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
-// 	if err != nil {
-// 		return inst.fail(err)
-// 	}
-// 	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
-// 		inst.fail(err)
-// 	}
-// 	return inst.successResponse(resp)
-// }
 
 func (inst *App) EdgeEnablePlugins(connUUID, hostUUID string, pluginNames []string, enable bool) *rumodel.Response {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
@@ -144,7 +191,7 @@ func (inst *App) EdgeEnablePlugins(connUUID, hostUUID string, pluginNames []stri
 		state = "disabled"
 	}
 	output := fmt.Sprintf("selected plugins are %s successfully", state)
-	return inst.successResponse(output)
+	return inst.success(output)
 }
 
 func (inst *App) EdgeRestartPlugins(connUUID, hostUUID string, pluginNames []string) *rumodel.Response {
@@ -156,7 +203,7 @@ func (inst *App) EdgeRestartPlugins(connUUID, hostUUID string, pluginNames []str
 		_, _ = assistClient.EdgeRestartPlugin(hostUUID, pluginName)
 	}
 	output := fmt.Sprintf("selected plugins are restarted successfully")
-	return inst.successResponse(output)
+	return inst.success(output)
 }
 
 func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) error {

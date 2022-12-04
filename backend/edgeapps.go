@@ -41,9 +41,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		return inst.fail(fmt.Sprintf("write app config: %s", err))
 	}
 
-	var releaseVersion string
+	var releaseVersion *string
 	if appName == constants.FlowFramework {
-		releaseVersion = appVersion // FlowFramework installation should select same release version
+		releaseVersion = &appVersion // FlowFramework installation should select same release version
 	} else {
 		releaseVersion, err = inst.getReleaseVersion(assistClient, hostUUID)
 		if err != nil {
@@ -52,9 +52,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 
 	var lastStep = "4"
-	release, err := inst.DB.GetReleaseByVersion(releaseVersion)
+	release, err := inst.DB.GetReleaseByVersion(*releaseVersion)
 	if release == nil {
-		return inst.fail(fmt.Sprintf("failed to find a vaild release version: %s", releaseVersion))
+		return inst.fail(fmt.Sprintf("failed to find a vaild release version: %s", *releaseVersion))
 	}
 	var appHasPlugins bool
 	var selectedApp store.Apps
@@ -75,9 +75,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			inst.fail(fmt.Sprintf("failed to get git token %s", err))
 			return nil
 		}
-		inst.StoreDownloadApp(token, releaseVersion, appName, appVersion, arch, true)
+		inst.StoreDownloadApp(token, *releaseVersion, appName, appVersion, arch, true)
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app name %s & release version %s", lastStep, appName, releaseVersion))
+	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app name %s & release version %s", lastStep, appName, *releaseVersion))
 	inst.uiSuccessMessage("upload app to assist and in check to see if app is already uploaded")
 	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, selectedApp.DoNotValidateArch)
 	if err != nil {
@@ -123,7 +123,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
 		inst.uiSuccessMessage("need to update all plugins for flow-framework")
-		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, releaseVersion, arch)
+		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, *releaseVersion, arch)
 		if err != nil {
 			return inst.fail(err)
 		}
@@ -184,20 +184,20 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 	if err != nil {
 		return nil, err
 	}
-	release, err := inst.DB.GetRelease(releaseVersion)
+	release, err := inst.DB.GetRelease(*releaseVersion)
 	if release == nil {
 		// if not exist then try and download the version
 		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			return nil, err
 		}
-		release, err = inst.gitDownloadRelease(token, releaseVersion)
+		release, err = inst.gitDownloadRelease(token, *releaseVersion)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if release == nil {
-		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", releaseVersion))
+		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", *releaseVersion))
 	}
 
 	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
@@ -290,12 +290,11 @@ func (inst *App) edgeInstalledApps(assistClient *assistcli.Client, hostUUID stri
 	return filteredApps, nil
 }
 
-func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID string) (string, error) {
+func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID string) (*string, error) {
 	var releaseVersion string
 	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
 	if connectionErr != nil {
-		inst.uiErrorMessage(connectionErr)
-		return "", connectionErr
+		return nil, connectionErr
 	}
 	if requestErr != nil {
 		inst.uiWarningMessage(requestErr)
@@ -305,9 +304,9 @@ func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID stri
 	} else {
 		release, err := inst.getLatestReleaseVersion()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		releaseVersion = release
 	}
-	return releaseVersion, nil
+	return &releaseVersion, nil
 }

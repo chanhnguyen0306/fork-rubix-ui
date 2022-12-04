@@ -14,6 +14,20 @@ type EdgeUploadResponse struct {
 	UploadTime  string `json:"upload_time"`
 }
 
+func (inst *Client) EdgeListPlugins(hostIDName string) ([]amodel.Plugin, error, error) {
+	url := fmt.Sprintf("/api/edge/plugins")
+	resp, connectionErr, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetResult(&[]amodel.Plugin{}).
+		Get(url))
+	if connectionErr != nil || requestErr != nil {
+		return nil, connectionErr, requestErr
+	}
+	data := resp.Result().(*[]amodel.Plugin)
+	return *data, nil, nil
+}
+
 func (inst *Client) EdgeGetPlugins(hostIDName string) ([]rumodel.Plugin, error) {
 	url := fmt.Sprintf("/proxy/edge/ff/api/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().

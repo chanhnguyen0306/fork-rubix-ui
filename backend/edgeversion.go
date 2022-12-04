@@ -2,6 +2,7 @@ package backend
 
 import (
 	"github.com/NubeIO/rubix-assist/namings"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/hashicorp/go-version"
 )
 
@@ -11,9 +12,8 @@ func (inst *App) EdgeRubixAppVersions(connUUID, hostUUID, appName, minVersion, m
 	if err != nil {
 		return validVersions
 	}
-	const owner = "NubeIO"
 	repo := namings.GetRepoNameFromAppName(appName)
-	versions := inst.getRepoVersions(owner, repo)
+	versions := inst.getRepoVersions(constants.GitHubOwner, repo)
 	if minVersion == "" {
 		minVersion = "v0.0.0"
 	}

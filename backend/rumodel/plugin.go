@@ -10,3 +10,8 @@ type Plugin struct {
 	HasNetwork   bool     `json:"has_network"`
 	Capabilities []string `json:"capabilities"`
 }
+
+type AvailablePlugin struct {
+	Name        string `json:"name"`
+	IsInstalled bool   `json:"is_installed"`
+}

@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func Test_EdgeGetPluginsDistribution(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeGetPluginsDistribution("cloud", "rc")
+	pprint.PrintJOSN(resp)
+}
+
 func Test_EdgeGetPlugins(t *testing.T) {
 	app := MockNewApp()
 	resp := app.EdgeGetPlugins("cloud", "rc")
@@ -17,9 +23,9 @@ func Test_EdgeInstallPlugin(t *testing.T) {
 	pprint.PrintJOSN(resp)
 }
 
-func Test_EdgeDeletePlugin(t *testing.T) {
+func Test_EdgeUninstallPlugin(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeDeletePlugin("cloud", "rc", "system")
+	resp := app.EdgeUninstallPlugin("cloud", "rc", "system")
 	pprint.PrintJOSN(resp)
 }
 

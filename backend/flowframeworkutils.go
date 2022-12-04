@@ -1,22 +1,22 @@
 package backend
 
 import (
+	"errors"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
-	"github.com/NubeIO/rubix-ui/backend/rumodel"
 )
 
-func (inst *App) RestartFlowFramework(connUUID, hostUUID string) *rumodel.Response {
-	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return inst.fail(err)
+func (inst *App) getFlowFrameworkVersion(assistClient *assistcli.Client, hostUUID string) (*string, error) {
+	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
+	if connectionErr != nil {
+		return nil, connectionErr
 	}
-	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
-		inst.fail(err)
+	if requestErr != nil {
+		return nil, errors.New("flow-framework might not be installed yet")
 	}
-	return inst.success("restarted flow framework successfully")
+	return &appStatus.Version, nil
 }
 
 func (inst *App) restartFlowFramework(assistClient *assistcli.Client, hostUUID string) error {

@@ -1,6 +1,10 @@
-import { backend } from "../../../../../../wailsjs/go/models";
 import {
-  EdgeEnablePlugins, EdgeGetPlugins, EdgeRestartPlugins,
+  EdgeEnablePlugins,
+  EdgeGetPlugins,
+  EdgeGetPluginsDistribution,
+  EdgeInstallPlugin,
+  EdgeRestartPlugins,
+  EdgeUninstallPlugin,
 } from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -14,37 +18,40 @@ export class FlowPluginFactory {
   connectionUUID!: string;
   uuid!: string;
 
+  async GetPluginsDistribution(connUUID: string, hostUUID: string): Promise<any> {
+    return await EdgeGetPluginsDistribution(connUUID, hostUUID);
+  }
+
   async GetAll(): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    const plugins = await EdgeGetPlugins(this.connectionUUID, this.hostUUID)
-    return plugins.data
+    const plugins = await EdgeGetPlugins(this.connectionUUID, this.hostUUID);
+    return plugins.data;
   }
 
   async BulkEnable(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, true)
+    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, true);
   }
 
   async BulkDisable(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, false)
+    return await EdgeEnablePlugins(this.connectionUUID, this.hostUUID, pluginNames, false);
   }
 
   async RestartBulk(pluginNames: Array<string>): Promise<any> {
     hasUUID(this.connectionUUID);
     hasUUID(this.hostUUID);
-    return await EdgeRestartPlugins(this.connectionUUID, this.hostUUID, pluginNames)
+    return await EdgeRestartPlugins(this.connectionUUID, this.hostUUID, pluginNames);
   }
 
-  // async InstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
-  //   return await InstallPlugin(connUUID, hostUUID, plugin);
-  // }
-  //
-  // async UnInstallPlugin(connUUID: string, hostUUID: string, plugin: amodel.Plugin): Promise<any> {
-  //   return await UnInstallPlugin(connUUID, hostUUID, plugin);
-  // }
+  async InstallPlugin(connUUID: string, hostUUID: string, pluginName: string): Promise<any> {
+    return await EdgeInstallPlugin(connUUID, hostUUID, pluginName);
+  }
 
+  async UnInstallPlugin(connUUID: string, hostUUID: string, pluginName: string): Promise<any> {
+    return await EdgeUninstallPlugin(connUUID, hostUUID, pluginName);
+  }
 }
