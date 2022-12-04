@@ -3,7 +3,6 @@ package backend
 import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
-	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/rumodel"
@@ -63,11 +62,7 @@ func (inst *App) EdgeInstallPlugin(connUUID, hostUUID string, pluginName string)
 		return inst.fail(err)
 	}
 
-	flowFrameworkServiceName := namings.GetServiceNameFromAppName(constants.FlowFramework)
-	if _, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkServiceName, amodel.Restart); err != nil {
-		return inst.fail(err)
-	}
-
+	inst.restartFlowFramework(assistClient, hostUUID)
 	return inst.success(fmt.Sprintf("successfully installed plugin %s", pluginName))
 }
 
@@ -89,11 +84,7 @@ func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, pluginName string) 
 		return inst.fail(err)
 	}
 
-	flowFrameworkServiceName := namings.GetServiceNameFromAppName(constants.FlowFramework)
-	if _, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkServiceName, amodel.Restart); err != nil {
-		return inst.fail(err)
-	}
-
+	inst.restartFlowFramework(assistClient, hostUUID)
 	return inst.successResponse(msg.Message)
 }
 
