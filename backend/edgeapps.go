@@ -144,8 +144,8 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app installed on the edge", lastStep, appName))
 
 	if appHasPlugins {
-		flowFrameworkApp := namings.GetServiceNameFromAppName(constants.FlowFramework)
-		_, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkApp, amodel.Restart)
+		flowFrameworkServiceName := namings.GetServiceNameFromAppName(constants.FlowFramework)
+		_, err := assistClient.EdgeSystemCtlAction(hostUUID, flowFrameworkServiceName, amodel.Restart)
 		if err != nil {
 			return inst.fail("failed to restart flow-framework")
 		}
