@@ -3,7 +3,6 @@
 import {storage} from '../models';
 import {model} from '../models';
 import {amodel} from '../models';
-import {store} from '../models';
 import {db} from '../models';
 import {backend} from '../models';
 import {assistcli} from '../models';
@@ -12,8 +11,10 @@ import {ebmodel} from '../models';
 import {externaltoken} from '../models';
 import {system} from '../models';
 import {dhcpd} from '../models';
+import {rumodel} from '../models';
 import {networking} from '../models';
 import {datelib} from '../models';
+import {store} from '../models';
 import {node} from '../models';
 import {nodes} from '../models';
 import {flowcli} from '../models';
@@ -24,7 +25,7 @@ export function AddConsumer(arg1:string,arg2:string,arg3:model.Consumer):Promise
 
 export function AddDevice(arg1:string,arg2:string,arg3:model.Device):Promise<model.Device>;
 
-export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):void;
+export function AddDevicesBulk(arg1:string,arg2:string,arg3:Array<model.Device>):Promise<void>;
 
 export function AddFlowNetwork(arg1:string,arg2:string,arg3:model.FlowNetwork):Promise<model.FlowNetwork>;
 
@@ -38,11 +39,9 @@ export function AddNetwork(arg1:string,arg2:string,arg3:model.Network):Promise<m
 
 export function AddPoint(arg1:string,arg2:string,arg3:model.Point):Promise<model.Point>;
 
-export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):void;
+export function AddPointsBulk(arg1:string,arg2:string,arg3:Array<model.Point>):Promise<void>;
 
 export function AddProducer(arg1:string,arg2:string,arg3:model.Producer):Promise<model.Producer>;
-
-export function AddRelease(arg1:string,arg2:string):Promise<store.Release>;
 
 export function AddStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream):Promise<model.Stream>;
 
@@ -114,7 +113,7 @@ export function DeleteStreamBulkClones(arg1:string,arg2:string,arg3:Array<backen
 
 export function DeleteStreamClone(arg1:string,arg2:string,arg3:string):Promise<any>;
 
-export function DeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):void;
+export function DeleteWiresConnection(arg1:string,arg2:string,arg3:boolean,arg4:string):Promise<void>;
 
 export function DeleteWriter(arg1:string,arg2:string,arg3:string):Promise<any>;
 
@@ -123,8 +122,6 @@ export function DeleteWriterClone(arg1:string,arg2:string,arg3:string):Promise<a
 export function DeleteWriterCloneBulk(arg1:string,arg2:string,arg3:Array<backend.UUIDs>):Promise<any>;
 
 export function DeleteWritersBulk(arg1:string,arg2:string,arg3:Array<backend.UUIDs>):Promise<any>;
-
-export function DisablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
 
 export function DoBackup(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:any):Promise<storage.Backup>;
 
@@ -156,11 +153,25 @@ export function EdgeDHCPSetAsAuto(arg1:string,arg2:string,arg3:system.Networking
 
 export function EdgeDHCPSetStaticIP(arg1:string,arg2:string,arg3:dhcpd.SetStaticIP):Promise<string>;
 
-export function EdgeDeviceInfoAndApps(arg1:string,arg2:string,arg3:string):Promise<backend.EdgeDeviceInfo>;
+export function EdgeDeviceInfoAndApps(arg1:string,arg2:string):Promise<rumodel.EdgeDeviceInfo>;
+
+export function EdgeEnablePlugins(arg1:string,arg2:string,arg3:Array<string>,arg4:boolean):Promise<rumodel.Response>;
+
+export function EdgeGetConfigPlugin(arg1:string,arg2:string,arg3:string):Promise<rumodel.Response>;
 
 export function EdgeGetNetworks(arg1:string,arg2:string):Promise<Array<networking.NetworkInterfaces>>;
 
-export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string):Promise<amodel.Message>;
+export function EdgeGetPlugins(arg1:string,arg2:string):Promise<rumodel.Response>;
+
+export function EdgeGetPluginsDistribution(arg1:string,arg2:string):Promise<rumodel.Response>;
+
+export function EdgeInstallApp(arg1:string,arg2:string,arg3:string,arg4:string):Promise<rumodel.Response>;
+
+export function EdgeInstallPlugin(arg1:string,arg2:string,arg3:string):Promise<rumodel.Response>;
+
+export function EdgeRestartPlugins(arg1:string,arg2:string,arg3:Array<string>):Promise<rumodel.Response>;
+
+export function EdgeRubixAppVersions(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<Array<string>>;
 
 export function EdgeRubixScan(arg1:string,arg2:string):Promise<any>;
 
@@ -174,7 +185,9 @@ export function EdgeSystemCtlState(arg1:string,arg2:string,arg3:string):Promise<
 
 export function EdgeUnInstallApp(arg1:string,arg2:string,arg3:string):Promise<amodel.Message>;
 
-export function EdgeUploadPlugin(arg1:assistcli.Client,arg2:string,arg3:amodel.Plugin):Promise<amodel.Message>;
+export function EdgeUninstallPlugin(arg1:string,arg2:string,arg3:string):Promise<rumodel.Response>;
+
+export function EdgeUpdateConfigPlugin(arg1:string,arg2:string,arg3:string,arg4:string):Promise<rumodel.Response>;
 
 export function EditConsumer(arg1:string,arg2:string,arg3:string,arg4:model.Consumer):Promise<model.Consumer>;
 
@@ -196,9 +209,7 @@ export function EditStream(arg1:string,arg2:string,arg3:string,arg4:model.Stream
 
 export function EditWriter(arg1:string,arg2:string,arg3:string,arg4:model.Writer,arg5:boolean):Promise<model.Writer>;
 
-export function EnablePluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
-
-export function ExportBackup(arg1:string):void;
+export function ExportBackup(arg1:string):Promise<void>;
 
 export function ExportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:string,arg5:Array<string>):Promise<storage.Backup>;
 
@@ -306,14 +317,6 @@ export function GetPcInterfaces():Promise<networking.InterfaceNames>;
 
 export function GetPcTime():Promise<datelib.Time>;
 
-export function GetPlugin(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf>;
-
-export function GetPluginByName(arg1:string,arg2:string,arg3:string):Promise<model.PluginConf>;
-
-export function GetPlugins(arg1:string,arg2:string):Promise<Array<model.PluginConf>>;
-
-export function GetPluginsNames(arg1:string,arg2:string):Promise<Array<backend.PluginName>>;
-
 export function GetPoint(arg1:string,arg2:string,arg3:string):Promise<model.Point>;
 
 export function GetPoints(arg1:string,arg2:string):Promise<Array<model.Point>>;
@@ -330,11 +333,11 @@ export function GetRcNetworkSchema(arg1:string,arg2:string):Promise<any>;
 
 export function GetRelease(arg1:string):Promise<store.Release>;
 
-export function GetReleaseByVersion(arg1:string):Promise<store.Release>;
-
 export function GetReleases():Promise<Array<store.Release>>;
 
 export function GetScannerSchema():Promise<any>;
+
+export function GetSchedules(arg1:string,arg2:string):Promise<any>;
 
 export function GetServerNetworking(arg1:string):Promise<any>;
 
@@ -358,7 +361,7 @@ export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.Wri
 
 export function GetWriters(arg1:string,arg2:string):Promise<Array<model.Writer>>;
 
-export function GitDownloadAllRelease(arg1:boolean):Promise<Error>;
+export function GitDownloadAllReleases():Promise<Error>;
 
 export function GitDownloadRelease(arg1:string,arg2:string):Promise<store.Release>;
 
@@ -371,8 +374,6 @@ export function ImportDevicesBulk(arg1:string,arg2:string,arg3:string,arg4:strin
 export function ImportNetworksBulk(arg1:string,arg2:string,arg3:string):Promise<backend.BulkAddResponse>;
 
 export function ImportPointBulk(arg1:string,arg2:string,arg3:string,arg4:string):Promise<backend.BulkAddResponse>;
-
-export function InstallPlugin(arg1:string,arg2:string,arg3:amodel.Plugin):Promise<any>;
 
 export function NodeHelp(arg1:string,arg2:string,arg3:boolean):Promise<Array<node.Help>>;
 
@@ -388,21 +389,19 @@ export function NodeValue(arg1:string,arg2:string,arg3:boolean,arg4:string):Prom
 
 export function NodeValues(arg1:string,arg2:string,arg3:boolean):Promise<Array<node.Values>>;
 
-export function NubeHelp():void;
+export function NubeHelp():Promise<void>;
 
-export function OnQuit():void;
+export function OnQuit():Promise<void>;
 
-export function OnReload():void;
+export function OnReload():Promise<void>;
 
-export function OpenURL(arg1:string):void;
+export function OpenURL(arg1:string):Promise<void>;
 
 export function PingHost(arg1:string,arg2:string):Promise<boolean>;
 
 export function PingRubixAssist(arg1:string):Promise<boolean>;
 
-export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):void;
-
-export function RestartPluginBulk(arg1:string,arg2:string,arg3:Array<backend.PluginUUIDs>):Promise<any>;
+export function RcSetNetworks(arg1:string,arg2:string,arg3:backend.RcNetworkBody):Promise<void>;
 
 export function RubixAssistLogin(arg1:string,arg2:string,arg3:string):Promise<model.TokenResponse>;
 
@@ -420,9 +419,7 @@ export function RubixAssistTokens(arg1:string,arg2:string):Promise<externaltoken
 
 export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
 
-export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:boolean):Promise<store.InstallResponse>;
-
-export function UnInstallPlugin(arg1:string,arg2:string,arg3:amodel.Plugin):Promise<any>;
+export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:boolean):Promise<store.InstallResponse>;
 
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 
