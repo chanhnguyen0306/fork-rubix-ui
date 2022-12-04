@@ -3,6 +3,11 @@ package storage
 import "github.com/NubeIO/rubix-ui/backend/store"
 
 type IStorage interface {
+	AddRelease(body *store.Release) (*store.Release, error)
+	GetReleases() ([]store.Release, error)
+	GetRelease(uuid string) (*store.Release, error)
+	GetReleaseByVersion(version string) (*store.Release, error)
+	DeleteRelease(uuid string) error
 	Add(*RubixConnection) (*RubixConnection, error)
 	Delete(uuid string) error
 	Select(uuid string) (*RubixConnection, error)
@@ -20,11 +25,6 @@ type IStorage interface {
 	DeleteBackup(uuid string) error
 	GetBackups() ([]Backup, error)
 	GetBackupsByHostUUID(uuid string) ([]Backup, error)
-	AddRelease(body *store.Release) (*store.Release, error)
-	GetReleaseByVersion(version string) (*store.Release, error)
-	GetRelease(uuid string) (*store.Release, error)
-	GetReleases() ([]store.Release, error)
-	DeleteRelease(uuid string) error
 	AddSettings(body *Settings) (*Settings, error)
 	UpdateSettings(uuid string, body *Settings) (*Settings, error)
 	DeleteSettings() error

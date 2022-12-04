@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
-	"github.com/NubeIO/rubix-ui/backend/model"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 )
 
 func (inst *Client) EdgeBiosPing(hostIDName string) (*amodel.Message, error) {
@@ -20,15 +20,15 @@ func (inst *Client) EdgeBiosPing(hostIDName string) (*amodel.Message, error) {
 	return resp.Result().(*amodel.Message), nil
 }
 
-func (inst *Client) EdgeBiosArch(hostIDName string) (*model.Arch, error) {
+func (inst *Client) EdgeBiosArch(hostIDName string) (*rumodel.Arch, error) {
 	url := fmt.Sprintf("/proxy/eb/api/system/arch")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
-		SetResult(&model.Arch{}).
+		SetResult(&rumodel.Arch{}).
 		Get(url))
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*model.Arch), nil
+	return resp.Result().(*rumodel.Arch), nil
 }

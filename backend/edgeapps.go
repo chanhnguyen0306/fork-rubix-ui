@@ -3,43 +3,16 @@ package backend
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-systemctl-go/systemd"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/namings"
-	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/systemctl"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
 )
-
-type InstalledApps struct {
-	AppName             string `json:"app_name,omitempty"`
-	Version             string `json:"version,omitempty"`
-	LatestVersion       string `json:"latest_version,omitempty"`
-	ServiceName         string `json:"service_name,omitempty"`
-	InstalledAppVersion string `json:"app_version,omitempty"`
-	IsInstalled         bool   `json:"is_installed"`
-	Message             string `json:"message,omitempty"`
-	Match               bool   `json:"match,omitempty"`
-	DowngradeRequired   bool   `json:"downgrade_required,omitempty"`
-	UpgradeRequired     bool   `json:"upgrade_required,omitempty"`
-	State               string `json:"state,omitempty"`
-	ActiveState         string `json:"active_state,omitempty"`
-	SubState            string `json:"sub_state,omitempty"`
-}
-
-type AppsAvailableForInstall struct {
-	AppName       string `json:"app_name,omitempty"`
-	LatestVersion string `json:"latest_version,omitempty"`
-}
-
-type EdgeDeviceInfo struct {
-	InstalledApps           []InstalledApps           `json:"installed_apps,omitempty"`
-	AppsAvailableForInstall []AppsAvailableForInstall `json:"apps_available_for_install,omitempty"`
-}
 
 // EdgeInstallApp install an app
 // if app is FF then we need to upgrade all the plugins
@@ -52,7 +25,6 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 
 	var arch string
-	var releaseVersion string
 	resp, err := assistClient.EdgeBiosArch(hostUUID)
 	if err != nil {
 		inst.uiErrorMessage(err)
@@ -67,25 +39,17 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		inst.uiErrorMessage(fmt.Sprintf("write app config: %s", err.Error()))
 	}
 
-	appStatus, err := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
-	if err != nil {
-		log.Warning(err)
-	}
-	if appStatus != nil {
-		releaseVersion = appStatus.Version
+	var releaseVersion string
+	if appName == constants.FlowFramework {
+		releaseVersion = appVersion // FlowNetwork installation should select same release version
 	} else {
-		release, err := inst.getLatestRelease()
-		if release == "" || err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version"))
+		releaseVersion, err = inst.getReleaseVersion(assistClient, hostUUID)
+		if err != nil {
+			inst.uiErrorMessage(err)
 			return nil
 		}
-		releaseVersion = release
 	}
 
-	if releaseVersion == "" {
-		inst.uiErrorMessage("release_version can't be empty")
-		return nil
-	}
 	if appName == "" {
 		inst.uiErrorMessage("app_name can't be empty")
 		return nil
@@ -100,7 +64,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 
 	var lastStep = "4"
-	release, err := inst.getReleaseByVersion(releaseVersion)
+	release, err := inst.DB.GetReleaseByVersion(releaseVersion)
 	if release == nil {
 		inst.uiErrorMessage(fmt.Sprintf("failed to find a vaild release version: %s", releaseVersion))
 		return nil
@@ -124,7 +88,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err.Error()))
 			return nil
 		}
-		inst.StoreDownloadApp(token, appName, releaseVersion, arch, true)
+		inst.StoreDownloadApp(token, releaseVersion, appName, appVersion, arch, true)
 	}
 	log.Println("app install > add check to make its correct arch and product")
 	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app_name %s & release_version %s", lastStep, appName, releaseVersion))
@@ -206,7 +170,6 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	return &amodel.Message{Message: "successfully installed"}
 }
 
-// EdgeUnInstallApp uninstall an app
 func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *amodel.Message {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
@@ -222,82 +185,94 @@ func (inst *App) EdgeUnInstallApp(connUUID, hostUUID, appName string) *amodel.Me
 }
 
 // EdgeDeviceInfoAndApps list the installed apps
-func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) *EdgeDeviceInfo {
-	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion)
+func (inst *App) EdgeDeviceInfoAndApps(connUUID, hostUUID string) *rumodel.EdgeDeviceInfo {
+	edgeAppsAndService, err := inst.edgeDeviceInfoAndApps(connUUID, hostUUID)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
+		inst.uiErrorMessage(err.Error())
 		return nil
 	}
 	return edgeAppsAndService
 }
 
 // edgeDeviceInfoAndApps get the complete app info of the device, installed apps, what apps can be installed and the product info
-func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string) (*EdgeDeviceInfo, error) {
+func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.EdgeDeviceInfo, error) {
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		return nil, err
 	}
+	releaseVersion, err := inst.getReleaseVersion(assistClient, hostUUID)
+	if err != nil {
+		return nil, err
+	}
+	release, err := inst.DB.GetRelease(releaseVersion)
+	if release == nil {
+		// if not exist then try and download the version
+		token, err := inst.GetGitToken(constants.SettingUUID, false)
+		if err != nil {
+			return nil, err
+		}
+		release, err = inst.gitDownloadRelease(token, releaseVersion)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if release == nil {
+		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", releaseVersion))
+	}
+
 	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	installedApps, err := inst.edgeInstalledApps(connUUID, hostUUID)
+	installedApps, err := inst.edgeInstalledApps(assistClient, hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	getVersion, err := inst.getReleaseByVersion(releaseVersion)
-	if getVersion == nil {
-		versionNumber, _ := inst.getLatestRelease()
-		getVersion, err = inst.getReleaseByVersion(versionNumber)
-	}
-	if getVersion == nil {
-		token, err := inst.GetGitToken(constants.SettingUUID, false) // if not exist then try and download the version
-		if err != nil {
-			return nil, err
-		}
-		getVersion, err = inst.gitDownloadRelease(token, releaseVersion)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if getVersion == nil {
-		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", releaseVersion))
-	}
-	err = nil
-	var appsList []InstalledApps
-	var appsAvailable []AppsAvailableForInstall
-	var appAvailable AppsAvailableForInstall
-	for _, versionApp := range getVersion.Apps { // list all the that the edge device can install
+	var appsList []rumodel.InstalledApps
+	var appsAvailable []rumodel.AppsAvailableForInstall
+	for _, versionApp := range release.Apps { // list all the that the edge device can install
 		for _, pro := range versionApp.Products {
 			if deviceInfo.DeviceType == pro {
+				var appAvailable rumodel.AppsAvailableForInstall
 				appAvailable.AppName = versionApp.Name
-				appAvailable.LatestVersion = versionApp.Version
+				appAvailable.MinVersion = versionApp.MinVersion
+				appAvailable.MaxVersion = versionApp.MaxVersion
 				appsAvailable = append(appsAvailable, appAvailable)
 			}
 		}
 	}
 	for _, installedApp := range installedApps {
-		for _, versionApp := range getVersion.Apps {
-			if installedApp.AppName == versionApp.Name {
+		for _, app := range release.Apps {
+			if installedApp.AppName == app.Name {
 				installedAppVersion, err := version.NewVersion(installedApp.Version)
 				if err != nil {
 					return nil, err
 				}
-				storeAppVersion, err := version.NewVersion(versionApp.Version)
+				minVersion := app.MinVersion
+				maxVersion := app.MaxVersion
+				if app.MinVersion == "" {
+					minVersion = "v0.0.0"
+				}
+				if app.MaxVersion == "" {
+					maxVersion = "v1000.0.0"
+				}
+				minAppVersion, err := version.NewVersion(minVersion)
+				if err != nil {
+					return nil, err
+				}
+				maxAppVersion, err := version.NewVersion(maxVersion)
 				if err != nil {
 					return nil, err
 				}
 				installedApp.IsInstalled = true
-				installedApp.LatestVersion = versionApp.Version
-				if installedAppVersion.String() == storeAppVersion.String() {
-					installedApp.Message = fmt.Sprintf("installed version and appStore version match version: %s", installedAppVersion)
+				installedApp.MinVersion = app.MinVersion
+				installedApp.MaxVersion = app.MaxVersion
+				if installedAppVersion.GreaterThanOrEqual(minAppVersion) && installedAppVersion.LessThanOrEqual(maxAppVersion) {
 					installedApp.Match = true
 				} else {
-					if installedAppVersion.LessThan(storeAppVersion) {
-						installedApp.Message = fmt.Sprintf("an upgrade is required to match (installed: %s | appStore: %s)", installedAppVersion, storeAppVersion)
+					if installedAppVersion.LessThan(minAppVersion) {
 						installedApp.UpgradeRequired = true
 					} else {
-						installedApp.Message = fmt.Sprintf("an downgrade is required to match (installed: %s | appStore: %s)", installedAppVersion, storeAppVersion)
 						installedApp.DowngradeRequired = true
 					}
 				}
@@ -306,20 +281,19 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID, releaseVersion string
 		}
 	}
 
-	return &EdgeDeviceInfo{
+	return &rumodel.EdgeDeviceInfo{
 		InstalledApps:           appsList,
 		AppsAvailableForInstall: appsAvailable,
 	}, nil
 }
 
-// edgeListApps apps that are in the app dir and have a linux service
-func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, error) {
-	apps, err := inst.edgeListAppsStatus(connUUID, hostUUID)
+func (inst *App) edgeInstalledApps(assistClient *assistcli.Client, hostUUID string) ([]rumodel.InstalledApps, error) {
+	apps, err := assistClient.EdgeListAppsStatus(hostUUID)
 	if err != nil {
 		return nil, err
 	}
-	var filteredApps []InstalledApps
-	var filteredApp InstalledApps
+	var filteredApps []rumodel.InstalledApps
+	var filteredApp rumodel.InstalledApps
 	for _, installedApp := range apps {
 		filteredApp.IsInstalled = false
 		filteredApp.AppName = installedApp.Name
@@ -336,38 +310,24 @@ func (inst *App) edgeInstalledApps(connUUID, hostUUID string) ([]InstalledApps, 
 	return filteredApps, nil
 }
 
-// edgeListApps apps that are in the app dir
-func (inst *App) edgeListAppsStatus(connUUID, hostUUID string) ([]amodel.AppsStatus, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
+func (inst *App) getReleaseVersion(assistClient *assistcli.Client, hostUUID string) (string, error) {
+	var releaseVersion string
+	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
+	if connectionErr != nil {
+		inst.uiErrorMessage(connectionErr)
+		return "", connectionErr
 	}
-	resp, err := client.EdgeListAppsStatus(hostUUID)
-	if err != nil {
-		return nil, err
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
 	}
-	return resp, err
-}
-
-func (inst *App) uploadEdgeService(assistClient *assistcli.Client, hostUUID, appName, appVersion, releaseVersion string) (*appstore.UploadResponse, error) {
-	nubeApp, err := inst.getAppFromReleases(releaseVersion, appName)
-	if err != nil {
-		return nil, err
+	if appStatus != nil {
+		releaseVersion = appStatus.Version
+	} else {
+		release, err := inst.getLatestReleaseVersion()
+		if err != nil {
+			return "", err
+		}
+		releaseVersion = release
 	}
-	resp, err := assistClient.EdgeUploadService(hostUUID, &systemctl.ServiceFile{
-		Name:                        appName,
-		Version:                     appVersion,
-		ExecStart:                   nubeApp.ExecStart,
-		AttachWorkingDirOnExecStart: nubeApp.AttachWorkingDirOnExecStart,
-		EnvironmentVars:             nubeApp.EnvironmentVars,
-	})
-	return resp, err
-}
-
-func (inst *App) edgeUnInstallApp(connUUID, hostUUID, appName string) (*systemd.UninstallResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	return client.EdgeUninstallApp(hostUUID, appName, false)
+	return releaseVersion, nil
 }
