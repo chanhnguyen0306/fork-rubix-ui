@@ -1,15 +1,14 @@
-import { Menu, MenuProps } from "antd";
-import { Dropdown, Space, Spin, Tag, Tooltip } from "antd";
-import { FormOutlined, EditOutlined } from "@ant-design/icons";
+import { Space, Spin, Tag, Tooltip } from "antd";
+import { EditOutlined, FormOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { model, backend } from "../../../../../../../wailsjs/go/models";
+import { backend, model } from "../../../../../../../wailsjs/go/models";
 import RbTable from "../../../../../../common/rb-table";
 import {
+  RbAddButton,
+  RbDeleteButton,
   RbExportButton,
   RbImportButton,
-  RbDeleteButton,
-  RbAddButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
@@ -24,10 +23,8 @@ import { EditModal } from "./edit";
 import { ExportModal, ImportModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
-
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
-import PluginUUIDs = backend.PluginUUIDs;
 
 export const FlowPointsTable = (props: any) => {
   const {
@@ -84,10 +81,7 @@ export const FlowPointsTable = (props: any) => {
 
   const handleRestart = async () => {
     setIsRestarting(true);
-    const pluginUUIDs = [
-      { name: pluginName, uuid: pluginUUID },
-    ] as PluginUUIDs[];
-    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    await flowPluginFactory.RestartBulk([pluginName]);
     setIsRestarting(false);
   };
 

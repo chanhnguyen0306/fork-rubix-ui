@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, notification, Spin } from "antd";
+import { Button, Spin } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -7,22 +7,16 @@ import {
 } from "@ant-design/icons";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { backend, model } from "../../../../../../../wailsjs/go/models";
 import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
-import { RbButton } from "../../../../../../common/rb-table-actions";
 import { CreateModal } from "./create";
 import { useParams } from "react-router-dom";
 
-import PluginConf = model.PluginConf;
-import PluginUUIDs = backend.PluginUUIDs;
-import { openNotificationWithIcon } from "../../../../../../utils/utils";
-
 export const FlowPluginsTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
-  const [plugins, setPlugins] = useState([] as Array<PluginConf>);
+  const [plugins, setPlugins] = useState([] as any);
   const [pluginName, setPluginName] = useState<string>();
-  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<PluginUUIDs>);
+  const [pluginsNames, setPluginsNames] = useState([] as Array<string>);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -36,89 +30,48 @@ export const FlowPluginsTable = (props: any) => {
   const columns = PLUGIN_HEADERS;
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: Array<model.PluginConf>) => {
-      setPluginsUUIDs(selectedRows);
+    onChange: (selectedRowKeys: any, selectedRows: Array<any>) => {
+      setPluginsNames(selectedRows.map((x) => x.name));
     },
   };
 
-  const EnablePluginsButton = () => {
-    const enable = async () => {
-      await factory.BulkEnable(pluginsUUIDs);
-      fetchPlugins();
-    };
+  useEffect(() => {
+    fetchPlugins();
+  }, []);
 
-    return (
-      <RbButton
-        type="primary"
-        text="enable plugins"
-        icon={<PlayCircleOutlined />}
-        onClick={enable}
-      />
-    );
+  useEffect(() => {
+    if (isModalVisible) {
+      getSchema();
+    }
+  }, [pluginsNames, isModalVisible]);
+
+  const showModal = () => {
+    setIsModalVisible(true);
   };
 
-  const DisablePluginsButton = () => {
-    const disable = async () => {
-      await factory.BulkDisable(pluginsUUIDs);
-      fetchPlugins();
-    };
-
-    return (
-      <RbButton
-        type="ghost"
-        text="disable plugins"
-        onClick={disable}
-        icon={<StopOutlined />}
-      />
-    );
+  const enable = async () => {
+    await factory.BulkEnable(pluginsNames);
+    await fetchPlugins();
   };
 
-  const AddNetworkButton = () => {
-    const showModal = () => {
-      setIsModalVisible(true);
-    };
-
-    return (
-      <RbButton
-        type="ghost"
-        text="add network"
-        onClick={showModal}
-        icon={<PlusOutlined />}
-      />
-    );
-  };
-
-  const InstallButton = () => {
-    const install = async () => {
-      if (pluginsUUIDs.length !== 1)
-        return openNotificationWithIcon("warning", `please select ONE plugin`);
-      const plugin = pluginsUUIDs[0] as any;
-      try {
-        await factory.InstallPlugin(connUUID, hostUUID, plugin);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    return (
-      <RbButton
-        text="install"
-        onClick={install}
-        style={{ backgroundColor: "#fa8c16", color: "white" }}
-      />
-    );
+  const disable = async () => {
+    await factory.BulkDisable(pluginsNames);
+    await fetchPlugins();
   };
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    if (pluginsUUIDs.length > 0) {
-      const plg = pluginsUUIDs.at(0) as unknown as PluginConf;
-      setPluginName(plg.name);
-      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
+    if (pluginsNames.length > 0) {
+      const pluginName = pluginsNames.at(0) || "";
+      setPluginName(pluginName);
+      const res = await flowNetworkFactory.Schema(
+        connUUID,
+        hostUUID,
+        pluginName
+      );
       const jsonSchema = {
         properties: res,
       };
-
       setNetworkSchema(jsonSchema);
       setIsLoadingForm(false);
     }
@@ -136,22 +89,29 @@ export const FlowPluginsTable = (props: any) => {
     }
   };
 
-  useEffect(() => {
-    fetchPlugins();
-  }, []);
-
-  useEffect(() => {
-    if (isModalVisible) {
-      getSchema();
-    }
-  }, [pluginsUUIDs, isModalVisible]);
-
   return (
     <>
-      <EnablePluginsButton />
-      <DisablePluginsButton />
-      <AddNetworkButton />
-      <InstallButton />
+      <Button
+        type="primary"
+        onClick={enable}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
+      >
+        <PlayCircleOutlined /> Enable Plugins
+      </Button>
+      <Button
+        type="ghost"
+        onClick={disable}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
+      >
+        <StopOutlined /> Disable Plugins
+      </Button>
+      <Button
+        type="ghost"
+        onClick={showModal}
+        style={{ margin: "0 6px 10px 0", float: "left" }}
+      >
+        <PlusOutlined /> Add Network
+      </Button>
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}

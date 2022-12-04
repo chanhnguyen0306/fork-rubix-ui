@@ -1,13 +1,12 @@
-import { Select, Modal, Spin } from "antd";
-import { useState, useEffect } from "react";
+import { Modal, Select, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { model } from "../../../../../../../wailsjs/go/models";
 import { JsonForm } from "../../../../../../common/json-schema-form";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowNetworkFactory } from "../factory";
-
 import Network = model.Network;
-import PluginConf = model.PluginConf;
+
 const { Option } = Select;
 
 export const EditModal = (props: any) => {
@@ -81,7 +80,7 @@ export const CreateModal = (props: any) => {
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [schema, setSchema] = useState({});
   const [isFetching, setIsFetching] = useState(true);
-  const [plugins, setPlugins] = useState([] as PluginConf[]);
+  const [plugins, setPlugins] = useState([] as any);
   const [selectedPlugin, setSelectedPlugin] = useState("");
 
   const networkFactory = new FlowNetworkFactory();
@@ -158,7 +157,7 @@ export const CreateModal = (props: any) => {
           style={{ width: "100%", marginBottom: "10px" }}
           value={selectedPlugin}
         >
-          {plugins.map((plugin) => (
+          {plugins.map((plugin: any) => (
             <Option key={plugin.uuid} value={plugin.name}>
               {plugin.name}
             </Option>
