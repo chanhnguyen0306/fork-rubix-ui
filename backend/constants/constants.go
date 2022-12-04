@@ -1,5 +1,6 @@
 package constants
 
+const GitHubOwner = "NubeIO"
 const SettingUUID = "set_123456789ABC"
 const Eth0 = "eth0"
 const Eth1 = "eth1"

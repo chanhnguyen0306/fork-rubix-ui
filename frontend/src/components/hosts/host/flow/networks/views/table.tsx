@@ -1,15 +1,16 @@
 import { Space, Spin, Tooltip } from "antd";
-import { FormOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { ArrowRightOutlined, FormOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { backend, model } from "../../../../../../../wailsjs/go/models";
-import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
+import RbTableFilterNameInput
+  from "../../../../../../common/rb-table-filter-name-input";
 import RbTable from "../../../../../../common/rb-table";
 import {
   RbAddButton,
   RbDeleteButton,
-  RbImportButton,
   RbExportButton,
+  RbImportButton,
   RbRefreshButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
@@ -18,12 +19,10 @@ import { NETWORK_HEADERS } from "../../../../../../constants/headers";
 import { ROUTES } from "../../../../../../constants/routes";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowNetworkFactory } from "../factory";
-import { EditModal, CreateModal } from "./create";
+import { CreateModal, EditModal } from "./create";
 import { ExportModal, ImportModal } from "./import-export";
 import "./style.css";
-
 import UUIDs = backend.UUIDs;
-import PluginUUIDs = backend.PluginUUIDs;
 import Network = model.Network;
 
 export const FlowNetworkTable = () => {
@@ -143,10 +142,10 @@ export const FlowNetworkTable = () => {
     }
     setIsRestarting(true);
     const selectedNetworks = selectedUUIDs as Network[];
-    const pluginUUIDs = selectedNetworks.map((net) => {
-      return { name: net.plugin_name, uuid: net.plugin_conf_id };
-    }) as PluginUUIDs[];
-    await flowPluginFactory.RestartBulk(pluginUUIDs);
+    const pluginNames = selectedNetworks.map((net) => {
+      return net.plugin_name;
+    }) as string[];
+    await flowPluginFactory.RestartBulk(pluginNames);
     setIsRestarting(false);
   };
 

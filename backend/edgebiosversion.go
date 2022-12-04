@@ -11,9 +11,8 @@ import (
 )
 
 func (inst *App) EdgeBiosRubixEdgeVersions() []string {
-	const owner = "NubeIO"
 	const repo = "rubix-edge"
-	return inst.getRepoVersions(owner, repo)
+	return inst.getRepoVersions(constants.GitHubOwner, repo)
 }
 
 func (inst *App) getRepoVersions(owner string, repo string) []string {
