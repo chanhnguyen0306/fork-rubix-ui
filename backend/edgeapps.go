@@ -35,26 +35,37 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	}
 	arch = resp.Arch
 
-	inst.uiSuccessMessage(fmt.Sprintf("start app app install: %s version: %s arch: %s", appName, appVersion, arch))
+	inst.uiSuccessMessage(fmt.Sprintf("%s app installation has been started (version: %s, arch: %s)", appName, appVersion, arch))
 	_, err = assistClient.EdgeWriteConfig(hostUUID, appName)
 	if err != nil {
-		return inst.fail(fmt.Sprintf("write app config: %s", err))
+		return inst.fail(fmt.Sprintf("%s app config write failure (%s)", appName, err))
 	}
 
+	isFlowFrameworkInstall := false
 	var releaseVersion *string
 	if appName == constants.FlowFramework {
 		releaseVersion = &appVersion // FlowFramework installation should select same release version
 	} else {
-		releaseVersion, err = inst.getReleaseVersion(assistClient, hostUUID)
-		if err != nil {
+		ffVersion, connectionErr, _ := inst.getFlowFrameworkVersion(assistClient, hostUUID)
+		if connectionErr != nil {
 			return inst.fail(err)
+		}
+		if ffVersion != nil {
+			isFlowFrameworkInstall = true
+			releaseVersion = ffVersion
+		} else {
+			rv, err := inst.getLatestReleaseVersion()
+			if err != nil {
+				return inst.fail(err)
+			}
+			releaseVersion = &rv
 		}
 	}
 
 	var lastStep = "4"
 	release, err := inst.DB.GetReleaseByVersion(*releaseVersion)
 	if release == nil {
-		return inst.fail(fmt.Sprintf("failed to find a vaild release version: %s", *releaseVersion))
+		return inst.fail(fmt.Sprintf("failed to find a vaild release version %s", *releaseVersion))
 	}
 	var appHasPlugins bool
 	var selectedApp store.Apps
@@ -63,13 +74,18 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			selectedApp = app
 			for _, plg := range app.PluginDependency {
 				appHasPlugins = true
-				inst.uiSuccessMessage(fmt.Sprintf("plugin will be installed (plugin: %s)", plg))
+				inst.uiSuccessMessage(fmt.Sprintf("%s plugin will be installed", plg))
 			}
 		}
 	}
+
+	if appHasPlugins && !isFlowFrameworkInstall {
+		return inst.fail(fmt.Sprintf("%s app has plugin dependency, so you have to install flow-framework at first", appName))
+	}
+
 	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion)
 	if err != nil {
-		inst.uiSuccessMessage(fmt.Sprintf("%s app not found in app store so downloading it", appName))
+		inst.uiSuccessMessage(fmt.Sprintf("%s app not found in app store so downloading it...", appName))
 		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			inst.fail(fmt.Sprintf("failed to get git token %s", err))
@@ -78,7 +94,6 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		inst.StoreDownloadApp(token, *releaseVersion, appName, appVersion, arch, true)
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app name %s & release version %s", lastStep, appName, *releaseVersion))
-	inst.uiSuccessMessage("upload app to assist and in check to see if app is already uploaded")
 	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, selectedApp.DoNotValidateArch)
 	if err != nil {
 		return inst.fail(err)
@@ -113,7 +128,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 					if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
 						Name:    plg,
 						Arch:    arch,
-						Version: appVersion,
+						Version: *releaseVersion,
 					}); err != nil {
 						return inst.fail(err)
 					}
@@ -122,7 +137,6 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		}
 	}
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
-		inst.uiSuccessMessage("need to update all plugins for flow-framework")
 		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, *releaseVersion, arch)
 		if err != nil {
 			return inst.fail(err)

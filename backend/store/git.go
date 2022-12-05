@@ -25,9 +25,6 @@ func stringPtrToString(b *string) string {
 }
 
 func (inst *AppStore) gitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
-	if token == "" {
-		return errors.New("git token can not be empty")
-	}
 	opts := &git.AssetOptions{
 		Owner: inst.Store.Owner,
 		Repo:  repo,
@@ -41,7 +38,7 @@ func (inst *AppStore) gitDownloadZipball(repo, version, arch, token string, gitO
 		return err
 	}
 	assetName := download.AssetName
-	log.Infof("git downloaded: %s", assetName)
+	log.Infof("git downloaded assest: %s", assetName)
 	return err
 }
 
@@ -71,6 +68,6 @@ func (inst *AppStore) gitDownloadAsset(repo, version, arch, token string, gitOpt
 		return err
 	}
 
-	log.Infof("git downloaded: %s", assetName)
+	log.Infof("git downloaded assest: %s", assetName)
 	return err
 }

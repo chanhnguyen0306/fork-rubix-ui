@@ -22,14 +22,16 @@ export const InstallRubixAppModal = (props: IInstallRubixAppModal) => {
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [selectedVersion, setSelectedVersion] = useState("");
+  const [installResponse, setInstallResponse] = useState({} as rumodel.Response);
 
   const install = async () => {
     setCurrent(current + 1);
     setLoading(true);
-    await installFactory.InstallRubixApp(
+    const response = await installFactory.InstallRubixApp(
       host.uuid,
       app.app_name || "",
       selectedVersion);
+    setInstallResponse(response);
     setLoading(false);
     setIsInstalled(true);
   };
@@ -79,7 +81,7 @@ export const InstallRubixAppModal = (props: IInstallRubixAppModal) => {
         }
         {current == 1 &&
           <div className="steps-content">
-            <Completion loading={loading} />
+            <Completion loading={loading} installResponse={installResponse} />
           </div>
         }
         {current == 2 && <div className="steps-content">Finished</div>}
