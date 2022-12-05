@@ -5,7 +5,7 @@ export const Completion = (props: ICompletion) => {
 
   return (
     <Card style={{ marginTop: 10, marginBottom: 10 }}>
-      {loading ? "Installing..." : "Completed..."}
+      {loading ? "Installing..." : "Completed!"}
     </Card>
   );
 };
