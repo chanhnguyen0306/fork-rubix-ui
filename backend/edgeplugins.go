@@ -266,15 +266,19 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 }
 
 func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID, releaseVersion, arch string) error {
-	plugins, err := assistClient.EdgeGetPlugins(hostUUID)
-	if err != nil {
-		return err
+	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
+	if connectionErr != nil {
+		return connectionErr
+	}
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
+		return nil
 	}
 	if len(plugins) == 0 {
 		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be uploaded"))
 		return nil
 	}
-	_, connectionErr, _ := assistClient.EdgeDeleteDownloadPlugins(hostUUID)
+	_, connectionErr, _ = assistClient.EdgeDeleteDownloadPlugins(hostUUID)
 	if connectionErr != nil {
 		return connectionErr
 	}
