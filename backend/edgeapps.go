@@ -112,7 +112,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 					if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
 						Name:    plg,
 						Arch:    arch,
-						Version: appVersion,
+						Version: *releaseVersion,
 					}); err != nil {
 						return inst.fail(err)
 					}
