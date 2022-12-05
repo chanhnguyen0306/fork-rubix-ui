@@ -17,6 +17,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   record: any;
   index: number;
   children: React.ReactNode;
+  defaultValue: any;
 }
 
 export const CreateBulkModal = (props: any) => {
@@ -31,13 +32,115 @@ export const CreateBulkModal = (props: any) => {
     refreshList,
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [bulkSchema, setbulkSchema] = useState({} as any);
   const [count, setCount] = useState<any>(undefined);
   const [items, setItems] = useState<any[]>([]);
+  const [columns, setColumns] = useState<any[]>([]);
 
   const factory = new FlowPointFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
+
+  const mergedColumns = columns.map((col, index) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record: any) => ({
+        record,
+        inputType: col.type,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: true,
+        index: index,
+        defaultValue: col.defaultValue,
+      }),
+    };
+  });
+
+  const EditableCell: React.FC<EditableCellProps> = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    defaultValue,
+    ...restProps
+  }) => {
+    const _defaultValue =
+      record && record[dataIndex] ? record[dataIndex] : defaultValue;
+
+    let inputNode = null;
+    switch (inputType) {
+      case "number":
+        inputNode = (
+          <InputNumber
+            defaultValue={_defaultValue}
+            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+          />
+        );
+        break;
+      case "string":
+        inputNode = (
+          <Input
+            defaultValue={_defaultValue}
+            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+          />
+        );
+        break;
+      case "boolean":
+        inputNode = (
+          <Checkbox
+            defaultChecked={_defaultValue ?? false}
+            onChange={(e: CheckboxChangeEvent) =>
+              onChange(e.target.checked, dataIndex, record.key)
+            }
+          />
+        );
+        break;
+    }
+
+    return <td {...restProps}>{editing ? <>{inputNode}</> : children}</td>;
+  };
+
+  const createColumns = () => {
+    if (!schema.properties) return;
+    const columns = [
+      {
+        title: "actions",
+        dataIndex: "actions",
+        render: (_: any, record: any) => {
+          return (
+            <div style={{ textAlign: "center" }}>
+              <DeleteOutlined
+                style={{ color: "red" }}
+                onClick={() => deleteItem(record.key)}
+              />
+            </div>
+          );
+        },
+      },
+    ];
+    const properties = schema.properties;
+    Object.keys(properties).forEach((key) => {
+      if (key !== "uuid" && properties[key].type) {
+        // console.log("properties[key]", properties[key]);
+        const column = {
+          key: key,
+          title: key.replaceAll("_", " "),
+          dataIndex: key,
+          type: properties[key].type,
+          editable: !properties[key].readOnly || false,
+          defaultValue: properties[key].default || undefined,
+        } as any;
+        columns.push(column);
+      }
+    });
+    setColumns(columns);
+  };
 
   const handleClose = () => {
     setItems([]);
@@ -59,12 +162,13 @@ export const CreateBulkModal = (props: any) => {
     setCount(count);
     const data = [];
     for (let i = 0; i < count; i++) {
-      data.push({
-        key: i,
-        name: `Edrward ${i}`,
-        age: 32,
-        address: `London Park no. ${i}`,
+      let item = { key: i };
+      columns.forEach((column) => {
+        if (column.editable) {
+          item = { ...item, [column.dataIndex]: column.defaultValue };
+        }
       });
+      data.push(item);
     }
     setItems(data);
   };
@@ -84,120 +188,10 @@ export const CreateBulkModal = (props: any) => {
     await factory.AddBulk(points);
   };
 
-  //will using schema to make columns
-  const columns = [
-    {
-      title: "actions",
-      dataIndex: "actions",
-      render: (_: any, record: any) => {
-        return (
-          <div style={{ textAlign: "center" }}>
-            <DeleteOutlined
-              style={{ color: "red" }}
-              onClick={() => deleteItem(record.key)}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      title: "name",
-      dataIndex: "name",
-      editable: true,
-      type: "string",
-    },
-    {
-      title: "age",
-      dataIndex: "age",
-      editable: true,
-      type: "number",
-    },
-    {
-      title: "address",
-      dataIndex: "address",
-      editable: true,
-      type: "string",
-    },
-  ];
-
-  const mergedColumns = columns.map((col, index) => {
-    if (!col.editable) {
-      return col;
-    }
-
-    return {
-      ...col,
-      onCell: (record: any) => ({
-        record,
-        inputType: col.type,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: true,
-        index: index,
-      }),
-    };
-  });
-
-  const EditableCell: React.FC<EditableCellProps> = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    const defaultValue = record ? record[dataIndex] : null;
-    let inputNode = null;
-    switch (inputType) {
-      case "number":
-        inputNode = (
-          <InputNumber
-            defaultValue={defaultValue}
-            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
-          />
-        );
-        break;
-      case "string":
-        inputNode = (
-          <Input
-            defaultValue={defaultValue}
-            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
-          />
-        );
-        break;
-      case "boolean":
-        inputNode = (
-          <Checkbox
-            defaultChecked={defaultValue ?? false}
-            onChange={(e: CheckboxChangeEvent) =>
-              onChange(e.target.checked, dataIndex, record.key)
-            }
-          />
-        );
-        break;
-    }
-
-    return <td {...restProps}>{editing ? <>{inputNode}</> : children}</td>;
-  };
-
   useEffect(() => {
-    //add count input
     if (!isLoadingForm) {
-      const countSchema = {
-        type: "number",
-        title: "count",
-        minimum: 1,
-      };
-      const bulkSchema = {
-        properties: {
-          count: countSchema,
-          ...schema.properties,
-        },
-        required: ["count"],
-      };
-      setbulkSchema(bulkSchema);
+      //isLoadingForm means isLoadingSchema
+      createColumns();
     }
   }, [isLoadingForm]);
 
@@ -211,7 +205,7 @@ export const CreateBulkModal = (props: any) => {
       okText="Save"
       maskClosable={false}
       style={{ textAlign: "start" }}
-      width={800}
+      width={"auto"}
     >
       <InputNumber
         min={1}
@@ -220,7 +214,7 @@ export const CreateBulkModal = (props: any) => {
         placeholder="please enter count"
         value={count}
       />
-      <Spin spinning={isLoadingForm}>
+      {count && (
         <Form component={false}>
           <Table
             components={{
@@ -234,7 +228,7 @@ export const CreateBulkModal = (props: any) => {
             rowClassName="editable-row"
           />
         </Form>
-      </Spin>
+      )}
     </Modal>
   );
 };
