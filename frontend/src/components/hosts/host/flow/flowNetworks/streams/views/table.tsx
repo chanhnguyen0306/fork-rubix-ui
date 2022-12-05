@@ -18,7 +18,7 @@ import Stream = model.Stream;
 
 export const StreamsTable = (props: any) => {
   const { data, isFetching, refreshList } = props;
-  let {
+  const {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
@@ -30,7 +30,7 @@ export const StreamsTable = (props: any) => {
   const [currentItem, setCurrentItem] = useState({} as Stream);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  let factory = new FlowStreamFactory();
+  const factory = new FlowStreamFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

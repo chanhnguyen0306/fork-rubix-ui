@@ -15,7 +15,7 @@ export const CreateEditModal = (props: any) => {
   const [formData, setFormData] = useState(currentItem);
   const flowNetworkUUIDS = flNetworkUUID;
 
-  let factory = new FlowStreamFactory();
+  const factory = new FlowStreamFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

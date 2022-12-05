@@ -18,7 +18,7 @@ export const CreateEditModal = (props: any) => {
   } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState(currentConnection);
-  let factory = new ConnectionFactory();
+  const factory = new ConnectionFactory();
 
   useEffect(() => {
     setFormData(currentConnection);

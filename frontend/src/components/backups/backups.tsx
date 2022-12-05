@@ -10,7 +10,7 @@ export const Backups = () => {
   const [backups, setBackups] = useState([] as storage.Backup[]);
   const [isFetching, setIsFetching] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  let factory = new BackupFactory();
+  const factory = new BackupFactory();
 
   useEffect(() => {
     fetch();
@@ -18,7 +18,7 @@ export const Backups = () => {
 
   const fetch = async () => {
     try {
-      let res = await factory.GetAll();
+      const res = await factory.GetAll();
       setBackups(res);
     } catch (error) {
       console.log(error);

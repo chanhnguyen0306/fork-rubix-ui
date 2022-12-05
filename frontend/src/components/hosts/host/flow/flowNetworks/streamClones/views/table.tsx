@@ -15,7 +15,7 @@ import UUIDs = backend.UUIDs;
 import StreamClone = model.StreamClone;
 
 export const StreamClonesTable = () => {
-  let {
+  const {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
@@ -26,7 +26,7 @@ export const StreamClonesTable = () => {
   const [streamClones, setStreamClones] = useState([] as StreamClone[]);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowStreamCloneFactory();
+  const factory = new FlowStreamCloneFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

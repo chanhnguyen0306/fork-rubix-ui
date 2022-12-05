@@ -1,5 +1,5 @@
-import { Space, Spin, Tag, Tooltip } from "antd";
-import { EditOutlined, FormOutlined } from "@ant-design/icons";
+import { Button, Menu, Dropdown, Space, Spin, Tag, Tooltip } from "antd";
+import { FormOutlined, EditOutlined, ImportOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { backend, model } from "../../../../../../../wailsjs/go/models";
@@ -8,7 +8,6 @@ import {
   RbAddButton,
   RbDeleteButton,
   RbExportButton,
-  RbImportButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
@@ -71,7 +70,7 @@ export const FlowPointsTable = (props: any) => {
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
-    setPluginUUID(res.plugin_conf_id);
+    if (res) setPluginUUID(res.plugin_conf_id);
   };
 
   const bulkDelete = async () => {
@@ -337,9 +336,20 @@ const ImportDropdownButton = (props: any) => {
   const { refreshList } = props;
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
 
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={() => setIsImportModalVisible(true)}>Json</Menu.Item>
+      <Menu.Item>Excel</Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <Dropdown overlay={menu} trigger={["click"]} className="rb-btn">
+        <Button className="nube-primary white--text" icon={<ImportOutlined />}>
+          Import
+        </Button>
+      </Dropdown>
 
       <ImportModal
         isModalVisible={isImportModalVisible}
