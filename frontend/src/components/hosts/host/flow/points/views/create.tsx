@@ -1,4 +1,13 @@
-import { Checkbox, Form, Input, InputNumber, Modal, Spin, Table } from "antd";
+import {
+  Checkbox,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  Spin,
+  Table,
+} from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useEffect, useState } from "react";
@@ -9,15 +18,20 @@ import { model } from "../../../../../../../wailsjs/go/models";
 import Point = model.Point;
 import React from "react";
 
+interface Options {
+  value: "number" | "string";
+  label: "number" | "string";
+}
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: "number" | "string" | "boolean";
+  inputType: "number" | "string" | "boolean" | "array";
   record: any;
   index: number;
   children: React.ReactNode;
   defaultValue: any;
+  options: Options[];
 }
 
 export const CreateBulkModal = (props: any) => {
@@ -40,25 +54,6 @@ export const CreateBulkModal = (props: any) => {
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 
-  const mergedColumns = columns.map((col, index) => {
-    if (!col.editable) {
-      return col;
-    }
-
-    return {
-      ...col,
-      onCell: (record: any) => ({
-        record,
-        inputType: col.type,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: true,
-        index: index,
-        defaultValue: col.defaultValue,
-      }),
-    };
-  });
-
   const EditableCell: React.FC<EditableCellProps> = ({
     editing,
     dataIndex,
@@ -68,6 +63,7 @@ export const CreateBulkModal = (props: any) => {
     index,
     children,
     defaultValue,
+    options,
     ...restProps
   }) => {
     const _defaultValue =
@@ -101,10 +97,40 @@ export const CreateBulkModal = (props: any) => {
           />
         );
         break;
+      case "array":
+        inputNode = (
+          <Select
+            defaultValue={_defaultValue}
+            onChange={(e) => onChange(e, dataIndex, record.key)}
+            options={options}
+          />
+        );
+        break;
     }
 
     return <td {...restProps}>{editing ? <>{inputNode}</> : children}</td>;
   };
+
+  const mergedColumns = columns.map((col, index) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record: any) => ({
+        record,
+        inputType: col.options.length > 0 ? "array" : col.type,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: true,
+        index: index,
+        defaultValue: col.defaultValue,
+        options: col.options,
+      }),
+    };
+  });
+
   const createColumns = () => {
     if (!schema.properties) return;
 
@@ -130,7 +156,18 @@ export const CreateBulkModal = (props: any) => {
     const properties = schema.properties;
     Object.keys(properties).forEach((key) => {
       if (key !== "uuid" && properties[key].type) {
-        // console.log("properties[key]", properties[key]);
+        //handle select input
+        const options = [];
+        if (properties[key].enum) {
+          for (let i = 0; i < properties[key].enum.length; i++) {
+            options.push({
+              value: properties[key].enum[i],
+              label: properties[key].enumNames
+                ? properties[key].enumNames[i]
+                : properties[key].enum[i],
+            });
+          }
+        }
         const column = {
           key: key,
           title: key.replaceAll("_", " "),
@@ -138,7 +175,9 @@ export const CreateBulkModal = (props: any) => {
           type: properties[key].type,
           editable: !properties[key].readOnly || false,
           defaultValue: properties[key].default || undefined,
+          options: options,
         } as any;
+
         columns.push(column);
       }
     });
