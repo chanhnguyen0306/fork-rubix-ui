@@ -70,7 +70,7 @@ export const FlowPointsTable = (props: any) => {
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
-    setPluginUUID(res.plugin_conf_id);
+    if (res) setPluginUUID(res.plugin_conf_id);
   };
 
   const bulkDelete = async () => {

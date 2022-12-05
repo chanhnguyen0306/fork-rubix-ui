@@ -105,25 +105,28 @@ export const CreateBulkModal = (props: any) => {
 
     return <td {...restProps}>{editing ? <>{inputNode}</> : children}</td>;
   };
-
   const createColumns = () => {
     if (!schema.properties) return;
-    const columns = [
-      {
-        title: "actions",
-        dataIndex: "actions",
-        render: (_: any, record: any) => {
-          return (
-            <div style={{ textAlign: "center" }}>
-              <DeleteOutlined
-                style={{ color: "red" }}
-                onClick={() => deleteItem(record.key)}
-              />
-            </div>
-          );
-        },
-      },
-    ];
+
+    ////setItems is not working well, so temporarily we don't support deleting
+    // const columns = [
+    //   {
+    //     title: "actions",
+    //     dataIndex: "actions",
+    //     render: (_: any, record: any) => {
+    //       return (
+    //         <div style={{ textAlign: "center" }}>
+    //           <DeleteOutlined
+    //             style={{ color: "red" }}
+    //             onClick={() => deleteItem(record.key)}
+    //           />
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // ];
+
+    const columns: any[] = [];
     const properties = schema.properties;
     Object.keys(properties).forEach((key) => {
       if (key !== "uuid" && properties[key].type) {
@@ -159,39 +162,43 @@ export const CreateBulkModal = (props: any) => {
   };
 
   const onCountChange = (count: number) => {
-    setCount(count);
     const data = [];
     let item = {};
-    columns.forEach((column) => {
+    for (const column of columns) {
       if (column.editable) {
         item = { ...item, [column.dataIndex]: column.defaultValue };
       }
-    });
+    }
     for (let i = 0; i < count; i++) {
-      item = { ...item, key: i };
+      item = { ...item, key: i, device_uuid: deviceUUID };
       data.push(item);
     }
     setItems(data);
+    setCount(count);
   };
 
   const handleSubmit = async () => {
-    console.log(items);
+    try {
+      setConfirmLoading(true);
+      await factory.AddBulk(items);
+      refreshList();
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setConfirmLoading(false);
+    }
   };
 
-  const deleteItem = (key: number) => {
-    const newItems = items.filter((i) => i.key !== key);
-    const newCount = count - 1;
-    setItems(newItems);
-    !newCount ? setCount(undefined) : setCount(newCount);
-  };
-
-  const add = async (points: Point[]) => {
-    await factory.AddBulk(points);
-  };
+  // const deleteItem = (key: number) => {
+  //   const newItems = items.filter((i) => i.key !== key);
+  //   const newCount = count - 1;
+  //   setItems(newItems);
+  //   !newCount ? setCount(undefined) : setCount(newCount);
+  // };
 
   useEffect(() => {
     if (!isLoadingForm) {
-      //isLoadingForm means isLoadingSchema
       createColumns();
     }
   }, [isLoadingForm]);
