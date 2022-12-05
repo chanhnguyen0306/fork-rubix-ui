@@ -26,9 +26,12 @@ func (inst *App) EdgeGetPluginsDistribution(connUUID, hostUUID string) *rumodel.
 	}
 	arch = resp.Arch
 
-	version, err := inst.getFlowFrameworkVersion(assistClient, hostUUID)
-	if err != nil {
-		return inst.fail(err)
+	version, connectionErr, requestErr := inst.getFlowFrameworkVersion(assistClient, hostUUID)
+	if connectionErr != nil {
+		return inst.fail(connectionErr)
+	}
+	if requestErr != nil {
+		return inst.fail(requestErr)
 	}
 
 	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)

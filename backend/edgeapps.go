@@ -41,13 +41,24 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		return inst.fail(fmt.Sprintf("%s app config write failure (%s)", appName, err))
 	}
 
+	isFlowFrameworkInstall := false
 	var releaseVersion *string
 	if appName == constants.FlowFramework {
 		releaseVersion = &appVersion // FlowFramework installation should select same release version
 	} else {
-		releaseVersion, err = inst.getReleaseVersion(assistClient, hostUUID)
-		if err != nil {
+		ffVersion, connectionErr, _ := inst.getFlowFrameworkVersion(assistClient, hostUUID)
+		if connectionErr != nil {
 			return inst.fail(err)
+		}
+		if ffVersion != nil {
+			isFlowFrameworkInstall = true
+			releaseVersion = ffVersion
+		} else {
+			rv, err := inst.getLatestReleaseVersion()
+			if err != nil {
+				return inst.fail(err)
+			}
+			releaseVersion = &rv
 		}
 	}
 
@@ -67,6 +78,11 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			}
 		}
 	}
+
+	if appHasPlugins && !isFlowFrameworkInstall {
+		return inst.fail(fmt.Sprintf("%s app has plugin dependency, so you have to install flow-framework at first", appName))
+	}
+
 	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion)
 	if err != nil {
 		inst.uiSuccessMessage(fmt.Sprintf("%s app not found in app store so downloading it...", appName))
