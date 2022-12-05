@@ -161,13 +161,14 @@ export const CreateBulkModal = (props: any) => {
   const onCountChange = (count: number) => {
     setCount(count);
     const data = [];
+    let item = {};
+    columns.forEach((column) => {
+      if (column.editable) {
+        item = { ...item, [column.dataIndex]: column.defaultValue };
+      }
+    });
     for (let i = 0; i < count; i++) {
-      let item = { key: i };
-      columns.forEach((column) => {
-        if (column.editable) {
-          item = { ...item, [column.dataIndex]: column.defaultValue };
-        }
-      });
+      item = { ...item, key: i };
       data.push(item);
     }
     setItems(data);
