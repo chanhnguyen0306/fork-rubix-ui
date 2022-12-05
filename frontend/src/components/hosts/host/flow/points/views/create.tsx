@@ -120,7 +120,7 @@ export const CreateBulkModal = (props: any) => {
       ...col,
       onCell: (record: any) => ({
         record,
-        inputType: col.options.length > 0 ? "array" : col.type,
+        inputType: col.type,
         dataIndex: col.dataIndex,
         title: col.title,
         editing: true,
@@ -172,7 +172,10 @@ export const CreateBulkModal = (props: any) => {
           key: key,
           title: key.replaceAll("_", " "),
           dataIndex: key,
-          type: properties[key].type,
+          type:
+            properties[key].enum && properties[key].enum.length > 0
+              ? "array"
+              : properties[key].type,
           editable: !properties[key].readOnly || false,
           defaultValue: properties[key].default || undefined,
           options: options,
