@@ -75,7 +75,9 @@ export const CreateBulkModal = (props: any) => {
         inputNode = (
           <InputNumber
             defaultValue={_defaultValue}
-            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+            onChange={(value) => {
+              onChangeValue(value, dataIndex, record.key);
+            }}
           />
         );
         break;
@@ -83,7 +85,9 @@ export const CreateBulkModal = (props: any) => {
         inputNode = (
           <Input
             defaultValue={_defaultValue}
-            onChange={(e) => onChange(e.target.value, dataIndex, record.key)}
+            onChange={(e) =>
+              onChangeValue(e.target.value, dataIndex, record.key)
+            }
           />
         );
         break;
@@ -92,7 +96,7 @@ export const CreateBulkModal = (props: any) => {
           <Checkbox
             defaultChecked={_defaultValue ?? false}
             onChange={(e: CheckboxChangeEvent) =>
-              onChange(e.target.checked, dataIndex, record.key)
+              onChangeValue(e.target.checked, dataIndex, record.key)
             }
           />
         );
@@ -101,7 +105,7 @@ export const CreateBulkModal = (props: any) => {
         inputNode = (
           <Select
             defaultValue={_defaultValue}
-            onChange={(e) => onChange(e, dataIndex, record.key)}
+            onChange={(e) => onChangeValue(e, dataIndex, record.key)}
             options={options}
           />
         );
@@ -193,7 +197,7 @@ export const CreateBulkModal = (props: any) => {
     onCloseModal();
   };
 
-  const onChange = (
+  const onChangeValue = (
     value: number | string | boolean,
     dataIndex: string,
     key: number
