@@ -10,6 +10,7 @@ import { HostTable } from "./views/table";
 import useTitlePrefix from "../../../hooks/usePrefixedTitle";
 import { useEffect } from "react";
 import { HostsFactory } from "../factory";
+import { PluginDistributionTable } from "./flow/plugins/views/plugin-distribution-table";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -17,6 +18,7 @@ const { Title } = Typography;
 const infoKey = "INFO";
 const networksKey = "DRIVERS";
 const pluginsKey = "MODULES";
+const installPluginsKey = "INSTALL PLUGIN";
 const flownetworksKey = "NETWORKS";
 const flownetworkClonesKey = "REMOTE/MAPPING NETWORK";
 
@@ -82,6 +84,9 @@ export const Host = () => {
           </TabPane>
           <TabPane tab={pluginsKey} key={pluginsKey}>
             <FlowPluginsTable />
+          </TabPane>
+          <TabPane tab={installPluginsKey} key={installPluginsKey}>
+            <PluginDistributionTable />
           </TabPane>
           <TabPane tab={infoKey} key={infoKey}>
             <HostTable />

@@ -83,20 +83,6 @@ export const FlowPluginsTable = (props: any) => {
     );
   };
 
-  const InstallButton = () => {
-    const install = async () => {
-      console.log("InstallButton");
-    };
-
-    return (
-      <RbButton
-        text="install"
-        onClick={install}
-        style={{ backgroundColor: "#fa8c16", color: "white" }}
-      />
-    );
-  };
-
   const getSchema = async () => {
     setIsLoadingForm(true);
     if (pluginsNames.length > 0) {
@@ -142,7 +128,6 @@ export const FlowPluginsTable = (props: any) => {
       <EnablePluginsButton />
       <DisablePluginsButton />
       <AddNetworkButton />
-      <InstallButton />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
