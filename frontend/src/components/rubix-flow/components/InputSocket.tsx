@@ -17,6 +17,7 @@ export type InputSocketProps = {
   value: any | undefined;
   minWidth?: number;
   dataInput?: any;
+  dataOutput?: any;
   onChange: (key: string, value: any) => void;
   onSetWidthInput?: (width: number) => void;
   isHideConnect?: boolean;
@@ -28,9 +29,9 @@ export const REGEX_NUMBER = new RegExp("^$|^-?(\\d+)?(\\.?\\d*)?$");
 const getValueOptions = (value: number) => {
   switch (value) {
     case 0:
-      return true;
-    case 1:
       return false;
+    case 1:
+      return true;
     case 2:
       return null;
     default:
@@ -38,16 +39,16 @@ const getValueOptions = (value: number) => {
   }
 };
 
-const getNumberOptions = (value: boolean) => {
+const getNumberOptions = (value: boolean | null) => {
   switch (value) {
-    case true:
-      return 0;
     case false:
+      return 0;
+    case true:
       return 1;
     case null:
       return 2;
     default:
-      return 1;
+      return 0;
   }
 };
 
@@ -66,6 +67,7 @@ export const InputSocket = ({
   minWidth,
   onSetWidthInput,
   dataInput,
+  dataOutput,
   isHideConnect,
   classnames,
 }: InputSocketProps) => {
@@ -103,8 +105,18 @@ export const InputSocket = ({
   };
 
   const getDataByConnected = (valueCurrent: number | string | boolean) => {
-    if (!connected) return valueCurrent;
+    if (!connected) return `${valueCurrent}`;
     if (!dataInput) return valueType === "boolean" ? 1 : "";
+
+    if (connected && dataOutput && dataOutput.length > 0) {
+      let valueOutput = dataOutput[0].value;
+      if (dataOutput[0].dataType === "boolean" && valueOutput !== null) {
+        valueOutput = getNumberOptions(valueOutput);
+      } else if (dataOutput[0].dataType === "string" && valueOutput === null) {
+        valueOutput = "";
+      }
+      return valueOutput !== undefined ? `${valueOutput}` : "";
+    }
 
     const input = dataInput.find((item: { pin: string }) => item.pin === name);
     if (!input) return valueType === "boolean" ? 1 : "";
@@ -122,7 +134,12 @@ export const InputSocket = ({
 
   const findBooleanValueInput = () => {
     let value: any = "";
-    if (dataInput && dataInput.length > 0) {
+    if (connected && dataOutput && dataOutput.length > 0) {
+      value =
+        typeof dataOutput[0].value === "number"
+          ? getValueOptions(dataOutput[0].value)
+          : getValueOptions(getNumberOptions(dataOutput[0].value));
+    } else if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
       );
@@ -204,8 +221,8 @@ export const InputSocket = ({
                   onChange={onChangeInputBoolean}
                   style={{ paddingRight: 18 }}
                 >
-                  <option value="0">true</option>
-                  <option value="1">false</option>
+                  <option value="1">true</option>
+                  <option value="0">false</option>
                   <option value="2">null</option>
                 </select>
               ))}

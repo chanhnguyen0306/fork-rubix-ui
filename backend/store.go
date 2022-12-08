@@ -3,123 +3,35 @@ package backend
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
-	"github.com/NubeIO/rubix-assist/service/appstore"
-	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-assist/amodel"
+	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"github.com/NubeIO/rubix-ui/backend/store"
-	"os"
 	"path"
 )
 
-func (inst *App) StoreListPluginsAll() ([]installer.BuildDetails, string, error) {
-	return inst.appStore.StoreListPlugins()
-}
-
-func (inst *App) StoreListPluginsArm() ([]installer.BuildDetails, error) {
-	var out []installer.BuildDetails
-	plugins, _, err := inst.appStore.StoreListPlugins()
-	if err != nil {
-		return nil, err
-	}
-	for _, plg := range plugins {
-		if plg.Arch == "armv7" {
-			out = append(out, plg)
-		}
-	}
-	return out, nil
-}
-
-func (inst *App) StoreListPluginsAmd64() ([]installer.BuildDetails, error) {
-	var out []installer.BuildDetails
-	plugins, _, err := inst.appStore.StoreListPlugins()
-	if err != nil {
-		return nil, err
-	}
-	for _, plg := range plugins {
-		if plg.Arch == "amd64" {
-			out = append(out, plg)
-		}
-	}
-	return out, nil
-}
-
-func (inst *App) storeDownloadPlugins(token, appName, releaseVersion, arch string, cleanDownload bool, release *store.Release) (*store.InstallResponse, error) {
+func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, arch string, cleanDownload bool) *store.InstallResponse {
 	out := &store.InstallResponse{}
-	if release == nil {
-		return nil, errors.New("download-plugins release can not be empty")
-	}
-	if appName == constants.FlowFramework { // just download all plugins
-		for _, plugin := range release.Plugins {
-			inst.uiSuccessMessage(fmt.Sprintf("try to download plugin: %s version: %s", plugin.Plugin, release.Release))
-			_, err := inst.appStore.DownloadFlowPlugin(token, release.Release, plugin.Plugin, arch, releaseVersion, cleanDownload)
-			if err != nil {
-				inst.uiErrorMessage(fmt.Sprintf("download plugin err: %s", err.Error()))
-				return nil, err
-			}
-			out.Plugins = append(out.Plugins, plugin.Plugin)
-		}
-	}
-	for _, app := range release.Apps {
-		if app.Name == appName {
-			if len(app.PluginDependency) > 0 { // if required download any plugins
-				for _, plugin := range app.PluginDependency {
-					inst.uiSuccessMessage(fmt.Sprintf("try to download plugin: %s version: %s", plugin, release.Release))
-					_, err := inst.appStore.DownloadFlowPlugin(token, release.Release, plugin, arch, releaseVersion, cleanDownload)
-					if err != nil {
-						inst.uiErrorMessage(fmt.Sprintf("download plugin err: %s", err.Error()))
-						return nil, err
-					}
-					inst.uiSuccessMessage(fmt.Sprintf("download plugin: %s ok", plugin))
-					out.Plugins = append(out.Plugins, plugin)
-				}
-			}
-		}
-	}
-	return out, nil
-}
-
-func (inst *App) StoreDownloadApp(token, appName, releaseVersion, arch string, cleanDownload bool) *store.InstallResponse {
-	out := &store.InstallResponse{}
-	inst.uiSuccessMessage(fmt.Sprintf("try and download app: %s release: %s", appName, releaseVersion))
 	getRelease, err := inst.addRelease(token, releaseVersion)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error download release err: %s", err.Error()))
+		inst.uiErrorMessage(fmt.Sprintf("release fetch got error: %s", err.Error()))
 		return nil
 	}
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
-			inst.uiSuccessMessage(fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
-			asset, err := inst.appStore.GitDownloadZip(token, app.Name, app.Version, app.Repo, arch, releaseVersion, app.DoNotValidateArch, app.IsZiball, cleanDownload)
+			asset, err := inst.appStore.GitDownloadZip(token, appName, appVersion, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload)
 			if err != nil {
-				inst.uiErrorMessage(fmt.Sprintf("download app err: %s", err.Error()))
+				inst.uiErrorMessage(fmt.Sprintf("%s app download on local store got error: %s", appName, err.Error()))
 				return nil
 			}
 			out.AppName = asset.Name
 			out.AppVersion = asset.Version
-			inst.uiSuccessMessage(fmt.Sprintf("download app: %s ok", appName))
-			downloadPlugins, err := inst.storeDownloadPlugins(token, appName, releaseVersion, arch, cleanDownload, getRelease)
-			if err != nil {
-				inst.uiErrorMessage(fmt.Sprintf("download app err: %s", err.Error()))
-				return nil
-			}
-			if downloadPlugins != nil {
-				out.Plugins = downloadPlugins.Plugins
-			}
+			inst.uiSuccessMessage(fmt.Sprintf("%s app downloaded successfully", appName))
 		}
 	}
 	return out
 }
 
-func (inst *App) storeGetPlugin(body *appstore.Plugin) (f *os.File, flowPlugin *installer.BuildDetails, err error) {
-	_path, flowPlugin, err := inst.storeGetPluginPath(body)
-	if err != nil {
-		return nil, nil, err
-	}
-	f, err = os.Open(_path)
-	return f, flowPlugin, err
-}
-
-func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flowPlugin *installer.BuildDetails, err error) {
+func (inst *App) storeGetPluginPath(body *amodel.Plugin) (absPath string, flowPlugin *builds.BuildDetails, err error) {
 	plugins, pluginPath, err := inst.appStore.StoreListPlugins()
 	if err != nil {
 		return "", nil, err
@@ -127,7 +39,9 @@ func (inst *App) storeGetPluginPath(body *appstore.Plugin) (fullPath string, flo
 	for _, plg := range plugins {
 		if plg.Name == body.Name {
 			if plg.Arch == body.Arch {
-				return path.Join(pluginPath, plg.ZipName), &plg, nil
+				if plg.Version == body.Version {
+					return path.Join(pluginPath, plg.ZipName), &plg, nil
+				}
 			}
 		}
 	}

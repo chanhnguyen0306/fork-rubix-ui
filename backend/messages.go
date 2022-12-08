@@ -1,50 +1,36 @@
 package backend
 
 import (
-	"context"
-	"fmt"
-	"time"
-
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/times/utilstime"
-	log "github.com/sirupsen/logrus"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
-)
-
-type busTopic string
-
-const (
-	okMsg  busTopic = "ok"
-	errMsg busTopic = "err"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
+	"github.com/NubeIO/rubix-ui/backend/utils/message"
 )
 
 func (inst *App) uiSuccessMessage(data interface{}) {
-	log.Infof("%s", data)
-	inst.msgToUI(inst.ctx, string(okMsg), data)
+	message.UiSuccessMessage(inst.ctx, data)
+}
+
+func (inst *App) uiWarningMessage(data interface{}) {
+	message.UiWarningMessage(inst.ctx, data)
 }
 
 func (inst *App) uiErrorMessage(data interface{}) {
-	log.Errorf("%s", data)
-	inst.msgToUI(inst.ctx, string(errMsg), data)
+	message.UiErrorMessage(inst.ctx, data)
 }
 
-func (inst *App) sendTimeToUI(ctx context.Context) {
-	for {
-		time.Sleep(time.Millisecond * 5000)
-		fmt.Println("sendTimeToUI")
-		inst.msgToUI(ctx, "os-time", utilstime.TimeStamp())
-	}
+func (inst *App) success(data interface{}) *rumodel.Response {
+	return rumodel.Success(inst.ctx, data)
 }
 
-func (inst *App) msgToUI(ctx context.Context, topic string, data interface{}) {
-	if ctx != nil {
-		runtime.EventsEmit(ctx, topic, data)
-	}
+func (inst *App) fail(data interface{}) *rumodel.Response {
+	return rumodel.Fail(inst.ctx, data)
 }
 
-func (inst *App) msgFromUI() {
-	if inst.ctx != nil {
-		runtime.EventsOn(inst.ctx, "terminal-echo", func(optionalData ...interface{}) {
-			fmt.Println("Event from UI to backend data: ", optionalData)
-		})
-	}
+// successResponse it just response the succeeded message without printing log
+func (inst *App) successResponse(data interface{}) *rumodel.Response {
+	return rumodel.SuccessResponse(data)
+}
+
+// failResponse it just response the failed message without printing log
+func (inst *App) failResponse(data interface{}) *rumodel.Response {
+	return rumodel.FailResponse(data)
 }

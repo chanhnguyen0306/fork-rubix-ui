@@ -1,7 +1,7 @@
 import { Space, Spin, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { assistmodel, backend } from "../../../../wailsjs/go/models";
+import { backend, amodel } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
@@ -15,8 +15,8 @@ import { LocationFactory } from "../../locations/factory";
 import { NetworksFactory } from "../factory";
 import { CreateEditModal } from "./create";
 import { ArrowRightOutlined, FormOutlined, } from "@ant-design/icons";
-import Network = assistmodel.Network;
-import Location = assistmodel.Location;
+import Network = amodel.Network;
+import Location = amodel.Location;
 import UUIDs = backend.UUIDs;
 
 export const NetworksTable = () => {
@@ -48,7 +48,7 @@ export const NetworksTable = () => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: (_: any, network: assistmodel.Network) => (
+      render: (_: any, network: amodel.Network) => (
         <Space size="middle">
           <Tooltip title="Edit">
             <a onClick={() => {
@@ -113,7 +113,7 @@ export const NetworksTable = () => {
       location_uuid: {
         title: "location",
         type: "string",
-        anyOf: locations.map((l: assistmodel.Location) => {
+        anyOf: locations.map((l: amodel.Location) => {
           return { type: "string", enum: [l.uuid], title: l.name };
         }),
         default: locUUID,
@@ -130,12 +130,12 @@ export const NetworksTable = () => {
 
   const getLocationNameByUUID = (location_uuid: string) => {
     const location = locations.find(
-      (l: assistmodel.Location) => l.uuid === location_uuid
+      (l: amodel.Location) => l.uuid === location_uuid
     );
     return location ? location.name : "";
   };
 
-  const showModal = (network: assistmodel.Network) => {
+  const showModal = (network: amodel.Network) => {
     setCurrentNetwork(network);
     setIsModalVisible(true);
     if (isObjectEmpty(networkSchema)) {
@@ -145,13 +145,13 @@ export const NetworksTable = () => {
 
   const onCloseModal = () => {
     setIsModalVisible(false);
-    setCurrentNetwork({} as assistmodel.Network);
+    setCurrentNetwork({} as amodel.Network);
   };
 
   return (
     <div>
       <RbRefreshButton refreshList={fetch} />
-      <RbAddButton handleClick={() => showModal({} as assistmodel.Network)} />
+      <RbAddButton handleClick={() => showModal({} as amodel.Network)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
       <RbTable
         rowKey="uuid"

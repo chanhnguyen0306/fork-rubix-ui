@@ -1,16 +1,15 @@
-import { store, systemd } from "../../../wailsjs/go/models";
+import { amodel, store, } from "../../../wailsjs/go/models";
 import {
-  EdgeInstallApp,
+  EdgeDeviceInfoAndApps,
+  EdgeServiceRestart,
+  EdgeServiceStart,
+  EdgeServiceStop,
+  EdgeUnInstallApp,
   GetRelease,
   GetReleases,
   GitDownloadRelease,
   GitListReleases,
   StoreDownloadApp,
-  EdgeDeviceInfoAndApps,
-  EdgeServiceStart,
-  EdgeServiceRestart,
-  EdgeServiceStop,
-  EdgeUnInstallApp,
 } from "../../../wailsjs/go/backend/App";
 
 export class ReleasesFactory {
@@ -27,23 +26,6 @@ export class ReleasesFactory {
     return await GitDownloadRelease(token, version);
   }
 
-  // token, appName, releaseVersion, arch string, cleanDownload bool
-  async StoreDownload(
-    token: string,
-    appName: string,
-    releaseVersion: string,
-    arch: string,
-    cleanDownload: boolean
-  ): Promise<any> {
-    return await StoreDownloadApp(
-      token,
-      appName,
-      releaseVersion,
-      arch,
-      cleanDownload
-    );
-  }
-
   /*
   INSTALL A APP ON THE HOST (via rubix-assist via rubix-edge)
   */
@@ -57,44 +39,16 @@ export class ReleasesFactory {
     return await GetRelease(uuid);
   }
 
-  // install an app on the edge-device (the host)
-  // example if installing flow-framework the user needs to already have this downloaded on the PC via the app-store
-  // appName = flow-framework,  appVersion = v0.6.0, arch = amd64, releaseVersion = v0.6.0
-  // to get the releaseVersion use either GetRelease() or GetReleases()
-  async EdgeInstallApp(
-    connUUID: string,
-    hostUUID: string,
-    appName: string,
-    appVersion: string,
-    releaseVersion: string
-  ): Promise<systemd.InstallResponse> {
-    return await EdgeInstallApp(
-      connUUID,
-      hostUUID,
-      appName,
-      appVersion,
-      releaseVersion
-    );
-  }
-
   async EdgeUnInstallApp(
     connUUID: string,
     hostUUID: string,
     appName: string
-  ): Promise<systemd.UninstallResponse> {
+  ): Promise<amodel.Message> {
     return await EdgeUnInstallApp(connUUID, hostUUID, appName);
   }
 
-  async EdgeDeviceInfoAndApps(
-    connUUID: string,
-    hostUUID: string,
-    releaseVersion?: string
-  ) {
-    return await EdgeDeviceInfoAndApps(
-      connUUID,
-      hostUUID,
-      releaseVersion || ""
-    );
+  async EdgeDeviceInfoAndApps(connUUID: string, hostUUID: string) {
+    return await EdgeDeviceInfoAndApps(connUUID, hostUUID);
   }
 
   async EdgeServiceStart(connUUID: string, hostUUID: string, appName: string) {

@@ -1,101 +1,242 @@
 package backend
 
 import (
+	"context"
 	"fmt"
-	"github.com/NubeIO/rubix-assist/model"
-	"github.com/NubeIO/rubix-assist/service/appstore"
+	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
+	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
+	"github.com/google/go-github/v32/github"
+	"golang.org/x/oauth2"
+	"os"
+	"strings"
 )
 
-func (inst *App) EdgeListPlugins(connUUID, hostUUID string) []appstore.Plugin {
-	resp, err := inst.edgeListPlugins(connUUID, hostUUID)
+func (inst *App) EdgeGetPluginsDistribution(connUUID, hostUUID string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return inst.fail(err)
 	}
-	return resp
-}
 
-func (inst *App) EdgeDeletePlugin(connUUID, hostUUID string, body *appstore.Plugin) *model.Message {
-	resp, err := inst.edgeDeletePlugin(connUUID, hostUUID, body)
+	var arch string
+	resp, err := assistClient.EdgeBiosArch(hostUUID)
 	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
+		return inst.fail(fmt.Sprintf("%s, turn on BIOS on your edge device", err))
 	}
-	return resp
-}
+	arch = resp.Arch
 
-func (inst *App) EdgeDeleteAllPlugins(connUUID, hostUUID string) *model.Message {
-	resp, err := inst.edgeDeleteAllPlugins(connUUID, hostUUID)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
-		return nil
+	version, connectionErr, requestErr := inst.getFlowFrameworkVersion(assistClient, hostUUID)
+	if connectionErr != nil {
+		return inst.fail(connectionErr)
 	}
-	return resp
-}
+	if requestErr != nil {
+		return inst.fail(requestErr)
+	}
 
-// EdgeUpgradePlugins upgrade all the plugins
-func (inst *App) EdgeUpgradePlugins(connUUID, hostUUID, releaseVersion string) (*assistcli.EdgeUploadResponse, error) {
-	plugins, err := inst.edgeListPlugins(connUUID, hostUUID)
-	if err != nil {
-		return nil, err
+	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
+	if connectionErr != nil {
+		return inst.fail(err)
 	}
-	if len(plugins) == 0 {
-		inst.uiErrorMessage(fmt.Sprintf("there are no plugins to be upgraded"))
-		return nil, err
-	} else {
-		_, err = inst.edgeDeleteAllPlugins(connUUID, hostUUID)
-		if err != nil {
-			return nil, err
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
+	}
+
+	token, err := inst.GetGitToken(constants.SettingUUID, false)
+	if err != nil {
+		return inst.fail(fmt.Sprintf("failed to get git token %s", err))
+	}
+	c := context.Background()
+	tokenSource := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	githubClient := github.NewClient(oauth2.NewClient(c, tokenSource))
+
+	availablePlugins := make([]rumodel.AvailablePlugin, 0)
+	releases, _, err := githubClient.Repositories.GetReleaseByTag(c, constants.GitHubOwner, constants.FlowFramework, *version)
+	for _, asset := range releases.Assets {
+		if asset.Name != nil && strings.Contains(*asset.Name, arch) && !strings.Contains(*asset.Name, constants.FlowFramework) {
+			pluginName := strings.Split(*asset.Name, "-")[0]
+			isInstalled := false
+			if plugins != nil {
+				for _, plugin := range plugins {
+					if plugin.Name == pluginName {
+						isInstalled = true
+					}
+				}
+			}
+			availablePlugins = append(availablePlugins, rumodel.AvailablePlugin{
+				Name:        pluginName,
+				IsInstalled: isInstalled,
+			})
 		}
 	}
-
-	for _, plugin := range plugins {
-		inst.uiSuccessMessage(fmt.Sprintf("start upgrade of plugin: %s", plugin.Name))
-	}
-
-	for _, plugin := range plugins {
-		if plugin.Version == "" {
-			plugin.Version = releaseVersion
-		}
-		inst.EdgeUploadPlugin(connUUID, hostUUID, &plugin, false)
-	}
-	_, err = inst.edgeRestartFlowFramework(connUUID, hostUUID)
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
+	return inst.successResponse(availablePlugins)
 }
 
-func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin, restartFlow bool) *assistcli.EdgeUploadResponse {
-	var lastStep = "4"
+func (inst *App) EdgeGetPlugins(connUUID, hostUUID string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	plugins, err := assistClient.EdgeGetPlugins(hostUUID)
+	if err != nil {
+		return inst.fail(err)
+	}
+	return inst.successResponse(plugins)
+}
+
+func (inst *App) EdgeInstallPlugin(connUUID, hostUUID string, pluginName string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+
+	var arch string
+	resp, err := assistClient.EdgeBiosArch(hostUUID)
+	if err != nil {
+		return inst.fail(fmt.Sprintf("%s, turn on BIOS on your edge device", err))
+	}
+	arch = resp.Arch
+
+	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
+	if connectionErr != nil {
+		return inst.fail(connectionErr)
+	}
+	if requestErr != nil {
+		return inst.fail(requestErr)
+	}
+
+	_, connectionErr, _ = assistClient.EdgeDeleteDownloadPlugins(hostUUID)
+	if connectionErr != nil {
+		return inst.fail(connectionErr)
+	}
+
+	if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
+		Name:    pluginName,
+		Arch:    arch,
+		Version: appStatus.Version,
+	}); err != nil {
+		return inst.fail(err)
+	}
+
+	if _, err = assistClient.EdgeMoveFromDownloadToInstallPlugins(hostUUID); err != nil {
+		return inst.fail(err)
+	}
+
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
+	return inst.success(fmt.Sprintf("successfully installed plugin %s", pluginName))
+}
+
+func (inst *App) EdgeUninstallPlugin(connUUID, hostUUID string, pluginName string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+
+	var arch string
+	resp, err := assistClient.EdgeBiosArch(hostUUID)
+	if err != nil {
+		return inst.fail(fmt.Sprintf("%s, turn on BIOS on your edge device", err))
+	}
+	arch = resp.Arch
+
+	msg, err := assistClient.EdgeDeletePlugin(hostUUID, pluginName, arch)
+	if err != nil {
+		return inst.fail(err)
+	}
+
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
+	return inst.success(msg.Message)
+}
+
+func (inst *App) EdgeGetConfigPlugin(connUUID, hostUUID, pluginName string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	conf, err := assistClient.EdgeGetConfigPlugin(hostUUID, pluginName)
+	if err != nil {
+		return inst.fail(err)
+	}
+	return inst.successResponse(conf)
+}
+
+func (inst *App) EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	_, err = assistClient.EdgeUpdateConfigPlugin(hostUUID, pluginName, config)
+	if err != nil {
+		return inst.fail(err)
+	}
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
+		inst.fail(err)
+	}
+	return inst.success("updated config successfully")
+}
+
+func (inst *App) EdgeEnablePlugins(connUUID, hostUUID string, pluginNames []string, enable bool) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	for _, pluginName := range pluginNames {
+		_, _ = assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
+	}
+	state := "enabled"
+	if enable == false {
+		state = "disabled"
+	}
+	output := fmt.Sprintf("selected plugins are %s successfully", state)
+	return inst.success(output)
+}
+
+func (inst *App) EdgeRestartPlugins(connUUID, hostUUID string, pluginNames []string) *rumodel.Response {
+	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+	if err != nil {
+		return inst.fail(err)
+	}
+	for _, pluginName := range pluginNames {
+		_, _ = assistClient.EdgeRestartPlugin(hostUUID, pluginName)
+	}
+	output := fmt.Sprintf("selected plugins are restarted successfully")
+	return inst.success(output)
+}
+
+func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID string, body *amodel.Plugin) error {
+	var lastStep = "3"
 	var hasPluginOnRubixAssist bool
-	if body == nil {
-		inst.uiErrorMessage(fmt.Sprintf("plugin interface can not be empty"))
-		return nil
-	}
-	if body.Name == "" {
-		inst.uiErrorMessage(fmt.Sprintf("plugin name can not be empty"))
-		return nil
-	}
-	if body.Arch == "" {
-		inst.uiErrorMessage(fmt.Sprintf("plugin arch can not be empty"))
-		return nil
-	}
-	if body.Version == "" {
-		inst.uiErrorMessage(fmt.Sprintf("plugin version can not be empty"))
-		return nil
+
+	_, checkPlugin, err := inst.storeGetPluginPath(body)
+	if checkPlugin == nil || err != nil {
+		token, err := inst.GetGitToken(constants.SettingUUID, false)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err))
+			return err
+		}
+		_, err = inst.appStore.DownloadFlowPlugin(token, body.Version, body.Name, body.Arch, true)
+		if err != nil {
+			inst.uiErrorMessage(fmt.Sprintf("(step 1 of %s > plugin %s) doesn't exist and download also got failed (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
+			return err
+		}
+		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s > plugin %s) plugin didn't exist and it's downloaded (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
+	} else {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s > plugin %s) plugin already existed and download is skipped (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
 	}
 
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) check plugin is in downloads plugin: %s, version: %s, arch: %s", lastStep, body.Name, body.Version, body.Arch))
-	_, checkPlugin, err := inst.storeGetPlugin(body)
-	if checkPlugin == nil || err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("failed to find plugin: %s, version: %s, arch: %s", body.Name, body.Version, body.Arch))
-		return nil
+	plugins, connectionErr, requestErr := assistClient.StoreListPlugins()
+	if connectionErr != nil {
+		inst.uiErrorMessage(fmt.Sprintf("plugin %s assist app store check for got error (%s)", body.Name, connectionErr))
+		return connectionErr
 	}
-	plugins, err := inst.assistStoreListPlugins(connUUID)
-	if err != nil {
-		inst.uiErrorMessage(fmt.Sprintf("assist check appStore for plugin: %s, err: %s", body.Name, err.Error()))
+	if requestErr != nil {
+		inst.uiWarningMessage(fmt.Sprintf("plugin %s assist app store check for got request error (%s)", body.Name, requestErr))
 	}
 	for _, plg := range plugins {
 		if plg.Name == body.Name && plg.Arch == body.Arch && plg.Version == body.Version {
@@ -103,63 +244,71 @@ func (inst *App) EdgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plug
 		}
 	}
 	if hasPluginOnRubixAssist {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) plugin found in assist-appStore", lastStep))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s > plugin %s) already exists in rubix-assist", lastStep, body.Name))
 	} else {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) try and upload plugin: %s to assist-appStore", lastStep, body.Name))
-		plg, err := inst.assistStoreUploadPlugin(connUUID, body)
+		absPath, flowPlugin, err := inst.storeGetPluginPath(body)
 		if err != nil {
-			inst.uiErrorMessage(err.Error())
+			inst.uiErrorMessage(err)
+			return err
+		}
+		f, err := os.Open(absPath)
+		if err != nil {
+			inst.uiErrorMessage(err)
 			return nil
 		}
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) uploaded plugin to assist-appStore: %s", lastStep, plg.UploadedFile))
+		plg, err := assistClient.StoreUploadPlugin(flowPlugin.ZipName, f)
+		if err != nil {
+			inst.uiErrorMessage(err)
+			return err
+		}
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s > plugin %s) uploaded to rubix-assist", lastStep, plg.UploadedFile))
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) start to upload plugin: %s to edge device", lastStep, body.Name))
-	resp, err := inst.edgeUploadPlugin(connUUID, hostUUID, body)
+	_, err = assistClient.EdgeUploadPlugin(hostUUID, body)
 	if err != nil {
-		inst.uiErrorMessage(err.Error())
+		inst.uiErrorMessage(err)
+		return err
+	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s > plugin %s) uploaded to edge device", lastStep, body.Name))
+	return nil
+}
+
+func (inst *App) reAddEdgeUploadPlugins(assistClient *assistcli.Client, hostUUID, releaseVersion, arch string) error {
+	plugins, connectionErr, requestErr := assistClient.EdgeListPlugins(hostUUID)
+	if connectionErr != nil {
+		return connectionErr
+	}
+	if requestErr != nil {
+		inst.uiWarningMessage(requestErr)
 		return nil
 	}
-	if restartFlow {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) try and to restart flow-framework", lastStep))
-		restart, err := inst.edgeRestartFlowFramework(connUUID, hostUUID)
-		if err != nil {
-			inst.uiErrorMessage(fmt.Sprintf("restart flow-framework err: %s", err.Error()))
-		} else {
-			inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s)  restart flow-framework msg: %s", lastStep, restart.Message))
+	if len(plugins) == 0 {
+		inst.uiSuccessMessage(fmt.Sprintf("there are no plugins to be uploaded"))
+		return nil
+	}
+	_, connectionErr, _ = assistClient.EdgeDeleteDownloadPlugins(hostUUID)
+	if connectionErr != nil {
+		return connectionErr
+	}
+	for _, plugin := range plugins {
+		inst.uiSuccessMessage(fmt.Sprintf("%s plugin is started uploading...", plugin.Name))
+		if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
+			Name:    plugin.Name,
+			Arch:    arch,
+			Version: releaseVersion,
+		}); err != nil {
+			return err
 		}
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("completed upload to edge-device %s", body.Name))
-	return resp
+	return nil
 }
 
-func (inst *App) edgeUploadPlugin(connUUID, hostUUID string, body *appstore.Plugin) (*assistcli.EdgeUploadResponse, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
+func (inst *App) edgeEnablePlugin(assistClient *assistcli.Client, hostUUID string, pluginName string, enable bool) (*string, error) {
+	resp, err := assistClient.EdgeEnablePlugin(hostUUID, pluginName, enable)
 	if err != nil {
 		return nil, err
 	}
-	return client.UploadPlugin(hostUUID, body)
-}
-
-func (inst *App) edgeListPlugins(connUUID, hostUUID string) ([]appstore.Plugin, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
+	if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {
 		return nil, err
 	}
-	return client.ListPlugins(hostUUID)
-}
-
-func (inst *App) edgeDeletePlugin(connUUID, hostUUID string, body *appstore.Plugin) (*model.Message, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	return client.DeletePlugin(hostUUID, body)
-}
-
-func (inst *App) edgeDeleteAllPlugins(connUUID, hostUUID string) (*model.Message, error) {
-	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
-	if err != nil {
-		return nil, err
-	}
-	return client.DeleteAllPlugins(hostUUID)
+	return resp, nil
 }

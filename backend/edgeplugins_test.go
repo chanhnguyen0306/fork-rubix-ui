@@ -1,49 +1,48 @@
 package backend
 
 import (
-	"fmt"
-	"github.com/NubeIO/rubix-assist/service/appstore"
 	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
 	"testing"
 )
 
-func TestApp_EdgeUploadPlugin(t *testing.T) {
+func Test_EdgeGetPluginsDistribution(t *testing.T) {
 	app := MockNewApp()
-	body := &appstore.Plugin{
-		Name:    "bacnetserver",
-		Arch:    "amd64",
-		Version: "v0.6.6",
-	}
-	resp := app.EdgeUploadPlugin(connection, "rc", body, true)
+	resp := app.EdgeGetPluginsDistribution("cloud", "rc")
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_EdgeListPlugins(t *testing.T) {
+func Test_EdgeGetPlugins(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeListPlugins(connection, "rc")
+	resp := app.EdgeGetPlugins("cloud", "rc")
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_EdgeDeletePlugin(t *testing.T) {
+func Test_EdgeInstallPlugin(t *testing.T) {
 	app := MockNewApp()
-	body := &appstore.Plugin{
-		Name:    "bacnetserver",
-		Arch:    "amd64",
-		Version: "v0.6.6",
-	}
-	resp := app.EdgeDeletePlugin(connection, "rc", body)
+	resp := app.EdgeInstallPlugin("cloud", "rc", "system")
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_EdgeDeleteAllPlugins(t *testing.T) {
+func Test_EdgeUninstallPlugin(t *testing.T) {
 	app := MockNewApp()
-	resp := app.EdgeDeleteAllPlugins(connection, "rc")
+	resp := app.EdgeUninstallPlugin("cloud", "rc", "system")
 	pprint.PrintJOSN(resp)
 }
 
-func TestApp_EdgeUpgradePlugins(t *testing.T) {
+func Test_EdgeGetConfigPlugin(t *testing.T) {
 	app := MockNewApp()
-	resp, err := app.EdgeUpgradePlugins(connection, "rc", releaseVersion)
-	fmt.Println(err)
+	resp := app.EdgeGetConfigPlugin("cloud", "rc", "system")
+	pprint.PrintJOSN(resp)
+}
+
+func Test_EdgeUpdateConfigPlugin(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeUpdateConfigPlugin("cloud", "rc", "system", "magic_string: test")
+	pprint.PrintJOSN(resp)
+}
+
+func Test_EdgeEnablePlugins(t *testing.T) {
+	app := MockNewApp()
+	resp := app.EdgeEnablePlugins("cloud", "rc", []string{"system", "bacnetserver"}, true)
 	pprint.PrintJOSN(resp)
 }

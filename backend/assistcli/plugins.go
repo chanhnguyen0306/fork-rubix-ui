@@ -2,25 +2,23 @@ package assistcli
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-rubix-installer/installer"
+	"github.com/NubeIO/rubix-assist/installer"
 	"github.com/NubeIO/rubix-assist/service/appstore"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 	"io"
 )
 
-// StoreListPlugins upload a plugin to the store
-func (inst *Client) StoreListPlugins() ([]installer.BuildDetails, error) {
+func (inst *Client) StoreListPlugins() ([]installer.BuildDetails, error, error) {
 	url := fmt.Sprintf("/api/store/plugins")
-	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+	resp, connectionErr, requestErr := nresty.FormatRestyV2Response(inst.Rest.R().
 		SetResult(&[]installer.BuildDetails{}).
 		Get(url))
-	if err != nil {
-		return nil, err
+	if connectionErr != nil || requestErr != nil {
+		return nil, connectionErr, requestErr
 	}
-	return *resp.Result().(*[]installer.BuildDetails), nil
+	return *resp.Result().(*[]installer.BuildDetails), nil, nil
 }
 
-// StoreUploadPlugin upload a plugin to the store
 func (inst *Client) StoreUploadPlugin(fileName string, reader io.Reader) (*appstore.UploadResponse, error) {
 	url := fmt.Sprintf("/api/store/plugins")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().

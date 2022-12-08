@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, notification, Spin } from "antd";
+import { Spin } from "antd";
 import {
   PlayCircleOutlined,
   PlusOutlined,
@@ -7,22 +7,17 @@ import {
 } from "@ant-design/icons";
 import { FlowPluginFactory } from "../factory";
 import { FlowNetworkFactory } from "../../networks/factory";
-import { backend, model } from "../../../../../../../wailsjs/go/models";
 import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import RbTable from "../../../../../../common/rb-table";
 import { RbButton } from "../../../../../../common/rb-table-actions";
 import { CreateModal } from "./create";
 import { useParams } from "react-router-dom";
 
-import PluginConf = model.PluginConf;
-import PluginUUIDs = backend.PluginUUIDs;
-import { openNotificationWithIcon } from "../../../../../../utils/utils";
-
 export const FlowPluginsTable = (props: any) => {
   const { connUUID = "", hostUUID = "" } = useParams();
-  const [plugins, setPlugins] = useState([] as Array<PluginConf>);
+  const [plugins, setPlugins] = useState([] as any);
   const [pluginName, setPluginName] = useState<string>();
-  const [pluginsUUIDs, setPluginsUUIDs] = useState([] as Array<PluginUUIDs>);
+  const [pluginsNames, setPluginsNames] = useState([] as Array<string>);
   const [networkSchema, setNetworkSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -36,14 +31,14 @@ export const FlowPluginsTable = (props: any) => {
   const columns = PLUGIN_HEADERS;
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: Array<model.PluginConf>) => {
-      setPluginsUUIDs(selectedRows);
+    onChange: (selectedRowKeys: any, selectedRows: Array<any>) => {
+      setPluginsNames(selectedRows.map((x) => x.name));
     },
   };
 
   const EnablePluginsButton = () => {
     const enable = async () => {
-      await factory.BulkEnable(pluginsUUIDs);
+      await factory.BulkEnable(pluginsNames);
       fetchPlugins();
     };
 
@@ -59,7 +54,7 @@ export const FlowPluginsTable = (props: any) => {
 
   const DisablePluginsButton = () => {
     const disable = async () => {
-      await factory.BulkDisable(pluginsUUIDs);
+      await factory.BulkDisable(pluginsNames);
       fetchPlugins();
     };
 
@@ -90,14 +85,7 @@ export const FlowPluginsTable = (props: any) => {
 
   const InstallButton = () => {
     const install = async () => {
-      if (pluginsUUIDs.length !== 1)
-        return openNotificationWithIcon("warning", `please select ONE plugin`);
-      const plugin = pluginsUUIDs[0] as any;
-      try {
-        await factory.InstallPlugin(connUUID, hostUUID, plugin);
-      } catch (error) {
-        console.log(error);
-      }
+      console.log("InstallButton");
     };
 
     return (
@@ -111,10 +99,14 @@ export const FlowPluginsTable = (props: any) => {
 
   const getSchema = async () => {
     setIsLoadingForm(true);
-    if (pluginsUUIDs.length > 0) {
-      const plg = pluginsUUIDs.at(0) as unknown as PluginConf;
-      setPluginName(plg.name);
-      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, plg.name);
+    if (pluginsNames.length > 0) {
+      const pluginName = pluginsNames.at(0) || "";
+      setPluginName(pluginName);
+      const res = await flowNetworkFactory.Schema(
+        connUUID,
+        hostUUID,
+        pluginName
+      );
       const jsonSchema = {
         properties: res,
       };
@@ -143,7 +135,7 @@ export const FlowPluginsTable = (props: any) => {
     if (isModalVisible) {
       getSchema();
     }
-  }, [pluginsUUIDs, isModalVisible]);
+  }, [pluginsNames, isModalVisible]);
 
   return (
     <>

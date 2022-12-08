@@ -132,7 +132,6 @@ export const RbButton = (props: any) => {
     loading = false,
     style = {},
   } = props;
-  console.log(style);
 
   return (
     <Button
