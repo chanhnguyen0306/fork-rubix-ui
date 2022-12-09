@@ -28,9 +28,12 @@ export const PluginDistributionTable = () => {
   const fetchPlugins = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetPluginsDistribution(connUUID, hostUUID);
-      console.log(res);
-      setPlugins(res);
+      const { data = [] } = await factory.GetPluginsDistribution(
+        connUUID,
+        hostUUID
+      );
+      console.log(data);
+      setPlugins(data);
     } catch (error) {
       console.log(error);
     } finally {
