@@ -12,7 +12,9 @@ const { confirm } = Modal;
 export const PluginDistributionTable = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [plugins, setPlugins] = useState<any[]>([]);
+  const [pluginName, setPluginName] = useState<any>();
   const [isFetching, setIsFetching] = useState(false);
+  const [isInstallModalVisible, setIsInstallModalVisible] = useState(false);
 
   const factory = new FlowPluginFactory();
 
@@ -34,7 +36,16 @@ export const PluginDistributionTable = () => {
     },
   ];
 
-  const showPromiseConfirm = (pluginName: string) => {
+  const onChange = async (item: any) => {
+    setPluginName(item.name);
+    if (!item.is_installed) {
+      setIsInstallModalVisible(true);
+    } else {
+      showUnInstallConfirm(item.name);
+    }
+  };
+
+  const showUnInstallConfirm = (pluginName: string) => {
     confirm({
       title: "Confirm",
       icon: <ExclamationCircleFilled />,
@@ -45,15 +56,6 @@ export const PluginDistributionTable = () => {
       },
       onCancel() {},
     });
-  };
-
-  const onChange = async (item: any) => {
-    const updatePlugin = { ...item, is_installed: !item.is_installed };
-    if (updatePlugin.is_installed) {
-      await factory.InstallPlugin(connUUID, hostUUID, item.name);
-    } else {
-      showPromiseConfirm(item.name);
-    }
   };
 
   const unInstallPlugin = async (pluginName: string) => {
@@ -90,7 +92,12 @@ export const PluginDistributionTable = () => {
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
 
-      <PluginDownloadModal />
+      <PluginDownloadModal
+        isModalVisible={isInstallModalVisible}
+        pluginName={pluginName}
+        handleClose={() => setIsInstallModalVisible(false)}
+        refreshList={fetchPlugins}
+      />
     </>
   );
 };
