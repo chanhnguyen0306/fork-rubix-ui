@@ -5,12 +5,11 @@ import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
 import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
 import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clones";
 import { FlowNetworkTable } from "./flow/networks/views/table";
-import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { Plugins } from "./flow/plugins/views/table";
 import { HostTable } from "./views/table";
 import useTitlePrefix from "../../../hooks/usePrefixedTitle";
 import { useEffect } from "react";
 import { HostsFactory } from "../factory";
-import { PluginDistributionTable } from "./flow/plugins/views/plugin-distribution-table";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -18,7 +17,6 @@ const { Title } = Typography;
 const infoKey = "INFO";
 const networksKey = "DRIVERS";
 const pluginsKey = "MODULES";
-const installPluginsKey = "INSTALL PLUGIN";
 const flownetworksKey = "NETWORKS";
 const flownetworkClonesKey = "REMOTE/MAPPING NETWORK";
 
@@ -83,10 +81,7 @@ export const Host = () => {
             <FlowNetworkTable />
           </TabPane>
           <TabPane tab={pluginsKey} key={pluginsKey}>
-            <FlowPluginsTable />
-          </TabPane>
-          <TabPane tab={installPluginsKey} key={installPluginsKey}>
-            <PluginDistributionTable />
+            <Plugins />
           </TabPane>
           <TabPane tab={infoKey} key={infoKey}>
             <HostTable />

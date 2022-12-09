@@ -1,28 +1,64 @@
-import { Spin } from "antd";
+import { Modal, Spin, Switch } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import RbTable from "../../../../../../common/rb-table";
-import { RbButton } from "../../../../../../common/rb-table-actions";
-import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
 import { FlowPluginFactory } from "../factory";
+import { PluginDownloadModal } from "./plugin-download-modal";
+import { RbRefreshButton } from "../../../../../../common/rb-table-actions";
+
+const { confirm } = Modal;
 
 export const PluginDistributionTable = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
-  const [pluginsNames, setPluginsNames] = useState<Array<string>>([]);
   const [plugins, setPlugins] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
 
   const factory = new FlowPluginFactory();
-  factory.connectionUUID = connUUID;
-  factory.hostUUID = hostUUID;
 
-  const columns = PLUGIN_HEADERS;
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: Array<any>) => {
-      console.log("selectedRows", selectedRows);
-      setPluginsNames(selectedRows.map((x) => x.name));
+  const columns = [
+    {
+      title: "name",
+      key: "name",
+      dataIndex: "name",
     },
+    {
+      title: "installed",
+      key: "is_installed",
+      dataIndex: "is_installed",
+      render(is_installed: boolean, item: any) {
+        return (
+          <Switch checked={is_installed} onChange={() => onChange(item)} />
+        );
+      },
+    },
+  ];
+
+  const showPromiseConfirm = (pluginName: string) => {
+    confirm({
+      title: "Confirm",
+      icon: <ExclamationCircleFilled />,
+      content: "Do you want to uninstall these apps ?",
+      className: "text-start",
+      onOk() {
+        return unInstallPlugin(pluginName);
+      },
+      onCancel() {},
+    });
+  };
+
+  const onChange = async (item: any) => {
+    const updatePlugin = { ...item, is_installed: !item.is_installed };
+    if (updatePlugin.is_installed) {
+      await factory.InstallPlugin(connUUID, hostUUID, item.name);
+    } else {
+      showPromiseConfirm(item.name);
+    }
+  };
+
+  const unInstallPlugin = async (pluginName: string) => {
+    await factory.UnInstallPlugin(connUUID, hostUUID, pluginName);
+    fetchPlugins();
   };
 
   const fetchPlugins = async () => {
@@ -32,7 +68,6 @@ export const PluginDistributionTable = () => {
         connUUID,
         hostUUID
       );
-      console.log(data);
       setPlugins(data);
     } catch (error) {
       console.log(error);
@@ -41,33 +76,21 @@ export const PluginDistributionTable = () => {
     }
   };
 
-  const InstallButton = () => {
-    const install = async () => {
-      console.log("InstallButton");
-    };
-
-    return (
-      <RbButton
-        text="install"
-        onClick={install}
-        style={{ backgroundColor: "#fa8c16", color: "white" }}
-      />
-    );
-  };
-
   useEffect(() => {
     fetchPlugins();
   }, []);
 
   return (
     <>
+      <RbRefreshButton refreshList={fetchPlugins} />
       <RbTable
-        rowKey="uuid"
-        rowSelection={rowSelection}
+        rowKey="name"
         dataSource={plugins}
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
       />
+
+      <PluginDownloadModal />
     </>
   );
 };

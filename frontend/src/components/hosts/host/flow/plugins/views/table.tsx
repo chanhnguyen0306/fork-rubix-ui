@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
-import { Spin } from "antd";
+import { Tabs, Spin } from "antd";
 import {
-  PlayCircleOutlined,
   PlusOutlined,
+  PlayCircleOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { FlowPluginFactory } from "../factory";
-import { FlowNetworkFactory } from "../../networks/factory";
-import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import RbTable from "../../../../../../common/rb-table";
 import { RbButton } from "../../../../../../common/rb-table-actions";
+import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
+import { FlowNetworkFactory } from "../../networks/factory";
+import { FlowPluginFactory } from "../factory";
 import { CreateModal } from "./create";
-import { useParams } from "react-router-dom";
+import { PluginDistributionTable } from "./plugin-distribution-table";
 
-export const FlowPluginsTable = (props: any) => {
+const { TabPane } = Tabs;
+const pluginsKey = "MODULES";
+const pluginDistribution = "INSTALL PLUGIN";
+
+export const FlowPluginsTable = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [plugins, setPlugins] = useState([] as any);
   const [pluginName, setPluginName] = useState<string>();
@@ -145,5 +150,18 @@ export const FlowPluginsTable = (props: any) => {
         pluginName={pluginName}
       />
     </>
+  );
+};
+
+export const Plugins = () => {
+  return (
+    <Tabs defaultActiveKey={pluginsKey}>
+      <TabPane tab={pluginsKey} key={pluginsKey}>
+        <FlowPluginsTable />
+      </TabPane>
+      <TabPane tab={pluginDistribution} key={pluginDistribution}>
+        <PluginDistributionTable />
+      </TabPane>
+    </Tabs>
   );
 };
