@@ -12,7 +12,6 @@ export const PluginDownloadModal = (props: any) => {
 
   const handleDownload = () => {
     installPlugin();
-    console.log(pluginName);
   };
 
   const installPlugin = async () => {
