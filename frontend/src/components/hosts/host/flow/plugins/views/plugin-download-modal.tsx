@@ -11,12 +11,19 @@ export const PluginDownloadModal = (props: any) => {
   const factory = new FlowPluginFactory();
 
   const handleDownload = () => {
+    installPlugin();
     console.log(pluginName);
   };
 
   const installPlugin = async () => {
-    await factory.InstallPlugin(connUUID, hostUUID, pluginName);
-    refreshList();
+    try {
+      setConfirmloading(true);
+      await factory.InstallPlugin(connUUID, hostUUID, pluginName);
+      refreshList();
+      handleClose();
+    } finally {
+      setConfirmloading(false);
+    }
   };
 
   return (
@@ -30,6 +37,10 @@ export const PluginDownloadModal = (props: any) => {
       cancelText="Close"
       maskClosable={false}
       style={{ textAlign: "start" }}
-    ></Modal>
+    >
+      <div style={{ fontSize: "16px" }}>
+        Selected App: <b>{pluginName}</b>
+      </div>
+    </Modal>
   );
 };
