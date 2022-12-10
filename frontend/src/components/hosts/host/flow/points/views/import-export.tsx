@@ -66,7 +66,7 @@ export const ExportModal = (props: any) => {
   );
 };
 
-export const ImportModal = (props: any) => {
+export const ImportJsonModal = (props: any) => {
   const { isModalVisible, onClose, refreshList } = props;
   const { connUUID = "", hostUUID = "", deviceUUID = "" } = useParams();
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -147,4 +147,8 @@ export const ImportModal = (props: any) => {
       </Select>
     </Modal>
   );
+};
+
+export const ImportExcelModal = (props: any) => {
+  return <></>;
 };

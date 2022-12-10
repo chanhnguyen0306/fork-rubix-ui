@@ -19,7 +19,11 @@ import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
 import { CreateBulkModal, CreateModal } from "./create";
 import { EditModal } from "./edit";
-import { ExportModal, ImportModal } from "./import-export";
+import {
+  ExportModal,
+  ImportExcelModal,
+  ImportJsonModal,
+} from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 import Point = model.Point;
@@ -334,12 +338,13 @@ export const FlowPointsTable = (props: any) => {
 
 const ImportDropdownButton = (props: any) => {
   const { refreshList } = props;
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+  const [isJsonModalVisible, setIsJsonModalVisible] = useState(false);
+  const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
 
   const menu = (
     <Menu>
-      <Menu.Item onClick={() => setIsImportModalVisible(true)}>Json</Menu.Item>
-      <Menu.Item>Excel</Menu.Item>
+      <Menu.Item onClick={() => setIsJsonModalVisible(true)}>Json</Menu.Item>
+      <Menu.Item onClick={() => setIsExcelModalVisible(true)}>Excel</Menu.Item>
     </Menu>
   );
 
@@ -351,9 +356,15 @@ const ImportDropdownButton = (props: any) => {
         </Button>
       </Dropdown>
 
-      <ImportModal
-        isModalVisible={isImportModalVisible}
-        onClose={() => setIsImportModalVisible(false)}
+      <ImportJsonModal
+        isModalVisible={isJsonModalVisible}
+        onClose={() => setIsJsonModalVisible(false)}
+        refreshList={refreshList}
+      />
+
+      <ImportExcelModal
+        isModalVisible={isExcelModalVisible}
+        onClose={() => setIsExcelModalVisible(false)}
         refreshList={refreshList}
       />
     </>
