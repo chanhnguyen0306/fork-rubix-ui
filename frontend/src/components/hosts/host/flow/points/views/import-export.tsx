@@ -217,7 +217,10 @@ export const ImportExcelModal = (props: any) => {
         .map((row: any) => {
           for (let key in row) {
             const newKey = key.trimEnd();
-            const value = row[key];
+            const value =
+              row[key] && (row[key] == "true" || row[key] == "false")
+                ? JSON.parse(row[key])
+                : row[key];
             delete row[key];
             row = { ...row, [newKey]: value };
           }
