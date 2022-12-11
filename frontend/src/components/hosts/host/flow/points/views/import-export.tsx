@@ -11,6 +11,10 @@ import * as xlsx from "xlsx";
 
 import Point = model.Point;
 import Backup = storage.Backup;
+import {
+  createColumns,
+  MassEditTable,
+} from "../../../../../../common/mass-edit-table";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -154,8 +158,11 @@ export const ImportJsonModal = (props: any) => {
 };
 
 export const ImportExcelModal = (props: any) => {
-  const { isModalVisible, onClose, refreshList } = props;
+  const { deviceUUID = "" } = useParams();
+  const { isModalVisible, onClose, refreshList, schema } = props;
   const [file, setFile] = useState<UploadFile | undefined>(undefined);
+  const [items, setItems] = useState<any[]>([]);
+  const [columns, setColumns] = useState<any[] | undefined>([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const dummyRequest = ({ file, onSuccess }: any) => {
@@ -201,7 +208,7 @@ export const ImportExcelModal = (props: any) => {
           }
           return row;
         });
-      console.log(rowObject);
+      setItems(rowObject);
     };
   };
 
@@ -213,6 +220,12 @@ export const ImportExcelModal = (props: any) => {
     setFile(undefined);
     onClose();
   };
+
+  useEffect(() => {
+    if (isModalVisible && (!columns || columns.length === 0)) {
+      setColumns(createColumns(schema.properties));
+    }
+  }, [isModalVisible]);
 
   return (
     <Modal
@@ -237,6 +250,14 @@ export const ImportExcelModal = (props: any) => {
         </p>
         <p className="ant-upload-hint">Support for a single upload</p>
       </Dragger>
+      {items && items.length !== 0 && columns && columns.length !== 0 && (
+        <MassEditTable
+          parentPropId={{ key: "device_uuid", value: deviceUUID }}
+          columns={columns}
+          items={items}
+          setItems={setItems}
+        />
+      )}
     </Modal>
   );
 };

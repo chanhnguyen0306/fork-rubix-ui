@@ -173,6 +173,7 @@ export const MassEditTable = (props: any) => {
   return (
     <>
       <Table
+        rowKey={"uuid"}
         components={{
           body: {
             cell: EditableCell,

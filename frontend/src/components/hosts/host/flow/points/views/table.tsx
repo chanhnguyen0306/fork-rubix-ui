@@ -284,7 +284,7 @@ export const FlowPointsTable = (props: any) => {
       <RbAddButton handleClick={showCreateModal} />
       <RbAddButton handleClick={showCreateBulkModal} text="Create bulk" />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <ImportDropdownButton refreshList={refreshList} />
+      <ImportDropdownButton refreshList={refreshList} schema={schema} />
       <RbExportButton handleExport={handleExport} />
       <RbTable
         rowKey="uuid"
@@ -339,7 +339,7 @@ export const FlowPointsTable = (props: any) => {
 };
 
 const ImportDropdownButton = (props: any) => {
-  const { refreshList } = props;
+  const { refreshList, schema } = props;
   const [isJsonModalVisible, setIsJsonModalVisible] = useState(false);
   const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
 
@@ -380,6 +380,7 @@ const ImportDropdownButton = (props: any) => {
         isModalVisible={isExcelModalVisible}
         onClose={() => setIsExcelModalVisible(false)}
         refreshList={refreshList}
+        schema={schema}
       />
     </>
   );
