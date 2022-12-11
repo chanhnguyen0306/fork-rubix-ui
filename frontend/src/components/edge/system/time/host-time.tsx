@@ -31,29 +31,33 @@ export const HostTime = () => {
   return (
     <>
       <Spin spinning={isFetching}>
-        <Descriptions>
-          <Descriptions.Item label="Current Day">
-            {data.current_day}
-          </Descriptions.Item>
-          <Descriptions.Item label="Current Day UTC">
-            {data.current_day_utc}
-          </Descriptions.Item>
-          <Descriptions.Item label="Date Format Local">
-            {data.date_format_local}
-          </Descriptions.Item>
-          <Descriptions.Item label="Date Stamp">
-            {data.date_stamp}
-          </Descriptions.Item>
-          <Descriptions.Item label="System Time Zone">
-            {data.system_time_zone}
-          </Descriptions.Item>
-          <Descriptions.Item label="Time Local">
-            {data.time_local}
-          </Descriptions.Item>
-          <Descriptions.Item label="Time UTC">
-            {data.time_utc}
-          </Descriptions.Item>
-        </Descriptions>
+        {data && (
+          <Descriptions>
+            <Descriptions.Item label="Current Day">
+              {data.current_day}
+            </Descriptions.Item>
+            <Descriptions.Item label="Current Day UTC">
+              {data.current_day_utc}
+            </Descriptions.Item>
+            <Descriptions.Item label="Date Format Local">
+              {data.date_format_local}
+            </Descriptions.Item>
+            <Descriptions.Item label="Date Stamp">
+              {data.date_stamp}
+            </Descriptions.Item>
+            <Descriptions.Item label="System Time Zone">
+              {data.system_time_zone}
+            </Descriptions.Item>
+            <Descriptions.Item label="Time Local">
+              {data.time_local}
+            </Descriptions.Item>
+            <Descriptions.Item label="Time UTC">
+              {data.time_utc}
+            </Descriptions.Item>
+          </Descriptions>
+        )}
+
+        {!data && <h5>No data</h5>}
       </Spin>
     </>
   );
