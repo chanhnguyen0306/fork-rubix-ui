@@ -1,4 +1,5 @@
 import { Button, Menu, Dropdown, Space, Spin, Tag, Tooltip } from "antd";
+import type { MenuProps } from "antd";
 import { FormOutlined, EditOutlined, ImportOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -26,6 +27,7 @@ import {
 } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
+
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
 
@@ -341,12 +343,24 @@ const ImportDropdownButton = (props: any) => {
   const [isJsonModalVisible, setIsJsonModalVisible] = useState(false);
   const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
 
-  const menu = (
-    <Menu>
-      <Menu.Item onClick={() => setIsJsonModalVisible(true)}>Json</Menu.Item>
-      <Menu.Item onClick={() => setIsExcelModalVisible(true)}>Excel</Menu.Item>
-    </Menu>
-  );
+  const style: React.CSSProperties = { lineHeight: "3rem" };
+
+  const items: MenuProps["items"] = [
+    {
+      label: "json",
+      key: "json",
+      onClick: () => setIsJsonModalVisible(true),
+      style,
+    },
+    {
+      label: "excel",
+      key: "excel",
+      onClick: () => setIsExcelModalVisible(true),
+      style,
+    },
+  ];
+
+  const menu = <Menu items={items} />;
 
   return (
     <>
