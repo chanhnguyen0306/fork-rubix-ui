@@ -5,7 +5,7 @@ import RbxBreadcrumb from "../../breadcrumbs/breadcrumbs";
 import { FlowNetworks } from "./flow/flowNetworks/networks/flow-networks";
 import { FlowNetworkClones } from "./flow/flowNetworks/networkClones/network-clones";
 import { FlowNetworkTable } from "./flow/networks/views/table";
-import { FlowPluginsTable } from "./flow/plugins/views/table";
+import { Plugins } from "./flow/plugins/views/table";
 import { HostTable } from "./views/table";
 import useTitlePrefix from "../../../hooks/usePrefixedTitle";
 import { useEffect } from "react";
@@ -19,6 +19,7 @@ const networksKey = "DRIVERS";
 const pluginsKey = "MODULES";
 const flownetworksKey = "NETWORKS";
 const flownetworkClonesKey = "REMOTE/MAPPING NETWORK";
+
 const hostFactory = new HostsFactory();
 
 export const Host = () => {
@@ -80,7 +81,7 @@ export const Host = () => {
             <FlowNetworkTable />
           </TabPane>
           <TabPane tab={pluginsKey} key={pluginsKey}>
-            <FlowPluginsTable />
+            <Plugins />
           </TabPane>
           <TabPane tab={infoKey} key={infoKey}>
             <HostTable />

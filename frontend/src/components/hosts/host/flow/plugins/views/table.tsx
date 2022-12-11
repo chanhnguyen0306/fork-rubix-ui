@@ -1,18 +1,24 @@
-import { useEffect, useState } from "react";
-import { Button, Spin } from "antd";
+import { Tabs, Spin } from "antd";
 import {
-  PlayCircleOutlined,
   PlusOutlined,
+  PlayCircleOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { FlowPluginFactory } from "../factory";
-import { FlowNetworkFactory } from "../../networks/factory";
-import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
-import RbTable from "../../../../../../common/rb-table";
-import { CreateModal } from "./create";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import RbTable from "../../../../../../common/rb-table";
+import { RbButton } from "../../../../../../common/rb-table-actions";
+import { PLUGIN_HEADERS } from "../../../../../../constants/headers";
+import { FlowNetworkFactory } from "../../networks/factory";
+import { FlowPluginFactory } from "../factory";
+import { CreateModal } from "./create";
+import { PluginDistributionTable } from "./plugin-distribution-table";
 
-export const FlowPluginsTable = (props: any) => {
+const { TabPane } = Tabs;
+const pluginsKey = "MODULES";
+const pluginDistribution = "INSTALL PLUGIN";
+
+export const FlowPluginsTable = () => {
   const { connUUID = "", hostUUID = "" } = useParams();
   const [plugins, setPlugins] = useState([] as any);
   const [pluginName, setPluginName] = useState<string>();
@@ -31,32 +37,55 @@ export const FlowPluginsTable = (props: any) => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: Array<any>) => {
-      setPluginsNames(selectedRows.map(x => x.name));
+      setPluginsNames(selectedRows.map((x) => x.name));
     },
   };
 
-  useEffect(() => {
-    fetchPlugins();
-  }, []);
+  const EnablePluginsButton = () => {
+    const enable = async () => {
+      await factory.BulkEnable(pluginsNames);
+      fetchPlugins();
+    };
 
-  useEffect(() => {
-    if (isModalVisible) {
-      getSchema();
-    }
-  }, [pluginsNames, isModalVisible]);
-
-  const showModal = () => {
-    setIsModalVisible(true);
+    return (
+      <RbButton
+        type="primary"
+        text="enable plugins"
+        icon={<PlayCircleOutlined />}
+        onClick={enable}
+      />
+    );
   };
 
-  const enable = async () => {
-    await factory.BulkEnable(pluginsNames);
-    await fetchPlugins();
+  const DisablePluginsButton = () => {
+    const disable = async () => {
+      await factory.BulkDisable(pluginsNames);
+      fetchPlugins();
+    };
+
+    return (
+      <RbButton
+        type="ghost"
+        text="disable plugins"
+        onClick={disable}
+        icon={<StopOutlined />}
+      />
+    );
   };
 
-  const disable = async () => {
-    await factory.BulkDisable(pluginsNames);
-    await fetchPlugins();
+  const AddNetworkButton = () => {
+    const showModal = () => {
+      setIsModalVisible(true);
+    };
+
+    return (
+      <RbButton
+        type="ghost"
+        text="add network"
+        onClick={showModal}
+        icon={<PlusOutlined />}
+      />
+    );
   };
 
   const getSchema = async () => {
@@ -64,7 +93,11 @@ export const FlowPluginsTable = (props: any) => {
     if (pluginsNames.length > 0) {
       const pluginName = pluginsNames.at(0) || "";
       setPluginName(pluginName);
-      const res = await flowNetworkFactory.Schema(connUUID, hostUUID, pluginName);
+      const res = await flowNetworkFactory.Schema(
+        connUUID,
+        hostUUID,
+        pluginName
+      );
       const jsonSchema = {
         properties: res,
       };
@@ -85,29 +118,21 @@ export const FlowPluginsTable = (props: any) => {
     }
   };
 
+  useEffect(() => {
+    fetchPlugins();
+  }, []);
+
+  useEffect(() => {
+    if (isModalVisible) {
+      getSchema();
+    }
+  }, [pluginsNames, isModalVisible]);
+
   return (
     <>
-      <Button
-        type="primary"
-        onClick={enable}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <PlayCircleOutlined /> Enable Plugins
-      </Button>
-      <Button
-        type="ghost"
-        onClick={disable}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <StopOutlined /> Disable Plugins
-      </Button>
-      <Button
-        type="ghost"
-        onClick={showModal}
-        style={{ margin: "0 6px 10px 0", float: "left" }}
-      >
-        <PlusOutlined /> Add Network
-      </Button>
+      <EnablePluginsButton />
+      <DisablePluginsButton />
+      <AddNetworkButton />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -125,5 +150,18 @@ export const FlowPluginsTable = (props: any) => {
         pluginName={pluginName}
       />
     </>
+  );
+};
+
+export const Plugins = () => {
+  return (
+    <Tabs defaultActiveKey={pluginsKey}>
+      <TabPane tab={pluginsKey} key={pluginsKey}>
+        <FlowPluginsTable />
+      </TabPane>
+      <TabPane tab={pluginDistribution} key={pluginDistribution}>
+        <PluginDistributionTable />
+      </TabPane>
+    </Tabs>
   );
 };

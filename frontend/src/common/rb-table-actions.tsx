@@ -121,3 +121,30 @@ export const RbRestartButton = (props: any) => {
     </Button>
   );
 };
+
+export const RbButton = (props: any) => {
+  const {
+    onClick,
+    type,
+    icon,
+    text,
+    disabled = false,
+    loading = false,
+    style = {},
+  } = props;
+
+  return (
+    <Button
+      {...props}
+      type={type}
+      onClick={onClick}
+      icon={icon}
+      disabled={disabled}
+      loading={loading}
+      className="rb-btn"
+      style={{ ...btn, ...style }}
+    >
+      {text}
+    </Button>
+  );
+};
