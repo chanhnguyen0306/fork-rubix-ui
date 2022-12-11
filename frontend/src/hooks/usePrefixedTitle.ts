@@ -13,4 +13,4 @@ const useTitlePrefix = (title = "") => {
   return { prefixedTitle, addPrefix };
 };
 
-export default useTitlePrefix
+export default useTitlePrefix;

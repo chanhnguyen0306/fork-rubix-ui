@@ -20,9 +20,7 @@ export const Networks = () => {
   useEffect(() => {
     locationFactory.GetOne().then((location) => {
       updateCurrentLocation(location);
-      if (location) {
-        addPrefix(location.name);
-      }
+      if (location) addPrefix(location.name);
     });
   }, []);
 

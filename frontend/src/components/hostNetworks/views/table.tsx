@@ -14,7 +14,7 @@ import { isObjectEmpty } from "../../../utils/utils";
 import { LocationFactory } from "../../locations/factory";
 import { NetworksFactory } from "../factory";
 import { CreateEditModal } from "./create";
-import { ArrowRightOutlined, FormOutlined, } from "@ant-design/icons";
+import { ArrowRightOutlined, FormOutlined } from "@ant-design/icons";
 import Network = amodel.Network;
 import Location = amodel.Location;
 import UUIDs = backend.UUIDs;
@@ -30,8 +30,8 @@ export const NetworksTable = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
 
-  let factory = new NetworksFactory();
-  let locationFactory = new LocationFactory();
+  const factory = new NetworksFactory();
+  const locationFactory = new LocationFactory();
   factory.connectionUUID = locationFactory.connectionUUID = connUUID;
 
   const columns = [
@@ -51,9 +51,11 @@ export const NetworksTable = () => {
       render: (_: any, network: amodel.Network) => (
         <Space size="middle">
           <Tooltip title="Edit">
-            <a onClick={() => {
-              showModal(network);
-            }}>
+            <a
+              onClick={() => {
+                showModal(network);
+              }}
+            >
               <FormOutlined />
             </a>
           </Tooltip>

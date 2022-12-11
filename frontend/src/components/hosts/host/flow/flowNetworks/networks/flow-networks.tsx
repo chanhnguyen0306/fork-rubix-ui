@@ -11,7 +11,7 @@ export const FlowNetworks = () => {
   const [networks, setNetworks] = useState([] as FlowNetwork[]);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowFrameworkNetworkFactory();
+  const factory = new FlowFrameworkNetworkFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

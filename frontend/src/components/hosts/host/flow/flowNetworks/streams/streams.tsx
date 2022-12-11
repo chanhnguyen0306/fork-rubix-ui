@@ -22,7 +22,7 @@ export const Streams = () => {
   const [streams, setStreams] = useState([] as Stream[]);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowStreamFactory();
+  const factory = new FlowStreamFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

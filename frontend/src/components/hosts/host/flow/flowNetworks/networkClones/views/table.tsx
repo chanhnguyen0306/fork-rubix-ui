@@ -6,7 +6,6 @@ import { FlowFrameworkNetworkCloneFactory } from "../factory";
 import { ROUTES } from "../../../../../../../constants/routes";
 import { FLOW_NETWORKS_HEADERS } from "../../../../../../../constants/headers";
 import {
-  RbAddButton,
   RbDeleteButton,
   RbRefreshButton,
 } from "../../../../../../../common/rb-table-actions";
@@ -17,7 +16,7 @@ import FlowNetworkClone = model.FlowNetworkClone;
 import RbTableFilterNameInput from "../../../../../../../common/rb-table-filter-name-input";
 
 export const NetworkClonesTable = (props: any) => {
-  let {
+  const {
     connUUID = "",
     hostUUID = "",
     netUUID = "",
@@ -28,7 +27,7 @@ export const NetworkClonesTable = (props: any) => {
   const [dataSource, setDataSource] = useState(networks);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowFrameworkNetworkCloneFactory();
+  const factory = new FlowFrameworkNetworkCloneFactory();
   factory.connectionUUID = connUUID;
   factory.hostUUID = hostUUID;
 

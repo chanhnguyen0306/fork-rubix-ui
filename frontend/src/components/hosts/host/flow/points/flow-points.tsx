@@ -47,10 +47,14 @@ export const FlowPoints = () => {
 
   const flowPointFactory = new FlowPointFactory();
   const bacnetFactory = new BacnetFactory();
-  flowPointFactory.connectionUUID = bacnetFactory.connectionUUID = connUUID;
-  flowPointFactory.hostUUID = bacnetFactory.hostUUID = hostUUID;
-  flowDeviceFactory.connectionUUID = connUUID;
-  flowDeviceFactory.hostUUID = hostUUID;
+  flowPointFactory.connectionUUID =
+    bacnetFactory.connectionUUID =
+    flowDeviceFactory.connectionUUID =
+      connUUID;
+  flowPointFactory.hostUUID =
+    bacnetFactory.hostUUID =
+    flowDeviceFactory.hostUUID =
+      hostUUID;
   flowDeviceFactory.uuid = deviceUUID;
 
   const routes = [
@@ -100,7 +104,7 @@ export const FlowPoints = () => {
   useEffect(() => {
     fetch();
     flowDeviceFactory.GetOne(false).then((flowDevice) => {
-      addPrefix(flowDevice.name);
+      if (flowDevice) addPrefix(flowDevice.name);
     });
   }, []);
 

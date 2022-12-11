@@ -65,7 +65,7 @@ export const Host = () => {
 
   useEffect(() => {
     hostFactory.GetOne().then((host) => {
-      addPrefix(host.name);
+      if (host) addPrefix(host.name);
     });
   }, []);
 

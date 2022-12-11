@@ -1,10 +1,96 @@
-import { Modal, Spin } from "antd";
-import { useState } from "react";
+import { InputNumber, Modal, Spin } from "antd";
+import { useEffect, useState } from "react";
 import { FlowPointFactory } from "../factory";
 import { JsonForm } from "../../../../../../common/json-schema-form";
 import { model } from "../../../../../../../wailsjs/go/models";
+import {
+  createColumns,
+  MassEditTable,
+} from "../../../../../../common/mass-edit-table";
 
 import Point = model.Point;
+
+export const CreateBulkModal = (props: any) => {
+  const {
+    isModalVisible,
+    isLoadingForm,
+    connUUID,
+    hostUUID,
+    deviceUUID,
+    schema,
+    onCloseModal,
+    refreshList,
+  } = props;
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [count, setCount] = useState<any>(undefined);
+  const [items, setItems] = useState<any[]>([]);
+  const [columns, setColumns] = useState<any[] | undefined>([]);
+
+  const factory = new FlowPointFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
+
+  const handleClose = () => {
+    setItems([]);
+    setCount(undefined);
+    onCloseModal();
+    setConfirmLoading(false);
+  };
+
+  const onCountChange = (count: number) => {
+    setCount(count);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setConfirmLoading(true);
+      await factory.AddBulk(items);
+      refreshList();
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoadingForm) {
+      setColumns(createColumns(schema.properties));
+    }
+  }, [isLoadingForm]);
+
+  return (
+    <Modal
+      title="Add New Bulk"
+      visible={isModalVisible}
+      onOk={handleSubmit}
+      onCancel={handleClose}
+      confirmLoading={confirmLoading}
+      okText="Save"
+      maskClosable={false}
+      style={{ textAlign: "start" }}
+      width={800}
+    >
+      <InputNumber
+        min={1}
+        onChange={onCountChange}
+        style={{ width: "100%", marginBottom: "1.5rem" }}
+        placeholder="please enter count"
+        value={count}
+      />
+      {count && (
+        <MassEditTable
+          parentPropId={{ key: "device_uuid", value: deviceUUID }}
+          columns={columns}
+          count={count}
+          items={items}
+          setItems={setItems}
+        />
+      )}
+    </Modal>
+  );
+};
 
 export const CreateModal = (props: any) => {
   const {
@@ -20,11 +106,11 @@ export const CreateModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as Point);
 
-  let factory = new FlowPointFactory();
+  const factory = new FlowPointFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
   const add = async (point: Point) => {
-    factory.connectionUUID = connUUID;
-    factory.hostUUID = hostUUID;
     await factory.Add(deviceUUID, point);
   };
 

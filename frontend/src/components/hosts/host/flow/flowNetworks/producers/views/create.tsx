@@ -16,11 +16,10 @@ export const CreateEditModal = (props: any) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  let factory = new FlowProducerFactory();
-  let flowNetworkFactory = new FlowNetworkFactory();
+  const factory = new FlowProducerFactory();
+  const flowNetworkFactory = new FlowNetworkFactory();
   factory.connectionUUID = flowNetworkFactory.connectionUUID = connUUID;
   factory.hostUUID = flowNetworkFactory.hostUUID = hostUUID;
-
 
   useEffect(() => {
     setFormData(currentItem);
@@ -50,12 +49,12 @@ export const CreateEditModal = (props: any) => {
           enable: {
             title: "enable",
             type: "boolean",
-            default:true,
+            default: true,
           },
           enable_history: {
             title: "enable history",
             type: "boolean",
-            default:false,
+            default: false,
           },
           producer_thing_class: {
             type: "string",

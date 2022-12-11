@@ -9,105 +9,94 @@ import {
   PlayCircleOutlined,
 } from "@ant-design/icons";
 
-const btn: React.CSSProperties = {
-  margin: "0 6px 10px 0",
-  float: "left",
-  display: "inline-flex",
-};
-
 export const RbAddButton = (props: any) => {
-  const { handleClick, disabled, label } = props;
+  const { handleClick, disabled, text } = props;
   return (
     <Button
       className="rb-btn nube-green white--text"
       onClick={handleClick}
       disabled={disabled}
       icon={<PlusOutlined />}
-      style={btn}
     >
-      {label ? label : "Create"}
+      {text ?? "Create"}
     </Button>
   );
 };
 
 export const RbRefreshButton = (props: any) => {
-  const { refreshList, disabled, style = {} } = props;
+  const { refreshList, disabled, style = {}, text } = props;
   return (
     <Button
       className="rb-btn nube-primary white--text"
       onClick={refreshList}
       disabled={disabled}
       icon={<ReloadOutlined />}
-      style={{ ...btn, ...style }}
+      style={{ ...style }}
     >
-      Refresh
+      {text ?? "Refresh"}
     </Button>
   );
 };
 
 export const RbDeleteButton = (props: any) => {
-  const { bulkDelete, disabled } = props;
+  const { bulkDelete, disabled, text } = props;
   return (
     <Popconfirm title="Delete" onConfirm={bulkDelete}>
       <Button
-        className="danger white--text"
+        className="rb-btn danger white--text"
         disabled={disabled}
         icon={<DeleteOutlined />}
-        style={btn}
       >
-        Delete
+        {text ?? "Delete"}
       </Button>
     </Popconfirm>
   );
 };
 
 export const RbImportButton = (props: any) => {
-  const { showModal, disabled } = props;
+  const { showModal, disabled, text } = props;
   return (
     <Button
       className="rb-btn nube-primary white--text"
       onClick={showModal}
       disabled={disabled}
       icon={<ImportOutlined />}
-      style={btn}
     >
-      Import
+      {text ?? "Import"}
     </Button>
   );
 };
 
 export const RbExportButton = (props: any) => {
-  const { handleExport, disabled } = props;
+  const { handleExport, disabled, text } = props;
   return (
     <Button
       className="rb-btn export-color white--text"
       onClick={handleExport}
       disabled={disabled}
       icon={<ExportOutlined />}
-      style={btn}
     >
-      Export
+      {text ?? "Export"}
     </Button>
   );
 };
 
 export const RbDownloadButton = (props: any) => {
-  const { handleClick, disabled } = props;
+  const { handleClick, disabled, text } = props;
   return (
     <Button
       className="rb-btn download-color white--text"
       onClick={handleClick}
       disabled={disabled}
       icon={<DownloadOutlined />}
-      style={btn}
     >
-      Download
+      {text ?? "Download"}
     </Button>
   );
 };
 
 export const RbRestartButton = (props: any) => {
-  const { handleClick, disabled, loading } = props;
+  const { handleClick, disabled, loading, text } = props;
   return (
     <Button
       className="rb-btn restart-color white--text"
@@ -115,9 +104,8 @@ export const RbRestartButton = (props: any) => {
       disabled={disabled}
       loading={loading}
       icon={<PlayCircleOutlined />}
-      style={btn}
     >
-      Restart
+      {text ?? "Restart"}
     </Button>
   );
 };
@@ -142,7 +130,7 @@ export const RbButton = (props: any) => {
       disabled={disabled}
       loading={loading}
       className="rb-btn"
-      style={{ ...btn, ...style }}
+      style={{ ...style }}
     >
       {text}
     </Button>

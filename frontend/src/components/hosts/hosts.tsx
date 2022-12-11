@@ -47,16 +47,16 @@ export const Hosts = () => {
     if (networks.length === 0) {
       fetchNetworks();
     }
-    fetchCurrentLocatio();
+    fetchCurrentLocation();
   }, []);
 
   useEffect(() => {
     fetchList();
   }, [netUUID]);
 
-  const fetchCurrentLocatio = () => {
+  const fetchCurrentLocation = () => {
     networksFactory.GetOne().then((network) => {
-      addPrefix(network.name);
+      if (network) addPrefix(network.name);
     });
   };
 

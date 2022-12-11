@@ -1,11 +1,11 @@
-import { Space, Spin, Tooltip, Typography, } from "antd";
+import { Space, Spin, Tooltip, Typography } from "antd";
 import {
   ArrowRightOutlined,
   DownloadOutlined,
   FormOutlined,
   LinkOutlined,
   MenuFoldOutlined,
-  ScanOutlined
+  ScanOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -25,9 +25,7 @@ import { BackupModal, CreateEditModal } from "./modals";
 import "./style.css";
 import { TokenModal } from "../../../common/token/token-modal";
 import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
-import {
-  InstallRubixEdgeModal
-} from "./install-rubix-edge/install-rubix-edge-modal";
+import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
 import { AppInstallInfo } from "./install-app-info";
 
@@ -44,7 +42,6 @@ const ExpandedRow = (props: any) => {
   );
 };
 
-
 export const HostsTable = (props: any) => {
   const { hosts, networks, isFetching, refreshList } = props;
   let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
@@ -55,9 +52,12 @@ export const HostsTable = (props: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
-  const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] = useState(false);
+  const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] =
+    useState(false);
   const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
-  const [tokenFactory, setTokenFactory] = useState(new EdgeBiosTokenFactory(connUUID));
+  const [tokenFactory, setTokenFactory] = useState(
+    new EdgeBiosTokenFactory(connUUID)
+  );
 
   let backupFactory = new BackupFactory();
   let factory = new HostsFactory();
@@ -82,37 +82,47 @@ export const HostsTable = (props: any) => {
       render: (_: any, host: Host) => (
         <Space size="middle">
           <Tooltip title="Ping">
-            <a onClick={(e) => {
-              handlePing(host.uuid, e);
-            }}>
+            <a
+              onClick={(e) => {
+                handlePing(host.uuid, e);
+              }}
+            >
               <LinkOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Edit">
-            <a onClick={(e) => {
-              showModal(host, e);
-            }}>
+            <a
+              onClick={(e) => {
+                showModal(host, e);
+              }}
+            >
               <FormOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Rubix-Wires and Backup">
-            <a onClick={(e) => {
-              showBackupModal(host, e);
-            }}>
+            <a
+              onClick={(e) => {
+                showBackupModal(host, e);
+              }}
+            >
               <MenuFoldOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Install Rubix Edge">
-            <a onClick={(e) => {
-              showRubixEdgeInstallModal(host, e);
-            }}>
+            <a
+              onClick={(e) => {
+                showRubixEdgeInstallModal(host, e);
+              }}
+            >
               <DownloadOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Tokens">
-            <a onClick={(e) => {
-              showTokenModal(host, e);
-            }}>
+            <a
+              onClick={(e) => {
+                showTokenModal(host, e);
+              }}
+            >
               <ScanOutlined />
             </a>
           </Tooltip>
@@ -219,7 +229,9 @@ export const HostsTable = (props: any) => {
   };
 
   useEffect(() => {
-    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(connUUID);
+    const _tokenFactory: EdgeBiosTokenFactory = new EdgeBiosTokenFactory(
+      connUUID
+    );
     _tokenFactory.hostUUID = currentHost.uuid;
     setTokenFactory(_tokenFactory);
   }, [currentHost]);
@@ -237,9 +249,7 @@ export const HostsTable = (props: any) => {
         columns={columns}
         loading={{ indicator: <Spin />, spinning: isFetching }}
         expandable={{
-          expandedRowRender: (host: any) => (
-            <ExpandedRow host={host} />
-          ),
+          expandedRowRender: (host: any) => <ExpandedRow host={host} />,
           rowExpandable: (record: any) => record.name !== "Not Expandable",
         }}
         expandRowByClick

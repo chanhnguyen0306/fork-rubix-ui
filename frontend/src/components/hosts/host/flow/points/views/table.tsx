@@ -1,5 +1,6 @@
-import { Space, Spin, Tag, Tooltip } from "antd";
-import { EditOutlined, FormOutlined, } from "@ant-design/icons";
+import { Button, Menu, Dropdown, Space, Spin, Tag, Tooltip } from "antd";
+import type { MenuProps } from "antd";
+import { FormOutlined, EditOutlined, ImportOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { backend, model } from "../../../../../../../wailsjs/go/models";
@@ -8,22 +9,25 @@ import {
   RbAddButton,
   RbDeleteButton,
   RbExportButton,
-  RbImportButton,
   RbRestartButton,
 } from "../../../../../../common/rb-table-actions";
-import RbTableFilterNameInput
-  from "../../../../../../common/rb-table-filter-name-input";
+import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import MassEdit from "../../../../../../common/mass-edit";
 import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
-import { CreateModal } from "./create";
+import { CreateBulkModal, CreateModal } from "./create";
 import { EditModal } from "./edit";
-import { ExportModal, ImportModal } from "./import-export";
+import {
+  ExportModal,
+  ImportExcelModal,
+  ImportJsonModal,
+} from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
+
 import Point = model.Point;
 import UUIDs = backend.UUIDs;
 
@@ -42,9 +46,10 @@ export const FlowPointsTable = (props: any) => {
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [tableHeaders, setTableHeaders] = useState<any[]>([]);
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
-  const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isCreateBulkModalVisible, setIsCreateBulkModalVisible] =
+    useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const [isWritePointModalVisible, setIsWritePointModalVisible] =
@@ -71,7 +76,7 @@ export const FlowPointsTable = (props: any) => {
 
   const setPlugin = async () => {
     const res = await flowNetworkFactory.GetOne(networkUUID, false);
-    setPluginUUID(res.plugin_conf_id);
+    if (res) setPluginUUID(res.plugin_conf_id);
   };
 
   const bulkDelete = async () => {
@@ -248,6 +253,14 @@ export const FlowPointsTable = (props: any) => {
     setIsCreateModalVisible(false);
   };
 
+  const showCreateBulkModal = () => {
+    setIsCreateBulkModalVisible(true);
+  };
+
+  const closeCreateBulkModal = () => {
+    setIsCreateBulkModalVisible(false);
+  };
+
   const showWritePointModal = (item: Point) => {
     setIsWritePointModalVisible(true);
     setCurrentItem(item);
@@ -269,10 +282,10 @@ export const FlowPointsTable = (props: any) => {
     <>
       <RbRestartButton handleClick={handleRestart} loading={isRestarting} />
       <RbAddButton handleClick={showCreateModal} />
+      <RbAddButton handleClick={showCreateBulkModal} text="Create bulk" />
       <RbDeleteButton bulkDelete={bulkDelete} />
-      <RbImportButton showModal={() => setIsImportModalVisible(true)} />
+      <ImportDropdownButton refreshList={refreshList} schema={schema} />
       <RbExportButton handleExport={handleExport} />
-
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
@@ -300,21 +313,74 @@ export const FlowPointsTable = (props: any) => {
         onCloseModal={closeCreateModal}
         refreshList={refreshList}
       />
+      <CreateBulkModal
+        isModalVisible={isCreateBulkModalVisible}
+        isLoadingForm={isLoadingForm}
+        connUUID={connUUID}
+        hostUUID={hostUUID}
+        deviceUUID={deviceUUID}
+        schema={schema}
+        onCloseModal={closeCreateBulkModal}
+        refreshList={refreshList}
+      />
       <ExportModal
         isModalVisible={isExportModalVisible}
         onClose={() => setIsExportModalVisible(false)}
         selectedItems={selectedUUIDs}
-      />
-      <ImportModal
-        isModalVisible={isImportModalVisible}
-        onClose={() => setIsImportModalVisible(false)}
-        refreshList={refreshList}
       />
       <WritePointValueModal
         isModalVisible={isWritePointModalVisible}
         onCloseModal={() => setIsWritePointModalVisible(false)}
         point={currentItem}
         refreshList={refreshList}
+      />
+    </>
+  );
+};
+
+const ImportDropdownButton = (props: any) => {
+  const { refreshList, schema } = props;
+  const [isJsonModalVisible, setIsJsonModalVisible] = useState(false);
+  const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
+
+  const style: React.CSSProperties = { lineHeight: "3rem" };
+
+  const items: MenuProps["items"] = [
+    {
+      label: "json",
+      key: "json",
+      onClick: () => setIsJsonModalVisible(true),
+      style,
+    },
+    {
+      label: "excel",
+      key: "excel",
+      onClick: () => setIsExcelModalVisible(true),
+      style,
+    },
+  ];
+
+  const menu = <Menu items={items} />;
+
+  return (
+    <>
+      <Dropdown overlay={menu} trigger={["click"]} className="rb-btn">
+        <Button className="nube-primary white--text" icon={<ImportOutlined />}>
+          Import
+        </Button>
+      </Dropdown>
+
+      <ImportJsonModal
+        isModalVisible={isJsonModalVisible}
+        onClose={() => setIsJsonModalVisible(false)}
+        refreshList={refreshList}
+      />
+
+      <ImportExcelModal
+        isModalVisible={isExcelModalVisible}
+        onClose={() => setIsExcelModalVisible(false)}
+        refreshList={refreshList}
+        schema={schema}
       />
     </>
   );

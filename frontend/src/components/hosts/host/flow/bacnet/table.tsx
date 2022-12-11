@@ -26,7 +26,7 @@ export const BacnetWhoIsTable = (props: any) => {
 
   return (
     <>
-      <RbAddButton handleClick={Add} label={addBtnText} />
+      <RbAddButton handleClick={Add} text={addBtnText} />
       <RbTable
         rowKey="uuid"
         rowSelection={rowSelection}
