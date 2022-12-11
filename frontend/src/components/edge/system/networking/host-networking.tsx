@@ -51,7 +51,7 @@ export const HostNetworking = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      let networks = await factory.GetNetworks();
+      let networks = (await factory.GetNetworks()) || [];
       networks = networks.map((network: any, index: number) => {
         return {
           ...network,
