@@ -1,4 +1,13 @@
-import { Input, Modal, Select, UploadProps, message, Upload } from "antd";
+import {
+  Input,
+  Modal,
+  Select,
+  UploadProps,
+  message,
+  Upload,
+  Steps,
+  Button,
+} from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import { InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -18,6 +27,7 @@ import {
 
 const { Dragger } = Upload;
 const { Option } = Select;
+const { Step } = Steps;
 
 export const ExportModal = (props: any) => {
   const { isModalVisible, selectedItems, onClose } = props;
@@ -158,12 +168,17 @@ export const ImportJsonModal = (props: any) => {
 };
 
 export const ImportExcelModal = (props: any) => {
-  const { deviceUUID = "" } = useParams();
+  const { deviceUUID = "", connUUID = "", hostUUID = "" } = useParams();
   const { isModalVisible, onClose, refreshList, schema } = props;
   const [file, setFile] = useState<UploadFile | undefined>(undefined);
   const [items, setItems] = useState<any[]>([]);
   const [columns, setColumns] = useState<any[] | undefined>([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [current, setCurrent] = useState(0);
+
+  const factory = new FlowPointFactory();
+  factory.connectionUUID = connUUID;
+  factory.hostUUID = hostUUID;
 
   const dummyRequest = ({ file, onSuccess }: any) => {
     setTimeout(() => {
@@ -176,8 +191,8 @@ export const ImportExcelModal = (props: any) => {
     multiple: true,
     onChange(info) {
       const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+      if (status === "removed") {
+        setFile(undefined);
       }
       if (status === "done") {
         setFile(info.file);
@@ -213,13 +228,78 @@ export const ImportExcelModal = (props: any) => {
   };
 
   const handleOk = async () => {
-    convertExcelToJson(file);
+    try {
+      setConfirmLoading(true);
+      const data = [];
+      for (let item of items) {
+        item = { ...item, device_uuid: deviceUUID };
+        data.push(item);
+      }
+      await factory.AddBulk(data);
+      refreshList();
+      handleClose();
+    } finally {
+      setConfirmLoading(false);
+    }
   };
 
   const handleClose = () => {
     setFile(undefined);
+    setItems([]);
+    setColumns([]);
+    setCurrent(0);
     onClose();
   };
+
+  const ChooseFileComponent = () => {
+    const defaultData = !file ? [] : [file];
+    return (
+      <Dragger
+        {...uploadProps}
+        customRequest={dummyRequest}
+        maxCount={1}
+        accept=".xlsx, .xls"
+        defaultFileList={defaultData}
+      >
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">
+          Click or drag file to this area to upload
+        </p>
+        <p className="ant-upload-hint">Support for a single upload</p>
+      </Dragger>
+    );
+  };
+
+  const EditTableComponent = () => {
+    return (
+      <MassEditTable columns={columns} items={items} setItems={setItems} />
+    );
+  };
+
+  const next = () => {
+    if (!file) {
+      return message.warning("please upload file");
+    }
+    convertExcelToJson(file);
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const steps = [
+    {
+      title: "choose file",
+      content: ChooseFileComponent(),
+    },
+    {
+      title: "edit",
+      content: EditTableComponent(),
+    },
+  ];
 
   useEffect(() => {
     if (isModalVisible && (!columns || columns.length === 0)) {
@@ -230,34 +310,37 @@ export const ImportExcelModal = (props: any) => {
   return (
     <Modal
       title="Import"
+      className="text-start"
       visible={isModalVisible}
       confirmLoading={confirmLoading}
-      onOk={handleOk}
+      width={800}
+      footer={null}
       onCancel={handleClose}
-      className="text-start"
+      maskClosable={false}
+      destroyOnClose={true}
     >
-      <Dragger
-        {...uploadProps}
-        customRequest={dummyRequest}
-        maxCount={1}
-        accept=".xlsx, .xls"
-      >
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">Support for a single upload</p>
-      </Dragger>
-      {items && items.length !== 0 && columns && columns.length !== 0 && (
-        <MassEditTable
-          parentPropId={{ key: "device_uuid", value: deviceUUID }}
-          columns={columns}
-          items={items}
-          setItems={setItems}
-        />
-      )}
+      <Steps current={current}>
+        <Step key={0} title="choose file" />
+        <Step key={1} title="edit" />
+      </Steps>
+      <div className="steps-content mt-5">{steps[current].content}</div>
+      <div className="steps-action text-end mt-8">
+        {current < steps.length - 1 && (
+          <Button type="primary" onClick={() => next()}>
+            Next
+          </Button>
+        )}
+        {current > 0 && (
+          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+            Previous
+          </Button>
+        )}
+        {current === steps.length - 1 && (
+          <Button type="primary" onClick={handleOk}>
+            Done
+          </Button>
+        )}
+      </div>
     </Modal>
   );
 };

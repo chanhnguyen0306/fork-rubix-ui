@@ -71,7 +71,12 @@ export const MassEditTable = (props: any) => {
     ...restProps
   }) => {
     const _defaultValue =
-      record && record[dataIndex] ? record[dataIndex] : defaultValue;
+      record &&
+      (record[dataIndex] ||
+        record[dataIndex] === false ||
+        record[dataIndex] === 0)
+        ? record[dataIndex]
+        : defaultValue;
 
     let inputNode = null;
     switch (inputType) {
@@ -80,7 +85,7 @@ export const MassEditTable = (props: any) => {
           <InputNumber
             defaultValue={_defaultValue}
             onChange={(value) => {
-              onChangeValue(value, dataIndex, record.key);
+              onChangeValue(value, dataIndex, record.uuid);
             }}
           />
         );
@@ -90,7 +95,7 @@ export const MassEditTable = (props: any) => {
           <Input
             defaultValue={_defaultValue}
             onChange={(e) =>
-              onChangeValue(e.target.value, dataIndex, record.key)
+              onChangeValue(e.target.value, dataIndex, record.uuid)
             }
           />
         );
@@ -100,7 +105,7 @@ export const MassEditTable = (props: any) => {
           <Checkbox
             defaultChecked={_defaultValue ?? false}
             onChange={(e: CheckboxChangeEvent) =>
-              onChangeValue(e.target.checked, dataIndex, record.key)
+              onChangeValue(e.target.checked, dataIndex, record.uuid)
             }
           />
         );
@@ -109,7 +114,7 @@ export const MassEditTable = (props: any) => {
         inputNode = (
           <Select
             defaultValue={_defaultValue}
-            onChange={(e) => onChangeValue(e, dataIndex, record.key)}
+            onChange={(e) => onChangeValue(e, dataIndex, record.uuid)}
             options={options}
           />
         );
@@ -142,9 +147,9 @@ export const MassEditTable = (props: any) => {
   const onChangeValue = (
     value: number | string | boolean,
     dataIndex: string,
-    key: number
+    uuid: string
   ) => {
-    const index = items.findIndex((i: any) => i.key === key);
+    const index = items.findIndex((i: any) => i.uuid === uuid);
     items[index][dataIndex] = value;
     setItems(items);
   };
@@ -159,7 +164,11 @@ export const MassEditTable = (props: any) => {
         }
       }
       for (let i = 0; i < count; i++) {
-        item = { ...item, key: i, [parentPropId.key]: parentPropId.value };
+        item = {
+          ...item,
+          uuid: "" + i,
+          [parentPropId.key]: parentPropId.value,
+        };
         data.push(item);
       }
       setItems(data);
@@ -173,7 +182,7 @@ export const MassEditTable = (props: any) => {
   return (
     <>
       <Table
-        rowKey={"uuid"}
+        rowKey="uuid"
         components={{
           body: {
             cell: EditableCell,

@@ -70,7 +70,7 @@ export const CreateBulkModal = (props: any) => {
       okText="Save"
       maskClosable={false}
       style={{ textAlign: "start" }}
-      width={"auto"}
+      width={800}
     >
       <InputNumber
         min={1}
