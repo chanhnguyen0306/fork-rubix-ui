@@ -25,6 +25,11 @@ export const PluginDistributionTable = () => {
       dataIndex: "name",
     },
     {
+      title: "description",
+      key: "description",
+      dataIndex: "description",
+    },
+    {
       title: "installed",
       key: "is_installed",
       dataIndex: "is_installed",
