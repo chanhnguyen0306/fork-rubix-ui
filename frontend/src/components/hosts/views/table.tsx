@@ -99,7 +99,7 @@ export const HostsTable = (props: any) => {
               <FormOutlined />
             </a>
           </Tooltip>
-          <Tooltip title="Rubix-Wires and Backup">
+          {/* <Tooltip title="Rubix-Wires and Backup">
             <a
               onClick={(e) => {
                 showBackupModal(host, e);
@@ -107,7 +107,7 @@ export const HostsTable = (props: any) => {
             >
               <MenuFoldOutlined />
             </a>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Install Rubix Edge">
             <a
               onClick={(e) => {
