@@ -3,6 +3,7 @@ package store
 import (
 	"errors"
 	"github.com/NubeIO/git/pkg/git"
+	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"os"
 	"path"
@@ -19,6 +20,7 @@ func (inst *AppStore) DownloadFlowPlugin(token string, app App) (*App, error) {
 
 func (inst *AppStore) GitDownloadZip(token string, app App, doNotValidateArch, isZipball bool) (
 	*App, error) {
+	app.Repo = namings.GetRepoNameFromAppName(app.Name)
 	opts := git.DownloadOptions{
 		MatchArch: !doNotValidateArch,
 		AssetName: app.Repo,
@@ -58,9 +60,12 @@ func (inst *AppStore) gitDownloadZip(token string, app App, isZipball, isPlugin 
 		return nil, err
 	}
 
-	destination := inst.GetAppStoreAppPath(app.Name, app.Arch, app.Version)
+	destination := inst.GetAppStoreAppPath(app)
 	if isPlugin {
 		destination = inst.Store.UserPluginPath
+	}
+	if err = os.MkdirAll(destination, os.FileMode(inst.Store.Perm)); err != nil {
+		return nil, err
 	}
 
 	if err = os.Rename(path.Join(tmpDownloadDir, *assetName), path.Join(destination, *assetName)); err != nil {

@@ -8,7 +8,8 @@ import (
 	"io"
 )
 
-func (inst *Client) UploadAppOnAppStore(appName, version, arch, fileName string, reader io.Reader) (*appstore.UploadResponse, error) {
+func (inst *Client) UploadAppOnAppStore(appName, version, arch, fileName string, reader io.Reader) (
+	*appstore.UploadResponse, error) {
 	url := fmt.Sprintf("/api/store/apps?name=%s&version=%s&arch=%s", appName, version, arch)
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetResult(&appstore.UploadResponse{}).
@@ -20,7 +21,7 @@ func (inst *Client) UploadAppOnAppStore(appName, version, arch, fileName string,
 	return resp.Result().(*appstore.UploadResponse), nil
 }
 
-func (inst *Client) CheckAppExistence(appName, arch, version string) error {
+func (inst *Client) CheckAppExistence(appName, version, arch string) error {
 	url := fmt.Sprintf("/api/store/apps/exists?name=%s&arch=%s&version=%s", appName, arch, version)
 	_, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetResult(&amodel.FoundMessage{}).

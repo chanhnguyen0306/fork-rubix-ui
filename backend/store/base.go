@@ -3,7 +3,6 @@ package store
 import (
 	"errors"
 	fileutils "github.com/NubeIO/lib-dirs/dirs"
-	"github.com/NubeIO/lib-uuid/uuid"
 	"os"
 	"path"
 )
@@ -92,8 +91,4 @@ func (inst *Store) initMakeAllDirs() error {
 		return err
 	}
 	return nil
-}
-
-func (inst *Store) CreateTmpPath() string {
-	return path.Join(inst.UserTmpPath, uuid.ShortUUID("tmp"))
 }
