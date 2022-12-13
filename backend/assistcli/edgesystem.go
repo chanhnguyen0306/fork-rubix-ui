@@ -9,7 +9,7 @@ import (
 )
 
 func (inst *Client) EdgeGetNetworks(hostIDName string) ([]networking.NetworkInterfaces, error) {
-	url := fmt.Sprintf("proxy/api/networking/")
+	url := fmt.Sprintf("/proxy/edge/api/networking/")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
@@ -24,7 +24,7 @@ func (inst *Client) EdgeGetNetworks(hostIDName string) ([]networking.NetworkInte
 
 // EdgeDHCPPortExists check if the interface is a staic or fixed ip, will return true if port is a set to dhcp
 func (inst *Client) EdgeDHCPPortExists(hostIDName string, body *system.NetworkingBody) (*system.DHCPPortExists, error) {
-	url := fmt.Sprintf("proxy/api/networking/interfaces/exists")
+	url := fmt.Sprintf("/proxy/edge/api/networking/interfaces/exists")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
@@ -38,7 +38,7 @@ func (inst *Client) EdgeDHCPPortExists(hostIDName string, body *system.Networkin
 }
 
 func (inst *Client) EdgeDHCPSetAsAuto(hostIDName string, body *system.NetworkingBody) (*system.Message, error) {
-	url := fmt.Sprintf("proxy/api/networking/interfaces/auto")
+	url := fmt.Sprintf("/proxy/edge/api/networking/interfaces/auto")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).
@@ -52,7 +52,7 @@ func (inst *Client) EdgeDHCPSetAsAuto(hostIDName string, body *system.Networking
 }
 
 func (inst *Client) EdgeDHCPSetStaticIP(hostIDName string, body *dhcpd.SetStaticIP) (string, error) {
-	url := fmt.Sprintf("proxy/api/networking/interfaces/static")
+	url := fmt.Sprintf("/proxy/edge/api/networking/interfaces/static")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
 		SetHeader("host_name", hostIDName).

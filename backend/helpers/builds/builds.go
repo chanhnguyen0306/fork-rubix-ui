@@ -52,7 +52,7 @@ func GetBuildZipNameByArch(path, arch string, doNotValidateArch bool) (*BuildDet
 	var out *BuildDetails
 	details, err := getFileDetails(path)
 	if err != nil {
-		return out, err
+		return nil, err
 	}
 	for _, name := range details {
 		app := GetZipBuildDetails(name.Name)

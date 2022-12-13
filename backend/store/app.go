@@ -10,11 +10,10 @@ import (
 )
 
 type App struct {
-	Name           string `json:"name"`    // rubix-wires
-	Version        string `json:"version"` // v1.1.1
-	Repo           string `json:"repo"`    // wires-builds
-	Arch           string `json:"arch"`
-	ReleaseVersion string `json:"release_version"`
+	Name    string `json:"name"`    // rubix-wires
+	Version string `json:"version"` // v1.1.1
+	Repo    string `json:"repo"`    // wires-builds
+	Arch    string `json:"arch"`
 }
 
 // StoreCheckAppExists  => /user/rubix/store/apps/flow-framework

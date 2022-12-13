@@ -419,7 +419,7 @@ export function RubixAssistTokens(arg1:string,arg2:string):Promise<externaltoken
 
 export function Scanner(arg1:string,arg2:string,arg3:number,arg4:Array<string>):Promise<any>;
 
-export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string,arg6:boolean):Promise<store.InstallResponse>;
+export function StoreDownloadApp(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<store.InstallResponse>;
 
 export function UpdateConnection(arg1:string,arg2:storage.RubixConnection):Promise<storage.RubixConnection>;
 
