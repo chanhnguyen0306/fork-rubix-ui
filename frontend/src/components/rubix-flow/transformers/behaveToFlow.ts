@@ -33,9 +33,8 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
 
       if (nodeJson.inputs) {
         if (nodeJson.inputs.links) {
-          for (const [inputKey, input] of Object.entries(
-            nodeJson.inputs.links
-          )) {
+          const entries = Object.entries(nodeJson.inputs.links);
+          for (const [inputKey, input] of entries) {
             const { nodeId, socket, value } = input as any;
             if (nodeId !== undefined) {
               edges.push({
@@ -51,7 +50,8 @@ export const behaveToFlow = (graph: GraphJSON): [Node[], Edge[]] => {
             }
           }
         } else {
-          for (const [inputKey, input] of Object.entries(nodeJson.inputs)) {
+          const entries = Object.entries(nodeJson.inputs);
+          for (const [inputKey, input] of entries) {
             if (input.links !== undefined) {
               (input.links as any).forEach((link: any) => {
                 edges.push({

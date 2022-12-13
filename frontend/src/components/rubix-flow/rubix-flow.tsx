@@ -149,12 +149,7 @@ const Flow = (props: any) => {
         sourceHandle: connection.sourceHandle,
         targetHandle: connection.targetHandle,
       };
-      onEdgesChange([
-        {
-          type: "add",
-          item: newEdge,
-        },
-      ]);
+      onEdgesChange([{ type: "add", item: newEdge }]);
     },
     [onEdgesChange, edges]
   );
@@ -186,12 +181,7 @@ const Flow = (props: any) => {
         },
         settings: nodeSettings,
       };
-      onNodesChange([
-        {
-          type: "add",
-          item: newNode,
-        },
-      ]);
+      onNodesChange([{ type: "add", item: newNode }]);
 
       if (lastConnectStart === undefined) return;
 
@@ -206,19 +196,16 @@ const Flow = (props: any) => {
         nodeType,
         newNode.id,
         lastConnectStart
-      )
+      );
 
       if (
         newEdge.targetHandle &&
         isInputExistConnection(edges, newEdge.target, newEdge.targetHandle)
-      ) return;
+      ) {
+        return;
+      }
 
-      onEdgesChange([
-        {
-          type: "add",
-          item: newEdge,
-        },
-      ]);
+      onEdgesChange([{ type: "add", item: newEdge }]);
     },
     [lastConnectStart, nodes, onEdgesChange, onNodesChange]
   );
@@ -643,7 +630,7 @@ const Flow = (props: any) => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onEdgeClick={onEdgeClick}
-            onConnect={onConnect}
+            // onConnect={onConnect}
             onConnectStart={handleStartConnect}
             onEdgeContextMenu={onEdgeContextMenu}
             // onConnectStop={handleStopConnect}
