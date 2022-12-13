@@ -54,6 +54,9 @@ func (inst *App) EdgeGetPluginsDistribution(connUUID, hostUUID string) *rumodel.
 
 	availablePlugins := make([]rumodel.AvailablePlugin, 0)
 	releases, _, err := githubClient.Repositories.GetReleaseByTag(c, constants.GitHubOwner, constants.FlowFramework, *version)
+	if err != nil {
+		return inst.fail(err)
+	}
 	for _, asset := range releases.Assets {
 		if asset.Name != nil && strings.Contains(*asset.Name, arch) && !strings.Contains(*asset.Name, constants.FlowFramework) {
 			pluginName := strings.Split(*asset.Name, "-")[0]

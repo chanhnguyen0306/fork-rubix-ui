@@ -8,6 +8,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
 //go:embed frontend/dist
@@ -34,10 +35,12 @@ func main() {
 		app.OnQuit()
 	})
 	err = wails.Run(&options.App{
-		Title:       "rubix",
-		Width:       1300,
-		Height:      750,
-		Assets:      assets,
+		Title:  "rubix",
+		Width:  1300,
+		Height: 750,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
 		StartHidden: false,
 		Menu:        AppMenu,
 		OnStartup:   app.OnStartup,
