@@ -133,26 +133,6 @@ const Flow = (props: any) => {
 
   const onMove = () => setShouldUpdateMiniMap((s) => !s);
 
-  const onConnect = useCallback(
-    (connection: Connection) => {
-      if (connection.source === null) return;
-      if (connection.target === null) return;
-      if (
-        connection.targetHandle &&
-        isInputExistConnection(edges, connection.target, connection.targetHandle)
-      ) return;
-
-      const newEdge = {
-        id: generateUuid(),
-        source: connection.source,
-        target: connection.target,
-        sourceHandle: connection.sourceHandle,
-        targetHandle: connection.targetHandle,
-      };
-      onEdgesChange([{ type: "add", item: newEdge }]);
-    },
-    [onEdgesChange, edges]
-  );
 
   const handleAddNode = useCallback(
     async (
@@ -630,10 +610,8 @@ const Flow = (props: any) => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onEdgeClick={onEdgeClick}
-            // onConnect={onConnect}
             onConnectStart={handleStartConnect}
             onEdgeContextMenu={onEdgeContextMenu}
-            // onConnectStop={handleStopConnect}
             onConnectEnd={onConnectEnd}
             onPaneClick={handlePaneClick}
             onPaneContextMenu={handlePaneContextMenu}
