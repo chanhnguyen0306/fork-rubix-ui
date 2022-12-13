@@ -802,8 +802,8 @@ export function Scanner(arg1, arg2, arg3, arg4) {
   return window['go']['backend']['App']['Scanner'](arg1, arg2, arg3, arg4);
 }
 
-export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5, arg6) {
-  return window['go']['backend']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5, arg6);
+export function StoreDownloadApp(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['backend']['App']['StoreDownloadApp'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function UpdateConnection(arg1, arg2) {

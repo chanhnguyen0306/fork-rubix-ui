@@ -63,8 +63,8 @@ github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/NubeDev/flow-eng v0.5.4 h1:TX0tc+2R/l/b/8bzgp52Q/ler4Tx1WSDFyt6+9AEfSY=
 github.com/NubeDev/flow-eng v0.5.4/go.mod h1:7BjUV/uKRuYWGEk98m1JwTKVUFrStlb8JFDrbq5CS50=
-github.com/NubeIO/git v0.0.7 h1:5wvEaJLDBSCWRXRhLDXpuJAtBLHrlWhDTV+oQrVk1AE=
-github.com/NubeIO/git v0.0.7/go.mod h1:ZjlhXM823d9sKQjv8d4pRugK9z6xJvPqLLX1onCVTbQ=
+github.com/NubeIO/git v0.0.8 h1:qRC8r8HLaRXs/muKhDa6bIJACbPWiG4BNFlxLutoLz8=
+github.com/NubeIO/git v0.0.8/go.mod h1:ZjlhXM823d9sKQjv8d4pRugK9z6xJvPqLLX1onCVTbQ=
 github.com/NubeIO/lib-date v0.0.6 h1:88Ki7UIOvDEKyd3vKJ7r4fiUeX25Q5iyMO5d0125wrA=
 github.com/NubeIO/lib-date v0.0.6/go.mod h1:VvpSwdwcVCaOgTN+Ad96nHBkFDWTt3VekG933QCtGtc=
 github.com/NubeIO/lib-dhcpd v0.0.2 h1:DC2qcVi3tsRkYlmmlTiZTvsHdFI9/HqSohVj131Pl4I=

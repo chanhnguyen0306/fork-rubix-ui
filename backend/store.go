@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
+	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"path"
 )
 
-func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, arch string, cleanDownload bool) *store.InstallResponse {
+func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, arch string) *store.InstallResponse {
 	out := &store.InstallResponse{}
 	getRelease, err := inst.addRelease(token, releaseVersion)
 	if err != nil {
@@ -18,7 +19,13 @@ func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, ar
 	}
 	for _, app := range getRelease.Apps {
 		if app.Name == appName {
-			asset, err := inst.appStore.GitDownloadZip(token, appName, appVersion, app.Repo, arch, app.DoNotValidateArch, app.IsZiball, cleanDownload)
+			_app := store.App{
+				Name:    appName,
+				Version: appVersion,
+				Repo:    namings.GetRepoNameFromAppName(appName),
+				Arch:    arch,
+			}
+			asset, err := inst.appStore.GitDownloadZip(token, _app, app.DoNotValidateArch, app.IsZiball)
 			if err != nil {
 				inst.uiErrorMessage(fmt.Sprintf("%s app download on local store got error: %s", appName, err.Error()))
 				return nil

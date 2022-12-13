@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/assistcli"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"github.com/NubeIO/rubix-ui/backend/rumodel"
+	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/google/go-github/v32/github"
 	"golang.org/x/oauth2"
 	"os"
@@ -223,12 +224,18 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 			inst.uiErrorMessage(fmt.Sprintf("failed to get git token %s", err))
 			return err
 		}
-		_, err = inst.appStore.DownloadFlowPlugin(token, body.Version, body.Name, body.Arch, true)
+		app := store.App{
+			Name:    body.Name,
+			Version: body.Version,
+			Repo:    constants.FlowFramework,
+			Arch:    body.Arch,
+		}
+		_, err = inst.appStore.DownloadFlowPlugin(token, app)
 		if err != nil {
 			inst.uiErrorMessage(fmt.Sprintf("(step 1 of %s > plugin %s) doesn't exist and download also got failed (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
 			return err
 		}
-		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s > plugin %s) plugin didn't exist and it's downloaded (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s > plugin %s) plugin hadn't existed and it's downloaded (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
 	} else {
 		inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s > plugin %s) plugin already existed and download is skipped (version: %s, arch: %s)", lastStep, body.Name, body.Version, body.Arch))
 	}

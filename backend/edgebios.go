@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-ui/backend/store"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -33,7 +34,13 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 	if err != nil {
 		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) downloaded rubix-edge to local coz it doesn't exist", lastStep))
 		log.Info(fmt.Sprintf("app: %s not found in appStore so download", appName))
-		if err := inst.downloadRubixEdge(token, appName, version, arch.Arch, true); err != nil {
+		app := store.App{
+			Name:    appName,
+			Version: version,
+			Repo:    appName,
+			Arch:    arch.Arch,
+		}
+		if err := inst.downloadRubixEdge(token, app); err != nil {
 			log.Info(err.Error())
 			return err
 		}
@@ -72,9 +79,9 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 	return nil
 }
 
-func (inst *App) downloadRubixEdge(token, appName, version, arch string, cleanDownload bool) error {
-	log.Info(fmt.Sprintf("try to download app: %s version: %s", appName, version))
-	_, err := inst.appStore.GitDownloadZip(token, appName, version, appName, arch, false, false, cleanDownload)
+func (inst *App) downloadRubixEdge(token string, app store.App) error {
+	log.Info(fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
+	_, err := inst.appStore.GitDownloadZip(token, app, false, false)
 	if err != nil {
 		return err
 	}
