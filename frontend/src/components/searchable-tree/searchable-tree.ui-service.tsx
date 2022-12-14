@@ -95,15 +95,9 @@ interface RubixObjectI {
   hosts?: any;
 }
 
-function getTreeObject(item: any, next: string, prependName?: string) {
-  // const location = useLocation();
+const getTreeObject = (item: any, next: string, prependName?: string) => {
   return {
     name: item.name,
-    title: (
-      <NavLink to={next}>
-        <span>{item.name}</span>
-      </NavLink>
-    ),
     label: (
       <NavLink to={next} style={{ color: "unset" }}>
         <span style={{ padding: "10px 0" }}>
@@ -114,12 +108,10 @@ function getTreeObject(item: any, next: string, prependName?: string) {
         </span>
       </NavLink>
     ),
-    uuid: item.uuid,
-    key: item.uuid,
-    // class: next === location.pathname ? "ant-menu-item-selected" : "",
+    key: next,
   };
-}
-export function getTreeDataIterative(connections: any) {
+};
+export const getTreeDataIterative = (connections: any) => {
   return [
     {
       ...getTreeObject(
@@ -232,4 +224,4 @@ export function getTreeDataIterative(connections: any) {
       })),
     },
   ];
-}
+};
