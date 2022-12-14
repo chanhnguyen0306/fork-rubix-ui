@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 
 let ObjectType = {
@@ -96,6 +96,7 @@ interface RubixObjectI {
 }
 
 function getTreeObject(item: any, next: string, prependName?: string) {
+  // const location = useLocation();
   return {
     name: item.name,
     title: (
@@ -104,7 +105,7 @@ function getTreeObject(item: any, next: string, prependName?: string) {
       </NavLink>
     ),
     label: (
-      <NavLink to={next}>
+      <NavLink to={next} style={{ color: "unset" }}>
         <span style={{ padding: "10px 0" }}>
           <span style={{ fontWeight: 200, fontSize: 12, paddingRight: 5 }}>
             {prependName}
@@ -115,9 +116,9 @@ function getTreeObject(item: any, next: string, prependName?: string) {
     ),
     uuid: item.uuid,
     key: item.uuid,
+    // class: next === location.pathname ? "ant-menu-item-selected" : "",
   };
 }
-
 export function getTreeDataIterative(connections: any) {
   return [
     {
