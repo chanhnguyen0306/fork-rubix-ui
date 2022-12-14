@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/rubix-assist/amodel"
-	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/helpers/builds"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"path"
@@ -22,7 +21,6 @@ func (inst *App) StoreDownloadApp(token, releaseVersion, appName, appVersion, ar
 			_app := store.App{
 				Name:    appName,
 				Version: appVersion,
-				Repo:    namings.GetRepoNameFromAppName(appName),
 				Arch:    arch,
 			}
 			asset, err := inst.appStore.GitDownloadZip(token, _app, app.DoNotValidateArch, app.IsZiball)

@@ -8,15 +8,15 @@ import (
 	"github.com/NubeIO/rubix-ui/backend/constants"
 )
 
-func (inst *App) getFlowFrameworkVersion(assistClient *assistcli.Client, hostUUID string) (*string, error, error) {
+func (inst *App) getFlowFrameworkVersion(assistClient *assistcli.Client, hostUUID string) (string, error, error) {
 	appStatus, connectionErr, requestErr := assistClient.EdgeAppStatus(hostUUID, constants.FlowFramework)
 	if connectionErr != nil {
-		return nil, connectionErr, nil
+		return "", connectionErr, nil
 	}
 	if requestErr != nil {
-		return nil, nil, errors.New("flow-framework might not be installed yet")
+		return "", nil, errors.New("flow-framework might not be installed yet")
 	}
-	return &appStatus.Version, nil, nil
+	return appStatus.Version, nil, nil
 }
 
 func (inst *App) restartFlowFramework(assistClient *assistcli.Client, hostUUID string) error {

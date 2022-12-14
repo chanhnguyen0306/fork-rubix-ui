@@ -36,21 +36,22 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	arch = resp.Arch
 
 	inst.uiSuccessMessage(fmt.Sprintf("%s app installation has been started (version: %s, arch: %s)", appName, appVersion, arch))
+
 	_, err = assistClient.EdgeWriteConfig(hostUUID, appName)
 	if err != nil {
 		return inst.fail(fmt.Sprintf("%s app config write failure (%s)", appName, err))
 	}
 
 	isFlowFrameworkInstall := false
-	var releaseVersion *string
+	var releaseVersion string
 	if appName == constants.FlowFramework {
-		releaseVersion = &appVersion // FlowFramework installation should select same release version
+		releaseVersion = appVersion // FlowFramework installation should select same release version
 	} else {
 		ffVersion, connectionErr, _ := inst.getFlowFrameworkVersion(assistClient, hostUUID)
 		if connectionErr != nil {
 			return inst.fail(err)
 		}
-		if ffVersion != nil {
+		if ffVersion != "" {
 			isFlowFrameworkInstall = true
 			releaseVersion = ffVersion
 		} else {
@@ -58,15 +59,17 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			if err != nil {
 				return inst.fail(err)
 			}
-			releaseVersion = &rv
+			releaseVersion = rv
 		}
 	}
 
-	var lastStep = "4"
-	release, err := inst.DB.GetReleaseByVersion(*releaseVersion)
+	var lastStep = "5"
+	release, err := inst.DB.GetReleaseByVersion(releaseVersion)
 	if release == nil {
-		return inst.fail(fmt.Sprintf("failed to find a vaild release version %s", *releaseVersion))
+		return inst.fail(fmt.Sprintf("failed to find release version %s on database", releaseVersion))
 	}
+	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) selected release version: %s", lastStep, releaseVersion))
+
 	var appHasPlugins bool
 	var selectedApp store.Apps
 	for _, app := range release.Apps {
@@ -83,25 +86,33 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		return inst.fail(fmt.Sprintf("%s app has plugin dependency, so you have to install flow-framework at first", appName))
 	}
 
-	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch, appVersion)
+	app := store.App{
+		Name:    appName,
+		Version: appVersion,
+		Arch:    arch,
+	}
+
+	err = inst.appStore.StoreCheckAppAndVersionExists(app)
 	if err != nil {
-		inst.uiSuccessMessage(fmt.Sprintf("%s app not found in app store so downloading it...", appName))
 		token, err := inst.GetGitToken(constants.SettingUUID, false)
 		if err != nil {
 			inst.fail(fmt.Sprintf("failed to get git token %s", err))
 			return nil
 		}
-		inst.StoreDownloadApp(token, *releaseVersion, appName, appVersion, arch)
+		inst.StoreDownloadApp(token, releaseVersion, appName, appVersion, arch)
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s app is downloaded on app store", lastStep, appName))
+	} else {
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s already exist on app store", lastStep, appName))
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 1 of %s) got edge device details with app name %s & release version %s", lastStep, appName, *releaseVersion))
-	_, skip, err := inst.assistAddUploadApp(assistClient, appName, appVersion, arch, selectedApp.DoNotValidateArch)
+
+	_, skip, err := inst.assistAddUploadApp(assistClient, app, selectedApp.DoNotValidateArch)
 	if err != nil {
 		return inst.fail(err)
 	}
 	if skip {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s already exists on rubix-assist server", lastStep, appName))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) %s already exists on rubix-assist server", lastStep, appName))
 	} else {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) %s is uploaded app to rubix-assist server", lastStep, appName))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) %s is uploaded app to rubix-assist server", lastStep, appName))
 	}
 
 	appUpload := amodel.AppUpload{
@@ -115,7 +126,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 	if err != nil {
 		return inst.fail(err)
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 3 of %s) %s app is uploaded to edge", lastStep, appName))
+	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app is uploaded to edge", lastStep, appName))
 
 	if appHasPlugins {
 		_, connectionErr, _ := assistClient.EdgeDeleteDownloadPlugins(hostUUID)
@@ -128,7 +139,7 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 					if err := inst.edgeUploadPlugin(assistClient, hostUUID, &amodel.Plugin{
 						Name:    plg,
 						Arch:    arch,
-						Version: *releaseVersion,
+						Version: releaseVersion,
 					}); err != nil {
 						return inst.fail(err)
 					}
@@ -136,8 +147,9 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 			}
 		}
 	}
+
 	if appName == constants.FlowFramework { // if app is FF then update all the plugins
-		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, *releaseVersion, arch)
+		err := inst.reAddEdgeUploadPlugins(assistClient, hostUUID, releaseVersion, arch)
 		if err != nil {
 			return inst.fail(err)
 		}
@@ -150,11 +162,12 @@ func (inst *App) EdgeInstallApp(connUUID, hostUUID, appName, appVersion string) 
 		AttachWorkingDirOnExecStart: selectedApp.AttachWorkingDirOnExecStart,
 		EnvironmentVars:             selectedApp.EnvironmentVars,
 	}
+
 	_, err = assistClient.EdgeAppInstall(hostUUID, &appInstall)
 	if err != nil {
 		return inst.fail(err)
 	}
-	inst.uiSuccessMessage(fmt.Sprintf("(step 4 of %s) %s app installed on the edge", lastStep, appName))
+	inst.uiSuccessMessage(fmt.Sprintf("(step 5 of %s) %s app installed on the edge", lastStep, appName))
 
 	if appHasPlugins {
 		if err = inst.restartFlowFramework(assistClient, hostUUID); err != nil {

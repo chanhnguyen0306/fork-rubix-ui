@@ -3,8 +3,10 @@ package store
 import (
 	"errors"
 	"github.com/NubeIO/git/pkg/git"
+	"github.com/NubeIO/rubix-assist/namings"
 	"github.com/NubeIO/rubix-ui/backend/constants"
 	"os"
+	"path"
 )
 
 func (inst *AppStore) DownloadFlowPlugin(token string, app App) (*App, error) {
@@ -18,6 +20,7 @@ func (inst *AppStore) DownloadFlowPlugin(token string, app App) (*App, error) {
 
 func (inst *AppStore) GitDownloadZip(token string, app App, doNotValidateArch, isZipball bool) (
 	*App, error) {
+	app.Repo = namings.GetRepoNameFromAppName(app.Name)
 	opts := git.DownloadOptions{
 		MatchArch: !doNotValidateArch,
 		AssetName: app.Repo,
@@ -40,23 +43,38 @@ func (inst *AppStore) gitDownloadZip(token string, app App, isZipball, isPlugin 
 		return nil, errors.New("download_app: app repo can not be empty")
 	}
 
-	gitOptions.DownloadDestination = inst.GetAppStoreAppPath(app.Name, app.Arch, app.Version)
-	if isPlugin {
-		gitOptions.DownloadDestination = inst.Store.UserPluginPath
-	}
-
-	if err := os.MkdirAll(gitOptions.DownloadDestination, os.FileMode(FilePerm)); err != nil {
+	tmpDownloadDir := inst.Store.CreateTmpPath()
+	if err := os.MkdirAll(tmpDownloadDir, os.FileMode(FilePerm)); err != nil {
 		return nil, err
 	}
 
+	var assetName *string
 	var err error
+	gitOptions.DownloadDestination = tmpDownloadDir
 	if isZipball {
-		err = inst.gitDownloadZipball(app.Repo, app.Version, app.Arch, token, gitOptions)
+		assetName, err = inst.gitDownloadZipball(app, token, gitOptions)
 	} else {
-		err = inst.gitDownloadAsset(app.Repo, app.Version, app.Arch, token, gitOptions)
+		assetName, err = inst.gitDownloadAsset(app, token, gitOptions)
 	}
 	if err != nil {
 		return nil, err
 	}
+
+	destination := inst.GetAppStoreAppPath(app)
+	if isPlugin {
+		destination = inst.Store.UserPluginPath
+	}
+	if err = os.MkdirAll(destination, os.FileMode(inst.Store.Perm)); err != nil {
+		return nil, err
+	}
+
+	if err = os.Rename(path.Join(tmpDownloadDir, *assetName), path.Join(destination, *assetName)); err != nil {
+		return nil, err
+	}
+
+	if err = os.Remove(tmpDownloadDir); err != nil {
+		return nil, err
+	}
+
 	return &app, nil
 }

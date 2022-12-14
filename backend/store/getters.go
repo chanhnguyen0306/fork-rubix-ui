@@ -1,10 +1,15 @@
 package store
 
 import (
+	"github.com/NubeIO/lib-uuid/uuid"
 	"path"
 )
 
 // GetAppStoreAppPath get the full app install path and version => ~/rubix/store/apps/rubix-wires/<amd64|armv7>/<version>
-func (inst *AppStore) GetAppStoreAppPath(appName, arch, version string) string {
-	return path.Join(inst.Store.UserStoreAppsPath, appName, arch, version)
+func (inst *AppStore) GetAppStoreAppPath(app App) string {
+	return path.Join(inst.Store.UserStoreAppsPath, app.Name, app.Arch, app.Version)
+}
+
+func (inst *Store) CreateTmpPath() string {
+	return path.Join(inst.UserTmpPath, uuid.ShortUUID("tmp"))
 }

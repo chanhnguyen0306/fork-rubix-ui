@@ -24,50 +24,50 @@ func stringPtrToString(b *string) string {
 	}
 }
 
-func (inst *AppStore) gitDownloadZipball(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *AppStore) gitDownloadZipball(app App, token string, gitOptions git.DownloadOptions) (*string, error) {
 	opts := &git.AssetOptions{
 		Owner: inst.Store.Owner,
-		Repo:  repo,
-		Tag:   version,
-		Arch:  arch,
+		Repo:  app.Repo,
+		Tag:   app.Version,
+		Arch:  app.Arch,
 	}
 	ctx := context.Background()
 	gitClient := git.NewClient(token, opts, ctx)
 	download, err := gitClient.DownloadZipball(gitOptions)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	assetName := download.AssetName
 	log.Infof("git downloaded assest: %s", assetName)
-	return err
+	return &assetName, err
 }
 
-func (inst *AppStore) gitDownloadAsset(repo, version, arch, token string, gitOptions git.DownloadOptions) error {
+func (inst *AppStore) gitDownloadAsset(app App, token string, gitOptions git.DownloadOptions) (*string, error) {
 	if token == "" {
-		return errors.New("git token can not be empty")
+		return nil, errors.New("git token can not be empty")
 	}
 	opts := &git.AssetOptions{
 		Owner: inst.Store.Owner,
-		Repo:  repo,
-		Tag:   version,
-		Arch:  arch,
+		Repo:  app.Repo,
+		Tag:   app.Version,
+		Arch:  app.Arch,
 	}
 	ctx := context.Background()
 	gitClient := git.NewClient(token, opts, ctx)
 	releaseAsset, err := gitClient.GetReleaseAsset(gitOptions)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if releaseAsset == nil {
-		return errors.New("release asset is empty")
+		return nil, errors.New("release asset is empty")
 	}
 	assetName := stringPtrToString(releaseAsset.Name)
 	destination := path.Join(gitOptions.DownloadDestination, assetName)
 	err = gitClient.DownloadReleaseAsset(opts.Owner, opts.Repo, destination, intPtrToInt(releaseAsset.ID))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Infof("git downloaded assest: %s", assetName)
-	return err
+	return &assetName, err
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/NubeIO/lib-files/fileutils"
 	"github.com/NubeIO/rubix-assist/helpers"
 	"io/ioutil"
-	"path"
 )
 
 type App struct {
@@ -16,35 +15,24 @@ type App struct {
 	Arch    string `json:"arch"`
 }
 
-// StoreCheckAppExists  => /user/rubix/store/apps/flow-framework
-func (inst *AppStore) StoreCheckAppExists(appName string) error {
-	if appName == "" {
-		return errors.New("app_name can not be empty")
-	}
-	p := path.Join(inst.Store.UserStoreAppsPath, appName)
-	found := fileutils.DirExists(p)
-	if !found {
-		return errors.New(fmt.Sprintf("failed to find app: %s in app-store", appName))
-	}
-	return nil
-}
-
 // StoreCheckAppAndVersionExists  => /user/rubix/store/apps/flow-framework/v1.1.1
-func (inst *AppStore) StoreCheckAppAndVersionExists(appName, arch, version string) error {
-	if appName == "" {
-		return errors.New("app_name can not be empty")
+func (inst *AppStore) StoreCheckAppAndVersionExists(app App) error {
+	if app.Name == "" {
+		return errors.New("app name can not be empty")
 	}
-	if err := helpers.CheckVersion(version); err != nil {
+	if err := helpers.CheckVersion(app.Version); err != nil {
 		return err
 	}
-	p := inst.GetAppStoreAppPath(appName, arch, version)
+	p := inst.GetAppStoreAppPath(app)
 	found := fileutils.DirExists(p)
 	if !found {
-		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store",
+			app.Name, app.Arch, app.Version))
 	}
 	files, _ := ioutil.ReadDir(p)
 	if len(files) == 0 {
-		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store", appName, arch, version))
+		return errors.New(fmt.Sprintf("failed to find app: %s with arch: %s & version: %s in app store",
+			app.Name, app.Arch, app.Version))
 	}
 	return nil
 }
