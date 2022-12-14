@@ -30,18 +30,17 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 	}
 
 	token, err := inst.GetGitToken(constants.SettingUUID, false)
-	err = inst.appStore.StoreCheckAppAndVersionExists(appName, arch.Arch, version)
+	app := store.App{
+		Name:    appName,
+		Version: version,
+		Arch:    arch.Arch,
+	}
+	err = inst.appStore.StoreCheckAppAndVersionExists(app)
 	if err != nil {
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) downloaded rubix-edge to local coz it doesn't exist", lastStep))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s) downloaded rubix-edge to local coz it doesn't exist",
+			lastStep))
 		log.Info(fmt.Sprintf("app: %s not found in appStore so download", appName))
-		app := store.App{
-			Name:    appName,
-			Version: version,
-			Repo:    appName,
-			Arch:    arch.Arch,
-		}
-		if err := inst.downloadRubixEdge(token, app); err != nil {
-			log.Info(err.Error())
+		if _, err = inst.appStore.GitDownloadZip(token, app, false, false); err != nil {
 			return err
 		}
 	} else {
@@ -54,7 +53,7 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 		return err
 	}
 
-	_, skip, err := inst.assistAddUploadApp(assistClient, appName, version, arch.Arch, true)
+	_, skip, err := inst.assistAddUploadApp(assistClient, app, true)
 	if err != nil {
 		log.Errorf(fmt.Sprintf("(step 3 of %s) failed to upload rubix-edge to rubix-assist server", lastStep))
 	}
@@ -76,14 +75,5 @@ func (inst *App) edgeBiosRubixEdgeInstall(connUUID, hostUUID, version string) er
 		return err
 	}
 	inst.uiSuccessMessage(fmt.Sprintf("(step 5 of %s) installed rubix-edge to edge device", lastStep))
-	return nil
-}
-
-func (inst *App) downloadRubixEdge(token string, app store.App) error {
-	log.Info(fmt.Sprintf("try to download app: %s version: %s", app.Name, app.Version))
-	_, err := inst.appStore.GitDownloadZip(token, app, false, false)
-	if err != nil {
-		return err
-	}
 	return nil
 }

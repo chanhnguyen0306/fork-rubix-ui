@@ -53,7 +53,7 @@ func New(store *Store) (*AppStore, error) {
 		store.UserPluginPath = path.Join(store.UserStorePath, "plugins")
 	}
 	if store.UserTmpPath == "" {
-		store.UserTmpPath = path.Join(store.UserStorePath, "tmp")
+		store.UserTmpPath = path.Join(store.UserPath, "tmp")
 	}
 	if store.Owner == "" {
 		store.Owner = "NubeIO"

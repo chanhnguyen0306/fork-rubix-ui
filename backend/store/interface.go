@@ -8,8 +8,7 @@ type IAppStore interface {
 	StoreListPlugins() ([]builds.BuildDetails, string, error)
 	GitDownloadZip(token string, app App, doNotValidateArch, isZipball bool) (*App, error)
 	DownloadFlowPlugin(token string, app App) (*App, error)
-	GetAppStoreAppPath(appName, arch, version string) string
+	GetAppStoreAppPath(app App) string
 	SaveBackup(fileName string, data interface{}) error
-	StoreCheckAppExists(appName string) error
-	StoreCheckAppAndVersionExists(appName, arch, version string) error
+	StoreCheckAppAndVersionExists(app App) error
 }

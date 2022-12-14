@@ -54,7 +54,7 @@ func (inst *App) EdgeGetPluginsDistribution(connUUID, hostUUID string) *rumodel.
 	githubClient := github.NewClient(oauth2.NewClient(c, tokenSource))
 
 	availablePlugins := make([]rumodel.AvailablePlugin, 0)
-	releases, _, err := githubClient.Repositories.GetReleaseByTag(c, constants.GitHubOwner, constants.FlowFramework, *version)
+	releases, _, err := githubClient.Repositories.GetReleaseByTag(c, constants.GitHubOwner, constants.FlowFramework, version)
 	if err != nil {
 		return inst.fail(err)
 	}
@@ -227,7 +227,6 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 		app := store.App{
 			Name:    body.Name,
 			Version: body.Version,
-			Repo:    constants.FlowFramework,
 			Arch:    body.Arch,
 		}
 		_, err = inst.appStore.DownloadFlowPlugin(token, app)
@@ -266,12 +265,12 @@ func (inst *App) edgeUploadPlugin(assistClient *assistcli.Client, hostUUID strin
 			inst.uiErrorMessage(err)
 			return nil
 		}
-		plg, err := assistClient.StoreUploadPlugin(flowPlugin.ZipName, f)
+		_, err = assistClient.StoreUploadPlugin(flowPlugin.ZipName, f)
 		if err != nil {
 			inst.uiErrorMessage(err)
 			return err
 		}
-		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s > plugin %s) uploaded to rubix-assist", lastStep, plg.UploadedFile))
+		inst.uiSuccessMessage(fmt.Sprintf("(step 2 of %s > plugin %s) uploaded to rubix-assist", lastStep, body.Name))
 	}
 	_, err = assistClient.EdgeUploadPlugin(hostUUID, body)
 	if err != nil {
