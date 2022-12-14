@@ -22,14 +22,9 @@ export const WiresConnections = () => {
   const fetch = async () => {
     try {
       setIsFetching(true);
-      const res = await factory.GetWiresConnections(
-        connUUID,
-        hostUUID,
-        isRemote
-      );
+      const res =
+        (await factory.GetWiresConnections(connUUID, hostUUID, isRemote)) || [];
       setData(res);
-    } catch (error) {
-      setData([]);
     } finally {
       setIsFetching(false);
     }

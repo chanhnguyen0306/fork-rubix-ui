@@ -35,7 +35,7 @@ export const UserGuide = () => {
   const factory = new FlowFactory();
 
   const fetchNodeHelp = async () => {
-    const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || {};
+    const res = (await factory.NodesHelp(connUUID, hostUUID, isRemote)) || [];
     setNodeHelps(res);
     setFilterHelps(res);
   };

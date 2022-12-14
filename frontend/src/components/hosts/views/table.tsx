@@ -1,15 +1,14 @@
-import { Space, Spin, Tooltip, Typography } from "antd";
+import { Space, Spin, Tooltip } from "antd";
 import {
   ArrowRightOutlined,
   DownloadOutlined,
   FormOutlined,
   LinkOutlined,
-  MenuFoldOutlined,
   ScanOutlined,
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { amodel, backend, storage } from "../../../../wailsjs/go/models";
+import { amodel, backend } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
 import {
   RbAddButton,
@@ -19,9 +18,8 @@ import {
 import { HOST_HEADERS } from "../../../constants/headers";
 import { ROUTES } from "../../../constants/routes";
 import { isObjectEmpty } from "../../../utils/utils";
-import { BackupFactory } from "../../backups/factory";
 import { HostsFactory } from "../factory";
-import { BackupModal, CreateEditModal } from "./modals";
+import { CreateEditModal } from "./modals";
 import "./style.css";
 import { TokenModal } from "../../../common/token/token-modal";
 import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
@@ -31,7 +29,6 @@ import { AppInstallInfo } from "./install-app-info";
 
 import Host = amodel.Host;
 import Location = amodel.Location;
-import Backup = storage.Backup;
 import UUIDs = backend.UUIDs;
 
 const ExpandedRow = (props: any) => {
@@ -43,15 +40,13 @@ const ExpandedRow = (props: any) => {
 };
 
 export const HostsTable = (props: any) => {
+  const { connUUID = "", netUUID = "", locUUID = "" } = useParams();
   const { hosts, networks, isFetching, refreshList } = props;
-  let { connUUID = "", netUUID = "", locUUID = "" } = useParams();
-  const [backups, setBackups] = useState([] as Array<Backup>);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
   const [currentHost, setCurrentHost] = useState({} as Host);
   const [hostSchema, setHostSchema] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
-  const [isBackupModalVisible, setIsBackupModalVisible] = useState(false);
   const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] =
     useState(false);
   const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
@@ -59,9 +54,8 @@ export const HostsTable = (props: any) => {
     new EdgeBiosTokenFactory(connUUID)
   );
 
-  let backupFactory = new BackupFactory();
-  let factory = new HostsFactory();
-  let installFactory = new InstallFactory();
+  const factory = new HostsFactory();
+  const installFactory = new InstallFactory();
   factory.connectionUUID = connUUID;
   installFactory.connectionUUID = connUUID;
 
@@ -97,15 +91,6 @@ export const HostsTable = (props: any) => {
               }}
             >
               <FormOutlined />
-            </a>
-          </Tooltip>
-          <Tooltip title="Rubix-Wires and Backup">
-            <a
-              onClick={(e) => {
-                showBackupModal(host, e);
-              }}
-            >
-              <MenuFoldOutlined />
             </a>
           </Tooltip>
           <Tooltip title="Install Rubix Edge">
@@ -145,15 +130,6 @@ export const HostsTable = (props: any) => {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
     },
-  };
-
-  useEffect(() => {
-    fetchBackups().catch(console.log);
-  }, []);
-
-  const fetchBackups = async () => {
-    let res = (await backupFactory.GetBackupsRubixWires()) || [];
-    setBackups(res);
   };
 
   const getSchema = async () => {
@@ -196,12 +172,6 @@ export const HostsTable = (props: any) => {
     setCurrentHost({} as Host);
   };
 
-  const showBackupModal = (host: Host, e: any) => {
-    e.stopPropagation();
-    setCurrentHost(host);
-    setIsBackupModalVisible(true);
-  };
-
   const showRubixEdgeInstallModal = (host: Host, e: any) => {
     e.stopPropagation();
     setCurrentHost(host);
@@ -210,11 +180,6 @@ export const HostsTable = (props: any) => {
 
   const onCloseRubixEdgeInstallModal = () => {
     setIsInstallRubixEdgeModalVisible(false);
-  };
-
-  const onCloseBackupModal = () => {
-    setIsBackupModalVisible(false);
-    setCurrentHost({} as Host);
   };
 
   const showTokenModal = (host: Host, e: any) => {
@@ -254,6 +219,7 @@ export const HostsTable = (props: any) => {
         }}
         expandRowByClick
       />
+
       <CreateEditModal
         hosts={hosts}
         currentHost={currentHost}
@@ -263,13 +229,6 @@ export const HostsTable = (props: any) => {
         connUUID={connUUID}
         refreshList={refreshList}
         onCloseModal={onCloseModal}
-      />
-      <BackupModal
-        isModalVisible={isBackupModalVisible}
-        selectedHost={currentHost}
-        backups={backups}
-        fetchBackups={fetchBackups}
-        onCloseModal={onCloseBackupModal}
       />
       <InstallRubixEdgeModal
         isModalVisible={isInstallRubixEdgeModalVisible}

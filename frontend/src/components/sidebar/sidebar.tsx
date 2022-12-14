@@ -235,7 +235,7 @@ export const MenuSidebar = () => {
       icon: CloudServerOutlined,
       link: ROUTES.CONNECTIONS,
     },
-    { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
+    // { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
     { name: "Tools", icon: ToolOutlined, link: "" },
     { name: "Flow", icon: ApartmentOutlined, link: "" },
   ];
