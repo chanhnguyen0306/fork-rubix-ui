@@ -18,7 +18,7 @@ func main() {
 	var err error
 	app := backend.NewApp()
 	AppMenu := menu.NewMenu()
-	_ = app.GitDownloadAllReleases()
+	_ = app.GitDownloadReleases()
 
 	FileMenu := AppMenu.AddSubmenu("Options")
 	FileMenu.AddSeparator()

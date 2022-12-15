@@ -45,9 +45,9 @@ func TestApp_getLatestReleaseVersion(t *testing.T) {
 	}
 }
 
-func TestApp_GitDownloadAllReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
+func TestApp_GitDownloadReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
 	app := MockNewApp()
-	_ = app.GitDownloadAllReleases()
+	_ = app.GitDownloadReleases()
 }
 
 func TestApp_GetReleases(t *testing.T) { // downloads from GitHub and stores in local json DB

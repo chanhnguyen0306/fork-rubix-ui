@@ -59,7 +59,7 @@ func (inst *App) addRelease(token, version string) (*store.Release, error) {
 	return inst.DB.AddRelease(release)
 }
 
-func (inst *App) GitDownloadAllReleases() *rumodel.Response {
+func (inst *App) GitDownloadReleases() *rumodel.Response {
 	gitToken, err := inst.GetGitToken(constants.SettingUUID, false)
 	if err != nil {
 		return inst.fail(err)

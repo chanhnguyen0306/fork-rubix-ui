@@ -16,7 +16,7 @@ import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
 import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
 import { AppInstallInfo } from "./install-app-info";
-import { GitDownloadAllReleases } from "../../../../wailsjs/go/backend/App";
+import { GitDownloadReleases } from "../../../../wailsjs/go/backend/App";
 import Host = amodel.Host;
 import Location = amodel.Location;
 import UUIDs = backend.UUIDs;
@@ -195,7 +195,7 @@ export const HostsTable = (props: any) => {
   const onSyncReleases = async () => {
     setLoadingSyncReleases(true);
     try {
-      const res = await GitDownloadAllReleases();
+      const res = await GitDownloadReleases();
       if (res.code === 0) {
         openNotificationWithIcon("success", "synced releases successfully");
       } else {

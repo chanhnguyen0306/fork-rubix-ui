@@ -361,9 +361,9 @@ export function GetWriterClones(arg1:string,arg2:string):Promise<Array<model.Wri
 
 export function GetWriters(arg1:string,arg2:string):Promise<Array<model.Writer>>;
 
-export function GitDownloadAllReleases():Promise<rumodel.Response>;
-
 export function GitDownloadRelease(arg1:string,arg2:string):Promise<store.Release>;
+
+export function GitDownloadReleases():Promise<rumodel.Response>;
 
 export function GitListReleases(arg1:string):Promise<Array<store.ReleaseList>>;
 
