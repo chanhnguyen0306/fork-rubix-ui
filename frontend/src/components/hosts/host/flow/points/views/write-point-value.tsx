@@ -45,7 +45,7 @@ export const WritePointValueModal = (props: any) => {
   };
 
   const getNum = (value: any) => {
-    if (value == null) {
+    if (!value) {
       return null;
     }
     if (typeof value === "number") {
@@ -53,7 +53,7 @@ export const WritePointValueModal = (props: any) => {
     }
   };
   const onChange = (value: number, priorityKey: string) => {
-    formData[priorityKey] = Number(value);
+    formData[priorityKey] = getNum(Number(value));
     setFormData(formData);
   };
 
