@@ -11,13 +11,15 @@ import { colors, valueTypeColorMap } from "../util/colors";
 import { isValidConnection } from "../util/isValidConnection";
 import { AutoSizeInput } from "./AutoSizeInput";
 import { InputSocketSpecJSON } from "../lib";
+import { OutputNodeValueType } from "../lib/Nodes/NodeInterface";
+import { isObjectEmpty } from "../../../utils/utils";
 
 export type InputSocketProps = {
   connected?: boolean;
   value: any | undefined;
   minWidth?: number;
   dataInput?: any;
-  dataOutput?: any;
+  dataOutput?: OutputNodeValueType;
   onChange: (key: string, value: any) => void;
   onSetWidthInput?: (width: number) => void;
   isHideConnect?: boolean;
@@ -32,23 +34,24 @@ const getValueOptions = (value: number) => {
       return false;
     case 1:
       return true;
-    case 2:
+    case -1:
       return null;
     default:
-      return false;
+      return true;
   }
 };
 
-const getNumberOptions = (value: boolean | null) => {
+const getNumberOptions = (value: boolean | string | null) => {
   switch (value) {
     case false:
       return 0;
     case true:
       return 1;
     case null:
-      return 2;
+    case 'null':
+      return -1;
     default:
-      return 0;
+      return 1;
   }
 };
 
@@ -104,15 +107,17 @@ export const InputSocket = ({
     onChange(name, value);
   };
 
-  const getDataByConnected = (valueCurrent: number | string | boolean) => {
+  const getDataByConnected = (
+    valueCurrent: any /* number | string | boolean | null */
+  ) => {
     if (!connected) return `${valueCurrent}`;
     if (!dataInput) return valueType === "boolean" ? 1 : "";
 
-    if (connected && dataOutput && dataOutput.length > 0) {
-      let valueOutput = dataOutput[0].value;
-      if (dataOutput[0].dataType === "boolean" && valueOutput !== null) {
+    if (connected && dataOutput && !isObjectEmpty(dataOutput)) {
+      let valueOutput = dataOutput.value;
+      if (dataOutput.dataType === "boolean" && valueOutput !== null) {
         valueOutput = getNumberOptions(valueOutput);
-      } else if (dataOutput[0].dataType === "string" && valueOutput === null) {
+      } else if (dataOutput.dataType === "string" && valueOutput === null) {
         valueOutput = "";
       }
       return valueOutput !== undefined ? `${valueOutput}` : "";
@@ -134,11 +139,11 @@ export const InputSocket = ({
 
   const findBooleanValueInput = () => {
     let value: any = "";
-    if (connected && dataOutput && dataOutput.length > 0) {
+    if (connected && dataOutput) {
       value =
-        typeof dataOutput[0].value === "number"
-          ? getValueOptions(dataOutput[0].value)
-          : getValueOptions(getNumberOptions(dataOutput[0].value));
+        typeof dataOutput.value === "number"
+          ? getValueOptions(dataOutput.value)
+          : getValueOptions(getNumberOptions(dataOutput.value));
     } else if (dataInput && dataInput.length > 0) {
       const input = dataInput.find(
         (item: { pin: string }) => item.pin === name
@@ -223,7 +228,7 @@ export const InputSocket = ({
                 >
                   <option value="1">true</option>
                   <option value="0">false</option>
-                  <option value="2">null</option>
+                  <option value="-1">null</option>
                 </select>
               ))}
           </div>
