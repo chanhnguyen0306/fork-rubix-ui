@@ -125,7 +125,7 @@ export const Node = (props: NodeProps) => {
   const node: NodeInterface | any = nodes.find((item) => item.id === id);
   const pairs = getPairs(
     getInputs(spec.inputs || [], node.data.inputs, node),
-    getOutputs(spec.outputs || [], node.data.out),
+    getOutputs(spec.outputs || [], node.data.out)
   );
 
   const handleSetWidthInput = (width: number) => {
@@ -154,8 +154,17 @@ export const Node = (props: NodeProps) => {
       (item) => item.target === id && item.targetHandle === targetHandle
     );
     if (!edge) return null;
-    const node: any = nodes.find((item) => item.id === edge.source);
-    return node?.data?.out || null;
+
+    /* Find the output of the edge connected */
+    let output = null;
+    const node: NodeInterface | null = nodes.find((item) => item.id === edge.source) || null;
+    if (node?.data?.out) {
+      output =
+        node.data.out.find((item: any) => item.pin === edge.sourceHandle) ||
+        null;
+    }
+
+    return output;
   };
 
   return (

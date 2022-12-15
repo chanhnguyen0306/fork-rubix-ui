@@ -45,3 +45,9 @@ export interface NodeInterface<T = any> {
   status?: any;
   info?: NodeInterfaceInfo;
 }
+
+export type OutputNodeValueType = {
+  pin: string;
+  dataType: string;
+  value: any
+}
