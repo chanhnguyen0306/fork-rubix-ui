@@ -1,3 +1,4 @@
+import { Typography, Card } from "antd";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../../wailsjs/go/models";
@@ -6,6 +7,8 @@ import { FlowFactory } from "../rubix-flow/factory";
 import { WiresConnectionsTable } from "./views/table";
 
 import Connection = db.Connection;
+
+const { Title } = Typography;
 
 export const WiresConnections = () => {
   const [data, setData] = useState([] as Connection[]);
@@ -32,12 +35,17 @@ export const WiresConnections = () => {
 
   return (
     <>
-      <RbRefreshButton refreshList={fetch} />
-      <WiresConnectionsTable
-        data={data}
-        isFetching={isFetching}
-        refreshList={fetch}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Wires Connections
+      </Title>
+      <Card bordered={false}>
+        <RbRefreshButton refreshList={fetch} />
+        <WiresConnectionsTable
+          data={data}
+          isFetching={isFetching}
+          refreshList={fetch}
+        />
+      </Card>
     </>
   );
 };
