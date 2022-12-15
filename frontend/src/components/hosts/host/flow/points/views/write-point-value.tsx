@@ -45,7 +45,7 @@ export const WritePointValueModal = (props: any) => {
   };
 
   const getNum = (value: any) => {
-    if (value == null) {
+    if (!value) {
       return null;
     }
     if (typeof value === "number") {
@@ -67,8 +67,6 @@ export const WritePointValueModal = (props: any) => {
       setConfirmLoading(true);
       await factory.WritePointValue(point.uuid, formData);
       refreshList();
-    } catch (error) {
-      console.log(error);
     } finally {
       setConfirmLoading(false);
     }
