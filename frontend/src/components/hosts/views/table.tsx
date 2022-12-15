@@ -1,23 +1,13 @@
 import { Space, Spin, Tooltip } from "antd";
-import {
-  ArrowRightOutlined,
-  DownloadOutlined,
-  FormOutlined,
-  LinkOutlined,
-  ScanOutlined,
-} from "@ant-design/icons";
+import { ArrowRightOutlined, DownloadOutlined, FormOutlined, LinkOutlined, ScanOutlined, } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { amodel, backend } from "../../../../wailsjs/go/models";
 import RbTable from "../../../common/rb-table";
-import {
-  RbAddButton,
-  RbDeleteButton,
-  RbRefreshButton,
-} from "../../../common/rb-table-actions";
+import { RbAddButton, RbDeleteButton, RbRefreshButton, RbSyncButton, } from "../../../common/rb-table-actions";
 import { HOST_HEADERS } from "../../../constants/headers";
 import { ROUTES } from "../../../constants/routes";
-import { isObjectEmpty } from "../../../utils/utils";
+import { isObjectEmpty, openNotificationWithIcon } from "../../../utils/utils";
 import { HostsFactory } from "../factory";
 import { CreateEditModal } from "./modals";
 import "./style.css";
@@ -26,7 +16,7 @@ import { EdgeBiosTokenFactory } from "../../edgebios/token-factory";
 import { InstallRubixEdgeModal } from "./install-rubix-edge/install-rubix-edge-modal";
 import { InstallFactory } from "./install-rubix-edge/factory";
 import { AppInstallInfo } from "./install-app-info";
-
+import { GitDownloadAllReleases } from "../../../../wailsjs/go/backend/App";
 import Host = amodel.Host;
 import Location = amodel.Location;
 import UUIDs = backend.UUIDs;
@@ -50,6 +40,7 @@ export const HostsTable = (props: any) => {
   const [isInstallRubixEdgeModalVisible, setIsInstallRubixEdgeModalVisible] =
     useState(false);
   const [isTokenModalVisible, setIsTokenModalVisible] = useState(false);
+  const [loadingSyncReleases, setLoadingSyncReleases] = useState(false);
   const [tokenFactory, setTokenFactory] = useState(
     new EdgeBiosTokenFactory(connUUID)
   );
@@ -201,11 +192,28 @@ export const HostsTable = (props: any) => {
     setTokenFactory(_tokenFactory);
   }, [currentHost]);
 
+  const onSyncReleases = async () => {
+    setLoadingSyncReleases(true);
+    try {
+      const res = await GitDownloadAllReleases();
+      if (res.code === 0) {
+        openNotificationWithIcon("success", "synced releases successfully");
+      } else {
+        openNotificationWithIcon("error", res.msg);
+      }
+    } catch (error) {
+      openNotificationWithIcon("error", error);
+    } finally {
+      setLoadingSyncReleases(false);
+    }
+  };
+
   return (
     <div>
       <RbRefreshButton refreshList={refreshList} />
       <RbAddButton handleClick={(e: any) => showModal({} as Host, e)} />
       <RbDeleteButton bulkDelete={bulkDelete} />
+      <RbSyncButton onClick={onSyncReleases} loading={loadingSyncReleases} text="Sync Releases" />
 
       <RbTable
         rowKey="uuid"

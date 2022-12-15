@@ -1,12 +1,12 @@
 import { Button, Popconfirm } from "antd";
 import {
+  DeleteOutlined,
+  ExportOutlined,
+  ImportOutlined,
+  PlayCircleOutlined,
   PlusOutlined,
   ReloadOutlined,
-  DeleteOutlined,
-  ImportOutlined,
-  ExportOutlined,
-  DownloadOutlined,
-  PlayCircleOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 
 export const RbAddButton = (props: any) => {
@@ -81,20 +81,6 @@ export const RbExportButton = (props: any) => {
   );
 };
 
-export const RbDownloadButton = (props: any) => {
-  const { handleClick, disabled, text } = props;
-  return (
-    <Button
-      className="rb-btn download-color white--text"
-      onClick={handleClick}
-      disabled={disabled}
-      icon={<DownloadOutlined />}
-    >
-      {text ?? "Download"}
-    </Button>
-  );
-};
-
 export const RbRestartButton = (props: any) => {
   const { handleClick, disabled, loading, text } = props;
   return (
@@ -106,6 +92,22 @@ export const RbRestartButton = (props: any) => {
       icon={<PlayCircleOutlined />}
     >
       {text ?? "Restart"}
+    </Button>
+  );
+};
+
+export const RbSyncButton = (props: any) => {
+  const { onClick, disabled, loading, style = {}, text } = props;
+  return (
+    <Button
+      className="rb-btn download-color white--text"
+      onClick={onClick}
+      disabled={disabled}
+      icon={<SyncOutlined />}
+      style={{ ...style }}
+      loading={loading}
+    >
+      {text ?? "Sync"}
     </Button>
   );
 };
