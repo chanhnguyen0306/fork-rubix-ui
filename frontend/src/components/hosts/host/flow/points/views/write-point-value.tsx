@@ -53,7 +53,7 @@ export const WritePointValueModal = (props: any) => {
     }
   };
   const onChange = (value: number, priorityKey: string) => {
-    formData[priorityKey] = getNum(Number(value));
+    formData[priorityKey] = Number(value);
     setFormData(formData);
   };
 
@@ -67,8 +67,6 @@ export const WritePointValueModal = (props: any) => {
       setConfirmLoading(true);
       await factory.WritePointValue(point.uuid, formData);
       refreshList();
-    } catch (error) {
-      console.log(error);
     } finally {
       setConfirmLoading(false);
     }
