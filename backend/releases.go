@@ -3,6 +3,7 @@ package backend
 import (
 	"fmt"
 	"github.com/NubeIO/rubix-ui/backend/constants"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 	"github.com/NubeIO/rubix-ui/backend/store"
 	"github.com/hashicorp/go-version"
 	log "github.com/sirupsen/logrus"
@@ -28,10 +29,6 @@ func (inst *App) GetRelease(uuid string) *store.Release {
 }
 
 func (inst *App) getLatestReleaseVersion() (string, error) {
-	err := inst.GitDownloadAllReleases()
-	if err != nil {
-		log.Warning(err)
-	}
 	releases, err := inst.DB.GetReleases()
 	if err != nil {
 		return "", err
@@ -62,22 +59,27 @@ func (inst *App) addRelease(token, version string) (*store.Release, error) {
 	return inst.DB.AddRelease(release)
 }
 
-func (inst *App) GitDownloadAllReleases() error { // This doesn't need to be public for wires-ui frontend
+func (inst *App) GitDownloadAllReleases() *rumodel.Response {
 	gitToken, err := inst.GetGitToken(constants.SettingUUID, false)
 	if err != nil {
-		return err
+		return inst.fail(err)
 	}
 	releases, err := inst.appStore.GitListReleases(gitToken)
 	if err != nil {
-		return err
+		return inst.fail(err)
 	}
+
+	err = inst.DB.DeleteReleases()
+	if err != nil {
+		return inst.fail(err)
+	}
+
 	for _, release := range releases {
-		downloadRelease, err := inst.addRelease(gitToken, release.Path)
+		dRelease, err := inst.addRelease(gitToken, release.Path)
 		if err != nil {
-			log.Infof("Git downloaded error: %s", err.Error())
-			return err
+			return inst.fail(err)
 		}
-		log.Infof("Git downloaded release: %s path: %s name: %s", downloadRelease.Release, release.Path, release.Name)
+		log.Infof("Git downloaded release: %s, path: %s, name: %s", dRelease.Release, release.Path, release.Name)
 	}
-	return nil
+	return inst.success("successfully downloaded releases")
 }

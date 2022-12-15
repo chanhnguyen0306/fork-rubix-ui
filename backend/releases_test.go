@@ -47,10 +47,7 @@ func TestApp_getLatestReleaseVersion(t *testing.T) {
 
 func TestApp_GitDownloadAllReleases(t *testing.T) { // downloads from GitHub and stores in local json DB
 	app := MockNewApp()
-	err := app.GitDownloadAllReleases()
-	if err != nil {
-		fmt.Printf("error: %s\n", err)
-	}
+	_ = app.GitDownloadAllReleases()
 }
 
 func TestApp_GetReleases(t *testing.T) { // downloads from GitHub and stores in local json DB

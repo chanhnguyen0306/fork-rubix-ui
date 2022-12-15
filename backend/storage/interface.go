@@ -8,6 +8,7 @@ type IStorage interface {
 	GetRelease(uuid string) (*store.Release, error)
 	GetReleaseByVersion(version string) (*store.Release, error)
 	DeleteRelease(uuid string) error
+	DeleteReleases() error
 	Add(*RubixConnection) (*RubixConnection, error)
 	Delete(uuid string) error
 	Select(uuid string) (*RubixConnection, error)

@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"github.com/tidwall/buntdb"
 	"log"
 	"os"
@@ -62,7 +63,7 @@ func matchBackupUUID(uuid string) bool {
 
 func matchReleaseUUID(uuid string) bool {
 	if len(uuid) == 16 {
-		if uuid[0:4] == "rel_" {
+		if uuid[0:4] == fmt.Sprintf("%s_", ReleasePrefix) {
 			return true
 		}
 	}
