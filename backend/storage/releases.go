@@ -10,6 +10,8 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
+const ReleasePrefix = "rel"
+
 func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 	rel, _ := inst.GetReleaseByVersion(body.Release)
 	if rel != nil {
@@ -18,7 +20,7 @@ func (inst *db) AddRelease(body *store.Release) (*store.Release, error) {
 			return nil, err
 		}
 	}
-	body.Uuid = uuid.ShortUUID("rel")
+	body.Uuid = uuid.ShortUUID(ReleasePrefix)
 	data, err := json.Marshal(body)
 	if err != nil {
 		log.Error(err)
@@ -108,4 +110,19 @@ func (inst *db) DeleteRelease(uuid string) error {
 		return nil
 	}
 	return errors.New(fmt.Sprintf("uuid %s doesn't exist", uuid))
+}
+
+func (inst *db) DeleteReleases() error {
+	releases, err := inst.GetReleases()
+	if err != nil {
+		return err
+	} else {
+		for _, release := range releases {
+			err = inst.Delete(release.Uuid)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

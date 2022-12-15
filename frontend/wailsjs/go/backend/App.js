@@ -686,12 +686,12 @@ export function GetWriters(arg1, arg2) {
   return window['go']['backend']['App']['GetWriters'](arg1, arg2);
 }
 
-export function GitDownloadAllReleases() {
-  return window['go']['backend']['App']['GitDownloadAllReleases']();
-}
-
 export function GitDownloadRelease(arg1, arg2) {
   return window['go']['backend']['App']['GitDownloadRelease'](arg1, arg2);
+}
+
+export function GitDownloadReleases() {
+  return window['go']['backend']['App']['GitDownloadReleases']();
 }
 
 export function GitListReleases(arg1) {
