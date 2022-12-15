@@ -40,10 +40,12 @@ func (inst *App) DeleteNetworkBulk(connUUID, hostUUID string, networkUUIDs []UUI
 func (inst *App) getNetworksWithPoints(connUUID, hostUUID string) ([]model.Network, error) {
 	client, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.Network{}, err
 	}
 	networks, err := client.FFGetNetworksWithPoints(hostUUID)
 	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return []model.Network{}, err
 	}
 	return networks, nil
@@ -64,6 +66,7 @@ func (inst *App) getNetworks(connUUID, hostUUID string, withDevice bool, overrid
 func (inst *App) GetNetworks(connUUID, hostUUID string, withDevice bool) []model.Network {
 	networks, err := inst.getNetworks(connUUID, hostUUID, withDevice)
 	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -81,6 +84,7 @@ func (inst *App) addNetwork(connUUID, hostUUID string, body *model.Network) (*mo
 func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *model.Network {
 	networks, err := inst.addNetwork(connUUID, hostUUID, body)
 	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return networks
@@ -89,6 +93,7 @@ func (inst *App) AddNetwork(connUUID, hostUUID string, body *model.Network) *mod
 func (inst *App) ImportNetworksBulk(connUUID, hostUUID, backupUUID string) *BulkAddResponse {
 	resp, err := inst.importNetworksBulk(connUUID, hostUUID, backupUUID, true)
 	if err != nil {
+		inst.uiErrorMessage(fmt.Sprintf("error %s", err.Error()))
 		return nil
 	}
 	return resp
