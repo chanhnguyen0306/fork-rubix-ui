@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { Typography, Card } from "antd";
+import { useState, useEffect } from "react";
 import { storage } from "../../../wailsjs/go/models";
+import { ImportJsonModal } from "../../common/import-json-modal";
+import { RbRefreshButton, RbImportButton } from "../../common/rb-table-actions";
 import { openNotificationWithIcon } from "../../utils/utils";
 import { BackupFactory } from "./factory";
 import { BackupsTable } from "./views/table";
-import { RbImportButton, RbRefreshButton } from "../../common/rb-table-actions";
-import { ImportJsonModal } from "../../common/import-json-modal";
+
+const { Title } = Typography;
 
 export const Backups = () => {
   const [backups, setBackups] = useState([] as storage.Backup[]);
@@ -42,14 +45,20 @@ export const Backups = () => {
 
   return (
     <>
-      <RbRefreshButton refreshList={fetch} />
-      <RbImportButton showModal={() => setIsModalVisible(true)} />
-      <BackupsTable
-        data={backups}
-        isFetching={isFetching}
-        setIsFetching={setIsFetching}
-        fetch={fetch}
-      />
+      <Title level={3} style={{ textAlign: "left" }}>
+        Backups
+      </Title>
+      <Card bordered={false}>
+        <RbRefreshButton refreshList={fetch} />
+        <RbImportButton showModal={() => setIsModalVisible(true)} />
+        <BackupsTable
+          data={backups}
+          isFetching={isFetching}
+          setIsFetching={setIsFetching}
+          fetch={fetch}
+        />
+      </Card>
+
       <ImportJsonModal
         isModalVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

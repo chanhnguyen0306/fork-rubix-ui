@@ -1,9 +1,11 @@
-import { Card, Input } from "antd";
+import { Card, Input, Typography } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
 import { JsonTable } from "react-json-to-html";
 import { useParams } from "react-router-dom";
 import { FlowFactory } from "../rubix-flow/factory";
 import "./user-guide.css";
+
+const { Title } = Typography;
 
 const NodeHelpTable = (props: any) => {
   const { item } = props;
@@ -61,6 +63,9 @@ export const UserGuide = () => {
 
   return (
     <>
+      <Title level={3} style={{ textAlign: "left" }}>
+        User Guide
+      </Title>
       <Card bordered={false} className="help-list">
         <Input
           placeholder="Search name..."
