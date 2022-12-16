@@ -3,7 +3,6 @@ import { ClearModal } from "./ClearModal";
 import { HelpModal } from "./HelpModal";
 import { LoadModal } from "./LoadModal";
 import { SaveModal } from "./SaveModal";
-import { flowToBehave } from "../transformers/flowToBehave";
 import { useReactFlow } from "react-flow-renderer/nocss";
 import {
   QuestionCircleOutlined,
@@ -13,11 +12,9 @@ import {
   PlayCircleOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { FlowFactory } from "../factory";
 import { useCtrlPressKey } from "../hooks/useCtrlPressKey";
-import { useParams } from "react-router-dom";
-import { handleNodesEmptySettings } from "../util/handleSettings";
 import { FlowSettings, FlowSettingsModal } from "./FlowSettingsModal";
+import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 type ControlProps = {
   onDeleteEdges: (nodes: any, edges: any) => void;
@@ -26,6 +23,9 @@ type ControlProps = {
   onRedo: () => void;
   onRefreshValues: () => void;
   settings: FlowSettings;
+  selectedNodeForSubFlow?: NodeInterface;
+  onSaveSubFlow: () => void;
+  onHandelSaveFlow: () => void;
   onSaveSettings: (settings: FlowSettings) => void;
 };
 
@@ -37,32 +37,16 @@ const Controls = ({
   onRefreshValues,
   settings,
   onSaveSettings,
+  selectedNodeForSubFlow,
+  onHandelSaveFlow,
+  onSaveSubFlow,
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [settingRefreshModalOpen, setSettingRefreshModalOpen] = useState(false);
-  const { connUUID = "", hostUUID = "" } = useParams();
-  const isRemote = connUUID && hostUUID ? true : false;
   const instance = useReactFlow();
-
-  const factory = new FlowFactory();
-
-  const download = async () => {
-    const nodes = instance.getNodes();
-    const edges = instance.getEdges();
-    const graphJson = flowToBehave(nodes, edges);
-    await factory.DownloadFlow(connUUID, hostUUID, isRemote, graphJson, true);
-
-    const newNodes = await handleNodesEmptySettings(
-      connUUID,
-      hostUUID,
-      isRemote,
-      instance.getNodes()
-    );
-    instance.setNodes(newNodes);
-  };
 
   /* Ctrl + e (key): Save Graph */
   useCtrlPressKey("KeyE", () => {
@@ -131,12 +115,7 @@ const Controls = ({
     const nodeIdCopied = nodesCopied.map((item) => item.id);
     const edgesCopied = instance
       .getEdges()
-      .filter(
-        (item) =>
-          item.selected &&
-          nodeIdCopied.includes(item.source) &&
-          nodeIdCopied.includes(item.target)
-      );
+      .filter((item) => item.selected && nodeIdCopied.includes(item.source) && nodeIdCopied.includes(item.target));
     onCopyNodes({
       nodes: nodesCopied,
       edges: edgesCopied,
@@ -155,7 +134,7 @@ const Controls = ({
 
   /* Ctrl + S (key): Download/deploy flow */
   useCtrlPressKey("KeyS", () => {
-    download();
+    onHandelSaveFlow();
   });
 
   /* Ctrl + X (key): Refresh node values */
@@ -166,6 +145,15 @@ const Controls = ({
   return (
     <>
       <div className="absolute top-4 right-4 bg-white z-10 flex black--text">
+        {!!selectedNodeForSubFlow && (
+          <div
+            className="cursor-pointer border-r bg-white hover:bg-gray-100 px-8"
+            title="Save sub flow"
+            onClick={onSaveSubFlow}
+          >
+            Save Sub Flow
+          </div>
+        )}
         <div
           className="cursor-pointer border-r bg-white hover:bg-gray-100"
           title="Settings refresh value"
@@ -201,21 +189,14 @@ const Controls = ({
         >
           <RestOutlined className="p-2 text-gray-700 align-middle" />
         </div>
-        <div
-          className="cursor-pointer border-r bg-white hover:bg-gray-100"
-          title="Run"
-          onClick={() => download()}
-        >
+        <div className="cursor-pointer border-r bg-white hover:bg-gray-100" title="Run" onClick={onHandelSaveFlow}>
           <PlayCircleOutlined className="p-2 text-gray-700 align-middle" />
         </div>
       </div>
       <LoadModal open={loadModalOpen} onClose={() => setLoadModalOpen(false)} />
       <SaveModal open={saveModalOpen} onClose={() => setSaveModalOpen(false)} />
       <HelpModal open={helpModalOpen} onClose={() => setHelpModalOpen(false)} />
-      <ClearModal
-        open={clearModalOpen}
-        onClose={() => setClearModalOpen(false)}
-      />
+      <ClearModal open={clearModalOpen} onClose={() => setClearModalOpen(false)} />
       <FlowSettingsModal
         settings={settings}
         open={settingRefreshModalOpen}
