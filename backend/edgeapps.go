@@ -227,7 +227,7 @@ func (inst *App) edgeDeviceInfoAndApps(connUUID, hostUUID string) (*rumodel.Edge
 		return nil, errors.New(fmt.Sprintf("failed to find a valid release: %s", *releaseVersion))
 	}
 
-	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
+	deviceInfo, err := assistClient.GetEdgeDeviceInfo(hostUUID)
 	if err != nil {
 		return nil, err
 	}

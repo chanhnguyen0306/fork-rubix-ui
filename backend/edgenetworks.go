@@ -83,7 +83,7 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	if err != nil {
 		inst.uiErrorMessage(err)
 	}
-	deviceInfo, err := assistClient.EdgeDeviceInfo(hostUUID)
+	deviceInfo, err := assistClient.GetEdgeDeviceInfo(hostUUID)
 	deviceType := deviceInfo.DeviceType
 	if rcNetworkBody != nil {
 		inst.uiErrorMessage(fmt.Sprintf("body can not be empty"))
@@ -197,7 +197,7 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		ConnUUID: connUUID,
 	})
 
-	deviceInfo, err := client.EdgeDeviceInfo(hostUUID)
+	deviceInfo, err := client.GetEdgeDeviceInfo(hostUUID)
 	if err != nil {
 		return false, err
 	}
