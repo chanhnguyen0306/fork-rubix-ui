@@ -107,15 +107,13 @@ export const CONSUMER_HEADERS = [
     key: "producer_thing_class",
     title: "producer thing class",
     dataIndex: "producer_thing_class",
-    sorter: (a: any, b: any) =>
-      a.producer_thing_class.localeCompare(b.producer_thing_class),
+    sorter: (a: any, b: any) => a.producer_thing_class.localeCompare(b.producer_thing_class),
   },
   {
     key: "producer_thing_name",
     title: "producer thing name",
     dataIndex: "producer_thing_name",
-    sorter: (a: any, b: any) =>
-      a.producer_thing_name.localeCompare(b.producer_thing_name),
+    sorter: (a: any, b: any) => a.producer_thing_name.localeCompare(b.producer_thing_name),
   },
   {
     key: "uuid",
@@ -135,22 +133,19 @@ export const PRODUCER_HEADERS = [
     key: "producer_application",
     title: "application",
     dataIndex: "producer_application",
-    sorter: (a: any, b: any) =>
-      a.producer_application.localeCompare(b.producer_application),
+    sorter: (a: any, b: any) => a.producer_application.localeCompare(b.producer_application),
   },
   {
     key: "producer_thing_class",
     title: "thing class",
     dataIndex: "producer_thing_class",
-    sorter: (a: any, b: any) =>
-      a.producer_thing_class.localeCompare(b.producer_thing_class),
+    sorter: (a: any, b: any) => a.producer_thing_class.localeCompare(b.producer_thing_class),
   },
   {
     key: "producer_thing_name",
     title: "thing name",
     dataIndex: "producer_thing_name",
-    sorter: (a: any, b: any) =>
-      a.producer_thing_name.localeCompare(b.producer_thing_name),
+    sorter: (a: any, b: any) => a.producer_thing_name.localeCompare(b.producer_thing_name),
   },
   {
     key: "history_type",
@@ -196,15 +191,13 @@ export const WRITER_HEADERS = [
     key: "writer_thing_class",
     title: "writer thing class",
     dataIndex: "writer_thing_class",
-    sorter: (a: any, b: any) =>
-      a.writer_thing_class.localeCompare(b.writer_thing_class),
+    sorter: (a: any, b: any) => a.writer_thing_class.localeCompare(b.writer_thing_class),
   },
   {
     key: "writer_thing_name",
     title: "writer thing name",
     dataIndex: "writer_thing_name",
-    sorter: (a: any, b: any) =>
-      a.writer_thing_name.localeCompare(b.writer_thing_name),
+    sorter: (a: any, b: any) => a.writer_thing_name.localeCompare(b.writer_thing_name),
   },
   {
     key: "uuid",
@@ -431,6 +424,10 @@ export const FLOW_POINT_HEADERS = [
     },
     sorter: (a: any, b: any) => a.io_type.localeCompare(b.io_type),
   },
+];
+
+export const FLOW_POINT_HEADERS_TABLE = [
+  //will render in the table but not the form
   {
     title: "present value",
     dataIndex: "present_value",
@@ -442,6 +439,23 @@ export const FLOW_POINT_HEADERS = [
       }
     },
     sorter: (a: any, b: any) => a.present_value - b.present_value,
+  },
+  {
+    title: "write value",
+    dataIndex: "write_value",
+    key: "write_value",
+    render(write_value: number) {
+      if (write_value != undefined) {
+        let colour = "#4d4dff";
+        return <Tag color={colour}>{write_value}</Tag>;
+      }
+    },
+    sorter: (a: any, b: any) => a.write_value - b.write_value,
+  },
+  {
+    title: "message",
+    dataIndex: "message",
+    key: "message",
   },
 ];
 
@@ -514,8 +528,7 @@ export const BACNET_HEADERS = [
     title: "device id",
     dataIndex: "device_object_id",
     key: "device_object_id",
-    sorter: (a: any, b: any) =>
-      a.device_object_id.localeCompare(b.device_object_id),
+    sorter: (a: any, b: any) => a.device_object_id.localeCompare(b.device_object_id),
   },
   {
     title: "ip",
@@ -561,8 +574,7 @@ export const BACKUP_HEADERS = [
     title: "connection name",
     dataIndex: "connection_name",
     key: "connection_name",
-    sorter: (a: any, b: any) =>
-      a.connection_name.localeCompare(b.connection_name),
+    sorter: (a: any, b: any) => a.connection_name.localeCompare(b.connection_name),
   },
   {
     title: "connection uuid",
@@ -621,9 +633,7 @@ export const SCANNER_HEADERS = [
     title: "Port",
     dataIndex: "ports",
     render: (services: any[]) =>
-      services.map((service, index) => (
-        <p key={index}> {`${service.service}: ${service.port}`} </p>
-      )),
+      services.map((service, index) => <p key={index}> {`${service.service}: ${service.port}`} </p>),
     key: "ports",
   },
 ];

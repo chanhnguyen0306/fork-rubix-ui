@@ -13,18 +13,14 @@ import {
 } from "../../../../../../common/rb-table-actions";
 import RbTableFilterNameInput from "../../../../../../common/rb-table-filter-name-input";
 import MassEdit from "../../../../../../common/mass-edit";
-import { FLOW_POINT_HEADERS } from "../../../../../../constants/headers";
+import { FLOW_POINT_HEADERS, FLOW_POINT_HEADERS_TABLE } from "../../../../../../constants/headers";
 import { openNotificationWithIcon } from "../../../../../../utils/utils";
 import { FlowNetworkFactory } from "../../networks/factory";
 import { FlowPluginFactory } from "../../plugins/factory";
 import { FlowPointFactory } from "../factory";
 import { CreateBulkModal, CreateModal } from "./create";
 import { EditModal } from "./edit";
-import {
-  ExportModal,
-  ImportExcelModal,
-  ImportJsonModal,
-} from "./import-export";
+import { ExportModal, ImportExcelModal, ImportJsonModal } from "./import-export";
 import { WritePointValueModal } from "./write-point-value";
 import { SELECTED_ITEMS } from "../../../../../rubix-flow/use-nodes-spec";
 
@@ -32,15 +28,8 @@ import Point = model.Point;
 import UUIDs = backend.UUIDs;
 
 export const FlowPointsTable = (props: any) => {
-  const {
-    connUUID = "",
-    networkUUID = "",
-    hostUUID = "",
-    deviceUUID = "",
-    pluginName = "",
-  } = useParams();
+  const { connUUID = "", hostUUID = "", deviceUUID = "", pluginName = "" } = useParams();
   const { data, isFetching, refreshList, dataSource, setDataSource } = props;
-  const [pluginUUID, setPluginUUID] = useState<any>();
   const [schema, setSchema] = useState({} as any);
   const [currentItem, setCurrentItem] = useState({} as Point);
   const [selectedUUIDs, setSelectedUUIDs] = useState([] as Array<UUIDs>);
@@ -48,35 +37,22 @@ export const FlowPointsTable = (props: any) => {
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isCreateBulkModalVisible, setIsCreateBulkModalVisible] =
-    useState(false);
+  const [isCreateBulkModalVisible, setIsCreateBulkModalVisible] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
-  const [isWritePointModalVisible, setIsWritePointModalVisible] =
-    useState(false);
+  const [isWritePointModalVisible, setIsWritePointModalVisible] = useState(false);
 
   const flowPointFactory = new FlowPointFactory();
   const flowNetworkFactory = new FlowNetworkFactory();
   const flowPluginFactory = new FlowPluginFactory();
-  flowPointFactory.connectionUUID =
-    flowNetworkFactory.connectionUUID =
-    flowPluginFactory.connectionUUID =
-      connUUID;
-  flowPointFactory.hostUUID =
-    flowNetworkFactory.hostUUID =
-    flowPluginFactory.hostUUID =
-      hostUUID;
+  flowPointFactory.connectionUUID = flowNetworkFactory.connectionUUID = flowPluginFactory.connectionUUID = connUUID;
+  flowPointFactory.hostUUID = flowNetworkFactory.hostUUID = flowPluginFactory.hostUUID = hostUUID;
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: any) => {
       setSelectedUUIDs(selectedRows);
       localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedRows));
     },
-  };
-
-  const setPlugin = async () => {
-    const res = await flowNetworkFactory.GetOne(networkUUID, false);
-    if (res) setPluginUUID(res.plugin_conf_id);
   };
 
   const bulkDelete = async () => {
@@ -124,12 +100,7 @@ export const FlowPointsTable = (props: any) => {
         },
         sorter: (a: any, b: any) => a.name.localeCompare(b.name),
         filterDropdown: () => {
-          return (
-            <RbTableFilterNameInput
-              defaultData={data}
-              setFilteredData={setDataSource}
-            />
-          );
+          return <RbTableFilterNameInput defaultData={data} setFilteredData={setDataSource} />;
         },
       },
       ...FLOW_POINT_HEADERS,
@@ -139,10 +110,7 @@ export const FlowPointsTable = (props: any) => {
     const columnKeys = columns.map((c: any) => c.key);
     let headers = Object.keys(schema).map((key) => {
       return {
-        title:
-          key === "name" || key === "uuid"
-            ? key.replaceAll("_", " ")
-            : MassEditTitle(key, schema),
+        title: key === "name" || key === "uuid" ? key.replaceAll("_", " ") : MassEditTitle(key, schema),
         dataIndex: key,
         key: key,
         sorter: (a: any, b: any) => {
@@ -160,9 +128,7 @@ export const FlowPointsTable = (props: any) => {
     //styling columns
     headers = headers.map((header: any) => {
       if (columnKeys.includes(header.key)) {
-        const headerFromColumns = columns.find(
-          (col: any) => col.key === header.key
-        );
+        const headerFromColumns = columns.find((col: any) => col.key === header.key);
         headerFromColumns.title = header.title;
         return headerFromColumns;
       } else {
@@ -172,6 +138,7 @@ export const FlowPointsTable = (props: any) => {
 
     const headerWithActions = [
       ...headers,
+      ...FLOW_POINT_HEADERS_TABLE,
       {
         title: "plugin name",
         key: "plugin_name",
@@ -210,19 +177,15 @@ export const FlowPointsTable = (props: any) => {
         ),
       },
     ];
-
     setTableHeaders(headerWithActions);
   };
 
   const MassEditTitle = (key: string, schema: any) => {
-    return (
-      <MassEdit fullSchema={schema} keyName={key} handleOk={handleMassEdit} />
-    );
+    return <MassEdit fullSchema={schema} keyName={key} handleOk={handleMassEdit} />;
   };
 
   const handleMassEdit = async (updateData: any) => {
-    const selectedItems =
-      JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
+    const selectedItems = JSON.parse("" + localStorage.getItem(SELECTED_ITEMS)) || [];
     const promises = [];
     for (let item of selectedItems) {
       item = { ...item, ...updateData };
@@ -268,7 +231,6 @@ export const FlowPointsTable = (props: any) => {
 
   useEffect(() => {
     localStorage.setItem(SELECTED_ITEMS, JSON.stringify(selectedUUIDs));
-    setPlugin();
     return () => {
       localStorage.removeItem(SELECTED_ITEMS);
     };
