@@ -17,14 +17,13 @@ import { FlowSettings, FlowSettingsModal } from "./FlowSettingsModal";
 import { NodeInterface } from "../lib/Nodes/NodeInterface";
 
 type ControlProps = {
-  onDeleteEdges: (nodes: any, edges: any) => void;
+  onDeleteEdges: (nodesDeleted: any, edgesDeleted: any) => void;
   onCopyNodes: (nodes: any) => void;
   onUndo: () => void;
   onRedo: () => void;
   onRefreshValues: () => void;
   settings: FlowSettings;
   selectedNodeForSubFlow?: NodeInterface;
-  onSaveSubFlow: () => void;
   onHandelSaveFlow: () => void;
   onSaveSettings: (settings: FlowSettings) => void;
 };
@@ -39,7 +38,6 @@ const Controls = ({
   onSaveSettings,
   selectedNodeForSubFlow,
   onHandelSaveFlow,
-  onSaveSubFlow,
 }: ControlProps) => {
   const [loadModalOpen, setLoadModalOpen] = useState(false);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -58,19 +56,16 @@ const Controls = ({
     setLoadModalOpen(true);
   });
 
-  /* Ctrl + d (key): Delete items selected
-  useCtrlPressKey("KeyD", () => {
+  /* Ctrl + Delete (key): Delete items selected  */
+  useCtrlPressKey("Backspace", () => {
     const _nodes = instance.getNodes();
     const _edges = instance.getEdges();
 
-    const newNodes = _nodes.filter((item) => !item.selected);
-    const newEdges = _edges.filter((item) => !item.selected);
+    const nodesDeleted = _nodes.filter((item) => item.selected);
+    const edgesDeleted = _edges.filter((item) => item.selected);
 
-    instance.setNodes(newNodes);
-    instance.setEdges(newEdges);
-
-    onDeleteEdges(newNodes, newEdges);
-  }); */
+    onDeleteEdges(nodesDeleted, edgesDeleted);
+  });
 
   /* Ctrl + a (key): Select all items */
   useCtrlPressKey("KeyA", () => {
@@ -149,7 +144,7 @@ const Controls = ({
           <div
             className="cursor-pointer border-r bg-white hover:bg-gray-100 px-8"
             title="Save sub flow"
-            onClick={onSaveSubFlow}
+            onClick={onHandelSaveFlow}
           >
             Save Sub Flow
           </div>

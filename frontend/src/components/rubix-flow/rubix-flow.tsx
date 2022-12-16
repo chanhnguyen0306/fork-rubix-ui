@@ -103,12 +103,10 @@ const Flow = (props: any) => {
 
   // delete selected wires
   useOnPressKey("Backspace", () => {
-    const newEdges = edges.filter((item) => !item.selected);
-    setEdges(newEdges);
-    setUndoable({
-      nodes,
-      edges: newEdges,
-    });
+    const edgesDeleted = edges.filter((item) => item.selected);
+    if (edgesDeleted.length > 0) {
+      updateCurrentNodesAndEdges([], edgesDeleted)
+    }
   });
 
   const onMove = () => setShouldUpdateMiniMap((s) => !s);
@@ -202,6 +200,7 @@ const Flow = (props: any) => {
     setCurrentNodesAndEdges({ nodes: [], edges: [] });
     setSelectedNodeForSubFlow(undefined);
     setNodes(newNodes);
+    setEdges(allEdges);
   };
 
   const handleStartConnect = (e: ReactMouseEvent, params: OnConnectStartParams) => {
@@ -406,10 +405,36 @@ const Flow = (props: any) => {
     if (undoable.nodes && undoable.nodes.length === 0) redo();
   };
 
-  const handleDeleteEdges = (_nodes: any, _edges: any) => {
+  const updateCurrentNodesAndEdges = (_nodesDeleted: any, _edgesDeleted: any) => {
+    const nodesWillHandle = selectedNodeForSubFlow ? currentNodesAndEdges.nodes : nodes;
+    const edgesWillHandle = selectedNodeForSubFlow ? currentNodesAndEdges.edges : edges;
+
+    const newNodes = nodesWillHandle.filter((currItem: NodeInterface) => {
+      const item = _nodesDeleted.find((nodeDeleted: NodeInterface) => {
+        if (nodeDeleted.isParent) {
+          return nodeDeleted.id === currItem.id || nodeDeleted.id === currItem.parentId;
+        }
+        return nodeDeleted.id === currItem.id;
+      });
+      return !item;
+    });
+
+    const newEdges = edgesWillHandle.filter((currItem) => {
+      const item = _edgesDeleted.find((edge: NodeInterface) => edge.id === currItem.id);
+      return !item;
+    });
+
+    if (selectedNodeForSubFlow) {
+      setCurrentNodesAndEdges({
+        nodes: newNodes,
+        edges: newEdges,
+      });
+    }
+    setNodes(newNodes);
+    setEdges(newEdges);
     setUndoable({
-      nodes: _nodes,
-      edges: _edges,
+      nodes: newNodes,
+      edges: newEdges,
     });
   };
 
@@ -578,6 +603,8 @@ const Flow = (props: any) => {
     };
   }, [selectedNodeForSubFlow, nodes, edges]);
 
+  const { nodes: nodesFiltered, edges: edgesFiltered } = getNodesAndEdges();
+
   return (
     <div className="rubix-flow">
       <ReactFlowProvider>
@@ -586,7 +613,8 @@ const Flow = (props: any) => {
           <ReactFlow
             nodeTypes={customNodeTypes}
             edgeTypes={edgeTypes}
-            {...getNodesAndEdges()}
+            nodes={nodesFiltered}
+            edges={edgesFiltered}
             onMove={onMove}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
@@ -608,7 +636,7 @@ const Flow = (props: any) => {
             <DragSelection />
             {flowSettings.showMiniMap && (
               <MiniMap
-                nodes={nodes}
+                nodes={nodesFiltered}
                 shouldUpdate={shouldUpdateMiniMap}
                 className={cx("absolute", {
                   "top-20 right-4": flowSettings.positionMiniMap === "top",
@@ -626,7 +654,7 @@ const Flow = (props: any) => {
             <Controls />
             <Background variant={BackgroundVariant.Lines} color="#353639" style={{ backgroundColor: "#1E1F22" }} />
             <BehaveControls
-              onDeleteEdges={handleDeleteEdges}
+              onDeleteEdges={updateCurrentNodesAndEdges}
               onCopyNodes={handleCopyNodes}
               onUndo={undo}
               onRedo={handleRedo}
@@ -634,13 +662,12 @@ const Flow = (props: any) => {
               settings={flowSettings}
               onSaveSettings={onSaveFlowSettings}
               selectedNodeForSubFlow={selectedNodeForSubFlow}
-              onSaveSubFlow={onSaveSubFlow}
               onHandelSaveFlow={onHandelSaveFlow}
             />
             {nodePickerVisibility && (
               <NodePicker
                 position={nodePickerVisibility}
-                filters={getNodePickerFilters(nodes, lastConnectStart)}
+                filters={getNodePickerFilters(nodesFiltered, lastConnectStart)}
                 onPickNode={handleAddNode}
                 onClose={closeNodePicker}
               />
