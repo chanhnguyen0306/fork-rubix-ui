@@ -5,9 +5,10 @@ import (
 	"github.com/NubeIO/rubix-assist/amodel"
 	"github.com/NubeIO/rubix-assist/service/clients/helpers/nresty"
 	"github.com/NubeIO/rubix-registry-go/rubixregistry"
+	"github.com/NubeIO/rubix-ui/backend/constants"
 )
 
-func (inst *Client) EdgeDeviceInfo(hostIDName string) (*rubixregistry.DeviceInfo, error) {
+func (inst *Client) GetEdgeDeviceInfo(hostIDName string) (*rubixregistry.DeviceInfo, error) {
 	url := fmt.Sprintf("/proxy/edge/api/system/device")
 	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
 		SetHeader("host_uuid", hostIDName).
@@ -17,7 +18,30 @@ func (inst *Client) EdgeDeviceInfo(hostIDName string) (*rubixregistry.DeviceInfo
 	if err != nil {
 		return nil, err
 	}
-	return resp.Result().(*rubixregistry.DeviceInfo), nil
+	deviceInfo := resp.Result().(*rubixregistry.DeviceInfo)
+	if deviceInfo.DeviceType == "" {
+		deviceInfo.DeviceType = constants.Cloud.String()
+	}
+	return deviceInfo, nil
+}
+
+func (inst *Client) UpdateEdgeDeviceInfo(hostIDName string, body *rubixregistry.DeviceInfo) (*rubixregistry.DeviceInfo,
+	error) {
+	url := fmt.Sprintf("/proxy/edge/api/system/device")
+	resp, err := nresty.FormatRestyResponse(inst.Rest.R().
+		SetHeader("host_uuid", hostIDName).
+		SetHeader("host_name", hostIDName).
+		SetBody(body).
+		SetResult(&rubixregistry.DeviceInfo{}).
+		Patch(url))
+	if err != nil {
+		return nil, err
+	}
+	deviceInfo := resp.Result().(*rubixregistry.DeviceInfo)
+	if deviceInfo.DeviceType == "" {
+		deviceInfo.DeviceType = constants.Cloud.String()
+	}
+	return deviceInfo, nil
 }
 
 func (inst *Client) EdgeSystemCtlAction(hostIDName, serviceName string, action amodel.Action) (*amodel.Message, error) {
