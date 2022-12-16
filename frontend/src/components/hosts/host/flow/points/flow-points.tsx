@@ -47,14 +47,8 @@ export const FlowPoints = () => {
 
   const flowPointFactory = new FlowPointFactory();
   const bacnetFactory = new BacnetFactory();
-  flowPointFactory.connectionUUID =
-    bacnetFactory.connectionUUID =
-    flowDeviceFactory.connectionUUID =
-      connUUID;
-  flowPointFactory.hostUUID =
-    bacnetFactory.hostUUID =
-    flowDeviceFactory.hostUUID =
-      hostUUID;
+  flowPointFactory.connectionUUID = bacnetFactory.connectionUUID = flowDeviceFactory.connectionUUID = connUUID;
+  flowPointFactory.hostUUID = bacnetFactory.hostUUID = flowDeviceFactory.hostUUID = hostUUID;
   flowDeviceFactory.uuid = deviceUUID;
 
   const routes = [
@@ -67,10 +61,7 @@ export const FlowPoints = () => {
       breadcrumbName: "Location",
     },
     {
-      path: ROUTES.LOCATION_NETWORKS.replace(
-        ":connUUID",
-        connUUID || ""
-      ).replace(":locUUID", locUUID || ""),
+      path: ROUTES.LOCATION_NETWORKS.replace(":connUUID", connUUID || "").replace(":locUUID", locUUID || ""),
       breadcrumbName: "Group",
     },
     {
@@ -114,11 +105,7 @@ export const FlowPoints = () => {
   }, [settings.auto_refresh_enable, settings.auto_refresh_rate]); //handle auto refresh points
 
   const startInterval = () => {
-    if (
-      settings.auto_refresh_enable &&
-      settings.auto_refresh_rate &&
-      settings.auto_refresh_rate !== 0
-    ) {
+    if (settings.auto_refresh_enable && settings.auto_refresh_rate && settings.auto_refresh_rate !== 0) {
       const intervalId = setInterval(() => {
         fetch();
       }, settings.auto_refresh_rate);
@@ -147,11 +134,7 @@ export const FlowPoints = () => {
   const runDiscover = async () => {
     try {
       setIsFetchingDiscoveries(true);
-      const res = await bacnetFactory.DiscoverDevicePoints(
-        deviceUUID,
-        false,
-        false
-      );
+      const res = await bacnetFactory.DiscoverDevicePoints(deviceUUID, false, false);
       if (res) {
         openNotificationWithIcon("success", `discoveries: ${res.length}`);
       }
@@ -189,11 +172,7 @@ export const FlowPoints = () => {
           </TabPane>
           {pluginName === PLUGINS.bacnetmaster ? (
             <TabPane tab={discover} key={discover}>
-              <Button
-                type="primary"
-                onClick={runDiscover}
-                style={{ margin: "0 6px 10px 0", float: "left" }}
-              >
+              <Button type="primary" onClick={runDiscover} style={{ margin: "0 6px 10px 0", float: "left" }}>
                 <RedoOutlined /> Discover
               </Button>
               <BacnetWhoIsTable
