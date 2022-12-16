@@ -1,10 +1,10 @@
 import {
-  EdgeEnablePlugins,
+  EdgeEnablePlugins, EdgeGetConfigPlugin,
   EdgeGetPlugins,
   EdgeGetPluginsDistribution,
   EdgeInstallPlugin,
   EdgeRestartPlugins,
-  EdgeUninstallPlugin,
+  EdgeUninstallPlugin, EdgeUpdateConfigPlugin,
 } from "../../../../../../wailsjs/go/backend/App";
 import { Helpers } from "../../../../../helpers/checks";
 
@@ -53,5 +53,13 @@ export class FlowPluginFactory {
 
   async UnInstallPlugin(connUUID: string, hostUUID: string, pluginName: string): Promise<any> {
     return await EdgeUninstallPlugin(connUUID, hostUUID, pluginName);
+  }
+
+  async EdgeGetConfigPlugin(connUUID: string, hostUUID: string, pluginName: string): Promise<any> {
+    return await EdgeGetConfigPlugin(connUUID, hostUUID, pluginName);
+  }
+
+  async EdgeUpdateConfigPlugin(connUUID: string, hostUUID: string, pluginName: string, config: string): Promise<any> {
+    return await EdgeUpdateConfigPlugin(connUUID, hostUUID, pluginName, config);
   }
 }
