@@ -28,7 +28,7 @@ import Point = model.Point;
 import UUIDs = backend.UUIDs;
 
 export const FlowPointsTable = (props: any) => {
-  const { connUUID = "", networkUUID = "", hostUUID = "", deviceUUID = "", pluginName = "" } = useParams();
+  const { connUUID = "", hostUUID = "", deviceUUID = "", pluginName = "" } = useParams();
   const { data, isFetching, refreshList, dataSource, setDataSource } = props;
   const [schema, setSchema] = useState({} as any);
   const [currentItem, setCurrentItem] = useState({} as Point);
@@ -177,8 +177,6 @@ export const FlowPointsTable = (props: any) => {
         ),
       },
     ];
-    console.log(headerWithActions);
-
     setTableHeaders(headerWithActions);
   };
 
