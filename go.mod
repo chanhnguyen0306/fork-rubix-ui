@@ -9,7 +9,7 @@ go 1.18
 //replace github.com/NubeIO/rubix-edge => /Users/raibnod/Enviro/rubix-edge
 
 require (
-	github.com/NubeDev/flow-eng v0.5.4
+	github.com/NubeDev/flow-eng v0.5.9
 	github.com/NubeIO/git v0.0.8
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-dhcpd v0.0.2
@@ -23,7 +23,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.3.7
 	github.com/NubeIO/rubix-assist v0.8.0
 	github.com/NubeIO/rubix-edge v0.3.0
-	github.com/NubeIO/rubix-edge-wires v0.1.4
+	github.com/NubeIO/rubix-edge-wires v0.1.9
 	github.com/NubeIO/rubix-registry-go v1.0.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v32 v32.1.0
@@ -49,10 +49,8 @@ require (
 	github.com/NubeIO/lib-systemctl-go v0.2.0 // indirect
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-modbus-go v0.0.4 // indirect
-	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.8 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/dop251/goja v0.0.0-20220915101355-d79e1b125a30 // indirect
