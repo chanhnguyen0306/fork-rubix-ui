@@ -29,7 +29,6 @@ export interface NodeInterface<T = any> {
   dragHandle?: string;
   width?: number | null;
   height?: number | null;
-  originalHeight?: number | null;
   parentNode?: string;
   zIndex?: number;
   extent?: "parent" | CoordinateExtent;

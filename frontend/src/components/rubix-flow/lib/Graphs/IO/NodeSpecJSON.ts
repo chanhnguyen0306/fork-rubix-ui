@@ -22,7 +22,6 @@ export type MetadataSpecJSON = {
 }
 
 export type NodeSpecJSON = {
-  id?: string;
   allowSettings: boolean;
   type: string;
   category: NodeCategory;
