@@ -237,7 +237,7 @@ export const MenuSidebar = () => {
     },
     // { name: "App Store", icon: AppstoreOutlined, link: ROUTES.APP_STORE },
     { name: "Tools", icon: ToolOutlined, link: "" },
-    { name: "Flow", icon: ApartmentOutlined, link: "" },
+    { name: "Local-Rubix-Wires", icon: ApartmentOutlined, link: "" },
   ];
 
   const menuItems: MenuProps["items"] = sidebarItems.map((item) => {
@@ -276,7 +276,7 @@ export const MenuSidebar = () => {
       };
     }
 
-    if (name === "Flow") {
+    if (name === "Local-Rubix-Wires") {
       return {
         key: name,
         icon: <Icon />,
@@ -286,19 +286,19 @@ export const MenuSidebar = () => {
           {
             key: ROUTES.RUBIX_FLOW,
             name: ROUTES.RUBIX_FLOW,
-            label: <NavLink to={ROUTES.RUBIX_FLOW}>Flow</NavLink>,
+            label: <NavLink to={ROUTES.RUBIX_FLOW}>Rubix-Wires Editor</NavLink>,
           },
           {
             key: ROUTES.WIRES_CONNECTIONS,
             name: ROUTES.WIRES_CONNECTIONS,
             label: (
-              <NavLink to={ROUTES.WIRES_CONNECTIONS}>Wires Connections</NavLink>
+              <NavLink to={ROUTES.WIRES_CONNECTIONS}>Rubix-Wires Connections</NavLink>
             ),
           },
           {
             key: ROUTES.USER_GUIDE,
             name: ROUTES.USER_GUIDE,
-            label: <NavLink to={ROUTES.USER_GUIDE}>User Guide</NavLink>,
+            label: <NavLink to={ROUTES.USER_GUIDE}>Rubix-Wires User Guide</NavLink>,
           },
         ],
       };
