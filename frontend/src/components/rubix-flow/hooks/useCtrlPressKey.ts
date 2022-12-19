@@ -7,9 +7,8 @@ export const useCtrlPressKey = (
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // delete nodes and edges selected
-      console.log('---keypress', e, key);
-      
-      if ((e.target as HTMLInputElement)?.tagName?.toUpperCase() !== 'INPUT' && e.code === 'Backspace' && key === 'Backspace') {
+      if ((e.target as HTMLInputElement)?.tagName?.toUpperCase() !== 'INPUT' &&
+        (e.code === 'Delete' || e.code === 'Backspace') && key === 'Backspace') {
         e.preventDefault();
         callback(e);
         return;
