@@ -14,7 +14,7 @@ func TestClient_GetEdgeDeviceInfo(t *testing.T) {
 
 func TestClient_UpdateEdgeDeviceInfo(t *testing.T) {
 	deviceInfo, err := client.GetEdgeDeviceInfo("rc")
-	deviceInfo.DeviceType = constants.Cloud.String()
+	deviceInfo.DeviceType = constants.RubixCompute.String()
 	deviceInfo, err = client.UpdateEdgeDeviceInfo("rc", deviceInfo)
 	fmt.Println(deviceInfo)
 	fmt.Println(err)

@@ -20,7 +20,7 @@ func (inst *Client) GetEdgeDeviceInfo(hostIDName string) (*rubixregistry.DeviceI
 	}
 	deviceInfo := resp.Result().(*rubixregistry.DeviceInfo)
 	if deviceInfo.DeviceType == "" {
-		deviceInfo.DeviceType = constants.Cloud.String()
+		deviceInfo.DeviceType = constants.RubixCompute.String()
 	}
 	return deviceInfo, nil
 }
@@ -39,7 +39,7 @@ func (inst *Client) UpdateEdgeDeviceInfo(hostIDName string, body *rubixregistry.
 	}
 	deviceInfo := resp.Result().(*rubixregistry.DeviceInfo)
 	if deviceInfo.DeviceType == "" {
-		deviceInfo.DeviceType = constants.Cloud.String()
+		deviceInfo.DeviceType = constants.RubixCompute.String()
 	}
 	return deviceInfo, nil
 }
