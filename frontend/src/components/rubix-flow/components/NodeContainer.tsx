@@ -41,7 +41,7 @@ export const NodeContainer = ({
         {icon && <span className="pr-3 pt-1">{icon}</span>}
         {nodeName && <span>{nodeName}</span>}
         {status?.activeMessage && renderStatusMessages()}
-        {status?.subTitle && <span className="ml-1 float-right">{status.subTitle}</span>}
+        {status?.subTitle && <span className="ml-1 float-right" style={{fontSize: "8px"}}>{status.subTitle}</span>}
       </div>
     );
   };
