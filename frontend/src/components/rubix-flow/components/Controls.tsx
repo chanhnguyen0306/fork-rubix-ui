@@ -148,7 +148,7 @@ const Controls = ({
             title="Save sub flow"
             onClick={onSaveSubFlow}
           >
-            Save Sub Flow
+            Close Sub Flow
           </div>
         )}
         <div
