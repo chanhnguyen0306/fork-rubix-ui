@@ -15,3 +15,20 @@ func TestApp_buildNetworkSchema(t *testing.T) {
 	}
 	pprint.PrintJOSN(schema)
 }
+
+func TestApp_EditIP(t *testing.T) {
+	app := MockNewApp()
+	app.RcSetNetworks("cloud", "rc", &RcNetworkBody{
+		Eth0IpSettings: "11111",
+		Eth0Interface:  "",
+		Eth0Ip:         "",
+		Eth0Netmask:    "",
+		Eth0Gateway:    "",
+		Eth1IpSettings: "",
+		Eth1Interface:  "",
+		Eth1Ip:         "",
+		Eth1Netmask:    "",
+		Eth1Gateway:    "",
+	})
+
+}

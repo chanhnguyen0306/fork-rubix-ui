@@ -7,6 +7,8 @@ import (
 	"github.com/NubeIO/lib-schema/schema"
 	"github.com/NubeIO/rubix-edge/service/system"
 	"github.com/NubeIO/rubix-ui/backend/constants"
+	pprint "github.com/NubeIO/rubix-ui/backend/helpers/print"
+	"github.com/NubeIO/rubix-ui/backend/rumodel"
 )
 
 func (inst *App) EdgeGetNetworks(connUUID, hostUUID string) []networking.NetworkInterfaces {
@@ -81,29 +83,26 @@ func (inst *App) RcSetNetworks(connUUID, hostUUID string, rcNetworkBody *RcNetwo
 	assistClient, err := inst.getAssistClient(&AssistClient{ConnUUID: connUUID})
 	if err != nil {
 		inst.uiErrorMessage(err)
+		return
 	}
 	deviceInfo, err := assistClient.GetEdgeDeviceInfo(hostUUID)
+	if deviceInfo == nil {
+		inst.uiErrorMessage(err)
+		return
+	}
 	deviceType := deviceInfo.DeviceType
-	if rcNetworkBody != nil {
-		inst.uiErrorMessage(fmt.Sprintf("body can not be empty"))
-	}
-	if rcNetworkBody.Eth0Ip != "" {
-		inst.uiSuccessMessage(fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth0Ip))
-	}
-	if rcNetworkBody.Eth1Ip != "" {
-		inst.uiSuccessMessage(fmt.Sprintf("update eth0 ip address: %s", rcNetworkBody.Eth1Ip))
+	if rcNetworkBody == nil {
+		inst.uiErrorMessage(fmt.Sprintf("edit networks body can not be empty"))
 	}
 
-	// eth0IpSettings := rcNetworkBody.Eth0IpSettings
-	// eth1IpSettings := rcNetworkBody.Eth1IpSettings
-
-	if deviceType == constants.RubixCompute.String() || deviceType == constants.RubixCompute5.String() {
+	if deviceType == rumodel.RubixCompute.String() || deviceType == rumodel.RubixCompute5.String() {
 
 	}
 
-	if deviceType == constants.RubixComputeIO.String() {
+	if deviceType == rumodel.RubixComputeIO.String() {
 
 	}
+	pprint.PrintJOSN(rcNetworkBody)
 }
 
 func (inst *App) setEth0(connUUID, hostUUID string, eth0Body networking.NetworkInterfaces) Eth0 {
@@ -200,9 +199,7 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 	if err != nil {
 		return false, err
 	}
-
 	networks, err := client.EdgeGetNetworks(hostUUID)
-	fmt.Println(networks)
 	if err != nil {
 		return false, err
 	}
@@ -220,13 +217,13 @@ func (inst *App) buildNetworkSchema(connUUID, hostUUID string) (interface{}, err
 		}
 	}
 	m := &RcNetwork{}
-	if deviceType == constants.RubixCompute.String() || deviceType == constants.RubixCompute5.String() {
+	if deviceType == rumodel.RubixCompute.String() || deviceType == rumodel.RubixCompute5.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		m.Eth1 = inst.setEth1(connUUID, hostUUID, eth1Body)
 		schema.Set(m)
 		return m, nil
 	}
-	if deviceType == constants.RubixComputeIO.String() {
+	if deviceType == rumodel.RubixComputeIO.String() {
 		m.Eth0 = inst.setEth0(connUUID, hostUUID, eth0Body)
 		schema.Set(m)
 		return m, nil

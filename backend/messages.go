@@ -3,6 +3,7 @@ package backend
 import (
 	"github.com/NubeIO/rubix-ui/backend/rumodel"
 	"github.com/NubeIO/rubix-ui/backend/utils/message"
+	log "github.com/sirupsen/logrus"
 )
 
 func (inst *App) uiSuccessMessage(data interface{}) {
@@ -14,6 +15,7 @@ func (inst *App) uiWarningMessage(data interface{}) {
 }
 
 func (inst *App) uiErrorMessage(data interface{}) {
+	log.Error(data)
 	message.UiErrorMessage(inst.ctx, data)
 }
 
