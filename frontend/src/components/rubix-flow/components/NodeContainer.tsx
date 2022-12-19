@@ -37,14 +37,11 @@ export const NodeContainer = ({
 
   const renderFirstRow = () => {
     return (
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
+      <div style={{ display: "block" }}>
         {icon && <span className="pr-3 pt-1">{icon}</span>}
         {nodeName && <span>{nodeName}</span>}
         {status?.activeMessage && renderStatusMessages()}
+        {status?.subTitle && <span className="ml-1 float-right">{status.subTitle}</span>}
       </div>
     );
   };
@@ -52,15 +49,9 @@ export const NodeContainer = ({
   const renderStatusMessages = () => {
     return (
       <span className="ml-4">
-        {status?.waringIcon && (
-          <Tooltip title={status.waringMessage}>{status.waringIcon}</Tooltip>
-        )}
-        {status?.notifyIcon && (
-          <Tooltip title={status.notifyMessage}>{status.notifyIcon}</Tooltip>
-        )}
-        {status?.errorIcon && (
-          <Tooltip title={status.errorMessage}>{status.errorIcon}</Tooltip>
-        )}
+        {status?.waringIcon && <Tooltip title={status.waringMessage}>{status.waringIcon}</Tooltip>}
+        {status?.notifyIcon && <Tooltip title={status.notifyMessage}>{status.notifyIcon}</Tooltip>}
+        {status?.errorIcon && <Tooltip title={status.errorMessage}>{status.errorIcon}</Tooltip>}
       </span>
     );
   };
@@ -72,15 +63,12 @@ export const NodeContainer = ({
         { "bg-opacity-50": hasChild, "outline outline-1": selected },
       ])}
     >
-      <div
-        className={`flex ${backgroundColor} ${textColor} px-3 py-1 rounded-t`}
-        onDoubleClick={onDbClickTitle}
-      >
-        <div>
+      <div className={`flex ${backgroundColor} ${textColor} px-3 py-1 rounded-t`} onDoubleClick={onDbClickTitle}>
+        <div style={{ width: "100%" }}>
           {renderFirstRow()}
           <div>
             <span>{title}</span> {" | "}
-            {category} {status?.subTitle ? " | " + status.subTitle : null}
+            {category}
           </div>
         </div>
       </div>
