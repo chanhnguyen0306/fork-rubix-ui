@@ -92,7 +92,7 @@ const NodeMenu = ({
             minWidth: 120,
           }}
         >
-          <div className="bg-gray-500 mt-0 ant-menu-item"></div>
+          <div className="bg-gray-500 mt-0 ant-menu-item">-</div>
           <AddNodeComponent
             node={node}
             onClose={onClose}
