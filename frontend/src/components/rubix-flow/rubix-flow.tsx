@@ -69,7 +69,7 @@ const Flow = (props: any) => {
   const [nodePickerVisibility, setNodePickerVisibility] = useState<XYPosition>();
   const [nodeMenuVisibility, setNodeMenuVisibility] = useState<XYPosition>();
   const [lastConnectStart, setLastConnectStart] = useState<OnConnectStartParams>();
-  const refreshInterval = useRef<null | number>(null);
+  const refreshInterval = useRef<null | any>(null);
   const [undoable, setUndoable, { past, undo, canUndo, redo, canRedo }] = useUndoable({ nodes: nodes, edges: edges });
   const [isDoubleClick, setIsDoubleClick] = useState(false);
   const [flowSettings, setFlowSettings] = useState(getFlowSettings());
