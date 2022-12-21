@@ -231,19 +231,15 @@ const Flow = (props: any) => {
       const isDragSelected = edges.some((item) => {
         const isChangeTarget =
           lastConnectStart.handleType === "target" && item.targetHandle === lastConnectStart.handleId;
-        const isChangeSource = lastConnectStart.handleId === "out" && item.source === lastConnectStart.nodeId;
+        const isChangeSource = lastConnectStart.handleType === "source" && item.source === lastConnectStart.nodeId;
 
         return item.selected && (isChangeTarget || isChangeSource);
       });
 
-      const lastHandleId = lastConnectStart.handleId;
-      const isTrueHandleId =
-        handleId &&
-        lastHandleId &&
-        ((handleId.indexOf("in") > -1 && lastHandleId.indexOf("in") > -1) ||
-          (handleId.indexOf("out") > -1 && lastHandleId.indexOf("out") > -1));
+      const isValidateConnect =
+        nodeId && handleId && isValidConnection(nodes, lastConnectStart, { nodeId, handleId }, isDragSelected);
 
-      if (isDragSelected && isTrueHandleId) {
+      if (isDragSelected && isValidateConnect) {
         let newEdges;
         if (nodeId) {
           // update selected lines to new node if start and end are same type
@@ -279,8 +275,7 @@ const Flow = (props: any) => {
           lastConnectStart &&
           nodeId &&
           handleId &&
-          !isTrueHandleId &&
-          isValidConnection(nodes, lastConnectStart, { nodeId, handleId })
+          isValidateConnect
         ) {
           const isSource = lastConnectStart.handleType === "source" || false;
           const conNodeId = lastConnectStart.nodeId || "";
