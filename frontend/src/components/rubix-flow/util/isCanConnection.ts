@@ -9,16 +9,21 @@ type LastConnectParams = {
 export const isValidConnection = (
   nodes: NodeInterface[],
   firstConnect: OnConnectStartParams,
-  lastConnect: LastConnectParams
+  lastConnect: LastConnectParams,
+  isDragSelected = false,
 ) => {
   const firstNode = nodes.find((item) => item.id === firstConnect.nodeId);
   const lastNode = nodes.find((item) => item.id === lastConnect.nodeId);
 
   if (!firstNode || !lastNode) return false;
 
+  /* isDragSelected = true then the 2 connections will be equal */
+  const isGetDataInputs = firstConnect.handleType === "target";
+  const isGetDataOut = isDragSelected ? isGetDataInputs : !isGetDataInputs;
+
   const arrHandleIds = [
-    getNodeType(firstNode, firstConnect.handleId || ""),
-    getNodeType(lastNode, lastConnect.handleId || ""),
+    getNodeType(firstNode, firstConnect.handleId || "", isGetDataInputs),
+    getNodeType(lastNode, lastConnect.handleId || "", isGetDataOut),
   ];
   const occurrences = arrHandleIds.reduce(function (acc, curr) {
     return acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc;
@@ -28,9 +33,13 @@ export const isValidConnection = (
   return !occString || occString === 0 || occString === 2;
 };
 
-const getNodeType = (node: NodeInterface, handleId: string) => {
+const getNodeType = (
+  node: NodeInterface,
+  handleId: string,
+  isGetDataInputs: boolean,
+) => {
   let nodeHandle;
-  if (handleId && handleId.indexOf("in") !== -1) {
+  if (isGetDataInputs) {
     nodeHandle = node?.data?.inputs.find((item: any) => item.pin === handleId);
   } else {
     nodeHandle = node?.data?.out.find((item: any) => item.pin === handleId);
